@@ -1,0 +1,18 @@
+{
+  "id": "v554",
+  "lean_file": "proofs/lean/infinite_tables/safe_table_select_revision/Proofs.lean",
+  "returncode": 0,
+  "forbidden": [],
+  "theorem_count": 11,
+  "claim": "Safe table expressions extended with fixed-guard select and fixed-guard revision remain monotone and omega-continuous, with the omega-supremum of finite approximants a fixed point.",
+  "boundaries": [
+    "no same-stratum prime",
+    "no current-state-dependent row guards",
+    "no current-state-dependent select or revision guards",
+    "no arbitrary value-predicate select",
+    "no unrestricted recursive common",
+    "no NSO syntax",
+    "no Guarded Successor syntax",
+    "no Tau runtime lowering"
+  ]
+}
