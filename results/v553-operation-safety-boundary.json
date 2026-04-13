@@ -1,0 +1,16 @@
+{
+  "id": "v553",
+  "lean_file": "proofs/lean/infinite_tables/operation_safety_boundary/Proofs.lean",
+  "returncode": 0,
+  "forbidden": [],
+  "theorem_count": 11,
+  "claim": "Fixed lower-stratum select and revision are monotone and omega-continuous; current guards, arbitrary value-predicate select, and equality-style common have checked nonmonotonicity counterexamples.",
+  "boundaries": [
+    "positive fixed-guard select only",
+    "fixed-guard revision only",
+    "arbitrary value-predicate select is unsafe",
+    "equality-style common is unsafe in the recursive kernel",
+    "current-state guards are unsafe",
+    "no Tau runtime lowering"
+  ]
+}
