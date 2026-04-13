@@ -1,0 +1,36 @@
+# Local Tau checkout, never redistribute here
+external/
+
+# Build artifacts
+build/
+dist/
+out/
+*.o
+*.a
+*.so
+*.dylib
+*.dll
+*.exe
+
+# Lean/Lake artifacts
+.lake/
+.olean/
+*.olean
+*.ilean
+*.c
+*.trace
+
+# Generated benchmark outputs
+results/local/
+results/tmp/
+*.log
+
+# Python helpers
+__pycache__/
+*.pyc
+.venv/
+
+# Editor and OS noise
+.DS_Store
+.vscode/
+.idea/
