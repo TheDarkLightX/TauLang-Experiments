@@ -90,8 +90,9 @@ The current patch is an experiment patch, not an official Tau release. It adds:
   `TAU_QELIM_BDD_KB_REWRITE=guarded`, for the restricted c111-inspired
   simplification experiment. Current evidence keeps this opt-in: it preserves
   output parity and reduces compiled expression nodes on targeted formulas and
-  generated absorption-heavy matrices, but it is not yet validated as a default
-  Tau optimization.
+  generated absorption-heavy matrices. A separate auto-route matrix shows it
+  does not materially improve `TAU_QELIM_BACKEND=auto`, so it is not validated
+  as a default Tau optimization.
 
 The table syntax is rejected unless `TAU_ENABLE_SAFE_TABLES=1` is set.
 

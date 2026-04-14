@@ -180,6 +180,68 @@ absorption-only guard. The current selector has signal on generated
 absorption-heavy formulas, but it is not a proof that the pass is profitable on
 arbitrary Tau qelim workloads.
 
+## Auto Route Matrix
+
+The production-shaped question is narrower than the raw BDD matrix:
+
+```text
+does guarded KB improve TAU_QELIM_BACKEND=auto?
+```
+
+Run:
+
+```bash
+RUN_QELIM_AUTO_KB_MATRIX=1 ./scripts/run_benchmarks.sh
+```
+
+or directly:
+
+```bash
+python3 scripts/run_qelim_auto_kb_matrix.py \
+  --tau-bin external/tau-lang/build-Release/tau \
+  --out results/local/qelim-auto-kb-matrix.json
+```
+
+This matrix compares:
+
+```text
+default
+auto
+auto+kb_guarded
+auto+kb_forced
+```
+
+The parity gate is exact output parity against the unmodified `auto` route.
+Exact default parity is recorded separately because Tau default and `auto` may
+print equivalent residual formulas in different syntactic forms, for example
+`a != 0` versus `!a = 0`.
+
+Current local receipts:
+
+- 18-case matrix, 3 repetitions:
+  - `auto` qelim total: `18.334684 ms`
+  - `auto+kb_guarded` qelim total: `19.228504 ms`
+  - guarded ratio against `auto`: about `1.049`
+  - guarded BDD-internal ratio against `auto`: about `1.125`
+  - node reduction: `42.73%`
+- 34-case matrix, 3 repetitions:
+  - `auto` qelim total: `45.620071 ms`
+  - `auto+kb_guarded` qelim total: `45.8326 ms`
+  - guarded ratio against `auto`: about `1.005`
+  - guarded BDD-internal ratio against `auto`: about `1.053`
+  - node reduction: `40.81%`
+
+Conclusion:
+
+```text
+auto is the main speed lane.
+guarded KB is useful simplification evidence inside the BDD sublane.
+do not fold guarded KB into auto by default yet.
+```
+
+This is a useful negative result. A pass can reduce intermediate expression
+nodes and still fail to improve the already-composed portfolio route.
+
 ## How This Helps Tau Optimization
 
 The useful compiler pattern is:

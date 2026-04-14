@@ -108,3 +108,17 @@ python3 scripts/run_qelim_kb_matrix.py \
 The matrix compares `bdd`, `bdd+kb`, `bdd+kb_guarded`, `bdd+ac`,
 `bdd+ac+kb`, and `bdd+ac+kb_guarded`.
 It is intentionally opt-in because it runs many Tau subprocesses.
+
+To test whether guarded KB helps the already-promoted `auto` qelim route, run:
+
+```bash
+python3 scripts/run_qelim_auto_kb_matrix.py \
+  --tau-bin external/tau-lang/build-Release/tau \
+  --out results/local/qelim-auto-kb-matrix.json
+```
+
+That matrix compares `default`, `auto`, `auto+kb_guarded`, and
+`auto+kb_forced`. Exact output parity is checked against the unmodified `auto`
+route. Exact default parity is recorded separately because default and `auto`
+may print semantically equivalent residual formulas in different syntactic
+forms.

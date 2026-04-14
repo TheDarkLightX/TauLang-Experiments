@@ -50,4 +50,14 @@ if [[ -n "$TAU_BIN" ]]; then
       > "$RESULT_DIR/qelim-kb-matrix.txt"
     echo "Qelim KB matrix written to $RESULT_DIR/qelim-kb-matrix.json"
   fi
+
+  if [[ "${RUN_QELIM_AUTO_KB_MATRIX:-0}" == "1" ]]; then
+    python3 scripts/run_qelim_auto_kb_matrix.py \
+      --tau-bin "$TAU_BIN" \
+      --out "$RESULT_DIR/qelim-auto-kb-matrix.json" \
+      --max-cases "${QELIM_AUTO_KB_MATRIX_CASES:-18}" \
+      --reps "${QELIM_AUTO_KB_MATRIX_REPS:-3}" \
+      > "$RESULT_DIR/qelim-auto-kb-matrix.txt"
+    echo "Qelim auto+KB matrix written to $RESULT_DIR/qelim-auto-kb-matrix.json"
+  fi
 fi
