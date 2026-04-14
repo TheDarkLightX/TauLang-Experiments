@@ -15,6 +15,7 @@ This repo is for educational and research work around Tau Language, including:
 - finite table semantics experiments
 - infinite table reference-semantics research
 - quantifier-elimination dispatch experiments
+- restricted Tau rewrite-normalizer experiments
 - BDD and finite-clopen carrier experiments
 - Lean proof artifacts for semantic claims
 - benchmark harnesses and reproducibility scripts
@@ -95,3 +96,4 @@ The table syntax is rejected unless `TAU_ENABLE_SAFE_TABLES=1` is set.
 - Negative boundaries: same-stratum complement and unsafe current-state guards.
 - Fragment-sensitive quantifier elimination.
 - Proof-carrying optimization passes.
+- Restricted Knuth-Bendix-style rewrite normalization for Tau expressions.

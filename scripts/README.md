@@ -53,3 +53,29 @@ If the scripts are not executable after checkout, run:
 ```bash
 chmod +x scripts/*.sh
 ```
+
+## Restricted Tau rewrite normalizer
+
+The c111 proof lane has an executable companion:
+
+```bash
+python3 scripts/tau_kb_normalizer.py normalize \
+  'pointCompl(common(a, pointJoin(a, b)))' \
+  --json
+```
+
+The script implements the seven checked rewrite rules from the restricted
+Knuth-Bendix-style Tau expression system. It is intentionally narrow:
+
+- it checks semantic parity over Boolean valuations,
+- it checks that the c111 measure decreases at every emitted step,
+- it does not orient commutativity, associativity, or distributivity,
+- it is not a complete Boolean-algebra equivalence checker.
+
+The benchmark wrapper records a deterministic corpus receipt:
+
+```bash
+./scripts/run_benchmarks.sh
+```
+
+That writes `results/local/kb-normalizer-benchmark.json`.
