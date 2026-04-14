@@ -9,6 +9,7 @@ This directory contains checked Lean proof packets for the scoped infinite-table
 | A/B/C | `clopen_boolref_embedding/` | Embeds finite clopens into completed reference semantics and proves the `EventuallyOne` obstruction. |
 | F/H | `kleene_stabilization/` | Proves Kleene fixed-point minimality and finite-stabilization agreement. |
 | J | `unsafe_recurrence_boundary/` | Proves unrestricted same-stratum complement is not monotone and not omega-continuous. |
+| v554 | `safe_table_select_revision/` | Proves safe select, safe revision, and pointwise table revision preserve the monotone omega-continuous recurrence lane. |
 
 ## Current Solved Claim
 
@@ -18,6 +19,7 @@ The checked packets support this scoped claim:
 finite executable clopen semantics embeds into completed reference semantics,
 completed reference semantics can express countable recurrence unions,
 finite stabilization agrees with the completed Kleene least fixed point,
+safe pointwise revision is monotone and omega-continuous,
 and unrestricted same-stratum complement is excluded from the safe recurrence kernel.
 ```
 
@@ -48,6 +50,9 @@ cd ../clopen_boolref_embedding
 lake build
 
 cd ../unsafe_recurrence_boundary
+lake build
+
+cd ../safe_table_select_revision
 lake build
 ```
 

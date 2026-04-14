@@ -1,0 +1,69 @@
+# Collateral admission reason router.
+#
+# Why this is a table demo:
+# The table returns the first failed admission reason. This is not just a yes/no
+# gate. It is a symbolic explanation ladder that preserves priority when several
+# failures overlap.
+
+collateral_reason_table(
+  registry_bad,depth_bad,age_bad,provenance_bad,separation_bad,
+  deny_registry,deny_depth,deny_age,deny_provenance,deny_separation,admit
+) : tau :=
+  table {
+    when registry_bad => deny_registry;
+    when depth_bad => deny_depth;
+    when age_bad => deny_age;
+    when provenance_bad => deny_provenance;
+    when separation_bad => deny_separation;
+    else => admit
+  }.
+
+collateral_reason_raw(
+  registry_bad,depth_bad,age_bad,provenance_bad,separation_bad,
+  deny_registry,deny_depth,deny_age,deny_provenance,deny_separation,admit
+) : tau :=
+  (registry_bad & deny_registry) |
+  (registry_bad' & (
+    (depth_bad & deny_depth) |
+    (depth_bad' & (
+      (age_bad & deny_age) |
+      (age_bad' & (
+        (provenance_bad & deny_provenance) |
+        (provenance_bad' & (
+          (separation_bad & deny_separation) |
+          (separation_bad' & admit)
+        ))
+      ))
+    ))
+  )).
+
+collateral_registry_priority_slice_table(
+  registry_bad,depth_bad,age_bad,provenance_bad,separation_bad,
+  deny_registry,deny_depth,deny_age,deny_provenance,deny_separation,admit
+) : tau :=
+  registry_bad & collateral_reason_table(
+    registry_bad,depth_bad,age_bad,provenance_bad,separation_bad,
+    deny_registry,deny_depth,deny_age,deny_provenance,deny_separation,admit
+  ).
+
+collateral_registry_priority_slice_raw(
+  registry_bad,depth_bad,age_bad,provenance_bad,separation_bad,
+  deny_registry,deny_depth,deny_age,deny_provenance,deny_separation,admit
+) : tau :=
+  registry_bad & deny_registry.
+
+collateral_provenance_slice_table(
+  registry_bad,depth_bad,age_bad,provenance_bad,separation_bad,
+  deny_registry,deny_depth,deny_age,deny_provenance,deny_separation,admit
+) : tau :=
+  registry_bad' & depth_bad' & age_bad' & provenance_bad &
+  collateral_reason_table(
+    registry_bad,depth_bad,age_bad,provenance_bad,separation_bad,
+    deny_registry,deny_depth,deny_age,deny_provenance,deny_separation,admit
+  ).
+
+collateral_provenance_slice_raw(
+  registry_bad,depth_bad,age_bad,provenance_bad,separation_bad,
+  deny_registry,deny_depth,deny_age,deny_provenance,deny_separation,admit
+) : tau :=
+  registry_bad' & depth_bad' & age_bad' & provenance_bad & deny_provenance.

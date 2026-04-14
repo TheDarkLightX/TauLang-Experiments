@@ -42,3 +42,18 @@ official Tau checkout
 ```
 
 For substantial Tau changes, prefer an upstream pull request or written permission from IDNI.
+
+## Current Demo Workflow
+
+The current demo workflow is:
+
+```bash
+./scripts/run_table_demos.sh --accept-tau-license
+```
+
+That script downloads Tau from the official repository into a gitignored
+`external/tau-lang` directory, applies the experiment patch locally, builds Tau,
+and runs the safe table demos.
+
+This is a compliance boundary, not a way to evade the Tau license. The user
+still obtains Tau from the official source and uses Tau under IDNI's terms.

@@ -1,0 +1,35 @@
+# Full-style safe table syntax demo.
+#
+# Requires:
+#   TAU_ENABLE_SAFE_TABLES=1
+#   --charvar false
+#
+# Scope:
+# This is a Tau-native parser demo for guarded table choice:
+#
+#   table { when G => V; else => D }
+#
+# It lowers to:
+#
+#   (G & V) | (G' & D)
+#
+# This is not full unrestricted TABA. It is the safe guarded-choice table
+# surface that can be parsed by Tau and checked by Tau's symbolic solver.
+
+priority_quarantine_update(q,riskgate,reviewgate,depguard,seed,manualadd) : tau :=
+  table {
+    when riskgate =>
+      seed | st_revise_tau(q,depguard,manualadd);
+    when reviewgate =>
+      table {
+        when depguard =>
+          st_select_tau(q,depguard);
+        else => q
+      };
+    else => q
+  }.
+
+priority_quarantine_raw(q,riskgate,reviewgate,depguard,seed,manualadd) : tau :=
+  (riskgate & (seed | ((manualadd & depguard) | (q & depguard')))) |
+  (riskgate' & ((reviewgate & ((depguard & (q & depguard)) | (depguard' & q))) |
+  (reviewgate' & q))).

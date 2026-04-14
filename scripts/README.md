@@ -1,17 +1,55 @@
 # Scripts
 
-If the scripts are not executable after checkout, run them through `bash`:
+## Smooth table demo
 
 ```bash
-bash scripts/setup_tau.sh
-bash scripts/apply_patches.sh
-bash scripts/run_benchmarks.sh
+./scripts/run_table_demos.sh --accept-tau-license
 ```
 
-or set executable bits locally:
+This is the recommended public reproduction path.
+It clones the official Tau Language repository into `external/tau-lang`, checks
+out the tested commit, applies the experiment patch, regenerates Tau's parser,
+builds the Tau binary, and runs the table demos.
+
+The script writes local proof reports under:
+
+```text
+results/local/
+```
+
+Do not commit machine-local proof reports unless they have been reviewed for
+machine-specific paths.
+
+## Separate steps
+
+```bash
+./scripts/setup_tau.sh --accept-tau-license
+./scripts/apply_patches.sh
+./scripts/run_table_demos.sh
+```
+
+`setup_tau.sh` requires explicit license acknowledgement because this repository
+does not redistribute Tau Language source or binaries.
+
+`apply_patches.sh` applies patch files under `patches/` to the official Tau
+checkout. It skips patches that are already applied and regenerates the parser
+when the grammar is patched.
+
+`run_table_demos.sh` is intentionally scoped. It checks the feature-gated safe
+table fragment, not full unrestricted TABA tables.
+
+The current suite includes:
+
+- finite-carrier helper checks,
+- Tau-native table syntax lowering checks,
+- protocol firewall priority checks,
+- collateral admission reason-router checks,
+- incident-memory state-transformer checks,
+- pointwise revision locality and idempotence checks,
+- feature-flag rejection checks.
+
+If the scripts are not executable after checkout, run:
 
 ```bash
 chmod +x scripts/*.sh
 ```
-
-The scripts clone Tau Language from the official IDNI repository into `external/tau-lang`. That directory is gitignored and should not be committed.

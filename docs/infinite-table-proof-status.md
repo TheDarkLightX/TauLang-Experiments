@@ -58,7 +58,7 @@ full CBF fragment integration
 NSO syntax and binding layer
 Guarded Successor integration
 Tau runtime lowering and tests
-BDD-backed executable optimization receipts
+BDD-backed executable optimization evidence
 ```
 
 ## Practical Next Step

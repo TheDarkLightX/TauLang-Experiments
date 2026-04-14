@@ -1,0 +1,32 @@
+# Safe table kernel, Tau Language feature-flagged encoding.
+#
+# Scope:
+# - four-cell executable carrier, encoded as the low four bits of bv[8]
+# - safe table operations loaded only when TAU_ENABLE_SAFE_TABLES=1 is set
+# - fixed-guard select and fixed-guard revision
+# - one safe monotone update U(x) = base | revise_G,replacement(x)
+#
+# This is not full unrestricted TABA tables. It is an executable Tau
+# instantiation of the checked safe recursive table fragment.
+
+set charvar off
+
+i1 : bv[8] := in console
+i2 : bv[8] := in console
+i3 : bv[8] := in console
+i4 : bv[8] := in console
+
+o1 : bv[8] := out console
+o2 : bv[8] := out console
+o3 : bv[8] := out console
+o4 : bv[8] := out console
+o5 : sbf := out console
+
+always
+  (o1[t]:bv[8] = st_select4(i1[t]:bv[8], i3[t]:bv[8])) &&
+  (o2[t]:bv[8] = st_revise4(i1[t]:bv[8], i3[t]:bv[8], i4[t]:bv[8])) &&
+  (o3[t]:bv[8] = st_choice4(i3[t]:bv[8], i4[t]:bv[8], i1[t]:bv[8])) &&
+  (o4[t]:bv[8] = st_update4(i1[t]:bv[8], i2[t]:bv[8], i3[t]:bv[8], i4[t]:bv[8])) &&
+  (o5[t]:sbf = 1:sbf <->
+    (st_update4(st_update4(i1[t]:bv[8], i2[t]:bv[8], i3[t]:bv[8], i4[t]:bv[8]), i2[t]:bv[8], i3[t]:bv[8], i4[t]:bv[8]) =
+     st_update4(i1[t]:bv[8], i2[t]:bv[8], i3[t]:bv[8], i4[t]:bv[8]))).

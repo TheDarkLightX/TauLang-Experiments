@@ -91,6 +91,36 @@ def fixedRevision {α : Type*} [CompleteBooleanAlgebra α]
     (guard replacement old : α) : α :=
   guardedChoice guard replacement old
 
+def pointwiseRevision {I α : Type*} [CompleteBooleanAlgebra α]
+    (guard replacement old : State I α) : State I α :=
+  fun i => fixedRevision (guard i) (replacement i) (old i)
+
+theorem pointwiseRevision_apply {I α : Type*} [CompleteBooleanAlgebra α]
+    (guard replacement old : State I α) (i : I) :
+    pointwiseRevision guard replacement old i =
+      (guard i ⊓ replacement i) ⊔ ((guard i)ᶜ ⊓ old i) := by
+  rfl
+
+theorem pointwiseRevision_mono_old {I α : Type*}
+    [CompleteBooleanAlgebra α]
+    (guard replacement : State I α) :
+    Monotone (pointwiseRevision guard replacement) := by
+  intro s t hst i
+  simp only [pointwiseRevision, fixedRevision, guardedChoice]
+  exact sup_le_sup le_rfl (inf_le_inf le_rfl (hst i))
+
+theorem pointwiseRevision_iSup_of_chain {I α : Type*}
+    [CompleteBooleanAlgebra α]
+    (guard replacement : State I α)
+    (X : Nat -> State I α)
+    (_hchain : forall n, X n <= X (n + 1)) :
+    pointwiseRevision guard replacement (⨆ n, X n) =
+      ⨆ n, pointwiseRevision guard replacement (X n) := by
+  funext i
+  simp only [pointwiseRevision, fixedRevision, guardedChoice, iSup_apply]
+  rw [inf_iSup_eq]
+  rw [sup_iSup]
+
 def evalValue {I L α : Type*} [CompleteBooleanAlgebra α]
     (lower : LowerEnv L α) (s : State I α) : ValueTerm I L α -> α
   | .bot => ⊥
@@ -136,6 +166,13 @@ def OmegaContinuous {I α : Type*} [CompleteLattice α]
   forall X : Nat -> State I α,
     (forall n, X n <= X (n + 1)) ->
       F (⨆ n, X n) = ⨆ n, F (X n)
+
+theorem pointwiseRevision_omegaContinuous_old {I α : Type*}
+    [CompleteBooleanAlgebra α]
+    (guard replacement : State I α) :
+    OmegaContinuous (pointwiseRevision guard replacement) := by
+  intro X hchain
+  exact pointwiseRevision_iSup_of_chain guard replacement X hchain
 
 theorem evalValue_mono {I L α : Type*} [CompleteBooleanAlgebra α]
     (lower : LowerEnv L α) {s t : State I α} (hst : s <= t) :

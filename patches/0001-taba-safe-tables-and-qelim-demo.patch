@@ -1,0 +1,2389 @@
+diff --git a/parser/tau.tgf b/parser/tau.tgf
+index eaaec434..29669e85 100644
+--- a/parser/tau.tgf
++++ b/parser/tau.tgf
+@@ -67,6 +67,7 @@ wff                    => ('(' _ wff _ ')')                  :wff_parenthesis
+ bf                     => ('(' _ bf _ ')')                   :bf_parenthesis
+                         |                                     ba_constant
+                         |                                     variable
++                        |                                     safe_table_expr
+                         | ("fall"     __ q_vars  __ bf)      :bf_fall
+                         | ("fex"      __ q_vars  __ bf)      :bf_fex
+                         | ref                                :bf_ref
+@@ -101,6 +102,23 @@ bf                     => ('(' _ bf _ ')')                   :bf_parenthesis
+                                 :bf_and_nosep_2nd_oprnd)     :bf_and_nosep
+                         |                                     capture.
+ 
++# Feature-gated safe table terms.
++#
++# Semantics:
++#   table { when G1 => V1; when G2 => V2; else => D }
++# lowers to:
++#   (G1 & V1) | (G1' & ((G2 & V2) | (G2' & D)))
++#
++# This is a safe finite/infinite table surface because guards are ordinary Tau
++# boolean-algebra terms and the construct is only guarded choice. Recurrence,
++# same-stratum negation, and unrestricted TABA table semantics are deliberately
++# not introduced by this grammar production.
++safe_table_expr[safe_tables]
++                       => "table" _ '{' _ safe_table_rows
++                          _ "else" _ "=>" _ bf _ '}'.
++safe_table_rows        => safe_table_row (_ ';' _ safe_table_row)* [_ ';'].
++safe_table_row         => "when" __ bf _ "=>" _ bf.
++
+ # constant time constraints
+ constraint =>
+           ("[" ctnvar _ "!=" _ num "]" | "[" num _ "!=" _ ctnvar "]"):ctn_neq
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index bc4e87e5..946b6710 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -13,6 +13,7 @@ set(TAU_HEADERS
+ 	boolean_algebras/nso_ba.h
+ 	boolean_algebras/tau_ba.h
+ 	boolean_algebras/bv_ba.h
++	boolean_algebras/finite_table_ba.h
+ 	defs.h             # common macro and types definitions
+ 	logging.h          # logging and its macros
+ 	tau_tree.h         # tau tree, node, tree traverser, builders,
+diff --git a/src/boolean_algebras/finite_table_ba.h b/src/boolean_algebras/finite_table_ba.h
+new file mode 100644
+index 00000000..cb5047f8
+--- /dev/null
++++ b/src/boolean_algebras/finite_table_ba.h
+@@ -0,0 +1,185 @@
++// To view the license please visit https://github.com/IDNI/tau-lang/blob/main/LICENSE.md
++
++#ifndef __IDNI__TAU__BOOLEAN_ALGEBRAS__FINITE_TABLE_BA_H__
++#define __IDNI__TAU__BOOLEAN_ALGEBRAS__FINITE_TABLE_BA_H__
++
++#include <algorithm>
++#include <cctype>
++#include <cstdint>
++#include <cstdlib>
++#include <optional>
++#include <ostream>
++#include <string>
++
++#include "defs.h"
++#include "splitter_types.h"
++#include "tau_tree.h"
++
++namespace idni::tau_lang {
++
++struct ft4_ba {
++	static constexpr uint8_t mask_all = 0x0f;
++
++	uint8_t mask = 0;
++
++	ft4_ba() = default;
++	explicit ft4_ba(uint8_t m) : mask(m & mask_all) {}
++
++	static ft4_ba zero() { return ft4_ba(0); }
++	static ft4_ba one() { return ft4_ba(mask_all); }
++
++	ft4_ba operator&(const ft4_ba& x) const {
++		return ft4_ba(mask & x.mask);
++	}
++
++	ft4_ba operator|(const ft4_ba& x) const {
++		return ft4_ba(mask | x.mask);
++	}
++
++	ft4_ba operator^(const ft4_ba& x) const {
++		return ft4_ba(mask ^ x.mask);
++	}
++
++	ft4_ba operator+(const ft4_ba& x) const {
++		return *this ^ x;
++	}
++
++	ft4_ba operator~() const {
++		return ft4_ba(static_cast<uint8_t>(~mask));
++	}
++
++	auto operator<=>(const ft4_ba& x) const = default;
++
++	bool is_zero() const { return mask == 0; }
++	bool is_one() const { return mask == mask_all; }
++};
++
++inline bool tau_env_flag_enabled(const char* name) {
++	const char* flag = std::getenv(name);
++	if (!flag) return false;
++	std::string value(flag);
++	std::ranges::transform(value, value.begin(),
++		[](unsigned char c) { return static_cast<char>(std::tolower(c)); });
++	return value != "0" && value != "false" && value != "no";
++}
++
++inline bool safe_table_ba_enabled() {
++	return tau_env_flag_enabled("TAU_ENABLE_SAFE_TABLES");
++}
++
++inline bool finite_table_ba_enabled() {
++	if (safe_table_ba_enabled()) return true;
++	return tau_env_flag_enabled("TAU_ENABLE_FINITE_TABLES");
++}
++
++template<NodeType node>
++tref ft4_type() {
++	using tau = tree<node>;
++	tref type = tau::get(tau::type, "ft4");
++	return tau::get(tau::typed, type);
++}
++
++template<NodeType node>
++bool is_ft4_type(tref t) {
++	using tau = tree<node>;
++	return tau::get(t)[0].get_string() == "ft4";
++}
++
++inline ft4_ba normalize(const ft4_ba& f) { return ft4_ba(f.mask); }
++
++inline bool is_syntactic_one(const ft4_ba& f) { return f.is_one(); }
++
++inline bool is_syntactic_zero(const ft4_ba& f) { return f.is_zero(); }
++
++inline bool is_closed(const ft4_ba&) { return true; }
++
++inline uint8_t ft4_least_atom(uint8_t mask) {
++	return static_cast<uint8_t>(mask & static_cast<uint8_t>(-mask));
++}
++
++inline ft4_ba splitter(const ft4_ba& f, splitter_type&) {
++	return ft4_ba(f.mask == 0 ? 0 : ft4_least_atom(f.mask));
++}
++
++inline bool operator==(const ft4_ba& lhs, const bool& rhs) {
++	return rhs ? lhs.is_one() : lhs.is_zero();
++}
++
++inline bool operator==(const bool& lhs, const ft4_ba& rhs) {
++	return rhs == lhs;
++}
++
++inline bool operator!=(const ft4_ba& lhs, const bool& rhs) {
++	return !(lhs == rhs);
++}
++
++inline bool operator!=(const bool& lhs, const ft4_ba& rhs) {
++	return !(rhs == lhs);
++}
++
++inline std::ostream& operator<<(std::ostream& os, const ft4_ba& f) {
++	return os << static_cast<unsigned>(f.mask);
++}
++
++inline tref base_ba_symbol_simplification(tref symbol, const ft4_ba&) {
++	return symbol;
++}
++
++inline tref base_ba_term_simplification(tref term, const ft4_ba&) {
++	return term;
++}
++
++inline std::optional<uint8_t> parse_ft4_mask(std::string src) {
++	src.erase(std::remove_if(src.begin(), src.end(),
++		[](unsigned char c) { return std::isspace(c) || c == '{' || c == '}'; }),
++		src.end());
++	if (src.empty()) return {};
++
++	int base = 10;
++	if (src.size() > 2 && src[0] == '#' &&
++		(src[1] == 'x' || src[1] == 'X')) {
++		src = src.substr(2);
++		base = 16;
++	} else if (src.size() > 2 && src[0] == '0' &&
++		(src[1] == 'x' || src[1] == 'X')) {
++		src = src.substr(2);
++		base = 16;
++	}
++
++	size_t idx = 0;
++	try {
++		unsigned long value = std::stoul(src, &idx, base);
++		if (idx != src.size() || value > ft4_ba::mask_all) return {};
++		return static_cast<uint8_t>(value);
++	} catch (...) {
++		return {};
++	}
++}
++
++template<typename... BAs>
++requires BAsPack<BAs...>
++std::optional<typename node<BAs...>::constant_with_type> parse_ft4(
++	const std::string& src)
++{
++	using node_t = node<BAs...>;
++	if (!finite_table_ba_enabled()) {
++		LOG_ERROR << "ft4 constants require TAU_ENABLE_FINITE_TABLES=1";
++		return {};
++	}
++	auto mask = parse_ft4_mask(src);
++	if (!mask) return {};
++	return typename node_t::constant_with_type{
++		std::variant<BAs...>{ ft4_ba(*mask) },
++		ft4_type<node_t>() };
++}
++
++} // namespace idni::tau_lang
++
++template<>
++struct std::hash<idni::tau_lang::ft4_ba> {
++	size_t operator()(const idni::tau_lang::ft4_ba& f) const noexcept {
++		return static_cast<size_t>(f.mask);
++	}
++};
++
++#endif // __IDNI__TAU__BOOLEAN_ALGEBRAS__FINITE_TABLE_BA_H__
+diff --git a/src/finite_table_builtins.h b/src/finite_table_builtins.h
+new file mode 100644
+index 00000000..ed16c577
+--- /dev/null
++++ b/src/finite_table_builtins.h
+@@ -0,0 +1,88 @@
++// To view the license please visit https://github.com/IDNI/tau-lang/blob/main/LICENSE.md
++
++#ifndef __IDNI__TAU__FINITE_TABLE_BUILTINS_H__
++#define __IDNI__TAU__FINITE_TABLE_BUILTINS_H__
++
++#include <cstdlib>
++#include <string>
++#include <vector>
++
++#include "boolean_algebras/finite_table_ba.h"
++#include "definitions.h"
++
++namespace idni::tau_lang::finite_table_builtins {
++
++inline bool enabled() {
++	return finite_table_ba_enabled() || safe_table_ba_enabled();
++}
++
++inline bool safe_enabled() {
++	return safe_table_ba_enabled();
++}
++
++template <NodeType node>
++bool ensure_loaded() {
++	static bool attempted = false;
++	static bool loaded = false;
++	if (attempted) return loaded;
++	attempted = true;
++
++	using tau = tree<node>;
++	auto& defs = definitions<node>::instance();
++	auto& ctx = *defs.get_io_context();
++
++	std::vector<std::string> prelude{
++		"ft_join4(a,b) : bv[8] := (a | b) & { #x0F }:bv[8]",
++		"ft_common4(a,b) : bv[8] := (a & b) & { #x0F }:bv[8]",
++		"ft_select4(a,g) : bv[8] := (a & g) & { #x0F }:bv[8]",
++		"ft_set4(a,g,v) : bv[8] := ((a & (g ^ { #xFF }:bv[8])) | (v & g)) & { #x0F }:bv[8]",
++		"ft_project4to2(a) : bv[8] := (((a & { #x01 }:bv[8]) | ((a >> { #x01 }:bv[8]) & { #x01 }:bv[8])) | ((((a >> { #x02 }:bv[8]) & { #x01 }:bv[8]) | ((a >> { #x03 }:bv[8]) & { #x01 }:bv[8])) << { #x01 }:bv[8]))"
++	};
++
++	if (safe_enabled()) {
++		prelude.insert(prelude.end(), {
++			"st_select4(x,g) : bv[8] := ft_select4(x,g)",
++			"st_choice4(g,u,v) : bv[8] := (((u & g) | (v & (g ^ { #xFF }:bv[8]))) & { #x0F }:bv[8])",
++			"st_revise4(x,g,a) : bv[8] := st_choice4(g,a,x)",
++			"st_pointwise_revise4(x,g,a) : bv[8] := st_revise4(x,g,a)",
++			"st_update4(x,b,g,a) : bv[8] := ft_join4(b, st_revise4(x,g,a))",
++			"st_select_tau(x,g) : tau := x & g",
++			"st_choice_tau(g,u,v) : tau := (u & g) | (v & g')",
++			"st_revise_tau(x,g,a) : tau := (a & g) | (x & g')",
++			"st_pointwise_revise_tau(x,g,a) : tau := st_revise_tau(x,g,a)",
++			"st_update_tau(x,b,g,a) : tau := b | ((a & g) | (x & g'))"
++		});
++	}
++
++	for (const auto& src : prelude) {
++		typename tau::get_options opts;
++		opts.parse = { .start = tau::rec_relation };
++		opts.definition_heads = defs.get_definition_heads();
++		opts.global_scope = defs.get_global_scope();
++		opts.context = &ctx;
++
++		tref parsed = tau::get(src, opts);
++		if (!parsed) {
++			TAU_LOG_ERROR << "Failed to parse finite table builtin: " << src;
++			return false;
++		}
++		auto rules = get_rec_relations<node>(ctx, parsed);
++		if (rules.size() != 1) {
++			TAU_LOG_ERROR << "Expected exactly one finite table builtin rule: " << src;
++			return false;
++		}
++		defs.add(rules.front().first, rules.front().second);
++	}
++	loaded = true;
++	return true;
++}
++
++template <NodeType node>
++bool ensure_loaded_if_enabled() {
++	if (!enabled()) return true;
++	return ensure_loaded<node>();
++}
++
++} // namespace idni::tau_lang::finite_table_builtins
++
++#endif // __IDNI__TAU__FINITE_TABLE_BUILTINS_H__
+diff --git a/src/main.cpp b/src/main.cpp
+index baf1be99..411ae9cb 100644
+--- a/src/main.cpp
++++ b/src/main.cpp
+@@ -24,6 +24,9 @@ using namespace std;
+ using namespace idni;
+ using namespace idni::tau_lang;
+ 
++using runtime_node = tau_lang::node<tau_ba<bv, sbf_ba, ft4_ba>, bv, sbf_ba, ft4_ba>;
++using runtime_repl = repl_evaluator<bv, sbf_ba, ft4_ba>;
++
+ cli::options tau_options() {
+ 	cli::options opts;
+ 	opts["help"] = cli::option("help", 'h', false)
+@@ -61,10 +64,10 @@ int error(const string& s) { TAU_LOG_ERROR << "" << s; return 1; }
+ // If a parse result is "Unexpected end of file", it appends next line and repeats.
+ // This is used for making the dot ('.') at the end of a statement optional at
+ // the end of a line.
+-std::optional<rr<node<tau_ba<bv, sbf_ba>, bv, sbf_ba>>> get_spec_multiline(
++std::optional<rr<runtime_node>> get_spec_multiline(
+ 	const string& src)
+ {
+-	using node = tau_lang::node<tau_ba<bv, sbf_ba>, bv, sbf_ba>;
++	using node = runtime_node;
+ 	using tau = tree<node>;
+ 	std::istringstream iss(src);
+ 	std::string attempt, line, msg;
+@@ -160,11 +163,15 @@ int run_tau_spec(string spec_file, bool charvar, bool /*exp*/,
+ 	}
+ 	if (src.empty()) return 0;
+ 
+-	using node = tau_lang::node<tau_ba<bv, sbf_ba>, bv, sbf_ba>;
++	using node = runtime_node;
++
++	std::set<std::string> tau_guards{ charvar ? "charvar" : "var" };
++	if (safe_table_ba_enabled()) tau_guards.insert("safe_tables");
++	tau_parser::instance().get_grammar().set_enabled_productions(tau_guards);
++	std::set<std::string> sbf_guards{ charvar ? "charvar" : "var" };
++	sbf_parser::instance().get_grammar().set_enabled_productions(sbf_guards);
+ 
+-	std::set<std::string> guards{ charvar ? "charvar" : "var" };
+-	tau_parser::instance().get_grammar().set_enabled_productions(guards);
+-	sbf_parser::instance().get_grammar().set_enabled_productions(guards);
++	if (!finite_table_builtins::ensure_loaded_if_enabled<node>()) return 1;
+ 
+ 	auto spec_opt = get_spec_multiline(src);
+ 	if (!spec_opt) return 1;
+@@ -194,7 +201,7 @@ int run_tau_spec_old(string spec_file, bool charvar, bool exp,
+ 		src.resize(l), ifs.seekg(0), ifs.read(&src[0], l);
+ 	}
+ 	if (src.empty()) return 0;
+-	repl_evaluator<bv, sbf_ba> re({
++	runtime_repl re({
+ 		.print_history_store = false,
+ 		.error_quits         = true,
+ 		.charvar             = charvar,
+@@ -220,7 +227,7 @@ void at_exit() {
+ 	// On exit we must clean up the ba constants so the rest of the static
+ 	// constants managers are able to properly clean everything (in particula,
+ 	// cvc5::TermManager).
+-	ba_constants<node<tau_ba<bv, sbf_ba>, bv, sbf_ba>>::cleanup();
++	ba_constants<runtime_node>::cleanup();
+ 	// On the tests using ba_constants we also need to explicitly call
+ 	// the clean up in the constants.
+ }
+@@ -257,9 +264,11 @@ int main(int argc, char** argv) {
+ 	pretty_printer_indenting    = opts["indenting"].get<bool>();
+ 
+ 	bool charvar = opts["charvar"].get<bool>();
+-	std::set<std::string> guards{ charvar ? "charvar" : "var" };
+-	tau_parser::instance().get_grammar().set_enabled_productions(guards);
+-	sbf_parser::instance().get_grammar().set_enabled_productions(guards);
++	std::set<std::string> tau_guards{ charvar ? "charvar" : "var" };
++	if (safe_table_ba_enabled()) tau_guards.insert("safe_tables");
++	tau_parser::instance().get_grammar().set_enabled_productions(tau_guards);
++	std::set<std::string> sbf_guards{ charvar ? "charvar" : "var" };
++	sbf_parser::instance().get_grammar().set_enabled_productions(sbf_guards);
+ 
+ 	bool exp = opts["experimental"].get<bool>();
+ 
+@@ -269,7 +278,7 @@ int main(int argc, char** argv) {
+ 		else return run_tau_spec_old(files.front(), charvar, exp, sev);
+ 	}
+ 
+-	repl_evaluator<bv, sbf_ba> re({
++	runtime_repl re({
+ 		.status = opts["status"].get<bool>(),
+ 		.colors = opts["color"].get<bool>(),
+ 		.charvar = charvar,
+diff --git a/src/normal_forms.h b/src/normal_forms.h
+index bd9c4e07..4b0a6f82 100644
+--- a/src/normal_forms.h
++++ b/src/normal_forms.h
+@@ -3,8 +3,10 @@
+ #ifndef __IDNI__TAU__NORMAL_FORMS_H__
+ #define __IDNI__TAU__NORMAL_FORMS_H__
+ 
++#include <cstdlib>
+ #include <list>
+ #include <numeric>
++#include <set>
+ 
+ #include "execution.h"
+ 
+diff --git a/src/normal_forms.tmpl.h b/src/normal_forms.tmpl.h
+index 5917175f..83279e47 100644
+--- a/src/normal_forms.tmpl.h
++++ b/src/normal_forms.tmpl.h
+@@ -556,7 +556,25 @@ inline bool reduce_paths(std::vector<int_t>& i,
+ 	return false;
+ }
+ 
++inline bool join_paths_dedupe_enabled() {
++	const char* env = std::getenv("TAU_JOIN_PATHS_DEDUPE");
++	return env && env[0] == '1' && env[1] == '\0';
++}
++
++inline void dedupe_paths_exact(std::vector<std::vector<int_t>>& paths) {
++	if (!join_paths_dedupe_enabled() || paths.size() < 2) return;
++	std::set<std::vector<int_t>> seen;
++	std::vector<std::vector<int_t>> unique;
++	unique.reserve(paths.size());
++	for (auto& path : paths) {
++		if (seen.insert(path).second)
++			unique.push_back(std::move(path));
++	}
++	paths = std::move(unique);
++}
++
+ inline void join_paths(std::vector<std::vector<int_t>>& paths) {
++	dedupe_paths_exact(paths);
+ 	for (int_t i = 0; i < (int_t)paths.size(); ++i) {
+ 		for (int_t j = 0; j < (int_t)paths.size(); ++j) {
+ 			if (i == j) continue;
+diff --git a/src/qelim_bdd_experiment.tmpl.h b/src/qelim_bdd_experiment.tmpl.h
+new file mode 100644
+index 00000000..bc5192dc
+--- /dev/null
++++ b/src/qelim_bdd_experiment.tmpl.h
+@@ -0,0 +1,1503 @@
++// To view the license please visit https://github.com/IDNI/tau-lang/blob/main/LICENSE.md
++
++#ifndef __IDNI__TAU__QELIM_BDD_EXPERIMENT_TMPL_H__
++#define __IDNI__TAU__QELIM_BDD_EXPERIMENT_TMPL_H__
++
++#include <algorithm>
++#include <cstdlib>
++#include <chrono>
++#include <iostream>
++#include <memory>
++#include <optional>
++#include <set>
++#include <string>
++#include <unordered_map>
++#include <unordered_set>
++#include <vector>
++
++#include "normalizer.h"
++
++namespace idni::tau_lang::qelim_bdd_experiment {
++
++inline std::string backend_mode() {
++	const char* env = std::getenv("TAU_QELIM_BACKEND");
++	return env ? std::string(env) : std::string();
++}
++
++inline bool auto_enabled() {
++	return backend_mode() == "auto";
++}
++
++inline bool backend_enabled() {
++	const std::string mode = backend_mode();
++	return mode == "bdd" || mode == "auto";
++}
++
++inline std::string backend_label() {
++	return auto_enabled() ? "bdd_auto" : "bdd_direct";
++}
++
++inline bool stats_enabled() {
++	const char* env = std::getenv("TAU_QELIM_BDD_STATS");
++	return env && std::string(env) == "1";
++}
++
++inline bool components_enabled() {
++	const char* env = std::getenv("TAU_QELIM_BDD_COMPONENTS");
++	return auto_enabled() || (env && std::string(env) == "1");
++}
++
++inline bool pure_enabled() {
++	const char* env = std::getenv("TAU_QELIM_BDD_PURE");
++	return auto_enabled() || (env && std::string(env) == "1");
++}
++
++inline bool blocked_enabled() {
++	const char* env = std::getenv("TAU_QELIM_BDD_BLOCKED");
++	return auto_enabled() || (env && std::string(env) == "1");
++}
++
++inline bool subsume_enabled() {
++	const char* env = std::getenv("TAU_QELIM_BDD_SUBSUME");
++	return auto_enabled() || (env && std::string(env) == "1");
++}
++
++inline bool ac_canon_enabled() {
++	const char* env = std::getenv("TAU_QELIM_BDD_AC_CANON");
++	return env && std::string(env) == "1";
++}
++
++inline bool auto_guard_enabled() {
++	const char* env = std::getenv("TAU_QELIM_AUTO_GUARD");
++	return env && std::string(env) == "1";
++}
++
++inline std::optional<size_t> dp_cap() {
++	const char* env = std::getenv("TAU_QELIM_BDD_DP_CAP");
++	if (!env) {
++		if (auto_enabled()) return 64;
++		return {};
++	}
++	char* end = nullptr;
++	unsigned long value = std::strtoul(env, &end, 10);
++	if (!end || *end != '\0') return {};
++	return static_cast<size_t>(value);
++}
++
++template <NodeType node>
++struct bool_expr {
++	enum kind_t { cnst, var, neg, land, lor };
++	kind_t kind;
++	bool value = false;
++	std::string name{};
++	std::shared_ptr<bool_expr> left{};
++	std::shared_ptr<bool_expr> right{};
++};
++
++template <NodeType node>
++using bexpr = std::shared_ptr<bool_expr<node>>;
++
++template <NodeType node>
++size_t leading_exists_count(tref fm) {
++	using tau = tree<node>;
++	size_t count = 0;
++	while (fm) {
++		const auto& t = tau::get(fm);
++		if (!t.is(tau::wff) || !t.child_is(tau::wff_ex)) break;
++		count += 1;
++		fm = t[0].second();
++	}
++	return count;
++}
++
++template <NodeType node>
++bool reject_auto_tau_shape(tref fm, size_t* quantified = nullptr,
++	size_t* free = nullptr, int_t* nodes = nullptr)
++{
++	if (!auto_enabled() || !auto_guard_enabled()) return false;
++	const size_t q = leading_exists_count<node>(fm);
++	const size_t f = get_free_vars<node>(fm).size();
++	const int_t n = node_count<node>(fm);
++	if (quantified) *quantified = q;
++	if (free) *free = f;
++	if (nodes) *nodes = n;
++	if (q < 6) return false;
++	return f <= q + 1;
++}
++
++template <NodeType node>
++bexpr<node> make_const(bool value) {
++	static bexpr<node> t = std::make_shared<bool_expr<node>>(bool_expr<node>{
++		bool_expr<node>::cnst, true, {}, nullptr, nullptr });
++	static bexpr<node> f = std::make_shared<bool_expr<node>>(bool_expr<node>{
++		bool_expr<node>::cnst, false, {}, nullptr, nullptr });
++	return value ? t : f;
++}
++
++template <NodeType node>
++std::string repr(const bexpr<node>& e);
++
++template <NodeType node>
++bexpr<node> make_var(const std::string& name) {
++	return std::make_shared<bool_expr<node>>(bool_expr<node>{
++		bool_expr<node>::var, false, name, nullptr, nullptr });
++}
++
++template <NodeType node>
++bexpr<node> make_not(const bexpr<node>& e) {
++	if (e->kind == bool_expr<node>::cnst) return make_const<node>(!e->value);
++	if (e->kind == bool_expr<node>::neg) return e->left;
++	return std::make_shared<bool_expr<node>>(bool_expr<node>{
++		bool_expr<node>::neg, false, {}, e, nullptr });
++}
++
++template <NodeType node>
++bool same_expr(const bexpr<node>& a, const bexpr<node>& b) {
++	return repr<node>(a) == repr<node>(b);
++}
++
++template <NodeType node>
++bool is_neg_of(const bexpr<node>& a, const bexpr<node>& b) {
++	return same_expr<node>(a, make_not<node>(b));
++}
++
++template <NodeType node>
++std::string repr(const bexpr<node>& e) {
++	switch (e->kind) {
++		case bool_expr<node>::cnst: return e->value ? "T" : "F";
++		case bool_expr<node>::var: return e->name;
++		case bool_expr<node>::neg: return "!(" + repr<node>(e->left) + ")";
++		case bool_expr<node>::land: return "(" + repr<node>(e->left) + "&&" + repr<node>(e->right) + ")";
++		case bool_expr<node>::lor: return "(" + repr<node>(e->left) + "||" + repr<node>(e->right) + ")";
++	}
++	return "?";
++}
++
++template <NodeType node>
++bexpr<node> make_and(bexpr<node> l, bexpr<node> r) {
++	if (l->kind == bool_expr<node>::cnst && !l->value) return make_const<node>(false);
++	if (r->kind == bool_expr<node>::cnst && !r->value) return make_const<node>(false);
++	if (l->kind == bool_expr<node>::cnst && l->value) return r;
++	if (r->kind == bool_expr<node>::cnst && r->value) return l;
++	if (same_expr<node>(l, r)) return l;
++	if (is_neg_of<node>(l, r) || is_neg_of<node>(r, l)) return make_const<node>(false);
++	if (repr<node>(r) < repr<node>(l)) std::swap(l, r);
++	return std::make_shared<bool_expr<node>>(bool_expr<node>{
++		bool_expr<node>::land, false, {}, l, r });
++}
++
++template <NodeType node>
++bexpr<node> make_or(bexpr<node> l, bexpr<node> r) {
++	if (l->kind == bool_expr<node>::cnst && l->value) return make_const<node>(true);
++	if (r->kind == bool_expr<node>::cnst && r->value) return make_const<node>(true);
++	if (l->kind == bool_expr<node>::cnst && !l->value) return r;
++	if (r->kind == bool_expr<node>::cnst && !r->value) return l;
++	if (same_expr<node>(l, r)) return l;
++	if (is_neg_of<node>(l, r) || is_neg_of<node>(r, l)) return make_const<node>(true);
++	if (repr<node>(r) < repr<node>(l)) std::swap(l, r);
++	return std::make_shared<bool_expr<node>>(bool_expr<node>{
++		bool_expr<node>::lor, false, {}, l, r });
++}
++
++template <NodeType node>
++bexpr<node> normalize_ac(const bexpr<node>& e);
++
++template <NodeType node>
++void append_ac_child(const bexpr<node>& e,
++	typename bool_expr<node>::kind_t kind,
++	std::vector<bexpr<node>>& out)
++{
++	auto normalized = normalize_ac<node>(e);
++	if (normalized->kind == kind) {
++		append_ac_child<node>(normalized->left, kind, out);
++		append_ac_child<node>(normalized->right, kind, out);
++		return;
++	}
++	out.push_back(normalized);
++}
++
++template <NodeType node>
++bexpr<node> rebuild_ac(typename bool_expr<node>::kind_t kind,
++	std::vector<bexpr<node>>& terms)
++{
++	const bool is_and = kind == bool_expr<node>::land;
++	struct keyed_term {
++		std::string key;
++		std::string neg_key;
++		bexpr<node> expr;
++	};
++	std::vector<keyed_term> keyed;
++	keyed.reserve(terms.size());
++	for (const auto& term : terms) {
++		if (term->kind == bool_expr<node>::cnst) {
++			if (is_and && !term->value) return make_const<node>(false);
++			if (!is_and && term->value) return make_const<node>(true);
++			continue;
++		}
++		keyed.push_back(keyed_term{
++			repr<node>(term),
++			repr<node>(make_not<node>(term)),
++			term
++		});
++	}
++
++	std::sort(keyed.begin(), keyed.end(), [](const auto& a, const auto& b) {
++		return a.key < b.key;
++	});
++
++	std::vector<bexpr<node>> unique;
++	unique.reserve(keyed.size());
++	std::unordered_set<std::string> seen;
++	for (const auto& term : keyed) {
++		if (seen.contains(term.neg_key))
++			return make_const<node>(!is_and);
++		if (seen.insert(term.key).second)
++			unique.push_back(term.expr);
++	}
++
++	bexpr<node> out = make_const<node>(is_and);
++	for (const auto& term : unique)
++		out = is_and ? make_and<node>(out, term) : make_or<node>(out, term);
++	return out;
++}
++
++template <NodeType node>
++bexpr<node> normalize_ac(const bexpr<node>& e) {
++	switch (e->kind) {
++		case bool_expr<node>::cnst:
++		case bool_expr<node>::var:
++			return e;
++		case bool_expr<node>::neg:
++			return make_not<node>(normalize_ac<node>(e->left));
++		case bool_expr<node>::land:
++		case bool_expr<node>::lor: {
++			std::vector<bexpr<node>> terms;
++			append_ac_child<node>(e->left, e->kind, terms);
++			append_ac_child<node>(e->right, e->kind, terms);
++			return rebuild_ac<node>(e->kind, terms);
++		}
++	}
++	return e;
++}
++
++template <NodeType node>
++void collect_support(const bexpr<node>& e, std::set<std::string>& out) {
++	switch (e->kind) {
++		case bool_expr<node>::cnst: return;
++		case bool_expr<node>::var: out.insert(e->name); return;
++		case bool_expr<node>::neg: collect_support<node>(e->left, out); return;
++		case bool_expr<node>::land:
++		case bool_expr<node>::lor:
++			collect_support<node>(e->left, out);
++			collect_support<node>(e->right, out);
++			return;
++	}
++}
++
++template <NodeType node>
++struct preflight_metrics {
++	size_t tree_nodes = 0;
++	size_t unique_nodes = 0;
++	size_t support = 0;
++	size_t quantified = 0;
++	size_t free = 0;
++	size_t max_occurrence = 0;
++};
++
++template <NodeType node>
++void collect_preflight_stats(const bexpr<node>& e,
++	std::unordered_set<std::string>& unique_reprs,
++	std::unordered_map<std::string, size_t>& occurrences,
++	size_t& tree_nodes)
++{
++	tree_nodes += 1;
++	unique_reprs.insert(repr<node>(e));
++	switch (e->kind) {
++		case bool_expr<node>::cnst: return;
++		case bool_expr<node>::var:
++			occurrences[e->name] += 1;
++			return;
++		case bool_expr<node>::neg:
++			collect_preflight_stats<node>(
++				e->left, unique_reprs, occurrences, tree_nodes);
++			return;
++		case bool_expr<node>::land:
++		case bool_expr<node>::lor:
++			collect_preflight_stats<node>(
++				e->left, unique_reprs, occurrences, tree_nodes);
++			collect_preflight_stats<node>(
++				e->right, unique_reprs, occurrences, tree_nodes);
++			return;
++	}
++}
++
++template <NodeType node>
++preflight_metrics<node> compute_preflight_metrics(
++	const bexpr<node>& e,
++	const std::unordered_set<std::string>& quantified)
++{
++	std::unordered_set<std::string> unique_reprs;
++	std::unordered_map<std::string, size_t> occurrences;
++	size_t tree_nodes = 0;
++	collect_preflight_stats<node>(e, unique_reprs, occurrences, tree_nodes);
++
++	preflight_metrics<node> metrics;
++	metrics.tree_nodes = tree_nodes;
++	metrics.unique_nodes = unique_reprs.size();
++	metrics.support = occurrences.size();
++	metrics.quantified = quantified.size();
++	for (const auto& [name, count] : occurrences) {
++		if (!quantified.contains(name)) metrics.free += 1;
++		metrics.max_occurrence = std::max(metrics.max_occurrence, count);
++	}
++	return metrics;
++}
++
++template <NodeType node>
++bexpr<node> restrict_expr(const bexpr<node>& e, const std::string& var, bool value) {
++	switch (e->kind) {
++		case bool_expr<node>::cnst: return e;
++		case bool_expr<node>::var: return e->name == var ? make_const<node>(value) : e;
++		case bool_expr<node>::neg: return make_not<node>(restrict_expr<node>(e->left, var, value));
++		case bool_expr<node>::land: return make_and<node>(restrict_expr<node>(e->left, var, value), restrict_expr<node>(e->right, var, value));
++		case bool_expr<node>::lor: return make_or<node>(restrict_expr<node>(e->left, var, value), restrict_expr<node>(e->right, var, value));
++	}
++	return e;
++}
++
++template <NodeType node>
++void flatten_and(const bexpr<node>& e, std::vector<bexpr<node>>& out) {
++	if (e->kind == bool_expr<node>::land) {
++		flatten_and<node>(e->left, out);
++		flatten_and<node>(e->right, out);
++		return;
++	}
++	out.push_back(e);
++}
++
++template <NodeType node>
++bexpr<node> conjoin(const std::vector<bexpr<node>>& factors) {
++	bexpr<node> out = make_const<node>(true);
++	for (const auto& factor : factors)
++		out = make_and<node>(out, factor);
++	return out;
++}
++
++template <NodeType node>
++std::unordered_set<std::string> support_set(const bexpr<node>& e) {
++	std::set<std::string> ordered;
++	collect_support<node>(e, ordered);
++	return { ordered.begin(), ordered.end() };
++}
++
++template <NodeType node>
++void flatten_or(const bexpr<node>& e, std::vector<bexpr<node>>& out) {
++	if (e->kind == bool_expr<node>::lor) {
++		flatten_or<node>(e->left, out);
++		flatten_or<node>(e->right, out);
++		return;
++	}
++	out.push_back(e);
++}
++
++template <NodeType node>
++struct cnf_lit {
++	std::string name;
++	bool positive = true;
++};
++
++template <NodeType node>
++using cnf_clause = std::vector<cnf_lit<node>>;
++
++template <NodeType node>
++std::optional<cnf_lit<node>> literal_of(const bexpr<node>& e) {
++	if (e->kind == bool_expr<node>::var) return cnf_lit<node>{ e->name, true };
++	if (e->kind == bool_expr<node>::neg &&
++		e->left->kind == bool_expr<node>::var)
++		return cnf_lit<node>{ e->left->name, false };
++	return {};
++}
++
++template <NodeType node>
++std::optional<cnf_clause<node>> extract_clause(const bexpr<node>& e,
++	bool* tautological = nullptr)
++{
++	if (tautological) *tautological = false;
++	std::vector<bexpr<node>> terms;
++	flatten_or<node>(e, terms);
++	std::unordered_map<std::string, int> seen;
++	cnf_clause<node> clause;
++	for (const auto& term : terms) {
++		if (term->kind == bool_expr<node>::cnst) {
++			if (term->value) {
++				if (tautological) *tautological = true;
++				return cnf_clause<node>{};
++			}
++			continue;
++		}
++		auto lit = literal_of<node>(term);
++		if (!lit) return {};
++		int polarity = lit->positive ? 1 : -1;
++		if (auto it = seen.find(lit->name); it != seen.end()) {
++			if (it->second != polarity) {
++				if (tautological) *tautological = true;
++				return cnf_clause<node>{};
++			}
++			continue;
++		}
++		seen.emplace(lit->name, polarity);
++		clause.push_back(*lit);
++	}
++	return clause;
++}
++
++template <NodeType node>
++std::optional<std::vector<cnf_clause<node>>> extract_cnf(const bexpr<node>& e) {
++	std::vector<bexpr<node>> factors;
++	flatten_and<node>(e, factors);
++	std::vector<cnf_clause<node>> clauses;
++	for (const auto& factor : factors) {
++		if (factor->kind == bool_expr<node>::cnst) {
++			if (factor->value) continue;
++			clauses.push_back({});
++			continue;
++		}
++		bool tautological = false;
++		auto clause = extract_clause<node>(factor, &tautological);
++		if (!clause) return {};
++		if (tautological) continue;
++		clauses.push_back(*clause);
++	}
++	return clauses;
++}
++
++template <NodeType node>
++bexpr<node> literal_to_expr(const cnf_lit<node>& lit) {
++	auto atom = make_var<node>(lit.name);
++	return lit.positive ? atom : make_not<node>(atom);
++}
++
++template <NodeType node>
++bexpr<node> clause_to_expr(const cnf_clause<node>& clause) {
++	if (clause.empty()) return make_const<node>(false);
++	bexpr<node> out = make_const<node>(false);
++	for (const auto& lit : clause)
++		out = make_or<node>(out, literal_to_expr<node>(lit));
++	return out;
++}
++
++template <NodeType node>
++bexpr<node> cnf_to_expr(const std::vector<cnf_clause<node>>& clauses) {
++	bexpr<node> out = make_const<node>(true);
++	for (const auto& clause : clauses)
++		out = make_and<node>(out, clause_to_expr<node>(clause));
++	return out;
++}
++
++template <NodeType node>
++bool clause_has_var(const cnf_clause<node>& clause, const std::string& name) {
++	for (const auto& lit : clause)
++		if (lit.name == name) return true;
++	return false;
++}
++
++template <NodeType node>
++bool clause_has_lit(const cnf_clause<node>& clause,
++	const std::string& name,
++	bool positive)
++{
++	for (const auto& lit : clause)
++		if (lit.name == name && lit.positive == positive) return true;
++	return false;
++}
++
++template <NodeType node>
++bool resolvent_is_tautological(const cnf_clause<node>& positive_clause,
++	const cnf_clause<node>& negative_clause,
++	const std::string& variable)
++{
++	std::unordered_map<std::string, int> seen;
++	const auto add_lit = [&](const cnf_lit<node>& lit) {
++		if (lit.name == variable) return false;
++		int polarity = lit.positive ? 1 : -1;
++		if (auto it = seen.find(lit.name); it != seen.end())
++			return it->second != polarity;
++		seen.emplace(lit.name, polarity);
++		return false;
++	};
++	for (const auto& lit : positive_clause)
++		if (add_lit(lit)) return true;
++	for (const auto& lit : negative_clause)
++		if (add_lit(lit)) return true;
++	return false;
++}
++
++template <NodeType node>
++cnf_clause<node> canonical_clause(cnf_clause<node> clause) {
++	std::sort(clause.begin(), clause.end(), [](const auto& a, const auto& b) {
++		if (a.name != b.name) return a.name < b.name;
++		return a.positive > b.positive;
++	});
++	return clause;
++}
++
++template <NodeType node>
++std::string clause_key(const cnf_clause<node>& clause) {
++	std::string out;
++	for (const auto& lit : canonical_clause<node>(clause)) {
++		out += lit.positive ? "+" : "-";
++		out += lit.name;
++		out += ";";
++	}
++	return out;
++}
++
++template <NodeType node>
++std::optional<cnf_clause<node>> normalize_clause(const cnf_clause<node>& clause) {
++	std::unordered_map<std::string, int> seen;
++	cnf_clause<node> out;
++	for (const auto& lit : clause) {
++		int polarity = lit.positive ? 1 : -1;
++		if (auto it = seen.find(lit.name); it != seen.end()) {
++			if (it->second != polarity) return {};
++			continue;
++		}
++		seen.emplace(lit.name, polarity);
++		out.push_back(lit);
++	}
++	return canonical_clause<node>(out);
++}
++
++template <NodeType node>
++std::optional<cnf_clause<node>> resolvent_clause(const cnf_clause<node>& positive_clause,
++	const cnf_clause<node>& negative_clause,
++	const std::string& variable)
++{
++	cnf_clause<node> raw;
++	for (const auto& lit : positive_clause)
++		if (lit.name != variable) raw.push_back(lit);
++	for (const auto& lit : negative_clause)
++		if (lit.name != variable) raw.push_back(lit);
++	return normalize_clause<node>(raw);
++}
++
++template <NodeType node>
++void add_clause_unique(std::vector<cnf_clause<node>>& clauses,
++	std::unordered_set<std::string>& keys,
++	const cnf_clause<node>& clause)
++{
++	cnf_clause<node> canonical = canonical_clause<node>(clause);
++	std::string key = clause_key<node>(canonical);
++	if (keys.insert(key).second) clauses.push_back(std::move(canonical));
++}
++
++template <NodeType node>
++bool clause_subsumes(const cnf_clause<node>& small, const cnf_clause<node>& large) {
++	size_t i = 0;
++	size_t j = 0;
++	while (i < small.size() && j < large.size()) {
++		const auto& a = small[i];
++		const auto& b = large[j];
++		if (a.name == b.name && a.positive == b.positive) {
++			++i;
++			++j;
++			continue;
++		}
++		if (a.name < b.name || (a.name == b.name && a.positive > b.positive))
++			return false;
++		++j;
++	}
++	return i == small.size();
++}
++
++template <NodeType node>
++void rebuild_clause_keys(const std::vector<cnf_clause<node>>& clauses,
++	std::unordered_set<std::string>& keys)
++{
++	keys.clear();
++	for (const auto& clause : clauses)
++		keys.insert(clause_key<node>(clause));
++}
++
++template <NodeType node>
++bool add_clause_subsuming(std::vector<cnf_clause<node>>& clauses,
++	std::unordered_set<std::string>& keys,
++	const cnf_clause<node>& clause,
++	size_t* removed = nullptr)
++{
++	cnf_clause<node> canonical = canonical_clause<node>(clause);
++	std::string key = clause_key<node>(canonical);
++	if (keys.contains(key)) return false;
++	for (const auto& existing : clauses) {
++		if (clause_subsumes<node>(existing, canonical)) {
++			if (removed) *removed += 1;
++			return false;
++		}
++	}
++
++	std::vector<cnf_clause<node>> next;
++	next.reserve(clauses.size() + 1);
++	size_t removed_count = 0;
++	for (auto& existing : clauses) {
++		if (clause_subsumes<node>(canonical, existing)) {
++			removed_count += 1;
++			continue;
++		}
++		next.push_back(std::move(existing));
++	}
++	next.push_back(std::move(canonical));
++	clauses = std::move(next);
++	rebuild_clause_keys<node>(clauses, keys);
++	if (removed) *removed += removed_count;
++	return true;
++}
++
++template <NodeType node>
++struct polarity_count {
++	size_t positive = 0;
++	size_t negative = 0;
++};
++
++template <NodeType node>
++void collect_polarities(const bexpr<node>& e,
++	std::unordered_map<std::string, polarity_count<node>>& out,
++	bool positive = true)
++{
++	switch (e->kind) {
++		case bool_expr<node>::cnst: return;
++		case bool_expr<node>::var:
++			if (positive) out[e->name].positive += 1;
++			else out[e->name].negative += 1;
++			return;
++		case bool_expr<node>::neg:
++			collect_polarities<node>(e->left, out, !positive);
++			return;
++		case bool_expr<node>::land:
++		case bool_expr<node>::lor:
++			collect_polarities<node>(e->left, out, positive);
++			collect_polarities<node>(e->right, out, positive);
++			return;
++	}
++}
++
++template <NodeType node>
++struct compile_state {
++	std::unordered_map<std::string, size_t> types;
++	std::vector<std::string> appearance_order;
++	std::unordered_set<std::string> quantified;
++	std::unordered_map<std::string, size_t> occurrence_count;
++	std::unordered_map<std::string, size_t> first_seen;
++	std::unordered_map<std::string, size_t> last_seen;
++	size_t seen_index = 0;
++};
++
++template <NodeType node>
++bool reject_auto_high_duplication_shape(const bexpr<node>& e,
++	const compile_state<node>& st)
++{
++	if (!auto_enabled() || !auto_guard_enabled()) return false;
++	auto metrics = compute_preflight_metrics<node>(e, st.quantified);
++	if (metrics.quantified < 6) return false;
++	if (metrics.unique_nodes == 0) return false;
++	if (metrics.free > metrics.quantified + 1) return false;
++	if (metrics.max_occurrence < 64) return false;
++	return metrics.tree_nodes >= metrics.unique_nodes * 10;
++}
++
++template <NodeType node>
++bool reject_auto_high_duplication_shape(
++	const preflight_metrics<node>& metrics)
++{
++	if (metrics.quantified < 6) return false;
++	if (metrics.unique_nodes == 0) return false;
++	if (metrics.free > metrics.quantified + 1) return false;
++	if (metrics.max_occurrence < 64) return false;
++	return metrics.tree_nodes >= metrics.unique_nodes * 10;
++}
++
++template <NodeType node>
++bool has_quantified_support(const bexpr<node>& e, const compile_state<node>& st) {
++	auto supp = support_set<node>(e);
++	for (const auto& name : supp)
++		if (st.quantified.contains(name)) return true;
++	return false;
++}
++
++template <NodeType node>
++bexpr<node> drop_pure_quantified(const bexpr<node>& e,
++	const compile_state<node>& st,
++	size_t* pure_drops = nullptr)
++{
++	bexpr<node> current = e;
++	std::unordered_set<std::string> dropped;
++	bool changed = true;
++	while (changed) {
++		changed = false;
++		std::unordered_map<std::string, polarity_count<node>> polarities;
++		collect_polarities<node>(current, polarities);
++		std::vector<std::pair<std::string, bool>> substitutions;
++		for (const auto& name : st.appearance_order) {
++			if (!st.quantified.contains(name) || dropped.contains(name)) continue;
++			auto it = polarities.find(name);
++			if (it == polarities.end()) {
++				dropped.insert(name);
++				continue;
++			}
++			const auto& count = it->second;
++			if (count.positive > 0 && count.negative == 0)
++				substitutions.push_back({ name, true });
++			else if (count.negative > 0 && count.positive == 0)
++				substitutions.push_back({ name, false });
++		}
++		for (const auto& [name, value] : substitutions) {
++			current = restrict_expr<node>(current, name, value);
++			dropped.insert(name);
++			if (pure_drops) *pure_drops += 1;
++			changed = true;
++		}
++	}
++	return current;
++}
++
++template <NodeType node>
++bexpr<node> drop_blocked_quantified_cnf(const bexpr<node>& e,
++	const compile_state<node>& st,
++	size_t* blocked_drops = nullptr,
++	size_t* blocked_clause_drops = nullptr)
++{
++	auto extracted = extract_cnf<node>(e);
++	if (!extracted) return e;
++	std::vector<cnf_clause<node>> clauses = *extracted;
++	std::unordered_set<std::string> dropped;
++	bool changed = true;
++	while (changed) {
++		changed = false;
++		for (const auto& name : st.appearance_order) {
++			if (!st.quantified.contains(name) || dropped.contains(name)) continue;
++			std::vector<size_t> positive_clauses;
++			std::vector<size_t> negative_clauses;
++			for (size_t i = 0; i < clauses.size(); ++i) {
++				if (clause_has_lit<node>(clauses[i], name, true))
++					positive_clauses.push_back(i);
++				if (clause_has_lit<node>(clauses[i], name, false))
++					negative_clauses.push_back(i);
++			}
++			if (positive_clauses.empty() || negative_clauses.empty()) continue;
++			bool all_resolvents_tautological = true;
++			for (size_t p : positive_clauses) {
++				for (size_t n : negative_clauses) {
++					if (!resolvent_is_tautological<node>(clauses[p], clauses[n], name)) {
++						all_resolvents_tautological = false;
++						break;
++					}
++				}
++				if (!all_resolvents_tautological) break;
++			}
++			if (!all_resolvents_tautological) continue;
++
++			std::vector<cnf_clause<node>> kept;
++			kept.reserve(clauses.size());
++			size_t removed = 0;
++			for (const auto& clause : clauses) {
++				if (clause_has_var<node>(clause, name)) {
++					removed += 1;
++					continue;
++				}
++				kept.push_back(clause);
++			}
++			clauses = std::move(kept);
++			dropped.insert(name);
++			if (blocked_drops) *blocked_drops += 1;
++			if (blocked_clause_drops) *blocked_clause_drops += removed;
++			changed = true;
++			break;
++		}
++	}
++	return cnf_to_expr<node>(clauses);
++}
++
++template <NodeType node>
++bexpr<node> distribute_quantified_cnf_under_cap(const bexpr<node>& e,
++	const compile_state<node>& st,
++	size_t cap,
++	size_t* dp_drops = nullptr,
++	size_t* dp_resolvents = nullptr,
++	size_t* dp_clause_drops = nullptr,
++	size_t* dp_subsumed = nullptr)
++{
++	auto extracted = extract_cnf<node>(e);
++	if (!extracted) return e;
++	std::vector<cnf_clause<node>> clauses;
++	std::unordered_set<std::string> initial_keys;
++	for (const auto& clause : *extracted) {
++		auto normalized = normalize_clause<node>(clause);
++		if (!normalized) continue;
++		if (subsume_enabled())
++			add_clause_subsuming<node>(clauses, initial_keys, *normalized, dp_subsumed);
++		else
++			add_clause_unique<node>(clauses, initial_keys, *normalized);
++	}
++
++	std::unordered_set<std::string> dropped;
++	bool changed = true;
++	while (changed) {
++		changed = false;
++		for (const auto& name : st.appearance_order) {
++			if (!st.quantified.contains(name) || dropped.contains(name)) continue;
++			std::vector<size_t> positive_clauses;
++			std::vector<size_t> negative_clauses;
++			for (size_t i = 0; i < clauses.size(); ++i) {
++				if (clause_has_lit<node>(clauses[i], name, true))
++					positive_clauses.push_back(i);
++				if (clause_has_lit<node>(clauses[i], name, false))
++					negative_clauses.push_back(i);
++			}
++			if (positive_clauses.empty() && negative_clauses.empty()) continue;
++
++			std::vector<cnf_clause<node>> resolvents;
++			std::unordered_set<std::string> resolvent_keys;
++			size_t local_subsumed = 0;
++			bool over_cap = false;
++			for (size_t p : positive_clauses) {
++				for (size_t n : negative_clauses) {
++					auto resolvent = resolvent_clause<node>(clauses[p], clauses[n], name);
++					if (!resolvent) continue;
++					if (subsume_enabled())
++						add_clause_subsuming<node>(resolvents, resolvent_keys, *resolvent, &local_subsumed);
++					else
++						add_clause_unique<node>(resolvents, resolvent_keys, *resolvent);
++					if (resolvents.size() > cap) {
++						over_cap = true;
++						break;
++					}
++				}
++				if (over_cap) break;
++			}
++			if (over_cap) continue;
++
++			std::vector<cnf_clause<node>> next;
++			std::unordered_set<std::string> next_keys;
++			size_t removed = 0;
++			for (const auto& clause : clauses) {
++				if (clause_has_var<node>(clause, name)) {
++					removed += 1;
++					continue;
++				}
++				if (subsume_enabled())
++					add_clause_subsuming<node>(next, next_keys, clause, dp_subsumed);
++				else
++					add_clause_unique<node>(next, next_keys, clause);
++			}
++			for (const auto& clause : resolvents)
++				if (subsume_enabled())
++					add_clause_subsuming<node>(next, next_keys, clause, dp_subsumed);
++				else
++					add_clause_unique<node>(next, next_keys, clause);
++			clauses = std::move(next);
++			dropped.insert(name);
++			if (dp_drops) *dp_drops += 1;
++			if (dp_resolvents) *dp_resolvents += resolvents.size();
++			if (dp_clause_drops) *dp_clause_drops += removed;
++			if (dp_subsumed) *dp_subsumed += local_subsumed;
++			changed = true;
++			break;
++		}
++	}
++	return cnf_to_expr<node>(clauses);
++}
++
++template <NodeType node>
++struct expr_component {
++	std::vector<bexpr<node>> factors;
++	std::unordered_set<std::string> quantified;
++};
++
++inline int find_parent(std::vector<int>& parent, int idx) {
++	if (parent[idx] == idx) return idx;
++	parent[idx] = find_parent(parent, parent[idx]);
++	return parent[idx];
++}
++
++inline void union_parent(std::vector<int>& parent, int a, int b) {
++	int ra = find_parent(parent, a);
++	int rb = find_parent(parent, b);
++	if (ra != rb) parent[rb] = ra;
++}
++
++template <NodeType node>
++std::vector<expr_component<node>> quantified_components(
++	const bexpr<node>& e,
++	const compile_state<node>& st,
++	std::vector<bexpr<node>>& free_factors)
++{
++	std::vector<bexpr<node>> factors;
++	flatten_and<node>(e, factors);
++	std::vector<std::unordered_set<std::string>> qsets(factors.size());
++	std::vector<int> parent(factors.size());
++	for (size_t i = 0; i < factors.size(); ++i) parent[i] = static_cast<int>(i);
++
++	std::unordered_map<std::string, int> first_factor_by_qvar;
++	for (size_t i = 0; i < factors.size(); ++i) {
++		auto supp = support_set<node>(factors[i]);
++		for (const auto& name : supp)
++			if (st.quantified.contains(name)) qsets[i].insert(name);
++		if (qsets[i].empty()) {
++			free_factors.push_back(factors[i]);
++			continue;
++		}
++		for (const auto& name : qsets[i]) {
++			if (auto it = first_factor_by_qvar.find(name); it != first_factor_by_qvar.end())
++				union_parent(parent, static_cast<int>(i), it->second);
++			else first_factor_by_qvar.emplace(name, static_cast<int>(i));
++		}
++	}
++
++	std::vector<expr_component<node>> groups;
++	std::unordered_map<int, size_t> root_to_group;
++	for (size_t i = 0; i < factors.size(); ++i) {
++		if (qsets[i].empty()) continue;
++		int root = find_parent(parent, static_cast<int>(i));
++		size_t group_idx = 0;
++		if (auto it = root_to_group.find(root); it != root_to_group.end()) {
++			group_idx = it->second;
++		} else {
++			group_idx = groups.size();
++			root_to_group.emplace(root, group_idx);
++			groups.push_back({});
++		}
++		groups[group_idx].factors.push_back(factors[i]);
++		for (const auto& name : qsets[i]) groups[group_idx].quantified.insert(name);
++	}
++	return groups;
++}
++
++template <NodeType node>
++void note_var(compile_state<node>& st, const std::string& name, size_t type_id) {
++	if (!st.types.contains(name)) {
++		st.types.emplace(name, type_id);
++		st.appearance_order.push_back(name);
++		st.first_seen.emplace(name, st.seen_index);
++	}
++	st.occurrence_count[name] += 1;
++	st.last_seen[name] = st.seen_index;
++	st.seen_index += 1;
++}
++
++inline std::string order_mode() {
++	const char* env = std::getenv("TAU_QELIM_BDD_ORDER");
++	if (!env) {
++		if (auto_enabled()) return "quantified_first_density";
++		return "quantified_first_appearance";
++	}
++	return std::string(env);
++}
++
++template <NodeType node>
++std::vector<std::string> choose_order(const compile_state<node>& st) {
++	std::vector<std::string> names = st.appearance_order;
++	std::unordered_map<std::string, size_t> appearance_index;
++	for (size_t i = 0; i < st.appearance_order.size(); ++i)
++		appearance_index.emplace(st.appearance_order[i], i);
++	const auto span = [&](const std::string& name) {
++		size_t first = st.first_seen.contains(name) ? st.first_seen.at(name) : 0;
++		size_t last = st.last_seen.contains(name) ? st.last_seen.at(name) : first;
++		return last >= first ? (last - first) : size_t{0};
++	};
++	const auto last_seen = [&](const std::string& name) {
++		return st.last_seen.contains(name) ? st.last_seen.at(name) : size_t{0};
++	};
++	const auto occurrence = [&](const std::string& name) {
++		return st.occurrence_count.contains(name) ? st.occurrence_count.at(name) : size_t{0};
++	};
++	const auto tie_break = [&](const std::string& a, const std::string& b) {
++		return appearance_index.at(a) < appearance_index.at(b);
++	};
++	const auto freq_desc_then_appearance = [&](const std::string& a, const std::string& b) {
++		size_t ca = occurrence(a);
++		size_t cb = occurrence(b);
++		if (ca != cb) return ca > cb;
++		return tie_break(a, b);
++	};
++	const auto span_asc_then_appearance = [&](const std::string& a, const std::string& b) {
++		size_t sa = span(a);
++		size_t sb = span(b);
++		if (sa != sb) return sa < sb;
++		return tie_break(a, b);
++	};
++	const auto span_desc_then_appearance = [&](const std::string& a, const std::string& b) {
++		size_t sa = span(a);
++		size_t sb = span(b);
++		if (sa != sb) return sa > sb;
++		return tie_break(a, b);
++	};
++	const auto last_asc_then_appearance = [&](const std::string& a, const std::string& b) {
++		size_t la = last_seen(a);
++		size_t lb = last_seen(b);
++		if (la != lb) return la < lb;
++		return tie_break(a, b);
++	};
++	const auto density_desc_then_appearance = [&](const std::string& a, const std::string& b) {
++		size_t sa = span(a) + 1;
++		size_t sb = span(b) + 1;
++		size_t ca = occurrence(a);
++		size_t cb = occurrence(b);
++		size_t lhs = ca * sb;
++		size_t rhs = cb * sa;
++		if (lhs != rhs) return lhs > rhs;
++		return tie_break(a, b);
++	};
++	const auto by_name = [](const std::string& a, const std::string& b) { return a < b; };
++	const auto quantified_first = [&](auto within_group) {
++		std::stable_sort(names.begin(), names.end(), [&](const std::string& a, const std::string& b) {
++			bool aq = st.quantified.contains(a);
++			bool bq = st.quantified.contains(b);
++			if (aq != bq) return aq;
++			return within_group(a, b);
++		});
++		return names;
++	};
++	const std::string mode = order_mode();
++	if (mode == "appearance") return names;
++	if (mode == "free_first_appearance") {
++		std::stable_sort(names.begin(), names.end(), [&](const std::string& a, const std::string& b) {
++			bool aq = st.quantified.contains(a);
++			bool bq = st.quantified.contains(b);
++			if (aq != bq) return !aq;
++			return tie_break(a, b);
++		});
++		return names;
++	}
++	if (mode == "quantified_first_span_asc")
++		return quantified_first(span_asc_then_appearance);
++	if (mode == "quantified_first_span_desc")
++		return quantified_first(span_desc_then_appearance);
++	if (mode == "quantified_first_last")
++		return quantified_first(last_asc_then_appearance);
++	if (mode == "quantified_first_density")
++		return quantified_first(density_desc_then_appearance);
++	if (mode == "quantified_first_frequency") {
++		return quantified_first(freq_desc_then_appearance);
++	}
++	if (mode == "free_first_frequency") {
++		std::stable_sort(names.begin(), names.end(), [&](const std::string& a, const std::string& b) {
++			bool aq = st.quantified.contains(a);
++			bool bq = st.quantified.contains(b);
++			if (aq != bq) return !aq;
++			return freq_desc_then_appearance(a, b);
++		});
++		return names;
++	}
++	if (mode == "alphabetic") {
++		std::stable_sort(names.begin(), names.end(), by_name);
++		return names;
++	}
++	std::stable_sort(names.begin(), names.end(), [&](const std::string& a, const std::string& b) {
++		bool aq = st.quantified.contains(a);
++		bool bq = st.quantified.contains(b);
++		if (aq != bq) return aq;
++		return tie_break(a, b);
++	});
++	return names;
++}
++
++template <NodeType node>
++std::optional<std::pair<std::string, size_t>> extract_simple_var(tref term) {
++	using tau = tree<node>;
++	using tt = tau::traverser;
++	const auto& t = tau::get(term);
++	if (t.is(tau::variable)) return { { get_var_name<node>(term), t.get_ba_type() } };
++	if (t.is(tau::bf) && t.child_is(tau::variable)) {
++		tref v = tau::trim(term);
++		return { { get_var_name<node>(v), tau::get(v).get_ba_type() } };
++	}
++	if (auto v = tt(term) | tau::variable; v) {
++		const trefs& fv = get_free_vars<node>(term);
++		if (fv.size() == 1 && tau::get(fv[0]) == tau::get(v.value()))
++			return { { get_var_name<node>(v.value()), tau::get(v.value()).get_ba_type() } };
++	}
++	return {};
++}
++
++template <NodeType node>
++std::optional<bexpr<node>> compile_tau_formula(tref fm, compile_state<node>& st,
++	bool allow_leading_exists = true) {
++	using tau = tree<node>;
++	const auto& t = tau::get(fm);
++	if (!t.is(tau::wff)) return {};
++	if (t.equals_T()) return make_const<node>(true);
++	if (t.equals_F()) return make_const<node>(false);
++	if (t.child_is(tau::wff_ex)) {
++		if (!allow_leading_exists) return {};
++		tref var = tau::trim2(fm);
++		const std::string& name = get_var_name<node>(var);
++		if (st.quantified.contains(name)) return {};
++		note_var<node>(st, name, tau::get(var).get_ba_type());
++		st.quantified.insert(name);
++		return compile_tau_formula<node>(tau::get(fm)[0].second(), st, true);
++	}
++	if (t.child_is(tau::wff_neg)) {
++		auto inner = compile_tau_formula<node>(tau::get(fm)[0].first(), st, false);
++		if (!inner) return {};
++		return make_not<node>(*inner);
++	}
++	if (t.child_is(tau::wff_and)) {
++		auto l = compile_tau_formula<node>(tau::get(fm)[0].first(), st, false);
++		auto r = compile_tau_formula<node>(tau::get(fm)[0].second(), st, false);
++		if (!l || !r) return {};
++		return make_and<node>(*l, *r);
++	}
++	if (t.child_is(tau::wff_or)) {
++		auto l = compile_tau_formula<node>(tau::get(fm)[0].first(), st, false);
++		auto r = compile_tau_formula<node>(tau::get(fm)[0].second(), st, false);
++		if (!l || !r) return {};
++		return make_or<node>(*l, *r);
++	}
++	if (t.child_is(tau::bf_eq) || t.child_is(tau::bf_neq)) {
++		tref l = tau::get(fm)[0].first();
++		tref r = tau::get(fm)[0].second();
++		bool negated = t.child_is(tau::bf_neq);
++		if (tau::get(l).equals_0()) std::swap(l, r);
++		if (!tau::get(r).equals_0()) return {};
++		auto var = extract_simple_var<node>(l);
++		if (!var) return {};
++		note_var<node>(st, var->first, var->second);
++		auto atom = make_var<node>(var->first);
++		return negated ? make_not<node>(atom) : atom;
++	}
++	return {};
++}
++
++template <NodeType node>
++struct bdd_key {
++	std::string var;
++	int low = 0;
++	int high = 0;
++	auto operator<=>(const bdd_key&) const = default;
++};
++
++template <NodeType node>
++struct key_hash {
++	size_t operator()(const bdd_key<node>& k) const {
++		return std::hash<std::string>{}(k.var) ^
++			(std::hash<int>{}(k.low) << 1) ^
++			(std::hash<int>{}(k.high) << 2);
++	}
++};
++
++template <NodeType node>
++struct bdd_manager {
++	std::vector<std::string> order;
++	std::unordered_map<std::string, int> level;
++	std::unordered_map<bdd_key<node>, int, key_hash<node>> unique;
++	std::unordered_map<int, bdd_key<node>> nodes;
++	std::unordered_map<std::string, int> build_cache;
++	int next_id = 2;
++
++	explicit bdd_manager(std::vector<std::string> v) : order(std::move(v)) {
++		for (size_t i = 0; i < order.size(); ++i) level[order[i]] = static_cast<int>(i);
++	}
++
++	int mk(const std::string& var, int low, int high) {
++		if (low == high) return low;
++		bdd_key<node> key{ var, low, high };
++		auto it = unique.find(key);
++		if (it != unique.end()) return it->second;
++		int id = next_id++;
++		unique.emplace(key, id);
++		nodes.emplace(id, key);
++		return id;
++	}
++
++	int build(const bexpr<node>& e) {
++		if (e->kind == bool_expr<node>::cnst) return e->value ? 1 : 0;
++		const std::string key = repr<node>(e);
++		if (auto it = build_cache.find(key); it != build_cache.end()) return it->second;
++		std::set<std::string> supp;
++		collect_support<node>(e, supp);
++		auto top = *std::min_element(supp.begin(), supp.end(), [&](const auto& a, const auto& b) {
++			return level.at(a) < level.at(b);
++		});
++		int low = build(restrict_expr<node>(e, top, false));
++		int high = build(restrict_expr<node>(e, top, true));
++		int out = mk(top, low, high);
++		build_cache.emplace(key, out);
++		return out;
++	}
++
++	int apply_or(int a, int b, std::unordered_map<long long, int>& memo) {
++		long long key = (static_cast<long long>(a) << 32) | static_cast<unsigned int>(b);
++		if (auto it = memo.find(key); it != memo.end()) return it->second;
++		if (a == 1 || b == 1) return 1;
++		if (a == 0) return b;
++		if (b == 0) return a;
++		const auto& na = nodes.at(a);
++		const auto& nb = nodes.at(b);
++		int out = 0;
++		if (level.at(na.var) == level.at(nb.var)) {
++			out = mk(na.var, apply_or(na.low, nb.low, memo), apply_or(na.high, nb.high, memo));
++		} else if (level.at(na.var) < level.at(nb.var)) {
++			out = mk(na.var, apply_or(na.low, b, memo), apply_or(na.high, b, memo));
++		} else {
++			out = mk(nb.var, apply_or(a, nb.low, memo), apply_or(a, nb.high, memo));
++		}
++		memo.emplace(key, out);
++		return out;
++	}
++
++	int exists(int root, const std::unordered_set<std::string>& quantified) {
++		std::unordered_map<int, int> memo;
++		return exists_rec(root, quantified, memo);
++	}
++
++	int reachable_nonterminal_nodes(int root) const {
++		std::unordered_set<int> seen;
++		walk(root, seen);
++		return static_cast<int>(seen.size());
++	}
++
++	int exists_rec(int node_id, const std::unordered_set<std::string>& quantified,
++		std::unordered_map<int, int>& memo) {
++		if (auto it = memo.find(node_id); it != memo.end()) return it->second;
++		if (node_id == 0 || node_id == 1) return node_id;
++		const auto& bnode = nodes.at(node_id);
++		int low = exists_rec(bnode.low, quantified, memo);
++		int high = exists_rec(bnode.high, quantified, memo);
++		int out = 0;
++		if (quantified.contains(bnode.var)) {
++			std::unordered_map<long long, int> or_memo;
++			out = apply_or(low, high, or_memo);
++		} else out = mk(bnode.var, low, high);
++		memo.emplace(node_id, out);
++		return out;
++	}
++
++	void walk(int node_id, std::unordered_set<int>& seen) const {
++		if (node_id == 0 || node_id == 1 || seen.contains(node_id)) return;
++		seen.insert(node_id);
++		const auto& n = nodes.at(node_id);
++		walk(n.low, seen);
++		walk(n.high, seen);
++	}
++};
++
++template <NodeType node>
++tref build_tau_atom(const std::string& name, size_t type_id) {
++	using tau = tree<node>;
++	return tau::build_bf_eq_0(tau::build_variable(name, type_id));
++}
++
++template <NodeType node>
++bexpr<node> bdd_to_expr(int root, bdd_manager<node>& mgr,
++	std::unordered_map<int, bexpr<node>>& memo)
++{
++	if (auto it = memo.find(root); it != memo.end()) return it->second;
++	if (root == 0) return make_const<node>(false);
++	if (root == 1) return make_const<node>(true);
++	const auto& n = mgr.nodes.at(root);
++	bexpr<node> atom = make_var<node>(n.var);
++	bexpr<node> low = bdd_to_expr<node>(n.low, mgr, memo);
++	bexpr<node> high = bdd_to_expr<node>(n.high, mgr, memo);
++	bexpr<node> out;
++	if (n.low == 0 && n.high == 1) out = atom;
++	else if (n.low == 1 && n.high == 0) out = make_not<node>(atom);
++	else if (n.low == 0) out = make_and<node>(atom, high);
++	else if (n.high == 0) out = make_and<node>(make_not<node>(atom), low);
++	else if (n.low == 1) out = make_or<node>(make_not<node>(atom), high);
++	else if (n.high == 1) out = make_or<node>(atom, low);
++	else out = make_or<node>(make_and<node>(atom, high), make_and<node>(make_not<node>(atom), low));
++	memo.emplace(root, out);
++	return out;
++}
++
++template <NodeType node>
++std::vector<std::string> order_for_support(const compile_state<node>& st,
++	const std::unordered_set<std::string>& support)
++{
++	std::vector<std::string> out;
++	for (const auto& name : choose_order<node>(st))
++		if (support.contains(name)) out.push_back(name);
++	return out;
++}
++
++template <NodeType node>
++bexpr<node> project_with_bdd(const bexpr<node>& e, const compile_state<node>& st,
++	const std::unordered_set<std::string>& quantified,
++	int* root_nodes = nullptr,
++	int* projected_nodes = nullptr)
++{
++	auto support = support_set<node>(e);
++	auto order = order_for_support<node>(st, support);
++	if (order.empty()) return e;
++	bdd_manager<node> mgr(order);
++	int root = mgr.build(e);
++	int projected = mgr.exists(root, quantified);
++	if (root_nodes) *root_nodes += mgr.reachable_nonterminal_nodes(root);
++	if (projected_nodes) *projected_nodes += mgr.reachable_nonterminal_nodes(projected);
++	std::unordered_map<int, bexpr<node>> expr_memo;
++	return bdd_to_expr<node>(projected, mgr, expr_memo);
++}
++
++template <NodeType node>
++std::optional<bexpr<node>> project_components_with_bdd(
++	const bexpr<node>& e,
++	const compile_state<node>& st,
++	size_t* component_count = nullptr,
++	int* root_nodes = nullptr,
++	int* projected_nodes = nullptr)
++{
++	std::vector<bexpr<node>> free_factors;
++	auto groups = quantified_components<node>(e, st, free_factors);
++	if (groups.empty()) return conjoin<node>(free_factors);
++	if (groups.size() == 1 && free_factors.empty()) return {};
++	if (component_count) *component_count = groups.size();
++
++	std::vector<bexpr<node>> projected;
++	projected.reserve(free_factors.size() + groups.size());
++	projected.insert(projected.end(), free_factors.begin(), free_factors.end());
++	for (const auto& group : groups) {
++		bexpr<node> group_expr = conjoin<node>(group.factors);
++		projected.push_back(project_with_bdd<node>(
++			group_expr, st, group.quantified, root_nodes, projected_nodes));
++	}
++	return conjoin<node>(projected);
++}
++
++template <NodeType node>
++tref expr_to_tau(const bexpr<node>& e, const compile_state<node>& st)
++{
++	using tau = tree<node>;
++	switch (e->kind) {
++		case bool_expr<node>::cnst: return e->value ? tau::_T() : tau::_F();
++		case bool_expr<node>::var: return build_tau_atom<node>(e->name, st.types.at(e->name));
++		case bool_expr<node>::neg: return tau::build_wff_neg(expr_to_tau<node>(e->left, st));
++		case bool_expr<node>::land: return tau::build_wff_and(expr_to_tau<node>(e->left, st), expr_to_tau<node>(e->right, st));
++		case bool_expr<node>::lor: return tau::build_wff_or(expr_to_tau<node>(e->left, st), expr_to_tau<node>(e->right, st));
++	}
++	return tau::_F();
++}
++
++template <NodeType node>
++std::optional<tref> run(tref fm) {
++	using clock = std::chrono::steady_clock;
++	auto t0 = clock::now();
++	size_t tau_guard_quantified = 0;
++	size_t tau_guard_free = 0;
++	int_t tau_guard_nodes = 0;
++	if (reject_auto_tau_shape<node>(
++		fm, &tau_guard_quantified, &tau_guard_free, &tau_guard_nodes))
++	{
++		auto t_guard = clock::now();
++		if (stats_enabled()) {
++			auto guard_ms = std::chrono::duration<double, std::milli>(t_guard - t0).count();
++			std::cerr
++				<< "[qelim_bdd] vars=" << (tau_guard_quantified + tau_guard_free)
++				<< " quantified=" << tau_guard_quantified
++				<< " route=auto_guard"
++				<< " components=0"
++				<< " root_nodes=0"
++				<< " projected_nodes=0"
++				<< " compile_ms=0"
++				<< " project_ms=" << guard_ms
++				<< " rebuild_ms=0"
++				<< " pure_drops=0"
++				<< " blocked_drops=0"
++				<< " blocked_clause_drops=0"
++				<< " dp_drops=0"
++				<< " dp_resolvents=0"
++				<< " dp_clause_drops=0"
++				<< " dp_subsumed=0"
++				<< " guard_tree_nodes=" << tau_guard_nodes
++				<< " guard_free=" << tau_guard_free
++				<< "\n";
++		}
++		return {};
++	}
++	compile_state<node> st;
++	auto compiled = compile_tau_formula<node>(fm, st);
++	if (!compiled) return {};
++	auto t1 = clock::now();
++
++	size_t pure_drops = 0;
++	size_t blocked_drops = 0;
++	size_t blocked_clause_drops = 0;
++	size_t dp_drops = 0;
++	size_t dp_resolvents = 0;
++	size_t dp_clause_drops = 0;
++	size_t dp_subsumed = 0;
++	bexpr<node> working = *compiled;
++	if (ac_canon_enabled())
++		working = normalize_ac<node>(working);
++	if (pure_enabled())
++		working = drop_pure_quantified<node>(working, st, &pure_drops);
++	if (blocked_enabled())
++		working = drop_blocked_quantified_cnf<node>(
++			working, st, &blocked_drops, &blocked_clause_drops);
++	if (auto cap = dp_cap())
++		working = distribute_quantified_cnf_under_cap<node>(
++			working, st, *cap, &dp_drops, &dp_resolvents,
++			&dp_clause_drops, &dp_subsumed);
++
++	std::vector<std::string> order = choose_order<node>(st);
++	if (order.empty()) return fm;
++
++	size_t component_count = 0;
++	int root_nodes = 0;
++	int projected_nodes = 0;
++	bexpr<node> simplified;
++	std::string route = "monolithic";
++
++	if (!has_quantified_support<node>(working, st)) {
++		simplified = working;
++		if (dp_drops > 0) route = (pure_drops > 0 || blocked_drops > 0) ? "preprocess" : "dp";
++		else if (blocked_drops > 0) route = pure_drops > 0 ? "preprocess" : "blocked";
++		else route = pure_drops > 0 ? "pure" : "residual";
++	} else if (components_enabled()) {
++		if (auto component_result = project_components_with_bdd<node>(
++			working, st, &component_count, &root_nodes, &projected_nodes))
++		{
++			simplified = *component_result;
++			route = "components";
++		}
++	}
++
++	if (route == "monolithic") {
++		bdd_manager<node> mgr(order);
++		int root = mgr.build(working);
++		root_nodes = mgr.reachable_nonterminal_nodes(root);
++		int projected = mgr.exists(root, st.quantified);
++		projected_nodes = mgr.reachable_nonterminal_nodes(projected);
++		std::unordered_map<int, bexpr<node>> expr_memo;
++		simplified = bdd_to_expr<node>(projected, mgr, expr_memo);
++	}
++	auto t2 = clock::now();
++	tref rebuilt = expr_to_tau<node>(simplified, st);
++	auto t3 = clock::now();
++	if (stats_enabled()) {
++		auto compile_ms = std::chrono::duration<double, std::milli>(t1 - t0).count();
++		auto build_ms = std::chrono::duration<double, std::milli>(t2 - t1).count();
++		auto rebuild_ms = std::chrono::duration<double, std::milli>(t3 - t2).count();
++		std::cerr
++			<< "[qelim_bdd] vars=" << st.appearance_order.size()
++			<< " quantified=" << st.quantified.size()
++			<< " route=" << route
++			<< " components=" << component_count
++			<< " root_nodes=" << root_nodes
++			<< " projected_nodes=" << projected_nodes
++			<< " compile_ms=" << compile_ms
++			<< " project_ms=" << build_ms
++			<< " rebuild_ms=" << rebuild_ms
++			<< " pure_drops=" << pure_drops
++			<< " blocked_drops=" << blocked_drops
++			<< " blocked_clause_drops=" << blocked_clause_drops
++			<< " dp_drops=" << dp_drops
++			<< " dp_resolvents=" << dp_resolvents
++			<< " dp_clause_drops=" << dp_clause_drops
++			<< " dp_subsumed=" << dp_subsumed
++			<< "\n";
++	}
++	return rebuilt;
++}
++
++} // namespace idni::tau_lang::qelim_bdd_experiment
++
++#endif
+diff --git a/src/repl_evaluator.tmpl.h b/src/repl_evaluator.tmpl.h
+index 8e944446..239e7605 100644
+--- a/src/repl_evaluator.tmpl.h
++++ b/src/repl_evaluator.tmpl.h
+@@ -2,6 +2,8 @@
+ 
+ #include "interpreter.h"
+ #include "repl_evaluator.h"
++#include "qelim_bdd_experiment.tmpl.h"
++#include "finite_table_builtins.h"
+ 
+ #undef LOG_CHANNEL_NAME
+ #define LOG_CHANNEL_NAME "repl_evaluator"
+@@ -95,6 +97,8 @@ requires BAsPack<BAs...>
+ std::optional<rr<node<tau_ba<BAs...>, BAs...>>>
+ 	repl_evaluator<BAs...>::get_nso_rr_with_defs(const tt& spec)
+ {
++	if (!finite_table_builtins::ensure_loaded_if_enabled<node>())
++		return {};
+ 	rr<node> nso_rr{ nullptr };
+ 	auto check = get_type_and_arg(spec);
+ 	if (!check) return {};
+@@ -366,11 +370,42 @@ tref repl_evaluator<BAs...>::normalize_cmd(const tt& n) {
+ template <typename... BAs>
+ requires BAsPack<BAs...>
+ tref repl_evaluator<BAs...>::qelim_cmd(const tt& n) {
++	using clock = std::chrono::steady_clock;
++	auto total_start = clock::now();
+ 	tref arg = n[1].get();
+ 	tref applied = apply_rr_to_nso_rr_with_defs(arg);
++	auto apply_end = clock::now();
+ 	if (applied) {
++		auto emit_stats = [&](const std::string& backend,
++			const clock::time_point& anti_end,
++			const clock::time_point& route_end) {
++			const char* env = std::getenv("TAU_QELIM_STATS");
++			if (!(env && std::string(env) == "1")) return;
++			auto ms = [](const clock::duration& d) {
++				return std::chrono::duration<double, std::milli>(d).count();
++			};
++			std::cerr << "[qelim_cmd] backend=" << backend
++				<< " apply_ms=" << ms(apply_end - total_start)
++				<< " anti_prenex_ms=" << ms(anti_end - apply_end)
++				<< " route_ms=" << ms(route_end - anti_end)
++				<< " total_ms=" << ms(route_end - total_start)
++				<< "\n";
++		};
++		if (qelim_bdd_experiment::backend_enabled()) {
++			auto direct_route_start = apply_end;
++			if (auto experimental = qelim_bdd_experiment::run<node>(applied); experimental) {
++				auto route_end = clock::now();
++				emit_stats(qelim_bdd_experiment::backend_label(), direct_route_start, route_end);
++				return experimental.value();
++			}
++			TAU_LOG_WARNING << "Experimental qelim BDD backend rejected the original quantified formula, falling back to standard qelim.\n";
++		}
+ 		applied = anti_prenex<node>(applied);
+-		return resolve_quantifiers<node>(applied);
++		auto anti_end = clock::now();
++		auto result = resolve_quantifiers<node>(applied);
++		auto route_end = clock::now();
++		emit_stats("default", anti_end, route_end);
++		return result;
+ 	}
+ 	return invalid_argument();
+ }
+@@ -622,6 +657,8 @@ void repl_evaluator<BAs...>::def_output_cmd(const tt& /*command*/) {
+ template <typename... BAs>
+ requires BAsPack<BAs...>
+ tref repl_evaluator<BAs...>::make_cli(const std::string& src) {
++	if (!finite_table_builtins::ensure_loaded_if_enabled<node>())
++		return nullptr;
+ 	// remove ascii char 22 if exists in the input
+ 	std::string filt = src;
+ 	filt.erase(remove_if(filt.begin(), filt.end(), [](unsigned char c) {
+@@ -821,10 +858,12 @@ void repl_evaluator<BAs...>::update_bool_opt_cmd(repl_option o,
+ template <typename... BAs>
+ requires BAsPack<BAs...>
+ bool repl_evaluator<BAs...>::update_charvar(bool value) {
+-	std::set<std::string> guards{
++	std::set<std::string> tau_guards{
+ 		(opt.charvar = value) ? "charvar" : "var" };
+-	tau_parser::instance().get_grammar().set_enabled_productions(guards);
+-	sbf_parser::instance().get_grammar().set_enabled_productions(guards);
++	if (safe_table_ba_enabled()) tau_guards.insert("safe_tables");
++	tau_parser::instance().get_grammar().set_enabled_productions(tau_guards);
++	std::set<std::string> sbf_guards{ opt.charvar ? "charvar" : "var" };
++	sbf_parser::instance().get_grammar().set_enabled_productions(sbf_guards);
+ 	return value;
+ }
+ 
+diff --git a/src/runtime.h b/src/runtime.h
+index 46c9ff01..fd5ad8b3 100644
+--- a/src/runtime.h
++++ b/src/runtime.h
+@@ -7,6 +7,7 @@
+ #include "boolean_algebras/sbf_ba.h"
+ #include "boolean_algebras/tau_ba.h"
+ #include "boolean_algebras/bv_ba.h"
++#include "boolean_algebras/finite_table_ba.h"
+ #include "nso_rr.h"
+ 
+ namespace idni::tau_lang {
+@@ -55,6 +56,29 @@ struct nso_factory<tau_ba<bv, sbf_ba>, bv, sbf_ba> {
+ 
+ };
+ 
++/**
++ * @brief NSO factory used by the CLI with the feature-gated ft4 finite table BA.
++ */
++template<>
++struct nso_factory<tau_ba<bv, sbf_ba, ft4_ba>, bv, sbf_ba, ft4_ba> {
++	static std::vector<std::string> types();
++
++	static tref default_type();
++
++	static std::string one(tref type_tree = tau_type<node<tau_ba<bv, sbf_ba, ft4_ba>, bv, sbf_ba, ft4_ba>>());
++
++	static std::string zero(tref type_tree = tau_type<node<tau_ba<bv, sbf_ba, ft4_ba>, bv, sbf_ba, ft4_ba>>());
++
++	static tref splitter_one(tref type_tree);
++
++	static tref unpack_tau_ba(const std::variant<tau_ba<bv, sbf_ba, ft4_ba>, bv, sbf_ba, ft4_ba>& v);
++
++	static std::variant<tau_ba<bv, sbf_ba, ft4_ba>, bv, sbf_ba, ft4_ba> pack_tau_ba(tref c);
++
++	static std::variant<tau_ba<bv, sbf_ba, ft4_ba>, bv, sbf_ba, ft4_ba> to_base_ba_type(tref type_tree);
++
++};
++
+ template <>
+ inline std::optional<ba_constants<node<bv, sbf_ba>>::constant_with_type> ba_constants<node<bv, sbf_ba>>::get(
+ 		const std::string& constant_source,
+@@ -77,8 +101,22 @@ inline std::optional<typename ba_constants<node<tau_ba<bv, sbf_ba>, bv, sbf_ba>>
+ 	return parse_tau<bv, sbf_ba>(constant_source);
+ }
+ 
++template <>
++inline std::optional<typename ba_constants<node<tau_ba<bv, sbf_ba, ft4_ba>, bv, sbf_ba, ft4_ba>>::constant_with_type> ba_constants<node<tau_ba<bv, sbf_ba, ft4_ba>, bv, sbf_ba, ft4_ba>>::get(
++		const std::string& constant_source,
++		tref type_tree,
++		[[maybe_unused]] const std::string options) {
++	if (is_sbf_type<node<tau_ba<bv, sbf_ba, ft4_ba>, bv, sbf_ba, ft4_ba>>(type_tree))
++		return parse_sbf<tau_ba<bv, sbf_ba, ft4_ba>, bv, sbf_ba, ft4_ba>(constant_source);
++	if (is_bv_type_family<node<tau_ba<bv, sbf_ba, ft4_ba>, bv, sbf_ba, ft4_ba>>(type_tree))
++		return parse_bv<tau_ba<bv, sbf_ba, ft4_ba>, bv, sbf_ba, ft4_ba>(constant_source, type_tree);
++	if (is_ft4_type<node<tau_ba<bv, sbf_ba, ft4_ba>, bv, sbf_ba, ft4_ba>>(type_tree))
++		return parse_ft4<tau_ba<bv, sbf_ba, ft4_ba>, bv, sbf_ba, ft4_ba>(constant_source);
++	return parse_tau<bv, sbf_ba, ft4_ba>(constant_source);
++}
++
+ } // namespace idni::tau_lang
+ 
+ #include "runtime.tmpl.h"
+ 
+-#endif // __RUNTIME_H__
+\ No newline at end of file
++#endif // __RUNTIME_H__
+diff --git a/src/runtime.tmpl.h b/src/runtime.tmpl.h
+index 48f66413..e08cab14 100644
+--- a/src/runtime.tmpl.h
++++ b/src/runtime.tmpl.h
+@@ -122,4 +122,98 @@ inline std::variant<tau_ba<bv, sbf_ba>, bv, sbf_ba> nso_factory<tau_ba<bv, sbf_b
+ 		return { bv() };
+ 	}
+ }
+-} // namespace idni::tau_lang
+\ No newline at end of file
++
++inline std::vector<std::string> nso_factory<tau_ba<bv, sbf_ba, ft4_ba>,
++	bv, sbf_ba, ft4_ba>::types() {
++	return { "sbf", "tau", "bv", "ft4" };
++}
++
++inline tref nso_factory<tau_ba<bv, sbf_ba, ft4_ba>,
++	bv, sbf_ba, ft4_ba>::default_type() {
++	return tau_type<node<tau_ba<bv, sbf_ba, ft4_ba>, bv, sbf_ba, ft4_ba>>();
++}
++
++inline std::string nso_factory<tau_ba<bv, sbf_ba, ft4_ba>,
++	bv, sbf_ba, ft4_ba>::one(tref type_tree)
++{
++	using node_t = node<tau_ba<bv, sbf_ba, ft4_ba>, bv, sbf_ba, ft4_ba>;
++	if (is_sbf_type<node_t>(type_tree)) {
++		return "1";
++	} else if (is_bv_type_family<node_t>(type_tree)) {
++		return make_bitvector_top_elem(get_bv_size<node_t>(type_tree)
++			).getBitVectorValue(10);
++	} else if (is_ft4_type<node_t>(type_tree)) {
++		return "15";
++	} else return "T";
++}
++
++inline std::string nso_factory<tau_ba<bv, sbf_ba, ft4_ba>,
++	bv, sbf_ba, ft4_ba>::zero(tref type_tree)
++{
++	using node_t = node<tau_ba<bv, sbf_ba, ft4_ba>, bv, sbf_ba, ft4_ba>;
++	if (is_sbf_type<node_t>(type_tree)) {
++		return "0";
++	} else if (is_bv_type_family<node_t>(type_tree)) {
++		return make_bitvector_bottom_elem(get_bv_size<node_t>(type_tree)
++			).getBitVectorValue(10);
++	} else if (is_ft4_type<node_t>(type_tree)) {
++		return "0";
++	} else return "F";
++}
++
++inline tref nso_factory<tau_ba<bv, sbf_ba, ft4_ba>,
++	bv, sbf_ba, ft4_ba>::splitter_one(tref type_tree)
++{
++	using node_t = node<tau_ba<bv, sbf_ba, ft4_ba>, bv, sbf_ba, ft4_ba>;
++	using tau = tree<node_t>;
++	DBG(assert(!is_bv_type_family<node_t>(type_tree)));
++	if (is_sbf_type<node_t>(type_tree)) {
++		return tau::get(tau::bf,
++			tau::get_ba_constant(
++				sbf_ba_factory<tau_ba<bv, sbf_ba, ft4_ba>, bv, sbf_ba, ft4_ba>::splitter_one(),
++				sbf_type<node_t>()));
++	}
++	if (is_ft4_type<node_t>(type_tree)) {
++		return tau::get(tau::bf,
++			tau::get_ba_constant(
++				typename node_t::constant{ ft4_ba(1) },
++				ft4_type<node_t>()));
++	}
++	return tau::get(tau::bf,
++		tau::get_ba_constant(
++			tau_ba_factory<bv, sbf_ba, ft4_ba>::splitter_one(),
++			tau_type<node_t>()));
++}
++
++inline tref nso_factory<tau_ba<bv, sbf_ba, ft4_ba>,
++	bv, sbf_ba, ft4_ba>::unpack_tau_ba(
++		const std::variant<tau_ba<bv, sbf_ba, ft4_ba>, bv, sbf_ba, ft4_ba>& v)
++{
++	if (!std::holds_alternative<tau_ba<bv, sbf_ba, ft4_ba>>(v)) return {};
++	const auto unpacked = std::get<tau_ba<bv, sbf_ba, ft4_ba>>(v);
++	return unpacked.nso_rr.main->get();
++}
++
++inline std::variant<tau_ba<bv, sbf_ba, ft4_ba>, bv, sbf_ba, ft4_ba>
++	nso_factory<tau_ba<bv, sbf_ba, ft4_ba>,
++	bv, sbf_ba, ft4_ba>::pack_tau_ba(tref c) {
++	tau_ba<bv, sbf_ba, ft4_ba> t {c};
++	return {t};
++}
++
++inline std::variant<tau_ba<bv, sbf_ba, ft4_ba>, bv, sbf_ba, ft4_ba>
++	nso_factory<tau_ba<bv, sbf_ba, ft4_ba>,
++	bv, sbf_ba, ft4_ba>::to_base_ba_type(tref type_tree) {
++	using node_t = node<tau_ba<bv, sbf_ba, ft4_ba>, bv, sbf_ba, ft4_ba>;
++	if (is_tau_type<node_t>(type_tree)) {
++		return { tau_ba<bv, sbf_ba, ft4_ba>() };
++	} else if (is_sbf_type<node_t>(type_tree)) {
++		return { sbf_ba() };
++	} else if (is_ft4_type<node_t>(type_tree)) {
++		return { ft4_ba() };
++	} else {
++		DBG(assert(is_bv_type_family<node_t>(type_tree)));
++		return { bv() };
++	}
++}
++} // namespace idni::tau_lang
+diff --git a/src/tau_tree_builders.tmpl.h b/src/tau_tree_builders.tmpl.h
+index 12d7852d..2c2756ec 100644
+--- a/src/tau_tree_builders.tmpl.h
++++ b/src/tau_tree_builders.tmpl.h
+@@ -1,6 +1,8 @@
+ // To view the license please visit https://github.com/IDNI/tau-lang/blob/main/LICENSE.md
+ 
++#include <cstdlib>
+ #include <numeric>
++#include <string>
+ 
+ #include "tau_tree.h"
+ 
+@@ -9,6 +11,11 @@
+ 
+ namespace idni::tau_lang {
+ 
++inline bool rewrite_double_neg_enabled() {
++	const char* env = std::getenv("TAU_REWRITE_DOUBLE_NEG");
++	return env && std::string(env) == "1";
++}
++
+ template <NodeType node>
+ tref tree<node>::apply_builder(const rewriter::builder& b, trefs n) {
+ 	subtree_map<node, tref> changes;
+@@ -367,6 +374,8 @@ tref build_wff_neg(tref l) {
+ 	DBG(assert(l != nullptr);)
+ 	using tau = tree<node>;
+ 	DBG(assert(tau::get(l).is(tau::wff));)
++	if (rewrite_double_neg_enabled() && tau::get(l).child_is(tau::wff_neg))
++		return tau::trim2(l);
+ 	return tau::get(tau::wff, tau::get(tau::wff_neg, l));
+ }
+ 
+@@ -616,6 +625,8 @@ tref build_bf_neg(tref l) {
+ 	DBG(assert(tau::get(l).is(tau::bf));)
+ 	LOG_TRACE << "build_bf_neg";
+ 	DBG(LOG_TRACE << "l: " << LOG_FM_DUMP(l);)
++	if (rewrite_double_neg_enabled() && tau::get(l).child_is(tau::bf_neg))
++		return tau::trim2(l);
+ 	DBG(LOG_TRACE << "bf_neg: " << LOG_FM_DUMP(tau::get(tau::bf_neg, l));)
+ 	return tau::get(tau::bf, tau::get(tau::bf_neg, l));
+ }
+diff --git a/src/tau_tree_from_parser.tmpl.h b/src/tau_tree_from_parser.tmpl.h
+index 525bbf44..6402fe40 100644
+--- a/src/tau_tree_from_parser.tmpl.h
++++ b/src/tau_tree_from_parser.tmpl.h
+@@ -33,6 +33,7 @@ namespace idni::tau_lang {
+ template <NodeType node>
+ tref tree<node>::get(const tau_parser::tree& ptr, get_options& options) {
+ 	using type = typename node::type;
++	using tau = tree<node>;
+ 
+ 	// map of parse tree nodes' refs to tau tree nodes' refs
+ 	std::unordered_map<tref, tref> m;
+@@ -190,6 +191,46 @@ tref tree<node>::get(const tau_parser::tree& ptr, get_options& options) {
+ 				default: break;
+ 			}
+ 		};
++		auto build_safe_table_choice = [](tref guard, tref value,
++			tref fallback) -> tref
++		{
++			return tau::build_bf_or(
++				tau::build_bf_and(guard, value),
++				tau::build_bf_and(tau::build_bf_neg(guard), fallback));
++		};
++		auto collect_safe_table_rows = [&](auto&& self, tref n,
++			std::vector<std::pair<tref, tref>>& rows) -> void
++		{
++			const auto& tr = tau::get(n);
++			if (tr.is(tau::safe_table_row)) {
++				trefs bfs;
++				for (tref c : tr.children()) {
++					if (tau::get(c).is(tau::bf)) bfs.push_back(c);
++				}
++				if (bfs.size() == 2) rows.emplace_back(bfs[0], bfs[1]);
++				return;
++			}
++			for (tref c : tr.children()) self(self, c, rows);
++		};
++		auto process_safe_table_expr = [&](tref n) -> tref {
++			std::vector<std::pair<tref, tref>> rows;
++			tref fallback = nullptr;
++			const auto& tr = tau::get(n);
++			for (tref c : tr.children()) {
++				if (tau::get(c).is(tau::safe_table_rows)) {
++					collect_safe_table_rows(
++						collect_safe_table_rows, c, rows);
++				} else if (tau::get(c).is(tau::bf)) {
++					fallback = c;
++				}
++			}
++			if (!fallback) return nullptr;
++			tref result = fallback;
++			for (auto it = rows.rbegin(); it != rows.rend(); ++it)
++				result = build_safe_table_choice(it->first,
++					it->second, result);
++			return result;
++		};
+ 		// extract stream information from a type definition
+ 		// and store it in io context
+ 		auto process_io_def = [&nt, &options](tref x) {
+@@ -201,7 +242,7 @@ tref tree<node>::get(const tau_parser::tree& ptr, get_options& options) {
+ 			if (stream_node != io_def.first()) {
+ 				const auto& stream = tau::get(stream_node);
+ 				if (stream.has_child())
+-					stream_id = stream.child_data();
++					stream_id = stream.first_tree().child_data();
+ 			}
+ 			DBG(assert(options.context != nullptr));
+ 			(nt == input_def ? options.context->inputs
+@@ -240,6 +281,19 @@ tref tree<node>::get(const tau_parser::tree& ptr, get_options& options) {
+ 				x = getx_data(0);
+ 				break;
+ 
++			case safe_table_expr: {
++				trefs ch;
++				for (tref c : ptr.children()) {
++					DBG(assert(c != nullptr && m_ex(c));)
++					if (m_ref(c) && !tau::get(c).is(typed))
++						ch.push_back(m_ref(c));
++				}
++				tref raw = getx(ch);
++				x = process_safe_table_expr(raw);
++				if (!x) error = true;
++				break;
++			}
++
+ 			default:
+ 				// Integrate type information
+ 				process_type_tree(nt);
+@@ -258,7 +312,10 @@ tref tree<node>::get(const tau_parser::tree& ptr, get_options& options) {
+ 						ch.push_back(m_ref(c));
+ 				}
+ 				// DBG(for (auto c : ch) LOG_TRACE << "child: " << LOG_FM_DUMP(c);)
+-				x = getx(ch);
++				if (nt == bf && ch.size() == 1
++					&& tau::get(ch[0]).is(tau::bf))
++					x = ch[0];
++				else x = getx(ch);
+ 
+ 				// update io_context by stream's input_def or output_def
+ 				if ((nt == input_def || nt == output_def)
+@@ -392,4 +449,4 @@ tref tree<node>::get_from_file(const std::string& filename,
+ 	return tree<node>::get(result, options);
+ }
+ 
+-} // namespace idni::tau_lang
+\ No newline at end of file
++} // namespace idni::tau_lang

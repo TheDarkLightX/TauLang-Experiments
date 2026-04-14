@@ -45,9 +45,9 @@ qelim algorithm choice should be fragment-sensitive, because the fastest method 
 
 ## 4. Proof-Carrying Optimization
 
-Goal: every optimization should emit a semantic receipt.
+Goal: every optimization should emit semantic evidence.
 
-Receipt classes:
+Evidence classes:
 
 - same denotation
 - same satisfying assignments

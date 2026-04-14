@@ -1,0 +1,74 @@
+# Incident memory table.
+#
+# Why this is a table demo:
+# Rows do not merely choose constants. They choose state transformers over an
+# existing symbolic memory region. This is the safe recursive-table shape in
+# miniature: read the old table positively, then write the next table value.
+
+incident_memory_table(
+  state,exploit_witness,oracle_alarm,governance_patch,clear_oracle,
+  exploit_region,oracle_region,patch_region,exploit_seed,oracle_seed,patch_label
+) : tau :=
+  table {
+    when exploit_witness =>
+      st_update_tau(state,exploit_seed,exploit_region,exploit_region);
+    when oracle_alarm =>
+      st_update_tau(state,oracle_seed,oracle_region,oracle_region);
+    when governance_patch =>
+      st_revise_tau(state,patch_region,patch_label);
+    when clear_oracle =>
+      st_select_tau(state,oracle_region');
+    else => state
+  }.
+
+incident_memory_raw(
+  state,exploit_witness,oracle_alarm,governance_patch,clear_oracle,
+  exploit_region,oracle_region,patch_region,exploit_seed,oracle_seed,patch_label
+) : tau :=
+  (exploit_witness &
+    st_update_tau(state,exploit_seed,exploit_region,exploit_region)) |
+  (exploit_witness' & (
+    (oracle_alarm &
+      st_update_tau(state,oracle_seed,oracle_region,oracle_region)) |
+    (oracle_alarm' & (
+      (governance_patch &
+        st_revise_tau(state,patch_region,patch_label)) |
+      (governance_patch' & (
+        (clear_oracle & st_select_tau(state,oracle_region')) |
+        (clear_oracle' & state)
+      ))
+    ))
+  )).
+
+incident_memory_exploit_slice_table(
+  state,exploit_witness,oracle_alarm,governance_patch,clear_oracle,
+  exploit_region,oracle_region,patch_region,exploit_seed,oracle_seed,patch_label
+) : tau :=
+  exploit_witness & incident_memory_table(
+    state,exploit_witness,oracle_alarm,governance_patch,clear_oracle,
+    exploit_region,oracle_region,patch_region,exploit_seed,oracle_seed,patch_label
+  ).
+
+incident_memory_exploit_slice_raw(
+  state,exploit_witness,oracle_alarm,governance_patch,clear_oracle,
+  exploit_region,oracle_region,patch_region,exploit_seed,oracle_seed,patch_label
+) : tau :=
+  exploit_witness &
+  st_update_tau(state,exploit_seed,exploit_region,exploit_region).
+
+incident_memory_clear_slice_table(
+  state,exploit_witness,oracle_alarm,governance_patch,clear_oracle,
+  exploit_region,oracle_region,patch_region,exploit_seed,oracle_seed,patch_label
+) : tau :=
+  exploit_witness' & oracle_alarm' & governance_patch' & clear_oracle &
+  incident_memory_table(
+    state,exploit_witness,oracle_alarm,governance_patch,clear_oracle,
+    exploit_region,oracle_region,patch_region,exploit_seed,oracle_seed,patch_label
+  ).
+
+incident_memory_clear_slice_raw(
+  state,exploit_witness,oracle_alarm,governance_patch,clear_oracle,
+  exploit_region,oracle_region,patch_region,exploit_seed,oracle_seed,patch_label
+) : tau :=
+  exploit_witness' & oracle_alarm' & governance_patch' & clear_oracle &
+  st_select_tau(state,oracle_region').

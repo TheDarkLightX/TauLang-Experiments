@@ -20,7 +20,17 @@ fi
 
 for patch in "${patches[@]}"; do
   echo "Applying $patch"
+  if git -C "$TAU_DIR" apply --reverse --check "../../$patch" >/dev/null 2>&1; then
+    echo "Already applied: $patch"
+    continue
+  fi
+  git -C "$TAU_DIR" apply --check "../../$patch"
   git -C "$TAU_DIR" apply "../../$patch"
 done
 
 echo "Applied ${#patches[@]} patch file(s)."
+
+if [[ -x "$TAU_DIR/parser/gen" && -f "$TAU_DIR/parser/tau.tgf" ]]; then
+  echo "Regenerating Tau parser from patched grammar"
+  (cd "$TAU_DIR" && ./parser/gen parser/tau.tgf)
+fi

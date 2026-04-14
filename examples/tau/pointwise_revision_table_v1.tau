@@ -1,0 +1,77 @@
+# Pointwise table revision demo.
+#
+# Why this is a table demo:
+# A table state is treated as several named entries. Each entry is revised by
+# the same local law:
+#
+#   next_i = table { when guard_i => replacement_i; else => old_i }
+#
+# The raw helper implements the same pointwise law. The public harness checks
+# whole-table agreement, guarded locality, and idempotence.
+
+pointwise_revise_entry(old,guard,replacement) : tau :=
+  table {
+    when guard => replacement;
+    else => old
+  }.
+
+pointwise_revise_entry_raw(old,guard,replacement) : tau :=
+  st_pointwise_revise_tau(old,guard,replacement).
+
+pointwise_rule_mint_table(old_mint,guard_mint,replacement_mint) : tau :=
+  pointwise_revise_entry(old_mint,guard_mint,replacement_mint).
+
+pointwise_rule_borrow_table(old_borrow,guard_borrow,replacement_borrow) : tau :=
+  pointwise_revise_entry(old_borrow,guard_borrow,replacement_borrow).
+
+pointwise_rule_liquidate_table(old_liquidate,guard_liquidate,replacement_liquidate) : tau :=
+  pointwise_revise_entry(old_liquidate,guard_liquidate,replacement_liquidate).
+
+pointwise_rule_mint_raw(old_mint,guard_mint,replacement_mint) : tau :=
+  pointwise_revise_entry_raw(old_mint,guard_mint,replacement_mint).
+
+pointwise_rule_borrow_raw(old_borrow,guard_borrow,replacement_borrow) : tau :=
+  pointwise_revise_entry_raw(old_borrow,guard_borrow,replacement_borrow).
+
+pointwise_rule_liquidate_raw(old_liquidate,guard_liquidate,replacement_liquidate) : tau :=
+  pointwise_revise_entry_raw(old_liquidate,guard_liquidate,replacement_liquidate).
+
+pointwise_revision_diff(
+  old_mint,old_borrow,old_liquidate,
+  guard_mint,guard_borrow,guard_liquidate,
+  replacement_mint,replacement_borrow,replacement_liquidate
+) : tau :=
+  (pointwise_rule_mint_table(old_mint,guard_mint,replacement_mint) &
+    pointwise_rule_mint_raw(old_mint,guard_mint,replacement_mint)') |
+  (pointwise_rule_mint_table(old_mint,guard_mint,replacement_mint)' &
+    pointwise_rule_mint_raw(old_mint,guard_mint,replacement_mint)) |
+  (pointwise_rule_borrow_table(old_borrow,guard_borrow,replacement_borrow) &
+    pointwise_rule_borrow_raw(old_borrow,guard_borrow,replacement_borrow)') |
+  (pointwise_rule_borrow_table(old_borrow,guard_borrow,replacement_borrow)' &
+    pointwise_rule_borrow_raw(old_borrow,guard_borrow,replacement_borrow)) |
+  (pointwise_rule_liquidate_table(old_liquidate,guard_liquidate,replacement_liquidate) &
+    pointwise_rule_liquidate_raw(old_liquidate,guard_liquidate,replacement_liquidate)') |
+  (pointwise_rule_liquidate_table(old_liquidate,guard_liquidate,replacement_liquidate)' &
+    pointwise_rule_liquidate_raw(old_liquidate,guard_liquidate,replacement_liquidate)).
+
+pointwise_revision_outside_guard(old,guard,replacement) : tau :=
+  guard' & pointwise_revise_entry(old,guard,replacement).
+
+pointwise_revision_outside_guard_raw(old,guard,replacement) : tau :=
+  guard' & old.
+
+pointwise_revision_inside_guard(old,guard,replacement) : tau :=
+  guard & pointwise_revise_entry(old,guard,replacement).
+
+pointwise_revision_inside_guard_raw(old,guard,replacement) : tau :=
+  guard & replacement.
+
+pointwise_revision_twice(old,guard,replacement) : tau :=
+  pointwise_revise_entry(
+    pointwise_revise_entry(old,guard,replacement),
+    guard,
+    replacement
+  ).
+
+pointwise_revision_once(old,guard,replacement) : tau :=
+  pointwise_revise_entry(old,guard,replacement).

@@ -1,0 +1,69 @@
+# Protocol firewall priority ladder.
+#
+# Why this is a table demo:
+# Several guards may overlap. The first satisfied row wins, so the table behaves
+# like a priority-ordered symbolic router. The raw formula below is the exact
+# guarded-choice expansion.
+
+protocol_firewall_table(
+  emergency,exploit,oracle,liquidity,governance,normal,
+  freeze,quarantine,slow,cap,review,allow,deny
+) : tau :=
+  table {
+    when emergency => freeze;
+    when exploit => quarantine;
+    when oracle => slow;
+    when liquidity => cap;
+    when governance => review;
+    when normal => allow;
+    else => deny
+  }.
+
+protocol_firewall_raw(
+  emergency,exploit,oracle,liquidity,governance,normal,
+  freeze,quarantine,slow,cap,review,allow,deny
+) : tau :=
+  (emergency & freeze) |
+  (emergency' & (
+    (exploit & quarantine) |
+    (exploit' & (
+      (oracle & slow) |
+      (oracle' & (
+        (liquidity & cap) |
+        (liquidity' & (
+          (governance & review) |
+          (governance' & ((normal & allow) | (normal' & deny)))
+        ))
+      ))
+    ))
+  )).
+
+protocol_firewall_emergency_slice_table(
+  emergency,exploit,oracle,liquidity,governance,normal,
+  freeze,quarantine,slow,cap,review,allow,deny
+) : tau :=
+  emergency & protocol_firewall_table(
+    emergency,exploit,oracle,liquidity,governance,normal,
+    freeze,quarantine,slow,cap,review,allow,deny
+  ).
+
+protocol_firewall_emergency_slice_raw(
+  emergency,exploit,oracle,liquidity,governance,normal,
+  freeze,quarantine,slow,cap,review,allow,deny
+) : tau :=
+  emergency & freeze.
+
+protocol_firewall_oracle_slice_table(
+  emergency,exploit,oracle,liquidity,governance,normal,
+  freeze,quarantine,slow,cap,review,allow,deny
+) : tau :=
+  emergency' & exploit' & oracle & protocol_firewall_table(
+    emergency,exploit,oracle,liquidity,governance,normal,
+    freeze,quarantine,slow,cap,review,allow,deny
+  ).
+
+protocol_firewall_oracle_slice_raw(
+  emergency,exploit,oracle,liquidity,governance,normal,
+  freeze,quarantine,slow,cap,review,allow,deny
+) : tau :=
+  emergency' & exploit' & oracle & slow.

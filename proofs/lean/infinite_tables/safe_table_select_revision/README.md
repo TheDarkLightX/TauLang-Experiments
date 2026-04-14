@@ -20,6 +20,17 @@ The guard `G` must be fixed lower-stratum data. It cannot depend on the current 
 
 The extended grammar still denotes a monotone and omega-continuous simultaneous table update, and the omega-supremum of finite approximants is a fixed point.
 
+The packet also contains the implementation-facing pointwise revision theorem:
+
+```latex
+\mathrm{Rev}_{G,A}(T)(i)
+:=
+(G(i) \wedge A(i)) \vee (G(i)' \wedge T(i)).
+```
+
+When `G` and `A` are fixed tables, `Rev_{G,A}` is monotone and
+omega-continuous in the old table `T`.
+
 ## Boundary
 
 This is not unrestricted full TABA tables. It excludes same-stratum prime, current-state-dependent guards, arbitrary value-predicate `select`, unrestricted recursive `common`, NSO syntax, Guarded Successor syntax, and Tau runtime lowering.
