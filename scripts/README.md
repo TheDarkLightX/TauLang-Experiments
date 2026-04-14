@@ -88,3 +88,20 @@ python3 scripts/run_qelim_kb_probe.py
 
 That writes `results/local/qelim-kb-probe.json` and compares the BDD qelim
 backend with and without the opt-in `TAU_QELIM_BDD_KB_REWRITE=1` pass.
+
+For the larger generated matrix, run:
+
+```bash
+RUN_QELIM_KB_MATRIX=1 ./scripts/run_benchmarks.sh
+```
+
+or directly:
+
+```bash
+python3 scripts/run_qelim_kb_matrix.py \
+  --tau-bin external/tau-lang/build-Release/tau \
+  --out results/local/qelim-kb-matrix.json
+```
+
+The matrix compares `bdd`, `bdd+kb`, `bdd+ac`, and `bdd+ac+kb`.
+It is intentionally opt-in because it runs many Tau subprocesses.

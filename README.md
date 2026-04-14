@@ -87,7 +87,9 @@ The current patch is an experiment patch, not an official Tau release. It adds:
 - guarded qelim experiment code used by the optimization research thread.
 - an opt-in qelim rewrite probe flag,
   `TAU_QELIM_BDD_KB_REWRITE=1`, for the restricted c111-inspired
-  simplification experiment.
+  simplification experiment. Current evidence keeps this opt-in: it preserves
+  output parity and reduces compiled expression nodes on targeted formulas, but
+  timing is mixed on generated matrices.
 
 The table syntax is rejected unless `TAU_ENABLE_SAFE_TABLES=1` is set.
 

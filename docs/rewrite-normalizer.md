@@ -121,6 +121,43 @@ Boundary: timings on this tiny corpus are mixed and noisy. The result supports
 "this pass can simplify the compiled qelim expression without changing output,"
 not "this is a promoted Tau speedup."
 
+## Generated Matrix Result
+
+The larger generated matrix is opt-in:
+
+```bash
+RUN_QELIM_KB_MATRIX=1 ./scripts/run_benchmarks.sh
+```
+
+It compares:
+
+```text
+bdd
+bdd+kb
+bdd+ac
+bdd+ac+kb
+```
+
+Current research conclusion:
+
+- `bdd+kb` preserved output parity on the generated matrix.
+- `bdd+kb` consistently reduced compiled expression nodes on the targeted
+  absorption-heavy formulas.
+- The profit guard discarded rewrites whose normal form would have increased
+  node count.
+- Timing remained mixed. A wider generated corpus showed a small internal
+  improvement, while the smaller repeated corpus did not.
+
+So the promotion decision is:
+
+```text
+keep TAU_QELIM_BDD_KB_REWRITE opt-in
+do not make it default yet
+```
+
+The next useful optimization target is a selector that predicts when the KB pass
+is worth running, rather than always running it after compilation.
+
 ## How This Helps Tau Optimization
 
 The useful compiler pattern is:

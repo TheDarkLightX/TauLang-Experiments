@@ -467,10 +467,10 @@ index 5917175f..83279e47 100644
  			if (i == j) continue;
 diff --git a/src/qelim_bdd_experiment.tmpl.h b/src/qelim_bdd_experiment.tmpl.h
 new file mode 100644
-index 00000000..091ca561
+index 00000000..54102907
 --- /dev/null
 +++ b/src/qelim_bdd_experiment.tmpl.h
-@@ -0,0 +1,1641 @@
+@@ -0,0 +1,1652 @@
 +// To view the license please visit https://github.com/IDNI/tau-lang/blob/main/LICENSE.md
 +
 +#ifndef __IDNI__TAU__QELIM_BDD_EXPERIMENT_TMPL_H__
@@ -777,6 +777,7 @@ index 00000000..091ca561
 +	size_t steps = 0;
 +	size_t demorgan = 0;
 +	size_t absorption = 0;
++	size_t discarded = 0;
 +	size_t before_nodes = 0;
 +	size_t after_nodes = 0;
 +};
@@ -893,7 +894,16 @@ index 00000000..091ca561
 +		current = next;
 +		if (after == before) break;
 +	}
-+	if (stats) stats->after_nodes = expr_nodes<node>(current);
++	const size_t before_nodes = expr_nodes<node>(e);
++	const size_t after_nodes = expr_nodes<node>(current);
++	if (after_nodes > before_nodes) {
++		if (stats) {
++			stats->discarded += 1;
++			stats->after_nodes = before_nodes;
++		}
++		return e;
++	}
++	if (stats) stats->after_nodes = after_nodes;
 +	return current;
 +}
 +
@@ -2102,6 +2112,7 @@ index 00000000..091ca561
 +			<< " kb_steps=" << kb_stats.steps
 +			<< " kb_demorgan=" << kb_stats.demorgan
 +			<< " kb_absorption=" << kb_stats.absorption
++			<< " kb_discarded=" << kb_stats.discarded
 +			<< " kb_before_nodes=" << kb_stats.before_nodes
 +			<< " kb_after_nodes=" << kb_stats.after_nodes
 +			<< "\n";
