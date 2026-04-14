@@ -83,6 +83,44 @@ itself. It is not a Tau Language runtime benchmark and should not be cited as a
 Tau speedup unless the normalizer is later wired into a Tau execution path and
 measured there.
 
+## Tau Qelim Probe
+
+The patch also exposes an opt-in qelim experiment flag:
+
+```bash
+TAU_QELIM_BACKEND=bdd \
+TAU_QELIM_BDD_KB_REWRITE=1 \
+TAU_QELIM_BDD_STATS=1 \
+external/tau-lang/build-Release/tau --charvar false \
+  -e 'qelim ex x !((x = 0) && ((x = 0) || (a = 0)))'
+```
+
+The reproducible probe is:
+
+```bash
+python3 scripts/run_qelim_kb_probe.py
+```
+
+The current probe checks formulas designed to expose absorption, De Morgan, and
+double-complement opportunities. It requires the patched Tau binary. It compares
+the BDD qelim backend with and without `TAU_QELIM_BDD_KB_REWRITE=1` and fails if
+the outputs differ.
+
+Current local receipt:
+
+```text
+5 qelim probes
+5 matching outputs
+0 output mismatches
+```
+
+The pass reduced compiled expression nodes on the targeted absorption probes,
+for example `6 -> 2` and `5 -> 1`.
+
+Boundary: timings on this tiny corpus are mixed and noisy. The result supports
+"this pass can simplify the compiled qelim expression without changing output,"
+not "this is a promoted Tau speedup."
+
 ## How This Helps Tau Optimization
 
 The useful compiler pattern is:

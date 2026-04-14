@@ -467,10 +467,10 @@ index 5917175f..83279e47 100644
  			if (i == j) continue;
 diff --git a/src/qelim_bdd_experiment.tmpl.h b/src/qelim_bdd_experiment.tmpl.h
 new file mode 100644
-index 00000000..bc5192dc
+index 00000000..091ca561
 --- /dev/null
 +++ b/src/qelim_bdd_experiment.tmpl.h
-@@ -0,0 +1,1503 @@
+@@ -0,0 +1,1641 @@
 +// To view the license please visit https://github.com/IDNI/tau-lang/blob/main/LICENSE.md
 +
 +#ifndef __IDNI__TAU__QELIM_BDD_EXPERIMENT_TMPL_H__
@@ -537,6 +537,11 @@ index 00000000..bc5192dc
 +
 +inline bool ac_canon_enabled() {
 +	const char* env = std::getenv("TAU_QELIM_BDD_AC_CANON");
++	return env && std::string(env) == "1";
++}
++
++inline bool kb_rewrite_enabled() {
++	const char* env = std::getenv("TAU_QELIM_BDD_KB_REWRITE");
 +	return env && std::string(env) == "1";
 +}
 +
@@ -765,6 +770,131 @@ index 00000000..bc5192dc
 +			collect_support<node>(e->right, out);
 +			return;
 +	}
++}
++
++template <NodeType node>
++struct kb_rewrite_stats {
++	size_t steps = 0;
++	size_t demorgan = 0;
++	size_t absorption = 0;
++	size_t before_nodes = 0;
++	size_t after_nodes = 0;
++};
++
++template <NodeType node>
++size_t expr_nodes(const bexpr<node>& e) {
++	switch (e->kind) {
++		case bool_expr<node>::cnst:
++		case bool_expr<node>::var:
++			return 1;
++		case bool_expr<node>::neg:
++			return 1 + expr_nodes<node>(e->left);
++		case bool_expr<node>::land:
++		case bool_expr<node>::lor:
++			return 1 + expr_nodes<node>(e->left) + expr_nodes<node>(e->right);
++	}
++	return 1;
++}
++
++template <NodeType node>
++bool is_or_with_child(const bexpr<node>& e, const bexpr<node>& child) {
++	return e->kind == bool_expr<node>::lor &&
++		(same_expr<node>(e->left, child) || same_expr<node>(e->right, child));
++}
++
++template <NodeType node>
++bool is_and_with_child(const bexpr<node>& e, const bexpr<node>& child) {
++	return e->kind == bool_expr<node>::land &&
++		(same_expr<node>(e->left, child) || same_expr<node>(e->right, child));
++}
++
++template <NodeType node>
++bexpr<node> normalize_kb_rec(const bexpr<node>& e, kb_rewrite_stats<node>* stats) {
++	switch (e->kind) {
++		case bool_expr<node>::cnst:
++		case bool_expr<node>::var:
++			return e;
++		case bool_expr<node>::neg: {
++			auto a = normalize_kb_rec<node>(e->left, stats);
++			if (a->kind == bool_expr<node>::neg) {
++				if (stats) stats->steps += 1;
++				return normalize_kb_rec<node>(a->left, stats);
++			}
++			if (a->kind == bool_expr<node>::land) {
++				if (stats) {
++					stats->steps += 1;
++					stats->demorgan += 1;
++				}
++				return normalize_kb_rec<node>(
++					make_or<node>(make_not<node>(a->left), make_not<node>(a->right)),
++					stats);
++			}
++			if (a->kind == bool_expr<node>::lor) {
++				if (stats) {
++					stats->steps += 1;
++					stats->demorgan += 1;
++				}
++				return normalize_kb_rec<node>(
++					make_and<node>(make_not<node>(a->left), make_not<node>(a->right)),
++					stats);
++			}
++			return make_not<node>(a);
++		}
++		case bool_expr<node>::land: {
++			auto l = normalize_kb_rec<node>(e->left, stats);
++			auto r = normalize_kb_rec<node>(e->right, stats);
++			if (is_or_with_child<node>(r, l)) {
++				if (stats) {
++					stats->steps += 1;
++					stats->absorption += 1;
++				}
++				return l;
++			}
++			if (is_or_with_child<node>(l, r)) {
++				if (stats) {
++					stats->steps += 1;
++					stats->absorption += 1;
++				}
++				return r;
++			}
++			return make_and<node>(l, r);
++		}
++		case bool_expr<node>::lor: {
++			auto l = normalize_kb_rec<node>(e->left, stats);
++			auto r = normalize_kb_rec<node>(e->right, stats);
++			if (is_and_with_child<node>(r, l)) {
++				if (stats) {
++					stats->steps += 1;
++					stats->absorption += 1;
++				}
++				return l;
++			}
++			if (is_and_with_child<node>(l, r)) {
++				if (stats) {
++					stats->steps += 1;
++					stats->absorption += 1;
++				}
++				return r;
++			}
++			return make_or<node>(l, r);
++		}
++	}
++	return e;
++}
++
++template <NodeType node>
++bexpr<node> normalize_kb(const bexpr<node>& e, kb_rewrite_stats<node>* stats) {
++	if (stats) stats->before_nodes = expr_nodes<node>(e);
++	bexpr<node> current = e;
++	for (size_t i = 0; i < 64; ++i) {
++		const std::string before = repr<node>(current);
++		bexpr<node> next = normalize_kb_rec<node>(current, stats);
++		const std::string after = repr<node>(next);
++		current = next;
++		if (after == before) break;
++	}
++	if (stats) stats->after_nodes = expr_nodes<node>(current);
++	return current;
 +}
 +
 +template <NodeType node>
@@ -1897,9 +2027,12 @@ index 00000000..bc5192dc
 +	size_t dp_resolvents = 0;
 +	size_t dp_clause_drops = 0;
 +	size_t dp_subsumed = 0;
++	kb_rewrite_stats<node> kb_stats;
 +	bexpr<node> working = *compiled;
 +	if (ac_canon_enabled())
 +		working = normalize_ac<node>(working);
++	if (kb_rewrite_enabled())
++		working = normalize_kb<node>(working, &kb_stats);
 +	if (pure_enabled())
 +		working = drop_pure_quantified<node>(working, st, &pure_drops);
 +	if (blocked_enabled())
@@ -1966,6 +2099,11 @@ index 00000000..bc5192dc
 +			<< " dp_resolvents=" << dp_resolvents
 +			<< " dp_clause_drops=" << dp_clause_drops
 +			<< " dp_subsumed=" << dp_subsumed
++			<< " kb_steps=" << kb_stats.steps
++			<< " kb_demorgan=" << kb_stats.demorgan
++			<< " kb_absorption=" << kb_stats.absorption
++			<< " kb_before_nodes=" << kb_stats.before_nodes
++			<< " kb_after_nodes=" << kb_stats.after_nodes
 +			<< "\n";
 +	}
 +	return rebuilt;

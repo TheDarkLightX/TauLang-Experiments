@@ -79,3 +79,12 @@ The benchmark wrapper records a deterministic corpus receipt:
 ```
 
 That writes `results/local/kb-normalizer-benchmark.json`.
+
+If a patched Tau binary is available, the same wrapper also runs:
+
+```bash
+python3 scripts/run_qelim_kb_probe.py
+```
+
+That writes `results/local/qelim-kb-probe.json` and compares the BDD qelim
+backend with and without the opt-in `TAU_QELIM_BDD_KB_REWRITE=1` pass.

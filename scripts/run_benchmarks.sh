@@ -33,3 +33,11 @@ python3 scripts/tau_kb_normalizer.py benchmark \
   > "$RESULT_DIR/kb-normalizer-benchmark.txt"
 
 echo "KB normalizer benchmark written to $RESULT_DIR/kb-normalizer-benchmark.json"
+
+if [[ -n "$TAU_BIN" ]]; then
+  python3 scripts/run_qelim_kb_probe.py \
+    --tau-bin "$TAU_BIN" \
+    --out "$RESULT_DIR/qelim-kb-probe.json" \
+    > "$RESULT_DIR/qelim-kb-probe.txt"
+  echo "Qelim KB probe written to $RESULT_DIR/qelim-kb-probe.json"
+fi
