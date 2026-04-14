@@ -467,10 +467,10 @@ index 5917175f..83279e47 100644
  			if (i == j) continue;
 diff --git a/src/qelim_bdd_experiment.tmpl.h b/src/qelim_bdd_experiment.tmpl.h
 new file mode 100644
-index 00000000..54102907
+index 00000000..9a741219
 --- /dev/null
 +++ b/src/qelim_bdd_experiment.tmpl.h
-@@ -0,0 +1,1652 @@
+@@ -0,0 +1,1709 @@
 +// To view the license please visit https://github.com/IDNI/tau-lang/blob/main/LICENSE.md
 +
 +#ifndef __IDNI__TAU__QELIM_BDD_EXPERIMENT_TMPL_H__
@@ -540,9 +540,19 @@ index 00000000..54102907
 +	return env && std::string(env) == "1";
 +}
 +
-+inline bool kb_rewrite_enabled() {
++inline std::string kb_rewrite_mode() {
 +	const char* env = std::getenv("TAU_QELIM_BDD_KB_REWRITE");
-+	return env && std::string(env) == "1";
++	return env ? std::string(env) : std::string();
++}
++
++inline bool kb_rewrite_enabled() {
++	const std::string mode = kb_rewrite_mode();
++	return mode == "1" || mode == "guarded" || mode == "auto";
++}
++
++inline bool kb_rewrite_guarded() {
++	const std::string mode = kb_rewrite_mode();
++	return mode == "guarded" || mode == "auto";
 +}
 +
 +inline bool auto_guard_enabled() {
@@ -778,6 +788,10 @@ index 00000000..54102907
 +	size_t demorgan = 0;
 +	size_t absorption = 0;
 +	size_t discarded = 0;
++	size_t guard_absorption = 0;
++	size_t guard_demorgan = 0;
++	size_t guard_double_compl = 0;
++	size_t guard_ran = 0;
 +	size_t before_nodes = 0;
 +	size_t after_nodes = 0;
 +};
@@ -807,6 +821,37 @@ index 00000000..54102907
 +bool is_and_with_child(const bexpr<node>& e, const bexpr<node>& child) {
 +	return e->kind == bool_expr<node>::land &&
 +		(same_expr<node>(e->left, child) || same_expr<node>(e->right, child));
++}
++
++template <NodeType node>
++void scan_kb_opportunities(const bexpr<node>& e, kb_rewrite_stats<node>& stats) {
++	switch (e->kind) {
++		case bool_expr<node>::cnst:
++		case bool_expr<node>::var:
++			return;
++		case bool_expr<node>::neg:
++			if (e->left->kind == bool_expr<node>::neg)
++				stats.guard_double_compl += 1;
++			if (e->left->kind == bool_expr<node>::land ||
++				e->left->kind == bool_expr<node>::lor)
++				stats.guard_demorgan += 1;
++			scan_kb_opportunities<node>(e->left, stats);
++			return;
++		case bool_expr<node>::land:
++			if (is_or_with_child<node>(e->right, e->left) ||
++				is_or_with_child<node>(e->left, e->right))
++				stats.guard_absorption += 1;
++			scan_kb_opportunities<node>(e->left, stats);
++			scan_kb_opportunities<node>(e->right, stats);
++			return;
++		case bool_expr<node>::lor:
++			if (is_and_with_child<node>(e->right, e->left) ||
++				is_and_with_child<node>(e->left, e->right))
++				stats.guard_absorption += 1;
++			scan_kb_opportunities<node>(e->left, stats);
++			scan_kb_opportunities<node>(e->right, stats);
++			return;
++	}
 +}
 +
 +template <NodeType node>
@@ -886,6 +931,7 @@ index 00000000..54102907
 +template <NodeType node>
 +bexpr<node> normalize_kb(const bexpr<node>& e, kb_rewrite_stats<node>* stats) {
 +	if (stats) stats->before_nodes = expr_nodes<node>(e);
++	if (stats) stats->guard_ran += 1;
 +	bexpr<node> current = e;
 +	for (size_t i = 0; i < 64; ++i) {
 +		const std::string before = repr<node>(current);
@@ -2041,8 +2087,15 @@ index 00000000..54102907
 +	bexpr<node> working = *compiled;
 +	if (ac_canon_enabled())
 +		working = normalize_ac<node>(working);
-+	if (kb_rewrite_enabled())
-+		working = normalize_kb<node>(working, &kb_stats);
++	if (kb_rewrite_enabled()) {
++		scan_kb_opportunities<node>(working, kb_stats);
++		if (!kb_rewrite_guarded() || kb_stats.guard_absorption > 0)
++			working = normalize_kb<node>(working, &kb_stats);
++		else {
++			kb_stats.before_nodes = expr_nodes<node>(working);
++			kb_stats.after_nodes = kb_stats.before_nodes;
++		}
++	}
 +	if (pure_enabled())
 +		working = drop_pure_quantified<node>(working, st, &pure_drops);
 +	if (blocked_enabled())
@@ -2113,6 +2166,10 @@ index 00000000..54102907
 +			<< " kb_demorgan=" << kb_stats.demorgan
 +			<< " kb_absorption=" << kb_stats.absorption
 +			<< " kb_discarded=" << kb_stats.discarded
++			<< " kb_guard_absorption=" << kb_stats.guard_absorption
++			<< " kb_guard_demorgan=" << kb_stats.guard_demorgan
++			<< " kb_guard_double_compl=" << kb_stats.guard_double_compl
++			<< " kb_guard_ran=" << kb_stats.guard_ran
 +			<< " kb_before_nodes=" << kb_stats.before_nodes
 +			<< " kb_after_nodes=" << kb_stats.after_nodes
 +			<< "\n";

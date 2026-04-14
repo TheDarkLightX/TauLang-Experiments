@@ -95,6 +95,15 @@ external/tau-lang/build-Release/tau --charvar false \
   -e 'qelim ex x !((x = 0) && ((x = 0) || (a = 0)))'
 ```
 
+There is also a guarded selector:
+
+```bash
+TAU_QELIM_BDD_KB_REWRITE=guarded
+```
+
+The guarded mode performs the rewrite pass only when a cheap scan finds an
+absorption opportunity in the compiled Boolean expression.
+
 The reproducible probe is:
 
 ```bash
@@ -134,29 +143,42 @@ It compares:
 ```text
 bdd
 bdd+kb
+bdd+kb_guarded
 bdd+ac
 bdd+ac+kb
+bdd+ac+kb_guarded
 ```
 
 Current research conclusion:
 
-- `bdd+kb` preserved output parity on the generated matrix.
-- `bdd+kb` consistently reduced compiled expression nodes on the targeted
+- `bdd+kb` and `bdd+kb_guarded` preserved output parity on the generated
+  matrices.
+- Both KB modes consistently reduced compiled expression nodes on the targeted
   absorption-heavy formulas.
+- On the current 18-case generated matrix with 3 repetitions,
+  `bdd+kb_guarded` reduced compiled KB nodes by `42.73%` and had an internal
+  qelim time ratio of about `0.95` against plain `bdd`.
+- On the current 34-case generated matrix with 3 repetitions,
+  `bdd+kb_guarded` reduced compiled KB nodes by `40.81%` and had an internal
+  qelim time ratio of about `0.952` against plain `bdd`.
 - The profit guard discarded rewrites whose normal form would have increased
-  node count.
-- Timing remained mixed. A wider generated corpus showed a small internal
-  improvement, while the smaller repeated corpus did not.
+  node count in forced mode. Guarded mode avoids running the normalizer when the
+  scan finds no absorption opportunity.
+- End-to-end elapsed time is dominated by Tau process startup in this harness,
+  so these receipts are internal qelim measurements, not whole-program speedup
+  claims.
 
 So the promotion decision is:
 
 ```text
-keep TAU_QELIM_BDD_KB_REWRITE opt-in
+keep TAU_QELIM_BDD_KB_REWRITE and guarded mode opt-in
 do not make it default yet
 ```
 
-The next useful optimization target is a selector that predicts when the KB pass
-is worth running, rather than always running it after compilation.
+The next useful optimization target is a stronger selector than the current
+absorption-only guard. The current selector has signal on generated
+absorption-heavy formulas, but it is not a proof that the pass is profitable on
+arbitrary Tau qelim workloads.
 
 ## How This Helps Tau Optimization
 

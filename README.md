@@ -85,11 +85,13 @@ The current patch is an experiment patch, not an official Tau release. It adds:
 - pointwise revision helper aliases for finite masks and symbolic `tau` values,
 - feature-gated `table { when ... else ... }` syntax for guarded choice,
 - guarded qelim experiment code used by the optimization research thread.
-- an opt-in qelim rewrite probe flag,
-  `TAU_QELIM_BDD_KB_REWRITE=1`, for the restricted c111-inspired
+- opt-in qelim rewrite probe flags,
+  `TAU_QELIM_BDD_KB_REWRITE=1` and
+  `TAU_QELIM_BDD_KB_REWRITE=guarded`, for the restricted c111-inspired
   simplification experiment. Current evidence keeps this opt-in: it preserves
-  output parity and reduces compiled expression nodes on targeted formulas, but
-  timing is mixed on generated matrices.
+  output parity and reduces compiled expression nodes on targeted formulas and
+  generated absorption-heavy matrices, but it is not yet validated as a default
+  Tau optimization.
 
 The table syntax is rejected unless `TAU_ENABLE_SAFE_TABLES=1` is set.
 

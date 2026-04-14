@@ -87,7 +87,9 @@ python3 scripts/run_qelim_kb_probe.py
 ```
 
 That writes `results/local/qelim-kb-probe.json` and compares the BDD qelim
-backend with and without the opt-in `TAU_QELIM_BDD_KB_REWRITE=1` pass.
+backend with and without the opt-in `TAU_QELIM_BDD_KB_REWRITE=1` pass. The
+generated matrix also tests `TAU_QELIM_BDD_KB_REWRITE=guarded`, which runs the
+rewrite pass only when a cheap scan detects an absorption opportunity.
 
 For the larger generated matrix, run:
 
@@ -103,5 +105,6 @@ python3 scripts/run_qelim_kb_matrix.py \
   --out results/local/qelim-kb-matrix.json
 ```
 
-The matrix compares `bdd`, `bdd+kb`, `bdd+ac`, and `bdd+ac+kb`.
+The matrix compares `bdd`, `bdd+kb`, `bdd+kb_guarded`, `bdd+ac`,
+`bdd+ac+kb`, and `bdd+ac+kb_guarded`.
 It is intentionally opt-in because it runs many Tau subprocesses.

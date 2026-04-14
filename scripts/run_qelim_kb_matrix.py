@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 """Generated matrix for the opt-in Tau qelim KB rewrite pass.
 
-The matrix compares four patched BDD qelim modes:
+The matrix compares six patched BDD qelim modes:
 
   bdd
   bdd+kb
+  bdd+kb_guarded
   bdd+ac
   bdd+ac+kb
+  bdd+ac+kb_guarded
 
 It is designed to answer a narrow engineering question: does the c111-inspired
 rewrite pre-pass simplify the compiled Boolean expression without changing the
@@ -36,15 +38,17 @@ STAT_RE = re.compile(r"([A-Za-z_]+)=([^\s]+)")
 @dataclass(frozen=True)
 class Mode:
     name: str
-    kb: bool = False
+    kb: str = ""
     ac: bool = False
 
 
 MODES = [
     Mode("bdd"),
-    Mode("bdd_kb", kb=True),
+    Mode("bdd_kb", kb="1"),
+    Mode("bdd_kb_guarded", kb="guarded"),
     Mode("bdd_ac", ac=True),
-    Mode("bdd_ac_kb", kb=True, ac=True),
+    Mode("bdd_ac_kb", kb="1", ac=True),
+    Mode("bdd_ac_kb_guarded", kb="guarded", ac=True),
 ]
 
 
@@ -164,7 +168,7 @@ def run_tau(tau_bin: Path, command: str, mode: Mode) -> dict[str, object]:
     env["TAU_QELIM_BACKEND"] = "bdd"
     env["TAU_QELIM_BDD_STATS"] = "1"
     if mode.kb:
-        env["TAU_QELIM_BDD_KB_REWRITE"] = "1"
+        env["TAU_QELIM_BDD_KB_REWRITE"] = mode.kb
     else:
         env.pop("TAU_QELIM_BDD_KB_REWRITE", None)
     if mode.ac:
@@ -208,6 +212,9 @@ def summarize_mode(values: list[dict[str, object]]) -> dict[str, object]:
     elapsed = [float(v["elapsed_ms"]) for v in values]
     kb_steps = [as_int(v["stats"], "kb_steps") for v in values]  # type: ignore[arg-type]
     kb_discarded = [as_int(v["stats"], "kb_discarded") for v in values]  # type: ignore[arg-type]
+    kb_guard_absorption = [as_int(v["stats"], "kb_guard_absorption") for v in values]  # type: ignore[arg-type]
+    kb_guard_demorgan = [as_int(v["stats"], "kb_guard_demorgan") for v in values]  # type: ignore[arg-type]
+    kb_guard_ran = [as_int(v["stats"], "kb_guard_ran") for v in values]  # type: ignore[arg-type]
     before_nodes = [as_int(v["stats"], "kb_before_nodes") for v in values]  # type: ignore[arg-type]
     after_nodes = [as_int(v["stats"], "kb_after_nodes") for v in values]  # type: ignore[arg-type]
     before_sum = sum(before_nodes)
@@ -220,6 +227,9 @@ def summarize_mode(values: list[dict[str, object]]) -> dict[str, object]:
         "elapsed_ms_median": round(statistics.median(elapsed), 3) if elapsed else 0,
         "kb_steps_sum": sum(kb_steps),
         "kb_discarded_sum": sum(kb_discarded),
+        "kb_guard_absorption_sum": sum(kb_guard_absorption),
+        "kb_guard_demorgan_sum": sum(kb_guard_demorgan),
+        "kb_guard_ran_sum": sum(kb_guard_ran),
         "kb_before_nodes_sum": before_sum,
         "kb_after_nodes_sum": after_sum,
         "kb_node_reduction_percent": (
