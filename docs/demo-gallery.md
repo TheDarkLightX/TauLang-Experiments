@@ -93,9 +93,9 @@ table {
 }
 ```
 
-This is the closest public demo to the safe recursive-table story. The row values
-are not fixed labels. They are formulas that transform an existing symbolic
-state into a next symbolic state.
+This is the closest public demo to the safe recursive-table semantics. The row
+values are not fixed labels. They are formulas that transform an existing
+symbolic state into a next symbolic state.
 
 ## Demo 4: Pointwise Revision
 

@@ -256,4 +256,4 @@ source expression
 
 The c111 result supports only the first arrow. It is still valuable because it
 turns a fragile list of simplification rules into a checked normalizer with a
-termination and confluence story.
+termination and confluence proof artifact.

@@ -115,7 +115,8 @@ Standard reading: the parsed `table { when ... else ... }` term denotes the same
 Boolean-algebra value as the hand-expanded guarded-choice formula.
 
 Plain English: the demo shows that the new table syntax is not magic. It lowers
-to the exact guarded-choice expression that the proof story says it should.
+to the exact guarded-choice expression specified by the checked lowering
+artifact.
 
 Boundary: this is still safe guarded choice. It is not unrestricted recurrence,
 same-stratum prime, full NSO, or Guarded Successor.
