@@ -125,6 +125,7 @@ matched target cases:          3
 target-sized cases:            4
 Tau-normalized characters:    36
 target-normalized characters: 36
+MNF-matched target cases:      4
 ```
 
 The Lean packet proves the substitution law and the no-premise counterexample.
@@ -132,10 +133,12 @@ The related Tau-facing probe shows that, after equality-split branches are
 formed, the current Tau binary can prove shorter recombined targets equivalent,
 but does not yet normalize all of them without the feature flag. The
 feature-gated C++ pass reduces all four checked cases to target-sized forms.
-Three match the target text exactly; the three-alias case differs only by
-equivalent term ordering. This is now the strongest next candidate for a
+Three match the target text exactly under `normalize`; the remaining case
+matches under `mnf`, so the gap is presentation-level canonical ordering rather
+than semantic failure. This is now the strongest next candidate for a
 Tau-native normalizer patch: branch-local equality substitution, branch
-recombination, and residual absorption under alias equalities.
+recombination, residual absorption under alias equalities, and a final
+presentation-canonicalization step.
 
 The extended alias-order smoke test strengthens the evidence:
 
@@ -145,6 +148,7 @@ matched target cases:          3
 target-sized cases:            8
 Tau-normalized characters:   108
 target-normalized characters: 108
+MNF-matched target cases:      8
 ```
 
 The remaining mismatch class is presentation-level canonical ordering of

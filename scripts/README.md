@@ -654,6 +654,7 @@ matched target cases:          3
 target-sized cases:            4
 Tau-normalized characters:    36
 target-normalized characters: 36
+MNF-matched target cases:      4
 ```
 
 Boundary: the feature-gated pass closes this four-case size-reduction corpus,
@@ -676,7 +677,12 @@ matched target cases:          3
 target-sized cases:            8
 Tau-normalized characters:   108
 target-normalized characters: 108
+MNF-matched target cases:      8
 ```
+
+The five extended cases that do not match the target text under `normalize`
+still match under `mnf`. The feature-gated pass has closed the size-reduction
+obligation on this corpus; the remaining issue is presentation canonicalization.
 
 ## Variable-update cache telemetry
 

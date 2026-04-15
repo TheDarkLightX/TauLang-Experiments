@@ -181,7 +181,9 @@ forms and reduces Tau's combined normalized-character count from `152` to
 equivalent term ordering, so this is still an opt-in, scoped normalizer
 experiment rather than a default Tau optimization.
 An extended alias-order smoke test reaches target-sized output on `8` of `8`
-checked probes.
+checked probes. The same extended corpus matches under `mnf` on `8` of `8`
+probes, so the remaining mismatch is presentation canonicalization rather than
+a missed semantic reduction on this corpus.
 
 The fixed-width modular arithmetic rewrite-triage corpus is:
 

@@ -165,6 +165,7 @@ matched target cases:          3
 target-sized cases:            4
 Tau-normalized characters:    36
 target-normalized characters: 36
+MNF-matched target cases:      4
 ```
 
 Interpretation: the pass now closes the measured reduction opportunity on this
@@ -188,7 +189,12 @@ matched target cases:          3
 target-sized cases:            8
 Tau-normalized characters:   108
 target-normalized characters: 108
+MNF-matched target cases:      8
 ```
+
+The remaining mismatch is presentation-level. On the extended enabled corpus,
+`normalize` prints five target-sized formulas in an equivalent term order, but
+`mnf` maps all eight originals and all eight targets to the same canonical text.
 
 The extra cases permute the three-alias equality path. They check that the pass
 handles direct and transitive alias representatives, not only the first

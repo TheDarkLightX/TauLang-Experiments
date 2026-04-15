@@ -123,12 +123,16 @@ def tau_cmd(tau_bin: Path, command: str) -> dict[str, object]:
     }
 
 
-def normalize(tau_bin: Path, formula: str) -> dict[str, object]:
-    result = tau_cmd(tau_bin, f"normalize {formula}")
+def normalize_with(tau_bin: Path, command: str, formula: str) -> dict[str, object]:
+    result = tau_cmd(tau_bin, f"{command} {formula}")
     normalized = str(result["last_line"])
     if normalized.startswith("%1:"):
         normalized = normalized[3:].strip()
     return {**result, "normalized": normalized}
+
+
+def normalize(tau_bin: Path, formula: str) -> dict[str, object]:
+    return normalize_with(tau_bin, "normalize", formula)
 
 
 def solve_equiv(tau_bin: Path, original: str, target: str) -> dict[str, object]:
@@ -138,9 +142,15 @@ def solve_equiv(tau_bin: Path, original: str, target: str) -> dict[str, object]:
 def analyze(tau_bin: Path, probe: Probe) -> dict[str, object]:
     original_norm = normalize(tau_bin, probe.original)
     target_norm = normalize(tau_bin, probe.target)
+    original_dnf = normalize_with(tau_bin, "dnf", probe.original)
+    target_dnf = normalize_with(tau_bin, "dnf", probe.target)
+    original_mnf = normalize_with(tau_bin, "mnf", probe.original)
+    target_mnf = normalize_with(tau_bin, "mnf", probe.target)
     equiv = solve_equiv(tau_bin, probe.original, probe.target)
     original_text = str(original_norm["normalized"])
     target_text = str(target_norm["normalized"])
+    dnf_matches = str(original_dnf["normalized"]) == str(target_dnf["normalized"])
+    mnf_matches = str(original_mnf["normalized"]) == str(target_mnf["normalized"])
     return {
         "name": probe.name,
         "original": probe.original,
@@ -148,6 +158,8 @@ def analyze(tau_bin: Path, probe: Probe) -> dict[str, object]:
         "tau_normalized": original_text,
         "target_normalized": target_text,
         "tau_normalized_matches_target": original_text == target_text,
+        "dnf_matches_target": dnf_matches,
+        "mnf_matches_target": mnf_matches,
         "tau_normalized_chars": len(original_text),
         "target_normalized_chars": len(target_text),
         "char_reduction_if_targeted_percent": (
@@ -159,6 +171,10 @@ def analyze(tau_bin: Path, probe: Probe) -> dict[str, object]:
         "ok": (
             int(original_norm["returncode"]) == 0
             and int(target_norm["returncode"]) == 0
+            and int(original_dnf["returncode"]) == 0
+            and int(target_dnf["returncode"]) == 0
+            and int(original_mnf["returncode"]) == 0
+            and int(target_mnf["returncode"]) == 0
             and int(equiv["returncode"]) == 0
             and equiv["last_line"] == "no solution"
         ),
@@ -185,6 +201,8 @@ def main() -> int:
         if int(row["tau_normalized_chars"]) > int(row["target_normalized_chars"])
     ]
     matched = [row for row in rows if bool(row["tau_normalized_matches_target"])]
+    dnf_matched = [row for row in rows if bool(row["dnf_matches_target"])]
+    mnf_matched = [row for row in rows if bool(row["mnf_matches_target"])]
     target_sized = [
         row for row in rows
         if int(row["tau_normalized_chars"]) <= int(row["target_normalized_chars"])
@@ -199,6 +217,8 @@ def main() -> int:
         "extended": args.extended,
         "useful_reduction_cases": len(useful),
         "matched_target_cases": len(matched),
+        "dnf_matched_target_cases": len(dnf_matched),
+        "mnf_matched_target_cases": len(mnf_matched),
         "target_sized_cases": len(target_sized),
         "tau_normalized_chars": total_tau,
         "target_normalized_chars": total_target,
@@ -211,7 +231,9 @@ def main() -> int:
         "boundary": (
             "Targets are solver-checked equivalent to the originals. This script "
             "is a branch-recombination probe; with TAU_EQUALITY_SPLIT_RECOMBINE=1 "
-            "it also measures the experimental Tau normalizer patch."
+            "it also measures the experimental Tau normalizer patch. DNF/MNF "
+            "matches distinguish semantic canonical agreement from normalize-text "
+            "presentation differences."
         ),
     }
     args.out.parent.mkdir(parents=True, exist_ok=True)
