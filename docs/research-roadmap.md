@@ -137,4 +137,6 @@ Boundary:
   opportunity, not a completed default Tau optimization. The feature-gated pass
   closes the smoke corpus and the generated path-sensitive corpus on normalized
   size: `48 / 48` generated cases are target-sized with the flag enabled. The
-  next target is presentation canonicalization plus larger generated corpora.
+  four-variable equality-chain stress corpus is also closed on size:
+  `105 / 105` stress cases are target-sized with the flag enabled. The next
+  target is presentation canonicalization and still broader generated corpora.

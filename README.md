@@ -108,7 +108,9 @@ The current patch is an experiment patch, not an official Tau release. It adds:
   on that corpus. On the generated path-sensitive corpus, the same flag moves
   target-sized output from `2` of `48` baseline cases to `48` of `48` enabled
   cases. Exact `normalize` text still matches `24` of `48`, while `mnf`
-  matches all `48`.
+  matches all `48`. On the four-variable equality-chain stress corpus, it
+  reaches target-sized output on `105` of `105` cases and matches all `105`
+  under `mnf`; exact `normalize` text matches `84` of `105`.
 - opt-in qelim rewrite probe flags,
   `TAU_QELIM_BDD_KB_REWRITE=1` and
   `TAU_QELIM_BDD_KB_REWRITE=guarded`, for the restricted c111-inspired
@@ -204,6 +206,25 @@ character count is `378`, exactly the target count. Exact `normalize` text still
 matches `24` of `48`, while all `48` still match under `mnf`. The remaining
 target is presentation canonicalization, not missed equality-split
 recombination on this generated corpus.
+
+The four-variable stress corpus extends the same idea to equality chains where
+the alias branch can simplify the residual to a different atom, or to true:
+
+```bash
+TAU_EQUALITY_SPLIT_RECOMBINE=1 python3 scripts/run_equality_split_tau_probe.py \
+  --stress-path-corpus \
+  --out results/local/equality-split-stress-enabled.json
+```
+
+Current receipt:
+
+```text
+target-sized cases:          105 / 105
+Tau-normalized characters:   847
+target-normalized characters: 847
+MNF-matched target cases:    105 / 105
+exact normalize matches:      84 / 105
+```
 
 The fixed-width modular arithmetic rewrite-triage corpus is:
 

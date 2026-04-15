@@ -168,15 +168,32 @@ MNF-matched target cases:     48 / 48
 This shows that the scoped recombination pass now closes the generated
 path-sensitive corpus on normalized size. Exact `normalize` text still matches
 only `24` of `48` generated cases, because Tau can print equivalent
-Boolean-algebra terms in different orders. The next proof and implementation
-target is therefore presentation canonicalization:
+Boolean-algebra terms in different orders.
 
-The final six size failures were closed by equality-graph implication checks:
+The four-variable equality-chain stress corpus adds cases where the equality
+branch simplifies the residual to a different atom, or all the way to true:
+
+```text
+enabled target-sized cases:  105 / 105
+enabled normalize chars:     847
+target normalize chars:      847
+MNF-matched target cases:    105 / 105
+exact normalize matches:      84 / 105
+```
+
+This stress corpus forced two additional graph checks: a failed-guard
+disjunction may complement an alias component by connecting all terms in that
+component, and an alias-only branch may be recombined when the aliases entail
+the residual. The next proof and implementation target is still presentation
+canonicalization:
+
+The final size failures were closed by equality-graph implication checks:
 alias branches that imply the residual can be recombined when the residual plus
 the failed guard-disjunction reconstructs the alias branch. A separate
 conjunction cleanup removes redundant path-failure disjunctions when an
 endpoint inequality already implies that one edge on the equality path must
-fail.
+fail. The stress corpus adds the alias-component complement and
+alias-entails-residual cases.
 
 ```text
 branch premise G entails x = rep(x)

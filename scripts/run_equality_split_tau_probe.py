@@ -137,6 +137,53 @@ def generated_path_probes(max_cases: int) -> list[Probe]:
     return out
 
 
+def stress_path_probes() -> list[Probe]:
+    """Generate a broader equality-chain stress corpus.
+
+    This corpus extends the fixed 48-case generator with four-variable chains
+    and residuals where the alias branch may simplify the residual to a
+    different atom, or all the way to true.
+    """
+
+    guards = [
+        ("eq_xy", "x = y:sbf"),
+        ("eq_yz", "y = z:sbf"),
+        ("eq_zw", "z = w:sbf"),
+        ("chain_xy_yz", "x = y:sbf && y = z:sbf"),
+        ("chain_yz_zw", "y = z:sbf && z = w:sbf"),
+        ("chain_xy_yz_zw", "x = y:sbf && y = z:sbf && z = w:sbf"),
+        ("disjoint_xy_zw", "x = y:sbf && z = w:sbf"),
+    ]
+    residuals = [
+        ("independent_eq_ab", "a = b:sbf"),
+        ("alias_eq_xw", "x = w:sbf"),
+        ("alias_neq_xw", "x != w:sbf"),
+        ("alias_eq_yw", "y = w:sbf"),
+        ("alias_neq_yw", "y != w:sbf"),
+        ("leq_xw", "((x & w') = 0)"),
+        ("leq_wx", "((w & x') = 0)"),
+        ("nonzero_xw", "((x & w) != 0)"),
+        ("nonzero_yw", "((y & w) != 0)"),
+        ("join_absorb_xw", "(((x & w) | (x' & w)) != 0)"),
+        ("join_absorb_yw", "(((y & w) | (y' & w)) != 0)"),
+        ("mixed_join_eq_xw_yz", "((x | w) = (y | z))"),
+        ("mixed_join_eq_xy_zw", "((x | y) = (z | w))"),
+        ("mixed_meet_nonzero_xz_yw", "(((x & z) | (y & w)) != 0)"),
+        ("mixed_meet_nonzero_xw_yz", "(((x & w) | (y & z)) != 0)"),
+    ]
+    out: list[Probe] = []
+    for guard_name, guard in guards:
+        for residual_name, residual in residuals:
+            out.append(
+                Probe(
+                    name=f"stress_{guard_name}_{residual_name}",
+                    original=f"(({guard} && {residual}) || (!({guard}) && {residual}))",
+                    target=residual,
+                )
+            )
+    return out
+
+
 def clean(text: str) -> str:
     return ANSI_RE.sub("", text).strip()
 
@@ -241,6 +288,11 @@ def main() -> int:
         help="Use a wider generated corpus of path-sensitive split/recombine cases.",
     )
     parser.add_argument(
+        "--stress-path-corpus",
+        action="store_true",
+        help="Use the four-variable equality-chain stress corpus.",
+    )
+    parser.add_argument(
         "--max-generated-cases",
         type=int,
         default=24,
@@ -250,7 +302,10 @@ def main() -> int:
     if not args.tau_bin.exists():
         raise SystemExit(f"Tau binary not found: {args.tau_bin}")
 
-    if args.generated_path_corpus:
+    if args.stress_path_corpus:
+        corpus_kind = "stress_path"
+        corpus = stress_path_probes()
+    elif args.generated_path_corpus:
         corpus_kind = "generated_path"
         corpus = generated_path_probes(args.max_generated_cases)
     elif args.extended:
@@ -281,6 +336,7 @@ def main() -> int:
         "corpus_kind": corpus_kind,
         "extended": args.extended,
         "generated_path_corpus": args.generated_path_corpus,
+        "stress_path_corpus": args.stress_path_corpus,
         "useful_reduction_cases": len(useful),
         "matched_target_cases": len(matched),
         "dnf_matched_target_cases": len(dnf_matched),

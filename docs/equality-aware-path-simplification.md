@@ -231,20 +231,51 @@ size. Exact `normalize` text still matches `24` of `48` generated cases. The
 remaining cases are presentation differences such as equivalent term orderings,
 not missed semantic recombination on this corpus.
 
-The extra generated cases are closed by two equality-graph implication checks:
+Four-variable equality-chain stress corpus:
+
+```bash
+TAU_EQUALITY_SPLIT_RECOMBINE=1 python3 scripts/run_equality_split_tau_probe.py \
+  --stress-path-corpus \
+  --out results/local/equality-split-stress-enabled.json
+```
+
+Current stress receipt:
+
+```text
+enabled target-sized cases:  105 / 105
+enabled normalize chars:     847
+target normalize chars:      847
+MNF-matched target cases:    105 / 105
+exact normalize matches:      84 / 105
+```
+
+The stress corpus adds four-variable equality chains and residuals where the
+alias branch can simplify the residual to a different atom, or all the way to
+true. The feature flag closes this corpus on normalized size. The remaining
+exact `normalize` mismatches are still presentation ordering differences.
+
+The generated and stress cases are closed by equality-graph implication checks:
 
 ```text
 (A => R) and (R and not D => A) imply A or (R and D) == R
 
 a != b implies (t0 != t1) or ... or (t[k-1] != tk)
 when t0 = a and tk = b
+
+If D false forces every alias in A true, then A or D is true.
+
+(A => R) and (A or D) imply A or (D and R) == R
 ```
 
 The first check collapses split branches when the alias branch is already inside
 the residual and the residual plus the failed guard-disjunction reconstructs
 the alias branch. The second check removes a redundant disjunction of
 edge-failures when an endpoint inequality already guarantees that some edge on
-the equality path must fail.
+the equality path must fail. The third check handles failed guard disjunctions
+whose inequality edges connect the same alias components, even if they are not
+literal negations of the stored aliases. The fourth check handles cases where
+the alias branch entails the residual, so the alias-side residual simplifies to
+true.
 
 ## Broader Implementation Shape
 

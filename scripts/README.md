@@ -743,6 +743,29 @@ because Tau prints some equivalent Boolean-algebra terms in different orders.
 The remaining target is presentation canonicalization, not missed semantic
 recombination on this corpus.
 
+For a four-variable equality-chain stress corpus:
+
+```bash
+TAU_EQUALITY_SPLIT_RECOMBINE=1 python3 scripts/run_equality_split_tau_probe.py \
+  --stress-path-corpus \
+  --out results/local/equality-split-stress-enabled.json
+```
+
+Current stress receipt:
+
+```text
+enabled target-sized cases:  105 / 105
+enabled normalize chars:     847
+target normalize chars:      847
+MNF-matched target cases:    105 / 105
+exact normalize matches:      84 / 105
+```
+
+The stress corpus adds cases where an equality-chain branch simplifies the
+residual to another atom, or all the way to true. The current feature flag
+closes those cases on normalized size. Exact textual presentation remains a
+separate canonicalization problem.
+
 ## Variable-update cache telemetry
 
 ```bash
