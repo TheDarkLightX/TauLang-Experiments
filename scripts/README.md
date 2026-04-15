@@ -710,6 +710,37 @@ The five extended cases that do not match the target text under `normalize`
 still match under `mnf`. The feature-gated pass has closed the size-reduction
 obligation on this corpus; the remaining issue is presentation canonicalization.
 
+For a generated path-sensitive corpus:
+
+```bash
+python3 scripts/run_equality_split_tau_probe.py \
+  --generated-path-corpus \
+  --max-generated-cases 24 \
+  --out results/local/equality-split-generated-path.json
+
+TAU_EQUALITY_SPLIT_RECOMBINE=1 python3 scripts/run_equality_split_tau_probe.py \
+  --generated-path-corpus \
+  --max-generated-cases 24 \
+  --out results/local/equality-split-generated-path-enabled.json
+```
+
+Current generated-path receipt:
+
+```text
+baseline target-sized cases:   2 / 24
+enabled target-sized cases:   10 / 24
+baseline normalize chars:    828
+enabled normalize chars:     619
+target normalize chars:      189
+MNF-matched target cases:     24 / 24
+```
+
+This generated corpus is intentionally harder than the smoke test. It includes
+cases where the residual is simplified differently under the equality branch
+and its complement. The current feature flag helps, but it does not close this
+path-sensitive corpus. The next real optimization target is branch-local
+representative substitution before recombination, not merely display ordering.
+
 ## Variable-update cache telemetry
 
 ```bash

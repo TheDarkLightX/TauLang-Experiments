@@ -154,6 +154,30 @@ MNF-matched target cases:      8
 The remaining mismatch class is presentation-level canonical ordering of
 equivalent Boolean terms, not a missed reduction on the checked corpus.
 
+The generated path-sensitive corpus moves the frontier again:
+
+```text
+baseline target-sized cases:   2 / 24
+enabled target-sized cases:   10 / 24
+baseline normalize chars:    828
+enabled normalize chars:     619
+target normalize chars:      189
+MNF-matched target cases:     24 / 24
+```
+
+This shows that the scoped recombination pass is useful but not sufficient for
+path-sensitive equality optimization. The harder generated cases rewrite the
+residual differently under the equality branch and the complement branch. The
+next proof and implementation target is a path-local representative map:
+
+```text
+branch premise G entails x = rep(x)
+implies substitute_rep(R) is equivalent to R on that branch
+```
+
+That law is the bridge from the standalone equality-path simplification model
+to a Tau-native normalizer pass.
+
 The newest proof lane adds a structural execution model for Tau-shaped
 expressions. The audited packets are:
 
@@ -360,9 +384,13 @@ Boundary: this is a semantic invariant, not parser support.
 
 ## Next Build Target
 
-The next highest-value Tau-native targets are the partial equality-split
-normalizer pass and the runtime-shaped incremental-evaluation proof. The
-incremental feature flag would be:
+The next highest-value Tau-native targets are now:
+
+- branch-local representative substitution for equality-split recombination,
+- runtime-shaped incremental evaluation.
+
+The equality feature flag should stay scoped until the generated path-sensitive
+corpus is substantially closed. The incremental feature flag would be:
 
 ```text
 TAU_INCREMENTAL_EVAL=1

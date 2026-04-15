@@ -92,6 +92,51 @@ def extended_probes() -> list[Probe]:
     return base
 
 
+def generated_path_probes(max_cases: int) -> list[Probe]:
+    """Generate a wider path-sensitive recombination corpus.
+
+    Every generated case has the tautological shape
+
+        (G && R) || (!G && R)  <->  R
+
+    The interesting cases are those where Tau simplifies R differently under G
+    and under !G. Those cases require more than syntactic common-residual
+    detection.
+    """
+
+    guards = [
+        ("eq_xy", "x = y:sbf"),
+        ("eq_yz", "y = z:sbf"),
+        ("eq_xz", "x = z:sbf"),
+        ("chain_xy_yz", "x = y:sbf && y = z:sbf"),
+        ("chain_yx_zy", "y = x:sbf && z = y:sbf"),
+        ("disjoint_xy_zw", "x = y:sbf && z = w:sbf"),
+    ]
+    residuals = [
+        ("independent_eq_ab", "a = b:sbf"),
+        ("alias_eq_xz", "x = z:sbf"),
+        ("alias_neq_xz", "x != z:sbf"),
+        ("alias_leq_xz", "((x & z') = 0)"),
+        ("alias_nonzero_xz", "((x & z) != 0)"),
+        ("alias_join_nonzero", "(((x & z) | (x' & z)) != 0)"),
+        ("mixed_join_eq", "((x | z) = (y | w))"),
+        ("mixed_meet_nonzero", "(((x & w) | (y & z)) != 0)"),
+    ]
+    out: list[Probe] = []
+    for guard_name, guard in guards:
+        for residual_name, residual in residuals:
+            out.append(
+                Probe(
+                    name=f"generated_{guard_name}_{residual_name}",
+                    original=f"(({guard} && {residual}) || (!({guard}) && {residual}))",
+                    target=residual,
+                )
+            )
+            if len(out) >= max_cases:
+                return out
+    return out
+
+
 def clean(text: str) -> str:
     return ANSI_RE.sub("", text).strip()
 
@@ -190,11 +235,30 @@ def main() -> int:
         action="store_true",
         help="Include extra alias-order permutations beyond the public four-case receipt.",
     )
+    parser.add_argument(
+        "--generated-path-corpus",
+        action="store_true",
+        help="Use a wider generated corpus of path-sensitive split/recombine cases.",
+    )
+    parser.add_argument(
+        "--max-generated-cases",
+        type=int,
+        default=24,
+        help="Maximum generated cases when --generated-path-corpus is set.",
+    )
     args = parser.parse_args()
     if not args.tau_bin.exists():
         raise SystemExit(f"Tau binary not found: {args.tau_bin}")
 
-    corpus = extended_probes() if args.extended else probes()
+    if args.generated_path_corpus:
+        corpus_kind = "generated_path"
+        corpus = generated_path_probes(args.max_generated_cases)
+    elif args.extended:
+        corpus_kind = "extended"
+        corpus = extended_probes()
+    else:
+        corpus_kind = "base"
+        corpus = probes()
     rows = [analyze(args.tau_bin, probe) for probe in corpus]
     useful = [
         row for row in rows
@@ -214,7 +278,9 @@ def main() -> int:
         "ok": all(bool(row["ok"]) for row in rows),
         "feature_flag": os.environ.get("TAU_EQUALITY_SPLIT_RECOMBINE", ""),
         "case_count": len(rows),
+        "corpus_kind": corpus_kind,
         "extended": args.extended,
+        "generated_path_corpus": args.generated_path_corpus,
         "useful_reduction_cases": len(useful),
         "matched_target_cases": len(matched),
         "dnf_matched_target_cases": len(dnf_matched),

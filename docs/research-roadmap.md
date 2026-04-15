@@ -134,5 +134,7 @@ Boundary:
 - Equality-aware path simplification is path-scoped. Representative
   substitution is valid only under the branch equalities that justify it.
 - The Tau-facing equality-split recombination probe shows a normalizer
-  opportunity, not a completed Tau optimization. Tau proves the shorter targets
-  equivalent, but the current normalizer still emits the longer forms.
+  opportunity, not a completed Tau optimization. The feature-gated pass closes
+  the smoke corpus size obligation, but the generated path-sensitive corpus
+  still has only `10 / 24` target-sized outputs with the flag enabled. The next
+  target is branch-local representative substitution before recombination.

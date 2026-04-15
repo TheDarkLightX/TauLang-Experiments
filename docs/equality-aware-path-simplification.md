@@ -200,6 +200,37 @@ The extra cases permute the three-alias equality path. They check that the pass
 handles direct and transitive alias representatives, not only the first
 hand-written equality order.
 
+Generated path-sensitive corpus:
+
+```bash
+python3 scripts/run_equality_split_tau_probe.py \
+  --generated-path-corpus \
+  --max-generated-cases 24 \
+  --out results/local/equality-split-generated-path.json
+
+TAU_EQUALITY_SPLIT_RECOMBINE=1 python3 scripts/run_equality_split_tau_probe.py \
+  --generated-path-corpus \
+  --max-generated-cases 24 \
+  --out results/local/equality-split-generated-path-enabled.json
+```
+
+Current generated-path receipt:
+
+```text
+baseline target-sized cases:   2 / 24
+enabled target-sized cases:   10 / 24
+baseline normalize chars:    828
+enabled normalize chars:     619
+target normalize chars:      189
+MNF-matched target cases:     24 / 24
+```
+
+Interpretation: the first feature flag closes the hand-written and alias-order
+smoke corpora, but it does not close the harder generated corpus. In those
+cases, the same residual condition is rewritten differently under the equality
+branch and under the complement branch. The next optimization target is
+therefore branch-local representative substitution followed by recombination.
+
 ## Broader Implementation Shape
 
 The current feature flag targets branch recombination after equality-path

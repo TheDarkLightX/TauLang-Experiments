@@ -194,6 +194,10 @@ on `8` of `8` probes and matches exactly under `normalize` on `3` of `8`
 probes. The remaining mismatch is presentation canonicalization rather than a
 missed semantic reduction on this corpus, so this remains an opt-in, scoped
 normalizer experiment rather than a default Tau optimization.
+The generated path-sensitive corpus is harder: with the feature flag, target
+sized output improves from `2` of `24` cases to `10` of `24`, while all `24`
+still match under `mnf`. That result identifies the next target as branch-local
+representative substitution before recombination.
 
 The fixed-width modular arithmetic rewrite-triage corpus is:
 
