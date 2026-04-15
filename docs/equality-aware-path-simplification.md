@@ -218,20 +218,18 @@ Current generated-path receipt:
 
 ```text
 baseline target-sized cases:   2 / 24
-enabled target-sized cases:   14 / 24
+enabled target-sized cases:   24 / 24
 baseline normalize chars:    828
-enabled normalize chars:     505
+enabled normalize chars:     189
 target normalize chars:      189
 MNF-matched target cases:     24 / 24
 ```
 
 Interpretation: the feature flag closes the hand-written and alias-order smoke
-corpora and now handles the equality and inequality residual subcase in the
-generated corpus. It still does not close the harder generated corpus. In the
-remaining cases, Boolean-algebra term residuals are rewritten differently under
-the equality branch and under the complement branch. The next optimization
-target is therefore broader term-level representative substitution followed by
-recombination.
+corpora, and it now closes the generated path-sensitive corpus on normalized
+size. Exact `normalize` text still matches `12` of `24` generated cases. The
+remaining cases are presentation differences such as equivalent term orderings,
+not missed semantic recombination on this corpus.
 
 ## Broader Implementation Shape
 

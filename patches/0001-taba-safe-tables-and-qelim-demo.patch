@@ -3368,7 +3368,7 @@ index bd9c4e07..4b0a6f82 100644
  #include "execution.h"
  
 diff --git a/src/normal_forms.tmpl.h b/src/normal_forms.tmpl.h
-index 5917175f..802643f0 100644
+index 5917175f..ba7d9c94 100644
 --- a/src/normal_forms.tmpl.h
 +++ b/src/normal_forms.tmpl.h
 @@ -556,7 +556,25 @@ inline bool reduce_paths(std::vector<int_t>& i,
@@ -3409,7 +3409,7 @@ index 5917175f..802643f0 100644
  	static bool wff_comp (tref l, tref r) {
  		if (tau::get(l).child_is(tau::bf_eq))
  			if (tau::get(r).child_is(tau::bf_eq))
-@@ -2140,6 +2163,491 @@ class syntactic_path_simplification {
+@@ -2140,6 +2163,561 @@ class syntactic_path_simplification {
  		}
  	}
  
@@ -3711,6 +3711,17 @@ index 5917175f..802643f0 100644
 +		auto residual_term = zero_neq_term(residual);
 +		if (!candidate_term || !residual_term) return {};
 +
++		tref normalized_candidate = reduce<node>(to_dnf<node, false>(
++			normalize_ba<node>(*candidate_term)));
++		if (term_rewrites_to_under_aliases(
++				*residual_term, normalized_candidate, aliases))
++			return syntactic_formula_simplification<node>(
++				tau::build_bf_neq_0(normalized_candidate));
++		if (term_rewrites_to_under_aliases(
++				normalized_candidate, *residual_term, aliases))
++			return syntactic_formula_simplification<node>(
++				tau::build_bf_neq_0(normalized_candidate));
++
 +		trefs alias_class = alias_class_for_residual(*residual_term, aliases);
 +
 +		subtree_map<node, tref> changes;
@@ -3724,8 +3735,6 @@ index 5917175f..802643f0 100644
 +		tref reduced = reduce<node>(to_dnf<node, false>(
 +			normalize_ba<node>(substituted)));
 +		if (!same_tree(reduced, *residual_term)) return {};
-+		tref normalized_candidate = reduce<node>(to_dnf<node, false>(
-+			normalize_ba<node>(*candidate_term)));
 +		return syntactic_formula_simplification<node>(
 +			tau::build_bf_neq_0(normalized_candidate));
 +	}
@@ -3747,6 +3756,62 @@ index 5917175f..802643f0 100644
 +		return true;
 +	}
 +
++	static bool add_rewrite(
++		subtree_map<node, tref>& changes, tref from, tref to)
++	{
++		if (same_tree(from, to)) return true;
++		auto existing = changes.find(from);
++		if (existing != changes.end())
++			return same_tree(existing->second, to);
++		changes[from] = to;
++		return true;
++	}
++
++	static bool term_rewrites_to_under_aliases(
++		tref from, tref to, const trefs& aliases)
++	{
++		if (same_tree(normalize_ba_term(from), normalize_ba_term(to)))
++			return true;
++		std::vector<std::pair<tref, tref>> pairs;
++		for (tref eq : aliases) {
++			tref l, r;
++			if (!atom_sides(eq, tau::bf_eq, l, r)) continue;
++			pairs.push_back({l, r});
++		}
++		if (pairs.empty() || pairs.size() > 6) return false;
++		size_t orientations = size_t{1} << pairs.size();
++		tref target = normalize_ba_term(to);
++		for (size_t mask = 0; mask < orientations; ++mask) {
++			subtree_map<node, tref> changes;
++			bool ok = true;
++			for (size_t i = 0; i < pairs.size(); ++i) {
++				tref l = pairs[i].first;
++				tref r = pairs[i].second;
++				if ((mask >> i) & 1)
++					ok = add_rewrite(changes, l, r);
++				else
++					ok = add_rewrite(changes, r, l);
++				if (!ok) break;
++			}
++			if (!ok || changes.empty()) continue;
++			tref substituted = normalize_ba_term(
++				rewriter::replace<node>(from, changes));
++			if (same_tree(substituted, target)) return true;
++		}
++		return false;
++	}
++
++	static bool term_pair_rewrites_to_under_aliases(
++		tref from_l, tref from_r, tref to_l, tref to_r, const trefs& aliases)
++	{
++		return (
++			term_rewrites_to_under_aliases(from_l, to_l, aliases)
++			&& term_rewrites_to_under_aliases(from_r, to_r, aliases))
++			|| (
++			term_rewrites_to_under_aliases(from_l, to_r, aliases)
++			&& term_rewrites_to_under_aliases(from_r, to_l, aliases));
++	}
++
 +	static std::optional<tref> reduce_eqneq_under_aliases(
 +		tref candidate, tref residual, const trefs& aliases)
 +	{
@@ -3755,6 +3820,11 @@ index 5917175f..802643f0 100644
 +		if (!eq_neq_atom(candidate, candidate_type, cl, cr)) return {};
 +		if (!eq_neq_atom(residual, residual_type, rl, rr)) return {};
 +		if (candidate_type != residual_type) return {};
++
++		if (term_pair_rewrites_to_under_aliases(rl, rr, cl, cr, aliases))
++			return syntactic_formula_simplification<node>(candidate);
++		if (term_pair_rewrites_to_under_aliases(cl, cr, rl, rr, aliases))
++			return syntactic_formula_simplification<node>(candidate);
 +
 +		subtree_map<node, tref> changes;
 +		if (!add_alias_class_rewrites(changes, cl, aliases)) return {};
@@ -3901,7 +3971,7 @@ index 5917175f..802643f0 100644
  	static tref simplify_wff (tref root) {
  		tref skip = nullptr;
  		auto down = [&skip](tref n) {
-@@ -2278,12 +2786,16 @@ public:
+@@ -2278,12 +2856,16 @@ public:
  			if (tau::get(fm).equals_F() || tau::get(fm).equals_T())
  				return fm;
  			// Resolve contradictions

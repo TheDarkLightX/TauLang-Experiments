@@ -105,7 +105,10 @@ The current patch is an experiment patch, not an official Tau release. It adds:
   target-sized output on `8` of `8` extended recombination probes, matches all
   `8` under `mnf`, and matches `3` of `8` exactly under `normalize`. The
   remaining mismatch is presentation ordering, not a missed semantic reduction
-  on that corpus.
+  on that corpus. On the generated path-sensitive corpus, the same flag moves
+  target-sized output from `2` of `24` baseline cases to `24` of `24` enabled
+  cases. Exact `normalize` text still matches `12` of `24`, while `mnf`
+  matches all `24`.
 - opt-in qelim rewrite probe flags,
   `TAU_QELIM_BDD_KB_REWRITE=1` and
   `TAU_QELIM_BDD_KB_REWRITE=guarded`, for the restricted c111-inspired
@@ -194,10 +197,13 @@ on `8` of `8` probes and matches exactly under `normalize` on `3` of `8`
 probes. The remaining mismatch is presentation canonicalization rather than a
 missed semantic reduction on this corpus, so this remains an opt-in, scoped
 normalizer experiment rather than a default Tau optimization.
-The generated path-sensitive corpus is harder: with the feature flag, target
-sized output improves from `2` of `24` cases to `14` of `24`, while all `24`
-still match under `mnf`. The remaining target is broader term-level
-representative substitution before recombination.
+The generated path-sensitive corpus is harder than the smoke tests, but the
+feature-gated pass now closes it on size: target-sized output improves from `2`
+of `24` baseline cases to `24` of `24` enabled cases, and the enabled normalized
+character count is `189`, exactly the target count. Exact `normalize` text still
+matches `12` of `24`, while all `24` still match under `mnf`. The remaining
+target is presentation canonicalization, not missed equality-split
+recombination on this generated corpus.
 
 The fixed-width modular arithmetic rewrite-triage corpus is:
 

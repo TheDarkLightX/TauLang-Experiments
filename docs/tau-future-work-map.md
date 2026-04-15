@@ -158,19 +158,18 @@ The generated path-sensitive corpus moves the frontier again:
 
 ```text
 baseline target-sized cases:   2 / 24
-enabled target-sized cases:   14 / 24
+enabled target-sized cases:   24 / 24
 baseline normalize chars:    828
-enabled normalize chars:     505
+enabled normalize chars:     189
 target normalize chars:      189
 MNF-matched target cases:     24 / 24
 ```
 
-This shows that the scoped recombination pass is useful but not sufficient for
-path-sensitive equality optimization. The current pass now handles the equality
-and inequality residual subcase, but the harder generated cases rewrite
-Boolean-algebra term residuals differently under the equality branch and the
-complement branch. The next proof and implementation target is a path-local
-representative map over terms:
+This shows that the scoped recombination pass now closes the generated
+path-sensitive corpus on normalized size. Exact `normalize` text still matches
+only `12` of `24` generated cases, because Tau can print equivalent
+Boolean-algebra terms in different orders. The next proof and implementation
+target is therefore presentation canonicalization:
 
 ```text
 branch premise G entails x = rep(x)
@@ -388,11 +387,12 @@ Boundary: this is a semantic invariant, not parser support.
 
 The next highest-value Tau-native targets are now:
 
-- broader term-level representative substitution for equality-split recombination,
+- presentation canonicalization for equality-split recombination,
 - runtime-shaped incremental evaluation.
 
-The equality feature flag should stay scoped until the generated path-sensitive
-corpus is substantially closed. The incremental feature flag would be:
+The equality feature flag should stay scoped until the presentation
+canonicalization gap is closed and larger generated corpora are checked. The
+incremental feature flag would be:
 
 ```text
 TAU_INCREMENTAL_EVAL=1
