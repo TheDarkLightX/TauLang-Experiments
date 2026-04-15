@@ -122,3 +122,17 @@ That matrix compares `default`, `auto`, `auto+kb_guarded`, and
 route. Exact default parity is recorded separately because default and `auto`
 may print semantically equivalent residual formulas in different syntactic
 forms.
+
+To test the epiplexity-style routing hypothesis, run:
+
+```bash
+python3 scripts/run_qelim_epiplexity_router.py \
+  --max-generated-cases 34 \
+  --reps 10 \
+  --out results/local/qelim-epiplexity-router.json
+```
+
+This experiment checks whether a cheap source-structure metric predicts when
+the guarded KB pass has work to do. It records semantic parity, detector
+confusion matrices, and route regret against the locally fastest mode. The
+write-up is `docs/qelim-epiplexity-routing.md`.
