@@ -658,7 +658,7 @@ split. It proves candidate shorter targets equivalent using `solve --tau`, but
 without the feature flag it does not make Tau's normalizer emit those targets
 automatically.
 
-To test the current partial C++ pass:
+To test the current scoped C++ pass:
 
 ```bash
 TAU_EQUALITY_SPLIT_RECOMBINE=1 python3 scripts/run_equality_split_tau_probe.py \

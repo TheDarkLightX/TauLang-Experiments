@@ -101,8 +101,11 @@ The current patch is an experiment patch, not an official Tau release. It adds:
 - feature-gated `table { when ... else ... }` syntax for guarded choice,
 - guarded qelim experiment code used by the optimization research thread.
 - a feature-gated equality-split recombination pass,
-  `TAU_EQUALITY_SPLIT_RECOMBINE=1`. Current evidence is partial: it makes Tau
-  emit the target normal form for `3` of `4` checked recombination probes.
+  `TAU_EQUALITY_SPLIT_RECOMBINE=1`. Current evidence is scoped: it reaches
+  target-sized output on `8` of `8` extended recombination probes, matches all
+  `8` under `mnf`, and matches `3` of `8` exactly under `normalize`. The
+  remaining mismatch is presentation ordering, not a missed semantic reduction
+  on that corpus.
 - opt-in qelim rewrite probe flags,
   `TAU_QELIM_BDD_KB_REWRITE=1` and
   `TAU_QELIM_BDD_KB_REWRITE=guarded`, for the restricted c111-inspired
@@ -184,15 +187,13 @@ equivalent to equality-split formulas that Tau currently leaves longer after
 normalization. The baseline local probe had `4` useful reduction cases, passed
 all equivalence checks, and reduced the combined normalized-character count
 from `152` to `36` in the candidate target forms. With
-`TAU_EQUALITY_SPLIT_RECOMBINE=1`, the C++ pass matches `3` of `4` target
-forms and reduces Tau's combined normalized-character count from `152` to
-`36`, matching the target combined size. One case differs textually by an
-equivalent term ordering, so this is still an opt-in, scoped normalizer
-experiment rather than a default Tau optimization.
-An extended alias-order smoke test reaches target-sized output on `8` of `8`
-checked probes. The same extended corpus matches under `mnf` on `8` of `8`
-probes, so the remaining mismatch is presentation canonicalization rather than
-a missed semantic reduction on this corpus.
+`TAU_EQUALITY_SPLIT_RECOMBINE=1`, the scoped C++ pass reduces the four-case
+probe to the target combined size and reaches target-sized output on an
+eight-case extended alias-order probe. The extended corpus matches under `mnf`
+on `8` of `8` probes and matches exactly under `normalize` on `3` of `8`
+probes. The remaining mismatch is presentation canonicalization rather than a
+missed semantic reduction on this corpus, so this remains an opt-in, scoped
+normalizer experiment rather than a default Tau optimization.
 
 The fixed-width modular arithmetic rewrite-triage corpus is:
 
