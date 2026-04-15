@@ -288,7 +288,7 @@ def solve_equiv(tau_bin: Path, original: str, target: str) -> dict[str, object]:
     return tau_cmd(tau_bin, f"solve --tau !({original} <-> {target})")
 
 
-def analyze(tau_bin: Path, probe: Probe) -> dict[str, object]:
+def analyze(tau_bin: Path, probe: Probe, check_idempotence: bool) -> dict[str, object]:
     original_norm = normalize(tau_bin, probe.original)
     target_norm = normalize(tau_bin, probe.target)
     original_dnf = normalize_with(tau_bin, "dnf", probe.original)
@@ -298,9 +298,14 @@ def analyze(tau_bin: Path, probe: Probe) -> dict[str, object]:
     equiv = solve_equiv(tau_bin, probe.original, probe.target)
     original_text = str(original_norm["normalized"])
     target_text = str(target_norm["normalized"])
+    original_second_norm = None
+    target_second_norm = None
+    if check_idempotence:
+        original_second_norm = normalize(tau_bin, original_text)
+        target_second_norm = normalize(tau_bin, target_text)
     dnf_matches = str(original_dnf["normalized"]) == str(target_dnf["normalized"])
     mnf_matches = str(original_mnf["normalized"]) == str(target_mnf["normalized"])
-    return {
+    row = {
         "name": probe.name,
         "original": probe.original,
         "target": probe.target,
@@ -334,6 +339,24 @@ def analyze(tau_bin: Path, probe: Probe) -> dict[str, object]:
             and equiv["last_line"] == "no solution"
         ),
     }
+    if check_idempotence and original_second_norm and target_second_norm:
+        original_second_text = str(original_second_norm["normalized"])
+        target_second_text = str(target_second_norm["normalized"])
+        row.update({
+            "tau_second_normalized": original_second_text,
+            "target_second_normalized": target_second_text,
+            "tau_normalize_idempotent": original_second_text == original_text,
+            "target_normalize_idempotent": target_second_text == target_text,
+            "tau_second_matches_target": original_second_text == target_text,
+            "tau_second_matches_target_second": original_second_text == target_second_text,
+            "tau_second_normalized_chars": len(original_second_text),
+            "target_second_normalized_chars": len(target_second_text),
+            "tau_second_normalize_elapsed_ms": original_second_norm["elapsed_ms"],
+            "target_second_normalize_elapsed_ms": target_second_norm["elapsed_ms"],
+        })
+        row["ok"] = bool(row["ok"]) and int(original_second_norm["returncode"]) == 0 \
+            and int(target_second_norm["returncode"]) == 0
+    return row
 
 
 def main() -> int:
@@ -366,6 +389,11 @@ def main() -> int:
         default=24,
         help="Maximum generated cases when --generated-path-corpus is set.",
     )
+    parser.add_argument(
+        "--check-idempotence",
+        action="store_true",
+        help="Also normalize each normalized result again to screen for fixed-point presentation gaps.",
+    )
     args = parser.parse_args()
     if not args.tau_bin.exists():
         raise SystemExit(f"Tau binary not found: {args.tau_bin}")
@@ -385,7 +413,7 @@ def main() -> int:
     else:
         corpus_kind = "base"
         corpus = probes()
-    rows = [analyze(args.tau_bin, probe) for probe in corpus]
+    rows = [analyze(args.tau_bin, probe, args.check_idempotence) for probe in corpus]
     useful = [
         row for row in rows
         if int(row["tau_normalized_chars"]) > int(row["target_normalized_chars"])
@@ -421,6 +449,7 @@ def main() -> int:
         "generated_path_corpus": args.generated_path_corpus,
         "stress_path_corpus": args.stress_path_corpus,
         "wide_path_corpus": args.wide_path_corpus,
+        "check_idempotence": args.check_idempotence,
         "useful_reduction_cases": len(useful),
         "matched_target_cases": len(matched),
         "dnf_matched_target_cases": len(dnf_matched),
@@ -446,6 +475,31 @@ def main() -> int:
             "presentation differences."
         ),
     }
+    if args.check_idempotence:
+        tau_idempotent = [row for row in rows if bool(row["tau_normalize_idempotent"])]
+        target_idempotent = [row for row in rows if bool(row["target_normalize_idempotent"])]
+        tau_second_target = [row for row in rows if bool(row["tau_second_matches_target"])]
+        tau_second_target_second = [
+            row for row in rows if bool(row["tau_second_matches_target_second"])
+        ]
+        summary.update({
+            "tau_normalize_idempotent_cases": len(tau_idempotent),
+            "target_normalize_idempotent_cases": len(target_idempotent),
+            "tau_second_matches_target_cases": len(tau_second_target),
+            "tau_second_matches_target_second_cases": len(tau_second_target_second),
+            "tau_second_normalized_chars": sum(
+                int(row["tau_second_normalized_chars"]) for row in rows
+            ),
+            "target_second_normalized_chars": sum(
+                int(row["target_second_normalized_chars"]) for row in rows
+            ),
+            "tau_second_normalize_elapsed_ms": round(sum(
+                float(row["tau_second_normalize_elapsed_ms"]) for row in rows
+            ), 3),
+            "target_second_normalize_elapsed_ms": round(sum(
+                float(row["target_second_normalize_elapsed_ms"]) for row in rows
+            ), 3),
+        })
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     print(json.dumps(summary, indent=2, sort_keys=True))

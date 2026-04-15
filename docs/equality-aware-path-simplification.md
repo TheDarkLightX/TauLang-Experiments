@@ -287,6 +287,20 @@ normalized size as well. The timing numbers include Tau process startup for
 each command, so they should be read only as a regression screen. In that
 screening harness, the pass does not show a whole-command timing regression.
 
+The same corpus was also run with an idempotence screen:
+
+```text
+baseline first-pass idempotent cases: 7 / 200
+enabled first-pass idempotent cases:  140 / 200
+enabled non-idempotent cases:         60 / 200
+enabled second-pass growth cases:     30 / 200
+```
+
+This matters because exact `normalize` text is not the only boundary. Some
+first-pass outputs still change when passed through `normalize` again. The
+feature-gated pass improves that property relative to baseline, but it does not
+solve fixed-point presentation canonicalization.
+
 The generated and stress cases are closed by equality-graph implication checks:
 
 ```text

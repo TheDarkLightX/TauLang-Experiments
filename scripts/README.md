@@ -798,6 +798,27 @@ regression screen, not an in-process microbenchmark. The wide corpus did not
 expose a new size-failure class or a whole-command timing regression. The
 remaining gap is still textual presentation canonicalization.
 
+To screen whether `normalize` has already reached a fixed point:
+
+```bash
+TAU_EQUALITY_SPLIT_RECOMBINE=1 python3 scripts/run_equality_split_tau_probe.py \
+  --wide-path-corpus \
+  --check-idempotence \
+  --out results/local/equality-split-wide-enabled-idempotence.json
+```
+
+Current idempotence receipt:
+
+```text
+baseline first-pass idempotent cases: 7 / 200
+enabled first-pass idempotent cases:  140 / 200
+enabled non-idempotent cases:         60 / 200
+enabled second-pass growth cases:     30 / 200
+```
+
+The feature-gated pass improves fixed-point stability, but the remaining
+`60 / 200` non-idempotent cases are the next normalizer boundary.
+
 ## Variable-update cache telemetry
 
 ```bash

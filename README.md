@@ -262,6 +262,29 @@ not as an in-process optimizer benchmark. The current result says the
 feature-gated recombination pass removes the normalized-size blowup without
 showing a whole-command timing regression on this corpus.
 
+Optional idempotence screen:
+
+```bash
+TAU_EQUALITY_SPLIT_RECOMBINE=1 python3 scripts/run_equality_split_tau_probe.py \
+  --wide-path-corpus \
+  --check-idempotence \
+  --out results/local/equality-split-wide-enabled-idempotence.json
+```
+
+Current receipt:
+
+```text
+baseline first-pass idempotent cases: 7 / 200
+enabled first-pass idempotent cases:  140 / 200
+enabled non-idempotent cases:         60 / 200
+enabled second-pass growth cases:     30 / 200
+```
+
+This sharpens the remaining frontier. The feature-gated pass improves
+normalize fixed-point stability on this corpus, but it does not close it. The
+next target is a normalizer presentation pass whose first output is already a
+fixed point under another `normalize` call.
+
 The fixed-width modular arithmetic rewrite-triage corpus is:
 
 ```bash

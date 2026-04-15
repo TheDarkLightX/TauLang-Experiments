@@ -201,7 +201,17 @@ component, and an alias-only branch may be recombined when the aliases entail
 the residual. The wide corpus has not exposed a new size-failure class. The
 timing fields are whole-command timings with Tau process startup included, not
 in-process microbenchmarks. The next proof and implementation target is still
-presentation canonicalization:
+fixed-point presentation canonicalization:
+
+```text
+baseline first-pass idempotent cases: 7 / 200
+enabled first-pass idempotent cases:  140 / 200
+enabled non-idempotent cases:         60 / 200
+enabled second-pass growth cases:     30 / 200
+```
+
+The feature-gated pass improves idempotence relative to baseline, but does not
+make every first-pass output stable under another `normalize` call.
 
 The final size failures were closed by equality-graph implication checks:
 alias branches that imply the residual can be recombined when the residual plus
