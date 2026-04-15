@@ -6,14 +6,27 @@ TAU_DIR="${TAU_DIR:-"$ROOT/external/tau-lang"}"
 BUILD_DIR="${TAU_BUILD_DIR:-"$TAU_DIR/build-Release"}"
 JOBS="${JOBS:-2}"
 ACCEPT_FLAG=""
+TABLE_DEMO_EQUIV_MODE="${TABLE_DEMO_EQUIV_MODE:-compound}"
 
 if [[ "${1:-}" == "--accept-tau-license" ]]; then
   ACCEPT_FLAG="--accept-tau-license"
 fi
 
-"$ROOT/scripts/setup_tau.sh" $ACCEPT_FLAG
+case "$TABLE_DEMO_EQUIV_MODE" in
+  compound|individual) ;;
+  *)
+    echo "Unsupported TABLE_DEMO_EQUIV_MODE=$TABLE_DEMO_EQUIV_MODE" >&2
+    echo "Use TABLE_DEMO_EQUIV_MODE=compound or TABLE_DEMO_EQUIV_MODE=individual." >&2
+    exit 2
+    ;;
+esac
 
-"$ROOT/scripts/apply_patches.sh"
+if [[ "${TAU_TABLE_DEMO_SKIP_SETUP_PATCH:-0}" != "1" ]]; then
+  "$ROOT/scripts/setup_tau.sh" $ACCEPT_FLAG
+  "$ROOT/scripts/apply_patches.sh"
+else
+  echo "Skipping Tau setup and patch application; using existing checkout."
+fi
 
 if [[ ! -x "$BUILD_DIR/tau" ]]; then
   cmake -S "$TAU_DIR" -B "$BUILD_DIR" -DCMAKE_BUILD_TYPE=Release
@@ -96,16 +109,26 @@ expect_no_solution \
     -e "solve --bv !(st_pointwise_revise4({ #x01 }:bv[8], { #x02 }:bv[8], { #x02 }:bv[8]) = { #x03 }:bv[8])" \
     --severity info --color false --status true
 
-expect_no_solution \
-  "tau_native_table_agrees_with_raw" \
-  env TAU_ENABLE_SAFE_TABLES=1 "$TAU_BIN" --charvar false \
-    -e "$TABLE_CHECK" \
-    --severity info --color false --status true
+if [[ "$TABLE_DEMO_EQUIV_MODE" == "compound" ]]; then
+  (
+    cd "$ROOT"
+    python3 scripts/run_table_demo_compound_check.py \
+      --tau-bin "$TAU_BIN" \
+      --mode compound-only \
+      --out "$RESULT_DIR/table-demo-compound-check.json"
+  ) > "$RESULT_DIR/table-demo-compound-check.txt"
+  echo "passed: compound_table_equivalence_check"
+else
+  expect_no_solution \
+    "tau_native_table_agrees_with_raw" \
+    env TAU_ENABLE_SAFE_TABLES=1 "$TAU_BIN" --charvar false \
+      -e "$TABLE_CHECK" \
+      --severity info --color false --status true
 
-expect_tau_file_no_solution \
-  "protocol_firewall_table_agrees_with_raw" \
-  "examples/tau/protocol_firewall_priority_ladder_v1.tau" \
-  "solve --tau (protocol_firewall_table(emergency,exploit,oracle,liquidity,governance,normal,freeze,quarantine,slow,cap,review,allow,deny) != protocol_firewall_raw(emergency,exploit,oracle,liquidity,governance,normal,freeze,quarantine,slow,cap,review,allow,deny))"
+  expect_tau_file_no_solution \
+    "protocol_firewall_table_agrees_with_raw" \
+    "examples/tau/protocol_firewall_priority_ladder_v1.tau" \
+    "solve --tau (protocol_firewall_table(emergency,exploit,oracle,liquidity,governance,normal,freeze,quarantine,slow,cap,review,allow,deny) != protocol_firewall_raw(emergency,exploit,oracle,liquidity,governance,normal,freeze,quarantine,slow,cap,review,allow,deny))"
 
 expect_tau_file_no_solution \
   "protocol_firewall_emergency_priority" \
@@ -167,10 +190,11 @@ expect_tau_file_no_solution \
   "examples/tau/pointwise_revision_table_v1.tau" \
   "solve --tau (pointwise_revision_inside_guard(old,guard,replacement) != pointwise_revision_inside_guard_raw(old,guard,replacement))"
 
-expect_tau_file_no_solution \
-  "pointwise_revision_idempotent" \
-  "examples/tau/pointwise_revision_table_v1.tau" \
-  "solve --tau (pointwise_revision_twice(old,guard,replacement) != pointwise_revision_once(old,guard,replacement))"
+  expect_tau_file_no_solution \
+    "pointwise_revision_idempotent" \
+    "examples/tau/pointwise_revision_table_v1.tau" \
+    "solve --tau (pointwise_revision_twice(old,guard,replacement) != pointwise_revision_once(old,guard,replacement))"
+fi
 
 expect_rejected_without_flag \
   "tau_native_table_rejected_without_flag" \
@@ -201,6 +225,12 @@ Scope:
 - no unrestricted TABA recurrence
 - no same-stratum prime
 - no full NSO or Guarded Successor lowering
+MSG
+
+cat >> "$RESULT_DIR/table-demo-summary.txt" <<MSG
+
+Equivalence mode:
+- $TABLE_DEMO_EQUIV_MODE
 MSG
 
 echo "Tau table demos passed. Results written to $RESULT_DIR"

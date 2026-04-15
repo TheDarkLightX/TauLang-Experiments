@@ -9,6 +9,12 @@ Run the demos with:
 ./scripts/run_table_demos.sh --accept-tau-license
 ```
 
+Run the qelim-backed policy-shape demo with:
+
+```bash
+./scripts/run_qelim_table_demos.sh --accept-tau-license
+```
+
 ## `full_style_taba_demo_v1.tau`
 
 This is the main public demo. It uses Tau-native table syntax:
@@ -120,3 +126,16 @@ The public harness checks:
 Why it matters: this is the executable shape that makes table updates finite and
 symbolic. The implementation does not need to materialize infinitely many table
 cells to express the update law.
+
+## Qelim-backed policy-shape demo
+
+This demo lives in the script layer rather than a `.tau` file:
+
+```bash
+./scripts/run_qelim_table_demos.sh --accept-tau-license
+```
+
+It runs `qelim` commands whose formulas mirror the table examples. The purpose
+is to show that the experimental qelim backend has a visible, runnable table-
+domain benchmark. It is not a claim that the current table solver checks use the
+qelim backend.

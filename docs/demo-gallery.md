@@ -12,6 +12,19 @@ Run every demo with:
 ./scripts/run_table_demos.sh --accept-tau-license
 ```
 
+The default demo runner uses the compound equivalence check for the table-vs-raw
+obligations. For the older one-check-at-a-time audit path, run:
+
+```bash
+TABLE_DEMO_EQUIV_MODE=individual ./scripts/run_table_demos.sh --accept-tau-license
+```
+
+Run the qelim-backed policy-shape demo with:
+
+```bash
+./scripts/run_qelim_table_demos.sh --accept-tau-license
+```
+
 The script clones official Tau Language, applies the local experiment patch,
 regenerates the parser, builds Tau, and runs the solver checks. The demo suite
 does not require committing Tau Language source into this repository.
@@ -122,9 +135,134 @@ This is the important implementation move. A runtime does not need to store an
 infinite table. It needs a finite symbolic revision rule that can be checked
 pointwise.
 
+## Demo 5: Qelim-Backed Policy Shapes
+
+Command:
+
+```bash
+./scripts/run_qelim_table_demos.sh --accept-tau-license
+```
+
+This is a separate qelim-kernel demo. It does not run the table solver path.
+Instead, it runs `qelim` commands whose formulas are shaped like the table
+demos: priority ladders, collateral-reason routing, incident-memory updates,
+pointwise revision, independent table shards, and DP-style guard constraints.
+
+The current local receipt for the smooth wrapper is:
+
+```text
+cases:              8
+repetitions:        3
+semantic parity:     passed
+auto route counts:   { components: 6, dp: 3, monolithic: 15 }
+auto speedup:        7.891157 x
+```
+
+This makes the qelim optimization visible without overstating the table solver
+claim. The `solve --tau` table demos currently emit no qelim telemetry, so this
+demo is intentionally described as qelim-backed, not as table-runtime
+acceleration.
+
+## Demo 6: Table Solver Telemetry
+
+Command:
+
+```bash
+python3 scripts/run_table_demo_solve_telemetry.py \
+  --reps 3 \
+  --out results/local/table-demo-solve-telemetry-reps3.json
+```
+
+This is the direct telemetry path for the ordinary table demos. It measures the
+`solve --tau` command body with `TAU_SOLVE_STATS=1`.
+
+The current local receipt is:
+
+```text
+cases:                 5
+repetitions:           3
+solve telemetry:       passed
+dominant phase counts: { apply_ms: 5 }
+```
+
+Standard reading: every representative table-equivalence check emitted exactly
+one solver telemetry row and returned `no solution`.
+
+Plain English: the table demos are reaching Tau's solver correctly, but the
+solver core is not the expensive part inside the measured command body.
+
+Boundary: this does not prove a qelim speedup. It shows that current table-demo
+optimization work should target rewrite-rule application and end-to-end command
+loading before changing the solver core.
+
+## Demo 7: Compound Table Check
+
+Command:
+
+```bash
+python3 scripts/run_table_demo_compound_check.py \
+  --reps 1 \
+  --out results/local/table-demo-compound-check.json
+```
+
+This demo uses one compound mismatch query instead of fifteen separate
+table-vs-raw solver calls.
+
+The checked law is:
+
+```text
+unsat(diff_1 or ... or diff_n)
+implies
+unsat(diff_i) for every i.
+```
+
+The current local receipt is:
+
+```text
+checks:              15
+individual elapsed:  118544.824 ms
+compound elapsed:     53147.339 ms
+elapsed reduction:       55.167%
+```
+
+The smooth demo runner now uses the compound-only path by default. The latest
+fresh run of:
+
+```bash
+./scripts/run_table_demos.sh --accept-tau-license
+```
+
+produced:
+
+```text
+equivalence mode: compound
+compound checks:  15
+compound elapsed: 52894.501 ms
+result:           passed
+```
+
+Standard reading: the disjunction of all table-vs-raw mismatch formulas has no
+solution, so each individual mismatch formula also has no solution.
+
+Plain English: the demo checks the same equivalence family in one larger Tau
+query instead of repeatedly starting Tau and reloading the sources.
+
+Boundary: this is not a new table operator. It is an obligation-shaping and
+harness optimization for the public demo checks.
+
+Proof receipt: the companion Lean packet
+`tau_compound_table_check_2026_04_15` proves that unsatisfiability of the
+compound mismatch predicate is equivalent to unsatisfiability of every listed
+mismatch predicate. The packet is intentionally about the logical harness law,
+not Tau's solver implementation.
+
 ## Boundary
 
 These demos prove the patched Tau executable can parse and check a safe
 guarded-choice table fragment. They do not prove unrestricted TABA tables,
 same-stratum prime inside recursive rows, full NSO lowering, or full Guarded
-Successor lowering.
+Successor lowering. The qelim-backed policy-shape demo proves a separate kernel
+optimization path, not a speedup of the current table solver checks. The solver
+telemetry demo identifies a separate optimization surface for the ordinary
+table checks. The compound table check shows one concrete way to reduce repeated
+demo overhead without changing the semantics.
