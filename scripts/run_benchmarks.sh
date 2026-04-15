@@ -86,6 +86,14 @@ if [[ -n "$TAU_BIN" ]]; then
     > "$RESULT_DIR/equality-split-tau-probe.txt"
   echo "Equality-split Tau recombination probe written to $RESULT_DIR/equality-split-tau-probe.json"
 
+  TAU_EQUALITY_SPLIT_RECOMBINE=1 \
+    python3 scripts/run_equality_split_tau_probe.py \
+      --tau-bin "$TAU_BIN" \
+      --extended \
+      --out "$RESULT_DIR/equality-split-tau-probe-enabled-extended.json" \
+      > "$RESULT_DIR/equality-split-tau-probe-enabled-extended.txt"
+  echo "Enabled extended equality-split Tau recombination probe written to $RESULT_DIR/equality-split-tau-probe-enabled-extended.json"
+
   python3 scripts/run_tau_runtime_stats_demo.py \
     --tau-bin "$TAU_BIN" \
     --out "$RESULT_DIR/tau-runtime-stats-demo.json" \

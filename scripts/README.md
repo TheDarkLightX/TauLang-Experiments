@@ -655,7 +655,8 @@ equivalence checks:       passed
 
 Boundary: this Tau-facing probe checks branch recombination after an equality
 split. It proves candidate shorter targets equivalent using `solve --tau`, but
-it does not patch Tau's normalizer to emit those targets automatically.
+without the feature flag it does not make Tau's normalizer emit those targets
+automatically.
 
 To test the current partial C++ pass:
 
@@ -696,6 +697,13 @@ target-sized cases:            8
 Tau-normalized characters:   108
 target-normalized characters: 108
 MNF-matched target cases:      8
+```
+
+The standard benchmark script now regenerates both the baseline probe and this
+enabled extended probe when a patched Tau binary is available:
+
+```bash
+./scripts/run_benchmarks.sh
 ```
 
 The five extended cases that do not match the target text under `normalize`
