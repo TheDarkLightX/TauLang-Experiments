@@ -189,13 +189,19 @@ enabled normalize chars:    1980
 target normalize chars:     1980
 MNF-matched target cases:    200 / 200
 exact normalize matches:     130 / 200
+baseline normalize time:     19958.521 ms
+enabled normalize time:      19432.444 ms
+baseline MNF time:           16847.849 ms
+enabled MNF time:            16813.717 ms
 ```
 
 This stress corpus forced two additional graph checks: a failed-guard
 disjunction may complement an alias component by connecting all terms in that
 component, and an alias-only branch may be recombined when the aliases entail
 the residual. The wide corpus has not exposed a new size-failure class. The
-next proof and implementation target is still presentation canonicalization:
+timing fields are whole-command timings with Tau process startup included, not
+in-process microbenchmarks. The next proof and implementation target is still
+presentation canonicalization:
 
 The final size failures were closed by equality-graph implication checks:
 alias branches that imply the residual can be recombined when the residual plus

@@ -272,9 +272,20 @@ MNF-matched target cases:    200 / 200
 exact normalize matches:     130 / 200
 ```
 
+Whole-command timing receipt:
+
+```text
+baseline normalize time:     19958.521 ms
+enabled normalize time:      19432.444 ms
+baseline MNF time:           16847.849 ms
+enabled MNF time:            16813.717 ms
+```
+
 The wide corpus adds five-variable equality chains, two-component guards, and
 residuals mentioning the fifth variable. The feature flag closes this corpus on
-normalized size as well.
+normalized size as well. The timing numbers include Tau process startup for
+each command, so they should be read only as a regression screen. In that
+screening harness, the pass does not show a whole-command timing regression.
 
 The generated and stress cases are closed by equality-graph implication checks:
 

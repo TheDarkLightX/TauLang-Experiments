@@ -784,8 +784,19 @@ MNF-matched target cases:    200 / 200
 exact normalize matches:     130 / 200
 ```
 
-The wide corpus did not expose a new size-failure class. The remaining gap is
-still textual presentation canonicalization.
+Whole-command timing from the same 200-case corpus:
+
+```text
+baseline normalize time:     19958.521 ms
+enabled normalize time:      19432.444 ms
+baseline MNF time:           16847.849 ms
+enabled MNF time:            16813.717 ms
+```
+
+These timings include Tau process startup for each command. They are a
+regression screen, not an in-process microbenchmark. The wide corpus did not
+expose a new size-failure class or a whole-command timing regression. The
+remaining gap is still textual presentation canonicalization.
 
 ## Variable-update cache telemetry
 

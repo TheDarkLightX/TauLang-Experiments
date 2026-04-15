@@ -140,5 +140,8 @@ Boundary:
   four-variable equality-chain stress corpus is also closed on size:
   `105 / 105` stress cases are target-sized with the flag enabled. The
   five-variable wide corpus is also closed on size: `200 / 200` wide cases are
-  target-sized with the flag enabled. The next target is presentation
-  canonicalization and still broader generated corpora.
+  target-sized with the flag enabled. A whole-command timing screen on the
+  wide corpus measured `19958.521 ms` baseline normalize time and `19432.444 ms`
+  enabled normalize time, with Tau process startup included in both numbers.
+  The next target is presentation canonicalization and still broader generated
+  corpora.

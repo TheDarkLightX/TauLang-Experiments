@@ -309,6 +309,12 @@ def analyze(tau_bin: Path, probe: Probe) -> dict[str, object]:
         "tau_normalized_matches_target": original_text == target_text,
         "dnf_matches_target": dnf_matches,
         "mnf_matches_target": mnf_matches,
+        "tau_normalize_elapsed_ms": original_norm["elapsed_ms"],
+        "target_normalize_elapsed_ms": target_norm["elapsed_ms"],
+        "tau_dnf_elapsed_ms": original_dnf["elapsed_ms"],
+        "target_dnf_elapsed_ms": target_dnf["elapsed_ms"],
+        "tau_mnf_elapsed_ms": original_mnf["elapsed_ms"],
+        "target_mnf_elapsed_ms": target_mnf["elapsed_ms"],
         "tau_normalized_chars": len(original_text),
         "target_normalized_chars": len(target_text),
         "char_reduction_if_targeted_percent": (
@@ -393,6 +399,18 @@ def main() -> int:
     ]
     total_tau = sum(int(row["tau_normalized_chars"]) for row in rows)
     total_target = sum(int(row["target_normalized_chars"]) for row in rows)
+    total_tau_normalize_elapsed_ms = round(
+        sum(float(row["tau_normalize_elapsed_ms"]) for row in rows), 3
+    )
+    total_target_normalize_elapsed_ms = round(
+        sum(float(row["target_normalize_elapsed_ms"]) for row in rows), 3
+    )
+    total_tau_mnf_elapsed_ms = round(
+        sum(float(row["tau_mnf_elapsed_ms"]) for row in rows), 3
+    )
+    total_target_mnf_elapsed_ms = round(
+        sum(float(row["target_mnf_elapsed_ms"]) for row in rows), 3
+    )
     summary = {
         "scope": "Tau normalize probes for equality-split branch recombination",
         "ok": all(bool(row["ok"]) for row in rows),
@@ -410,6 +428,10 @@ def main() -> int:
         "target_sized_cases": len(target_sized),
         "tau_normalized_chars": total_tau,
         "target_normalized_chars": total_target,
+        "tau_normalize_elapsed_ms": total_tau_normalize_elapsed_ms,
+        "target_normalize_elapsed_ms": total_target_normalize_elapsed_ms,
+        "tau_mnf_elapsed_ms": total_tau_mnf_elapsed_ms,
+        "target_mnf_elapsed_ms": total_target_mnf_elapsed_ms,
         "char_reduction_if_targeted_percent": (
             round(100.0 * (total_tau - total_target) / total_tau, 3)
             if total_tau

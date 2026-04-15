@@ -247,6 +247,21 @@ MNF-matched target cases:    200 / 200
 exact normalize matches:     130 / 200
 ```
 
+Whole-command timing receipt from the same 200-case corpus:
+
+```text
+baseline normalize time:     19958.521 ms
+enabled normalize time:      19432.444 ms
+baseline MNF time:           16847.849 ms
+enabled MNF time:            16813.717 ms
+```
+
+This timing is measured around separate Tau invocations, so it includes process
+startup and file I/O. It is useful as a regression screen for the experiment,
+not as an in-process optimizer benchmark. The current result says the
+feature-gated recombination pass removes the normalized-size blowup without
+showing a whole-command timing regression on this corpus.
+
 The fixed-width modular arithmetic rewrite-triage corpus is:
 
 ```bash
