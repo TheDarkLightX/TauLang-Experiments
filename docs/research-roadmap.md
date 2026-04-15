@@ -146,5 +146,7 @@ Boundary:
   An idempotence screen sharpened the next target: baseline had `7 / 200`
   first-pass fixed points, while the enabled pass had `140 / 200`; `60 / 200`
   enabled outputs still changed under a second `normalize`, and `30 / 200`
-  grew. The next target is fixed-point presentation canonicalization and still
-  broader generated corpora.
+  grew. A guarded second-pass candidate keeps `200 / 200` target-sized output,
+  keeps total normalized size at `1980` characters, and improves exact target
+  presentation to `160 / 200`. The next target is fixed-point presentation
+  canonicalization and still broader generated corpora.

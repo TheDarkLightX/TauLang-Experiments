@@ -294,12 +294,17 @@ baseline first-pass idempotent cases: 7 / 200
 enabled first-pass idempotent cases:  140 / 200
 enabled non-idempotent cases:         60 / 200
 enabled second-pass growth cases:     30 / 200
+guarded-presentation target-sized:    200 / 200
+guarded-presentation exact matches:   160 / 200
+guarded-presentation characters:      1980
 ```
 
 This matters because exact `normalize` text is not the only boundary. Some
 first-pass outputs still change when passed through `normalize` again. The
 feature-gated pass improves that property relative to baseline, but it does not
-solve fixed-point presentation canonicalization.
+solve fixed-point presentation canonicalization. A guarded second-pass rule
+improves exact target presentation without losing size closure in this probe,
+but it is not yet a Tau C++ patch.
 
 The generated and stress cases are closed by equality-graph implication checks:
 

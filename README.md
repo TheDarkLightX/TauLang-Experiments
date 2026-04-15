@@ -278,12 +278,17 @@ baseline first-pass idempotent cases: 7 / 200
 enabled first-pass idempotent cases:  140 / 200
 enabled non-idempotent cases:         60 / 200
 enabled second-pass growth cases:     30 / 200
+guarded-presentation target-sized:    200 / 200
+guarded-presentation exact matches:   160 / 200
+guarded-presentation characters:      1980
 ```
 
 This sharpens the remaining frontier. The feature-gated pass improves
 normalize fixed-point stability on this corpus, but it does not close it. The
 next target is a normalizer presentation pass whose first output is already a
-fixed point under another `normalize` call.
+fixed point under another `normalize` call. The guarded-presentation candidate
+means: use the second `normalize` output only when it does not increase output
+size. This is currently probe evidence, not a Tau C++ optimizer patch.
 
 The fixed-width modular arithmetic rewrite-triage corpus is:
 

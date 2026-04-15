@@ -342,6 +342,8 @@ def analyze(tau_bin: Path, probe: Probe, check_idempotence: bool) -> dict[str, o
     if check_idempotence and original_second_norm and target_second_norm:
         original_second_text = str(original_second_norm["normalized"])
         target_second_text = str(target_second_norm["normalized"])
+        use_guarded_second = len(original_second_text) <= len(original_text)
+        guarded_text = original_second_text if use_guarded_second else original_text
         row.update({
             "tau_second_normalized": original_second_text,
             "target_second_normalized": target_second_text,
@@ -353,6 +355,11 @@ def analyze(tau_bin: Path, probe: Probe, check_idempotence: bool) -> dict[str, o
             "target_second_normalized_chars": len(target_second_text),
             "tau_second_normalize_elapsed_ms": original_second_norm["elapsed_ms"],
             "target_second_normalize_elapsed_ms": target_second_norm["elapsed_ms"],
+            "guarded_presentation_normalized": guarded_text,
+            "guarded_presentation_used_second_pass": use_guarded_second,
+            "guarded_presentation_matches_target": guarded_text == target_text,
+            "guarded_presentation_target_sized": len(guarded_text) <= len(target_text),
+            "guarded_presentation_chars": len(guarded_text),
         })
         row["ok"] = bool(row["ok"]) and int(original_second_norm["returncode"]) == 0 \
             and int(target_second_norm["returncode"]) == 0
@@ -482,11 +489,36 @@ def main() -> int:
         tau_second_target_second = [
             row for row in rows if bool(row["tau_second_matches_target_second"])
         ]
+        tau_second_non_growing = [
+            row for row in rows
+            if int(row["tau_second_normalized_chars"])
+            <= int(row["tau_normalized_chars"])
+        ]
+        tau_second_same_size_changed = [
+            row for row in rows
+            if int(row["tau_second_normalized_chars"])
+            == int(row["tau_normalized_chars"])
+            and row["tau_second_normalized"] != row["tau_normalized"]
+        ]
+        tau_second_growth = [
+            row for row in rows
+            if int(row["tau_second_normalized_chars"])
+            > int(row["tau_normalized_chars"])
+        ]
+        guarded_target_sized = [
+            row for row in rows if bool(row["guarded_presentation_target_sized"])
+        ]
+        guarded_matched = [
+            row for row in rows if bool(row["guarded_presentation_matches_target"])
+        ]
         summary.update({
             "tau_normalize_idempotent_cases": len(tau_idempotent),
             "target_normalize_idempotent_cases": len(target_idempotent),
             "tau_second_matches_target_cases": len(tau_second_target),
             "tau_second_matches_target_second_cases": len(tau_second_target_second),
+            "tau_second_non_growing_cases": len(tau_second_non_growing),
+            "tau_second_same_size_changed_cases": len(tau_second_same_size_changed),
+            "tau_second_growth_cases": len(tau_second_growth),
             "tau_second_normalized_chars": sum(
                 int(row["tau_second_normalized_chars"]) for row in rows
             ),
@@ -499,6 +531,11 @@ def main() -> int:
             "target_second_normalize_elapsed_ms": round(sum(
                 float(row["target_second_normalize_elapsed_ms"]) for row in rows
             ), 3),
+            "guarded_presentation_target_sized_cases": len(guarded_target_sized),
+            "guarded_presentation_matches_target_cases": len(guarded_matched),
+            "guarded_presentation_chars": sum(
+                int(row["guarded_presentation_chars"]) for row in rows
+            ),
         })
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n", encoding="utf-8")

@@ -814,10 +814,15 @@ baseline first-pass idempotent cases: 7 / 200
 enabled first-pass idempotent cases:  140 / 200
 enabled non-idempotent cases:         60 / 200
 enabled second-pass growth cases:     30 / 200
+guarded-presentation target-sized:    200 / 200
+guarded-presentation exact matches:   160 / 200
+guarded-presentation characters:      1980
 ```
 
 The feature-gated pass improves fixed-point stability, but the remaining
-`60 / 200` non-idempotent cases are the next normalizer boundary.
+`60 / 200` non-idempotent cases are the next normalizer boundary. The guarded
+candidate is a probe-level rule: accept the second `normalize` result only when
+it is no longer than the first result.
 
 ## Variable-update cache telemetry
 

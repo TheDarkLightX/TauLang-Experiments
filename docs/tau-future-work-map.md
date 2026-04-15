@@ -208,10 +208,16 @@ baseline first-pass idempotent cases: 7 / 200
 enabled first-pass idempotent cases:  140 / 200
 enabled non-idempotent cases:         60 / 200
 enabled second-pass growth cases:     30 / 200
+guarded-presentation target-sized:    200 / 200
+guarded-presentation exact matches:   160 / 200
+guarded-presentation characters:      1980
 ```
 
 The feature-gated pass improves idempotence relative to baseline, but does not
 make every first-pass output stable under another `normalize` call.
+The guarded-presentation candidate chooses a second-pass result only when it
+does not increase size. It is a measured candidate for the next implementation
+step, not an implemented Tau patch.
 
 The final size failures were closed by equality-graph implication checks:
 alias branches that imply the residual can be recombined when the residual plus
