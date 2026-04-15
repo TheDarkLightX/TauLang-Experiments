@@ -233,4 +233,9 @@ Equivalence mode:
 - $TABLE_DEMO_EQUIV_MODE
 MSG
 
-echo "Tau table demos passed. Results written to $RESULT_DIR"
+RESULT_LABEL="$RESULT_DIR"
+if [[ "$RESULT_LABEL" == "$ROOT/"* ]]; then
+  RESULT_LABEL="${RESULT_LABEL#"$ROOT/"}"
+fi
+
+echo "Tau table demos passed. Results written to $RESULT_LABEL"

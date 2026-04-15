@@ -43,21 +43,24 @@ results/    Benchmark reports and generated experiment summaries
 
 ## Reproduction Model
 
-The intended workflow is:
+The full public demo path is:
 
 ```bash
 git clone https://github.com/TheDarkLightX/TauLang-Experiments.git
 cd TauLang-Experiments
-./scripts/setup_tau.sh --accept-tau-license
-./scripts/apply_patches.sh
-./scripts/run_table_demos.sh
+./scripts/run_public_demos.sh --accept-tau-license
 ```
 
 `setup_tau.sh` clones the official Tau Language repository into `external/tau-lang`. That directory is gitignored and should not be committed here.
 By default, the script checks out the Tau commit used by the current patch
 evidence. Set `TAU_REF=main` only when intentionally testing patch drift.
 
-For the smooth path, run one command:
+The public demo wrapper runs both:
+
+- the safe table syntax and solver-equivalence demo,
+- the qelim-backed policy-shape demo with residual semantic validation.
+
+To run only the table demo, use:
 
 ```bash
 ./scripts/run_table_demos.sh --accept-tau-license
@@ -70,6 +73,12 @@ the older separate-check audit path, use:
 
 ```bash
 TABLE_DEMO_EQUIV_MODE=individual ./scripts/run_table_demos.sh --accept-tau-license
+```
+
+To run only the qelim-backed policy-shape demo, use:
+
+```bash
+./scripts/run_qelim_table_demos.sh --accept-tau-license
 ```
 
 The current table demo gallery is documented in:

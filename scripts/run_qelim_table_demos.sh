@@ -17,8 +17,12 @@ if [[ "${1:-}" == "--reps" ]]; then
   REPS="${2:?missing value after --reps}"
 fi
 
-"$ROOT/scripts/setup_tau.sh" $ACCEPT_FLAG
-"$ROOT/scripts/apply_patches.sh"
+if [[ "${TAU_QELIM_DEMO_SKIP_SETUP_PATCH:-0}" != "1" ]]; then
+  "$ROOT/scripts/setup_tau.sh" $ACCEPT_FLAG
+  "$ROOT/scripts/apply_patches.sh"
+else
+  echo "Skipping Tau setup and patch application; using existing checkout."
+fi
 
 if [[ ! -x "$BUILD_DIR/tau" ]]; then
   cmake -S "$TAU_DIR" -B "$BUILD_DIR" -DCMAKE_BUILD_TYPE=Release

@@ -6,7 +6,13 @@ endorsement claim, and not a statement about what IDNI intends to ship.
 The demos are narrower than full TABA tables and may not meet the standard
 required for an official Tau feature.
 
-Run every demo with:
+Run the full public demo suite with:
+
+```bash
+./scripts/run_public_demos.sh --accept-tau-license
+```
+
+Run only the safe table syntax and solver-equivalence demo with:
 
 ```bash
 ./scripts/run_table_demos.sh --accept-tau-license
@@ -19,7 +25,7 @@ obligations. For the older one-check-at-a-time audit path, run:
 TABLE_DEMO_EQUIV_MODE=individual ./scripts/run_table_demos.sh --accept-tau-license
 ```
 
-Run the qelim-backed policy-shape demo with:
+Run only the qelim-backed policy-shape demo with:
 
 ```bash
 ./scripts/run_qelim_table_demos.sh --accept-tau-license

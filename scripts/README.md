@@ -56,6 +56,18 @@ chmod +x scripts/*.sh
 
 ## Qelim-backed table policy demo
 
+To run the public demo suite in one command:
+
+```bash
+./scripts/run_public_demos.sh --accept-tau-license
+```
+
+That script runs `run_table_demos.sh` first, then reuses the patched checkout
+for the qelim-backed policy-shape demo. Set `RUN_PUBLIC_BENCHMARKS=1` to append
+the broader research benchmark suite.
+
+To run only the qelim-backed policy demo:
+
 ```bash
 ./scripts/run_qelim_table_demos.sh --accept-tau-license
 ```
