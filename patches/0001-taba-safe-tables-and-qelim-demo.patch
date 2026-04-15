@@ -3368,7 +3368,7 @@ index bd9c4e07..4b0a6f82 100644
  #include "execution.h"
  
 diff --git a/src/normal_forms.tmpl.h b/src/normal_forms.tmpl.h
-index 5917175f..ba7d9c94 100644
+index 5917175f..b86a2e4d 100644
 --- a/src/normal_forms.tmpl.h
 +++ b/src/normal_forms.tmpl.h
 @@ -556,7 +556,25 @@ inline bool reduce_paths(std::vector<int_t>& i,
@@ -3409,7 +3409,7 @@ index 5917175f..ba7d9c94 100644
  	static bool wff_comp (tref l, tref r) {
  		if (tau::get(l).child_is(tau::bf_eq))
  			if (tau::get(r).child_is(tau::bf_eq))
-@@ -2140,6 +2163,561 @@ class syntactic_path_simplification {
+@@ -2140,6 +2163,704 @@ class syntactic_path_simplification {
  		}
  	}
  
@@ -3704,6 +3704,70 @@ index 5917175f..ba7d9c94 100644
 +		return true;
 +	}
 +
++	static size_t find_or_add_term(std::vector<tref>& terms, tref x) {
++		for (size_t i = 0; i < terms.size(); ++i)
++			if (same_tree(terms[i], x)) return i;
++		terms.push_back(x);
++		return terms.size() - 1;
++	}
++
++	static bool eqs_connect_terms(const trefs& eqs, tref a, tref b) {
++		if (same_tree(a, b)) return true;
++		std::vector<tref> terms;
++		find_or_add_term(terms, a);
++		find_or_add_term(terms, b);
++		for (tref eq : eqs) {
++			tref l, r;
++			if (!atom_sides(eq, tau::bf_eq, l, r)) continue;
++			find_or_add_term(terms, l);
++			find_or_add_term(terms, r);
++		}
++		std::vector<size_t> parent(terms.size());
++		for (size_t i = 0; i < parent.size(); ++i) parent[i] = i;
++		for (tref eq : eqs) {
++			tref l, r;
++			if (!atom_sides(eq, tau::bf_eq, l, r)) continue;
++			size_t li = find_or_add_term(terms, l);
++			size_t ri = find_or_add_term(terms, r);
++			size_t lp = find_parent(parent, li);
++			size_t rp = find_parent(parent, ri);
++			if (lp != rp) parent[rp] = lp;
++		}
++		size_t ai = find_or_add_term(terms, a);
++		size_t bi = find_or_add_term(terms, b);
++		return find_parent(parent, ai) == find_parent(parent, bi);
++	}
++
++	static bool disjunction_neq_edges_connect_terms(tref disj, tref a, tref b) {
++		trefs evidence;
++		for (tref d : get_dnf_wff_clauses<node>(disj)) {
++			tref l, r;
++			if (!atom_sides(d, tau::bf_neq, l, r)) return false;
++			evidence.push_back(tau::build_bf_eq(l, r));
++		}
++		return eqs_connect_terms(evidence, a, b);
++	}
++
++	static bool parse_zero_meet_pos_neg(tref atom, tref& pos, tref& neg) {
++		auto zero = zero_eq_term(atom);
++		if (!zero) return false;
++		if (!tau::get(*zero).is(tau::bf)) return false;
++		if (!tau::get(*zero).child_is(tau::bf_and)) return false;
++		tref l = tau::get(*zero)[0].first();
++		tref r = tau::get(*zero)[0].second();
++		if (tau::get(l).child_is(tau::bf_neg)) {
++			pos = r;
++			neg = tau::trim2(l);
++			return true;
++		}
++		if (tau::get(r).child_is(tau::bf_neg)) {
++			pos = l;
++			neg = tau::trim2(r);
++			return true;
++		}
++		return false;
++	}
++
 +	static std::optional<tref> reduce_zero_neq_under_aliases(
 +		tref candidate, tref residual, const trefs& aliases)
 +	{
@@ -3810,6 +3874,67 @@ index 5917175f..ba7d9c94 100644
 +			|| (
 +			term_rewrites_to_under_aliases(from_l, to_r, aliases)
 +			&& term_rewrites_to_under_aliases(from_r, to_l, aliases));
++	}
++
++	static bool atom_implied_by_aliases(tref atom, const trefs& aliases) {
++		tref l, r;
++		if (atom_sides(atom, tau::bf_eq, l, r))
++			return eqs_connect_terms(aliases, l, r)
++				|| term_rewrites_to_under_aliases(l, r, aliases)
++				|| term_rewrites_to_under_aliases(r, l, aliases);
++		tref pos, neg;
++		if (parse_zero_meet_pos_neg(atom, pos, neg))
++			return eqs_connect_terms(aliases, pos, neg)
++				|| term_rewrites_to_under_aliases(pos, neg, aliases)
++				|| term_rewrites_to_under_aliases(neg, pos, aliases);
++		return false;
++	}
++
++	static bool residual_and_negated_disj_imply_aliases(
++		tref residual, tref disj, const trefs& aliases)
++	{
++		trefs evidence;
++		for (tref d : get_dnf_wff_clauses<node>(disj)) {
++			tref l, r;
++			if (!atom_sides(d, tau::bf_neq, l, r)) return false;
++			evidence.push_back(tau::build_bf_eq(l, r));
++		}
++		tref l, r;
++		if (atom_sides(residual, tau::bf_eq, l, r))
++			evidence.push_back(tau::build_bf_eq(l, r));
++		for (tref alias : aliases)
++			if (!atom_implied_by_aliases(alias, evidence)) return false;
++		return true;
++	}
++
++	static std::optional<tref> recombine_alias_implies_residual_partition_one_way(
++		const trefs& alias_branch, const trefs& complement_branch)
++	{
++		if (alias_branch.empty()) return {};
++		for (tref alias : alias_branch) {
++			tref l, r;
++			if (!atom_sides(alias, tau::bf_eq, l, r)) return {};
++		}
++		for (size_t residual_i = 0; residual_i < complement_branch.size(); ++residual_i) {
++			tref residual = complement_branch[residual_i];
++			if (!atom_implied_by_aliases(residual, alias_branch))
++				continue;
++			trefs rest = without_index(complement_branch, residual_i);
++			if (rest.size() != 1) continue;
++			if (disjunction_negates_all(rest[0], alias_branch)
++				|| residual_and_negated_disj_imply_aliases(
++					residual, rest[0], alias_branch))
++				return syntactic_formula_simplification<node>(residual);
++		}
++		return {};
++	}
++
++	static std::optional<tref> recombine_alias_implies_residual_partition(
++		const trefs& left, const trefs& right)
++	{
++		if (auto res = recombine_alias_implies_residual_partition_one_way(left, right))
++			return *res;
++		return recombine_alias_implies_residual_partition_one_way(right, left);
 +	}
 +
 +	static std::optional<tref> reduce_eqneq_under_aliases(
@@ -3935,6 +4060,21 @@ index 5917175f..ba7d9c94 100644
 +	static tref recombine_wff_split_node(tref n) {
 +		if (!tau::get(n).is(tau::wff)) return n;
 +		const tau& t = tau::get(n)[0];
++		if (t.is(tau::wff_and)) {
++			trefs clauses = get_cnf_wff_clauses<node>(n);
++			for (size_t i = 0; i < clauses.size(); ++i) {
++				tref l, r;
++				if (!atom_sides(clauses[i], tau::bf_neq, l, r)) continue;
++				for (size_t j = 0; j < clauses.size(); ++j) {
++					if (i == j) continue;
++					if (!disjunction_neq_edges_connect_terms(clauses[j], l, r))
++						continue;
++					trefs rest = without_index(clauses, j);
++					return build_wff_and_or_true(rest);
++				}
++			}
++			return n;
++		}
 +		if (!t.is(tau::wff_or)) return n;
 +
 +		trefs left = get_cnf_wff_clauses<node>(t.first());
@@ -3950,6 +4090,9 @@ index 5917175f..ba7d9c94 100644
 +		}
 +		if (auto partition = recombine_common_residual_partition(left, right))
 +			return *partition;
++		if (auto implied_residual =
++				recombine_alias_implies_residual_partition(left, right))
++			return *implied_residual;
 +		if (auto eqneq_part = recombine_alias_eqneq_partition(left, right))
 +			return *eqneq_part;
 +		if (auto alias_part = recombine_alias_residual_partition(left, right))
@@ -3971,7 +4114,7 @@ index 5917175f..ba7d9c94 100644
  	static tref simplify_wff (tref root) {
  		tref skip = nullptr;
  		auto down = [&skip](tref n) {
-@@ -2278,12 +2856,16 @@ public:
+@@ -2278,12 +2999,16 @@ public:
  			if (tau::get(fm).equals_F() || tau::get(fm).equals_T())
  				return fm;
  			// Resolve contradictions

@@ -106,9 +106,9 @@ The current patch is an experiment patch, not an official Tau release. It adds:
   `8` under `mnf`, and matches `3` of `8` exactly under `normalize`. The
   remaining mismatch is presentation ordering, not a missed semantic reduction
   on that corpus. On the generated path-sensitive corpus, the same flag moves
-  target-sized output from `2` of `24` baseline cases to `24` of `24` enabled
-  cases. Exact `normalize` text still matches `12` of `24`, while `mnf`
-  matches all `24`.
+  target-sized output from `2` of `48` baseline cases to `48` of `48` enabled
+  cases. Exact `normalize` text still matches `24` of `48`, while `mnf`
+  matches all `48`.
 - opt-in qelim rewrite probe flags,
   `TAU_QELIM_BDD_KB_REWRITE=1` and
   `TAU_QELIM_BDD_KB_REWRITE=guarded`, for the restricted c111-inspired
@@ -199,9 +199,9 @@ missed semantic reduction on this corpus, so this remains an opt-in, scoped
 normalizer experiment rather than a default Tau optimization.
 The generated path-sensitive corpus is harder than the smoke tests, but the
 feature-gated pass now closes it on size: target-sized output improves from `2`
-of `24` baseline cases to `24` of `24` enabled cases, and the enabled normalized
-character count is `189`, exactly the target count. Exact `normalize` text still
-matches `12` of `24`, while all `24` still match under `mnf`. The remaining
+of `48` baseline cases to `48` of `48` enabled cases, and the enabled normalized
+character count is `378`, exactly the target count. Exact `normalize` text still
+matches `24` of `48`, while all `48` still match under `mnf`. The remaining
 target is presentation canonicalization, not missed equality-split
 recombination on this generated corpus.
 

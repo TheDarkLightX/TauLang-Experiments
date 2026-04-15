@@ -136,5 +136,5 @@ Boundary:
 - The Tau-facing equality-split recombination probe shows a normalizer
   opportunity, not a completed default Tau optimization. The feature-gated pass
   closes the smoke corpus and the generated path-sensitive corpus on normalized
-  size: `24 / 24` generated cases are target-sized with the flag enabled. The
+  size: `48 / 48` generated cases are target-sized with the flag enabled. The
   next target is presentation canonicalization plus larger generated corpora.

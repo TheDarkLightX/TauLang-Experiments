@@ -715,30 +715,30 @@ For a generated path-sensitive corpus:
 ```bash
 python3 scripts/run_equality_split_tau_probe.py \
   --generated-path-corpus \
-  --max-generated-cases 24 \
+  --max-generated-cases 48 \
   --out results/local/equality-split-generated-path.json
 
 TAU_EQUALITY_SPLIT_RECOMBINE=1 python3 scripts/run_equality_split_tau_probe.py \
   --generated-path-corpus \
-  --max-generated-cases 24 \
+  --max-generated-cases 48 \
   --out results/local/equality-split-generated-path-enabled.json
 ```
 
 Current generated-path receipt:
 
 ```text
-baseline target-sized cases:   2 / 24
-enabled target-sized cases:   24 / 24
-baseline normalize chars:    828
-enabled normalize chars:     189
-target normalize chars:      189
-MNF-matched target cases:     24 / 24
+baseline target-sized cases:   2 / 48
+enabled target-sized cases:   48 / 48
+baseline normalize chars:    2088
+enabled normalize chars:     378
+target normalize chars:      378
+MNF-matched target cases:     48 / 48
 ```
 
 This generated corpus is intentionally harder than the smoke test. It includes
 cases where the residual is simplified differently under the equality branch
 and its complement. The current feature flag now closes the generated corpus on
-normalized size. Exact `normalize` text still matches only `12` of `24` cases,
+normalized size. Exact `normalize` text still matches only `24` of `48` cases,
 because Tau prints some equivalent Boolean-algebra terms in different orders.
 The remaining target is presentation canonicalization, not missed semantic
 recombination on this corpus.

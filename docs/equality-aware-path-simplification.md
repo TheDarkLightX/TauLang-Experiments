@@ -205,31 +205,46 @@ Generated path-sensitive corpus:
 ```bash
 python3 scripts/run_equality_split_tau_probe.py \
   --generated-path-corpus \
-  --max-generated-cases 24 \
+  --max-generated-cases 48 \
   --out results/local/equality-split-generated-path.json
 
 TAU_EQUALITY_SPLIT_RECOMBINE=1 python3 scripts/run_equality_split_tau_probe.py \
   --generated-path-corpus \
-  --max-generated-cases 24 \
+  --max-generated-cases 48 \
   --out results/local/equality-split-generated-path-enabled.json
 ```
 
 Current generated-path receipt:
 
 ```text
-baseline target-sized cases:   2 / 24
-enabled target-sized cases:   24 / 24
-baseline normalize chars:    828
-enabled normalize chars:     189
-target normalize chars:      189
-MNF-matched target cases:     24 / 24
+baseline target-sized cases:   2 / 48
+enabled target-sized cases:   48 / 48
+baseline normalize chars:    2088
+enabled normalize chars:     378
+target normalize chars:      378
+MNF-matched target cases:     48 / 48
 ```
 
 Interpretation: the feature flag closes the hand-written and alias-order smoke
 corpora, and it now closes the generated path-sensitive corpus on normalized
-size. Exact `normalize` text still matches `12` of `24` generated cases. The
+size. Exact `normalize` text still matches `24` of `48` generated cases. The
 remaining cases are presentation differences such as equivalent term orderings,
 not missed semantic recombination on this corpus.
+
+The extra generated cases are closed by two equality-graph implication checks:
+
+```text
+(A => R) and (R and not D => A) imply A or (R and D) == R
+
+a != b implies (t0 != t1) or ... or (t[k-1] != tk)
+when t0 = a and tk = b
+```
+
+The first check collapses split branches when the alias branch is already inside
+the residual and the residual plus the failed guard-disjunction reconstructs
+the alias branch. The second check removes a redundant disjunction of
+edge-failures when an endpoint inequality already guarantees that some edge on
+the equality path must fail.
 
 ## Broader Implementation Shape
 

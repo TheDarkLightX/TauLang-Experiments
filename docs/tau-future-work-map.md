@@ -157,19 +157,26 @@ equivalent Boolean terms, not a missed reduction on the checked corpus.
 The generated path-sensitive corpus moves the frontier again:
 
 ```text
-baseline target-sized cases:   2 / 24
-enabled target-sized cases:   24 / 24
-baseline normalize chars:    828
-enabled normalize chars:     189
-target normalize chars:      189
-MNF-matched target cases:     24 / 24
+baseline target-sized cases:   2 / 48
+enabled target-sized cases:   48 / 48
+baseline normalize chars:    2088
+enabled normalize chars:     378
+target normalize chars:      378
+MNF-matched target cases:     48 / 48
 ```
 
 This shows that the scoped recombination pass now closes the generated
 path-sensitive corpus on normalized size. Exact `normalize` text still matches
-only `12` of `24` generated cases, because Tau can print equivalent
+only `24` of `48` generated cases, because Tau can print equivalent
 Boolean-algebra terms in different orders. The next proof and implementation
 target is therefore presentation canonicalization:
+
+The final six size failures were closed by equality-graph implication checks:
+alias branches that imply the residual can be recombined when the residual plus
+the failed guard-disjunction reconstructs the alias branch. A separate
+conjunction cleanup removes redundant path-failure disjunctions when an
+endpoint inequality already implies that one edge on the equality path must
+fail.
 
 ```text
 branch premise G entails x = rep(x)
