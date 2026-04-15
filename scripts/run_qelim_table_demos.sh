@@ -5,7 +5,7 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 TAU_DIR="${TAU_DIR:-"$ROOT/external/tau-lang"}"
 BUILD_DIR="${TAU_BUILD_DIR:-"$TAU_DIR/build-Release"}"
 JOBS="${JOBS:-2}"
-REPS="${REPS:-3}"
+REPS="${REPS:-5}"
 ACCEPT_FLAG=""
 
 if [[ "${1:-}" == "--accept-tau-license" ]]; then
@@ -31,7 +31,7 @@ OUT_JSON="$RESULT_DIR/qelim-table-demo-corpus.json"
 OUT_TXT="$RESULT_DIR/qelim-table-demo-summary.txt"
 mkdir -p "$RESULT_DIR"
 
-python3 "$ROOT/scripts/run_qelim_policy_shape_corpus.py" \
+python3 "$ROOT/scripts/run_qelim_policy_semantic_corpus.py" \
   --tau-bin "$TAU_BIN" \
   --reps "$REPS" \
   --out "$OUT_JSON" \
@@ -56,6 +56,7 @@ print()
 print(f"cases:                  {data['case_count']}")
 print(f"repetitions:            {data['reps']}")
 print(f"semantic parity:         {'passed' if data['ok'] else 'failed'}")
+print(f"syntactic fail, semantic pass: {data.get('syntactic_fail_semantic_pass_count', 0)}")
 print(f"auto route counts:       {mode['auto']['route_counts']}")
 print(f"default qelim total:     {default:.6f} ms")
 print(f"auto qelim total:        {auto:.6f} ms")
@@ -66,6 +67,7 @@ print()
 print("Scope:")
 print("- qelim command backend, not solve --tau runtime acceleration")
 print("- formulas shaped like the table demos")
+print("- residual formulas checked by the scoped semantic validator")
 print("- current compiled BDD support boundary only")
 print("- KB guarded mode is reported separately")
 PY

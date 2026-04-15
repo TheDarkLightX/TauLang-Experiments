@@ -61,12 +61,14 @@ chmod +x scripts/*.sh
 ```
 
 This wrapper runs qelim commands whose formulas are shaped like the safe table
-demos. It is intentionally separate from `run_table_demos.sh`.
+demos, then validates the printed residual formulas with the scoped semantic
+checker. It is intentionally separate from `run_table_demos.sh`.
 
 Scope:
 
 - `run_table_demos.sh` checks the patched Tau table syntax and solver behavior.
-- `run_qelim_table_demos.sh` checks the qelim backend on table-shaped formulas.
+- `run_qelim_table_demos.sh` checks the qelim backend on table-shaped formulas
+  with residual semantic validation.
 - The qelim demo is not evidence that the current `solve --tau` table checks are
   faster.
 
@@ -77,7 +79,8 @@ results/local/qelim-table-demo-corpus.json
 results/local/qelim-table-demo-summary.txt
 ```
 
-For a stronger residual-formula validation pass, run:
+The wrapper now uses the residual-formula validation pass directly. To run it
+without setup or patch application, use:
 
 ```bash
 python3 scripts/run_qelim_policy_semantic_corpus.py \
@@ -87,7 +90,7 @@ python3 scripts/run_qelim_policy_semantic_corpus.py \
 
 This parser is intentionally scoped to the residual formula subset printed by
 the qelim policy corpus. The current receipt shows semantic parity across nine
-policy-shaped cases and a roughly `5.17x` internal qelim speedup for the
+policy-shaped cases and a roughly `5.15x` internal qelim speedup for the
 experimental auto route against default qelim. It does not show a KB rewrite
 benefit on that corpus, because the guarded KB pass had zero rewrite steps.
 

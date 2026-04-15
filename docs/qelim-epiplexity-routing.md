@@ -905,28 +905,30 @@ The public qelim-backed policy-shape demo can now be run with:
 
 The wrapper uses the same license-aware setup path as the table demos, applies
 the local patch to the official Tau checkout, builds Tau, runs the policy-shaped
-qelim corpus, and writes:
+semantic qelim corpus, and writes:
 
 ```text
 results/local/qelim-table-demo-corpus.json
 results/local/qelim-table-demo-summary.txt
 ```
 
-Small-demo receipt:
+Current wrapper receipt:
 
 ```text
-cases:                  8
-repetitions:            3
+cases:                  9
+repetitions:            5
 semantic parity:         passed
-auto route counts:       { components: 6, dp: 3, monolithic: 15 }
-default qelim total:     105.065210 ms
-auto qelim total:         13.314298 ms
-auto speedup:              7.891157 x
+syntactic fail, semantic pass: 2
+auto route counts:       { components: 10, dp: 5, monolithic: 30 }
+default qelim total:     210.853380 ms
+auto qelim total:         40.940207 ms
+auto speedup:              5.150276 x
 ```
 
-This wrapper is the correct public demo for the qelim optimization. The ordinary
-table demo wrapper remains the correct public demo for parser-level safe table
-syntax and solver equivalence checks.
+This wrapper is the correct public demo for the qelim optimization because it
+uses the semantic residual validator by default. The ordinary table demo wrapper
+remains the correct public demo for parser-level safe table syntax and solver
+equivalence checks.
 
 ## Residual Semantic Validator
 
@@ -953,10 +955,10 @@ case_count:                         9
 semantic parity:                    passed
 syntactic-fail semantic-pass count: 2
 auto route counts:                  { components: 10, dp: 5, monolithic: 30 }
-default qelim total:                218.703000 ms
-auto qelim total:                    42.283483 ms
-auto speedup:                         5.171118 x
-auto+KB guarded total:               43.513830 ms
+default qelim total:                210.853380 ms
+auto qelim total:                    40.940207 ms
+auto speedup:                         5.150276 x
+auto+KB guarded total:               42.465982 ms
 KB rewrite steps:                     0
 ```
 

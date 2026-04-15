@@ -26,8 +26,9 @@ Run the qelim-backed policy-shape demo with:
 ```
 
 The script clones official Tau Language, applies the local experiment patch,
-regenerates the parser, builds Tau, and runs the solver checks. The demo suite
-does not require committing Tau Language source into this repository.
+regenerates the parser, builds Tau, and runs the qelim-backed policy checks with
+residual semantic validation. The demo suite does not require committing Tau
+Language source into this repository.
 
 ## What The Demos Show
 
@@ -147,15 +148,18 @@ This is a separate qelim-kernel demo. It does not run the table solver path.
 Instead, it runs `qelim` commands whose formulas are shaped like the table
 demos: priority ladders, collateral-reason routing, incident-memory updates,
 pointwise revision, independent table shards, and DP-style guard constraints.
+The printed residual formulas are checked by the scoped semantic validator, not
+only by syntactic string comparison.
 
 The current local receipt for the smooth wrapper is:
 
 ```text
-cases:              8
-repetitions:        3
+cases:              9
+repetitions:        5
 semantic parity:     passed
-auto route counts:   { components: 6, dp: 3, monolithic: 15 }
-auto speedup:        7.891157 x
+syntactic fail, semantic pass: 2
+auto route counts:   { components: 10, dp: 5, monolithic: 30 }
+auto speedup:        5.150276 x
 ```
 
 This makes the qelim optimization visible without overstating the table solver
