@@ -140,15 +140,15 @@ y'x = 0
 ```
 
 Tau proves the original formula and target formula equivalent by returning
-`no solution` for the negated equivalence query. The current normalizer still
-prints the longer form.
+`no solution` for the negated equivalence query. Without the experimental
+feature flag, the normalizer still prints the longer form.
 
 Boundary: this is evidence of a branch-recombination opportunity after
 equality-path simplification. It is not evidence that Tau lacks all
-branch-local equality substitution, and it is not yet a Tau patch that performs
-the recombination automatically.
+branch-local equality substitution. The feature-gated pass below is the scoped
+Tau patch for this recombination opportunity.
 
-## Feature-Gated Tau Patch Attempt
+## Feature-Gated Tau Patch
 
 The experiment patch now includes a first feature-gated C++ recombination pass:
 
@@ -200,9 +200,11 @@ The extra cases permute the three-alias equality path. They check that the pass
 handles direct and transitive alias representatives, not only the first
 hand-written equality order.
 
-## Tau Implementation Shape
+## Broader Implementation Shape
 
-A conservative Tau implementation should be feature-gated and path-scoped:
+The current feature flag targets branch recombination after equality-path
+simplification. A broader equality-aware path simplifier should still be
+feature-gated and path-scoped:
 
 ```text
 TAU_EQUALITY_PATH_SIMPLIFY=1
@@ -219,12 +221,13 @@ for each conjunction path:
   fall back to old path if extraction is incomplete
 ```
 
-The promotion gate should require:
+The broader promotion gate should require:
 
 - output parity on existing normalization and solver corpora,
 - explicit counters for collected equality classes and substituted variables,
 - no representative substitution outside the branch where the equalities hold,
 - a wider Tau-native benchmark before default enablement.
 
-This is a stronger next target than raw variable-name caching because it is
-named directly by Tau's known-issues list and has a precise semantic premise.
+This broader lane is still a stronger target than raw variable-name caching
+because it is named directly by Tau's known-issues list and has a precise
+semantic premise.

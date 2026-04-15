@@ -135,10 +135,10 @@ but does not yet normalize all of them without the feature flag. The
 feature-gated C++ pass reduces all four checked cases to target-sized forms.
 Three match the target text exactly under `normalize`; the remaining case
 matches under `mnf`, so the gap is presentation-level canonical ordering rather
-than semantic failure. This is now the strongest next candidate for a
-Tau-native normalizer patch: branch-local equality substitution, branch
-recombination, residual absorption under alias equalities, and a final
-presentation-canonicalization step.
+than semantic failure. The scoped recombination patch is now implemented behind
+`TAU_EQUALITY_SPLIT_RECOMBINE=1`. The remaining normalizer candidates are the
+broader path-scoped equality simplifier and a final presentation-canonicalization
+step.
 
 The extended alias-order smoke test strengthens the evidence:
 
