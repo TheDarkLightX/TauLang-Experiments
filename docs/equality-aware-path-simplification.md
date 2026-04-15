@@ -218,18 +218,20 @@ Current generated-path receipt:
 
 ```text
 baseline target-sized cases:   2 / 24
-enabled target-sized cases:   10 / 24
+enabled target-sized cases:   14 / 24
 baseline normalize chars:    828
-enabled normalize chars:     619
+enabled normalize chars:     505
 target normalize chars:      189
 MNF-matched target cases:     24 / 24
 ```
 
-Interpretation: the first feature flag closes the hand-written and alias-order
-smoke corpora, but it does not close the harder generated corpus. In those
-cases, the same residual condition is rewritten differently under the equality
-branch and under the complement branch. The next optimization target is
-therefore branch-local representative substitution followed by recombination.
+Interpretation: the feature flag closes the hand-written and alias-order smoke
+corpora and now handles the equality and inequality residual subcase in the
+generated corpus. It still does not close the harder generated corpus. In the
+remaining cases, Boolean-algebra term residuals are rewritten differently under
+the equality branch and under the complement branch. The next optimization
+target is therefore broader term-level representative substitution followed by
+recombination.
 
 ## Broader Implementation Shape
 

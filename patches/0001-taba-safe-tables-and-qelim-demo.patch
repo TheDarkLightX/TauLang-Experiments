@@ -3368,7 +3368,7 @@ index bd9c4e07..4b0a6f82 100644
  #include "execution.h"
  
 diff --git a/src/normal_forms.tmpl.h b/src/normal_forms.tmpl.h
-index 5917175f..72c6db94 100644
+index 5917175f..802643f0 100644
 --- a/src/normal_forms.tmpl.h
 +++ b/src/normal_forms.tmpl.h
 @@ -556,7 +556,25 @@ inline bool reduce_paths(std::vector<int_t>& i,
@@ -3409,7 +3409,7 @@ index 5917175f..72c6db94 100644
  	static bool wff_comp (tref l, tref r) {
  		if (tau::get(l).child_is(tau::bf_eq))
  			if (tau::get(r).child_is(tau::bf_eq))
-@@ -2140,6 +2163,391 @@ class syntactic_path_simplification {
+@@ -2140,6 +2163,491 @@ class syntactic_path_simplification {
  		}
  	}
  
@@ -3513,6 +3513,18 @@ index 5917175f..72c6db94 100644
 +	static bool zero_eq_meet_pos_neg(tref n, tref pos, tref neg) {
 +		auto zero = zero_eq_term(n);
 +		return zero && meet_pos_neg(*zero, pos, neg);
++	}
++
++	static bool eq_neq_atom(tref n, size_t& atom_type, tref& l, tref& r) {
++		if (atom_sides(n, tau::bf_eq, l, r)) {
++			atom_type = tau::bf_eq;
++			return true;
++		}
++		if (atom_sides(n, tau::bf_neq, l, r)) {
++			atom_type = tau::bf_neq;
++			return true;
++		}
++		return false;
 +	}
 +
 +	static bool eq_implies_zero_meet(tref eq, tref zero_meet) {
@@ -3718,6 +3730,92 @@ index 5917175f..72c6db94 100644
 +			tau::build_bf_neq_0(normalized_candidate));
 +	}
 +
++	static tref normalize_ba_term(tref term) {
++		return reduce<node>(to_dnf<node, false>(normalize_ba<node>(term)));
++	}
++
++	static bool add_alias_class_rewrites(
++		subtree_map<node, tref>& changes, tref rep, const trefs& aliases)
++	{
++		for (tref item : alias_class_for_residual(rep, aliases)) {
++			if (same_tree(item, rep)) continue;
++			auto existing = changes.find(item);
++			if (existing != changes.end() && !same_tree(existing->second, rep))
++				return false;
++			changes[item] = rep;
++		}
++		return true;
++	}
++
++	static std::optional<tref> reduce_eqneq_under_aliases(
++		tref candidate, tref residual, const trefs& aliases)
++	{
++		size_t candidate_type, residual_type;
++		tref cl, cr, rl, rr;
++		if (!eq_neq_atom(candidate, candidate_type, cl, cr)) return {};
++		if (!eq_neq_atom(residual, residual_type, rl, rr)) return {};
++		if (candidate_type != residual_type) return {};
++
++		subtree_map<node, tref> changes;
++		if (!add_alias_class_rewrites(changes, cl, aliases)) return {};
++		if (!add_alias_class_rewrites(changes, cr, aliases)) return {};
++		if (changes.empty()) return {};
++
++		tref sl = normalize_ba_term(rewriter::replace<node>(rl, changes));
++		tref sr = normalize_ba_term(rewriter::replace<node>(rr, changes));
++		tref ncl = normalize_ba_term(cl);
++		tref ncr = normalize_ba_term(cr);
++		if (!same_unordered_pair(sl, sr, ncl, ncr)) return {};
++		return syntactic_formula_simplification<node>(candidate);
++	}
++
++	static std::optional<tref> recombine_alias_eqneq_partition_one_way(
++		const trefs& alias_branch, const trefs& complement_branch)
++	{
++		for (size_t residual_i = 0; residual_i < alias_branch.size(); ++residual_i) {
++			tref l, r;
++			size_t atom_type;
++			if (!eq_neq_atom(alias_branch[residual_i], atom_type, l, r))
++				continue;
++
++			trefs aliases;
++			bool alias_ok = true;
++			for (size_t i = 0; i < alias_branch.size(); ++i) {
++				if (i == residual_i) continue;
++				if (atom_sides(alias_branch[i], tau::bf_eq, l, r))
++					aliases.push_back(alias_branch[i]);
++				else {
++					alias_ok = false;
++					break;
++				}
++			}
++			if (!alias_ok || aliases.empty()) continue;
++
++			for (size_t candidate_i = 0; candidate_i < complement_branch.size(); ++candidate_i) {
++				if (!eq_neq_atom(complement_branch[candidate_i], atom_type, l, r))
++					continue;
++				trefs complement_rest = without_index(complement_branch, candidate_i);
++				if (complement_rest.size() != 1) continue;
++				if (!disjunction_negates_all(complement_rest[0], aliases))
++					continue;
++				if (auto reduced = reduce_eqneq_under_aliases(
++						complement_branch[candidate_i],
++						alias_branch[residual_i],
++						aliases))
++					return *reduced;
++			}
++		}
++		return {};
++	}
++
++	static std::optional<tref> recombine_alias_eqneq_partition(
++		const trefs& left, const trefs& right)
++	{
++		if (auto res = recombine_alias_eqneq_partition_one_way(left, right))
++			return *res;
++		return recombine_alias_eqneq_partition_one_way(right, left);
++	}
++
 +	static std::optional<tref> recombine_alias_residual_partition_one_way(
 +		const trefs& alias_branch, const trefs& complement_branch)
 +	{
@@ -3782,6 +3880,8 @@ index 5917175f..72c6db94 100644
 +		}
 +		if (auto partition = recombine_common_residual_partition(left, right))
 +			return *partition;
++		if (auto eqneq_part = recombine_alias_eqneq_partition(left, right))
++			return *eqneq_part;
 +		if (auto alias_part = recombine_alias_residual_partition(left, right))
 +			return *alias_part;
 +		if (auto zero_part = recombine_zero_partition(left, right))
@@ -3801,7 +3901,7 @@ index 5917175f..72c6db94 100644
  	static tref simplify_wff (tref root) {
  		tref skip = nullptr;
  		auto down = [&skip](tref n) {
-@@ -2278,12 +2686,16 @@ public:
+@@ -2278,12 +2786,16 @@ public:
  			if (tau::get(fm).equals_F() || tau::get(fm).equals_T())
  				return fm;
  			// Resolve contradictions

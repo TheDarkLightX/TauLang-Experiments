@@ -158,21 +158,23 @@ The generated path-sensitive corpus moves the frontier again:
 
 ```text
 baseline target-sized cases:   2 / 24
-enabled target-sized cases:   10 / 24
+enabled target-sized cases:   14 / 24
 baseline normalize chars:    828
-enabled normalize chars:     619
+enabled normalize chars:     505
 target normalize chars:      189
 MNF-matched target cases:     24 / 24
 ```
 
 This shows that the scoped recombination pass is useful but not sufficient for
-path-sensitive equality optimization. The harder generated cases rewrite the
-residual differently under the equality branch and the complement branch. The
-next proof and implementation target is a path-local representative map:
+path-sensitive equality optimization. The current pass now handles the equality
+and inequality residual subcase, but the harder generated cases rewrite
+Boolean-algebra term residuals differently under the equality branch and the
+complement branch. The next proof and implementation target is a path-local
+representative map over terms:
 
 ```text
 branch premise G entails x = rep(x)
-implies substitute_rep(R) is equivalent to R on that branch
+implies substitute_rep(term) is equivalent to term on that branch
 ```
 
 That law is the bridge from the standalone equality-path simplification model
@@ -386,7 +388,7 @@ Boundary: this is a semantic invariant, not parser support.
 
 The next highest-value Tau-native targets are now:
 
-- branch-local representative substitution for equality-split recombination,
+- broader term-level representative substitution for equality-split recombination,
 - runtime-shaped incremental evaluation.
 
 The equality feature flag should stay scoped until the generated path-sensitive

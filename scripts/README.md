@@ -728,18 +728,19 @@ Current generated-path receipt:
 
 ```text
 baseline target-sized cases:   2 / 24
-enabled target-sized cases:   10 / 24
+enabled target-sized cases:   14 / 24
 baseline normalize chars:    828
-enabled normalize chars:     619
+enabled normalize chars:     505
 target normalize chars:      189
 MNF-matched target cases:     24 / 24
 ```
 
 This generated corpus is intentionally harder than the smoke test. It includes
 cases where the residual is simplified differently under the equality branch
-and its complement. The current feature flag helps, but it does not close this
-path-sensitive corpus. The next real optimization target is branch-local
-representative substitution before recombination, not merely display ordering.
+and its complement. The current feature flag now handles the equality and
+inequality residual subcase, but it does not close the full path-sensitive
+corpus. The next real optimization target is broader term-level representative
+substitution before recombination, not merely display ordering.
 
 ## Variable-update cache telemetry
 
