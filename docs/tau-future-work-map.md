@@ -181,11 +181,21 @@ MNF-matched target cases:    105 / 105
 exact normalize matches:      84 / 105
 ```
 
+The five-variable wide corpus extends this again:
+
+```text
+enabled target-sized cases:  200 / 200
+enabled normalize chars:    1980
+target normalize chars:     1980
+MNF-matched target cases:    200 / 200
+exact normalize matches:     130 / 200
+```
+
 This stress corpus forced two additional graph checks: a failed-guard
 disjunction may complement an alias component by connecting all terms in that
 component, and an alias-only branch may be recombined when the aliases entail
-the residual. The next proof and implementation target is still presentation
-canonicalization:
+the residual. The wide corpus has not exposed a new size-failure class. The
+next proof and implementation target is still presentation canonicalization:
 
 The final size failures were closed by equality-graph implication checks:
 alias branches that imply the residual can be recombined when the residual plus

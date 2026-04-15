@@ -766,6 +766,27 @@ residual to another atom, or all the way to true. The current feature flag
 closes those cases on normalized size. Exact textual presentation remains a
 separate canonicalization problem.
 
+For a five-variable wide corpus:
+
+```bash
+TAU_EQUALITY_SPLIT_RECOMBINE=1 python3 scripts/run_equality_split_tau_probe.py \
+  --wide-path-corpus \
+  --out results/local/equality-split-wide-enabled.json
+```
+
+Current wide receipt:
+
+```text
+enabled target-sized cases:  200 / 200
+enabled normalize chars:    1980
+target normalize chars:     1980
+MNF-matched target cases:    200 / 200
+exact normalize matches:     130 / 200
+```
+
+The wide corpus did not expose a new size-failure class. The remaining gap is
+still textual presentation canonicalization.
+
 ## Variable-update cache telemetry
 
 ```bash

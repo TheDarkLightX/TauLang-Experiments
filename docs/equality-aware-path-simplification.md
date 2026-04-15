@@ -254,6 +254,28 @@ alias branch can simplify the residual to a different atom, or all the way to
 true. The feature flag closes this corpus on normalized size. The remaining
 exact `normalize` mismatches are still presentation ordering differences.
 
+Five-variable wide corpus:
+
+```bash
+TAU_EQUALITY_SPLIT_RECOMBINE=1 python3 scripts/run_equality_split_tau_probe.py \
+  --wide-path-corpus \
+  --out results/local/equality-split-wide-enabled.json
+```
+
+Current wide receipt:
+
+```text
+enabled target-sized cases:  200 / 200
+enabled normalize chars:    1980
+target normalize chars:     1980
+MNF-matched target cases:    200 / 200
+exact normalize matches:     130 / 200
+```
+
+The wide corpus adds five-variable equality chains, two-component guards, and
+residuals mentioning the fifth variable. The feature flag closes this corpus on
+normalized size as well.
+
 The generated and stress cases are closed by equality-graph implication checks:
 
 ```text

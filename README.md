@@ -110,7 +110,10 @@ The current patch is an experiment patch, not an official Tau release. It adds:
   cases. Exact `normalize` text still matches `24` of `48`, while `mnf`
   matches all `48`. On the four-variable equality-chain stress corpus, it
   reaches target-sized output on `105` of `105` cases and matches all `105`
-  under `mnf`; exact `normalize` text matches `84` of `105`.
+  under `mnf`; exact `normalize` text matches `84` of `105`. On the
+  five-variable wide corpus, it reaches target-sized output on `200` of `200`
+  cases and matches all `200` under `mnf`; exact `normalize` text matches
+  `130` of `200`.
 - opt-in qelim rewrite probe flags,
   `TAU_QELIM_BDD_KB_REWRITE=1` and
   `TAU_QELIM_BDD_KB_REWRITE=guarded`, for the restricted c111-inspired
@@ -224,6 +227,24 @@ Tau-normalized characters:   847
 target-normalized characters: 847
 MNF-matched target cases:    105 / 105
 exact normalize matches:      84 / 105
+```
+
+The five-variable wide corpus is:
+
+```bash
+TAU_EQUALITY_SPLIT_RECOMBINE=1 python3 scripts/run_equality_split_tau_probe.py \
+  --wide-path-corpus \
+  --out results/local/equality-split-wide-enabled.json
+```
+
+Current receipt:
+
+```text
+target-sized cases:          200 / 200
+Tau-normalized characters:   1980
+target-normalized characters: 1980
+MNF-matched target cases:    200 / 200
+exact normalize matches:     130 / 200
 ```
 
 The fixed-width modular arithmetic rewrite-triage corpus is:

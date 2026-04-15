@@ -138,5 +138,7 @@ Boundary:
   closes the smoke corpus and the generated path-sensitive corpus on normalized
   size: `48 / 48` generated cases are target-sized with the flag enabled. The
   four-variable equality-chain stress corpus is also closed on size:
-  `105 / 105` stress cases are target-sized with the flag enabled. The next
-  target is presentation canonicalization and still broader generated corpora.
+  `105 / 105` stress cases are target-sized with the flag enabled. The
+  five-variable wide corpus is also closed on size: `200 / 200` wide cases are
+  target-sized with the flag enabled. The next target is presentation
+  canonicalization and still broader generated corpora.

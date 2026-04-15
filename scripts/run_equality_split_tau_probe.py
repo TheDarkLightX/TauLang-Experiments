@@ -184,6 +184,63 @@ def stress_path_probes() -> list[Probe]:
     return out
 
 
+def wide_path_probes() -> list[Probe]:
+    """Generate a five-variable equality-chain corpus.
+
+    This extends the stress corpus to longer chains, two-component guards, and
+    residuals mentioning a fifth variable.
+    """
+
+    guards = [
+        ("eq_xy", "x = y:sbf"),
+        ("chain_xy_yz", "x = y:sbf && y = z:sbf"),
+        ("chain_yz_zw", "y = z:sbf && z = w:sbf"),
+        ("chain_zw_wu", "z = w:sbf && w = u:sbf"),
+        ("chain_xy_yz_zw", "x = y:sbf && y = z:sbf && z = w:sbf"),
+        ("chain_yz_zw_wu", "y = z:sbf && z = w:sbf && w = u:sbf"),
+        (
+            "chain_xy_yz_zw_wu",
+            "x = y:sbf && y = z:sbf && z = w:sbf && w = u:sbf",
+        ),
+        ("disjoint_xy_zw", "x = y:sbf && z = w:sbf"),
+        ("disjoint_xy_wu", "x = y:sbf && w = u:sbf"),
+        ("two_components_xy_yz_wu", "x = y:sbf && y = z:sbf && w = u:sbf"),
+    ]
+    residuals = [
+        ("independent_eq_ab", "a = b:sbf"),
+        ("eq_xu", "x = u:sbf"),
+        ("neq_xu", "x != u:sbf"),
+        ("eq_yu", "y = u:sbf"),
+        ("neq_yu", "y != u:sbf"),
+        ("eq_zu", "z = u:sbf"),
+        ("neq_zu", "z != u:sbf"),
+        ("leq_xu", "((x & u') = 0)"),
+        ("leq_ux", "((u & x') = 0)"),
+        ("nonzero_xu", "((x & u) != 0)"),
+        ("nonzero_yu", "((y & u) != 0)"),
+        ("join_absorb_xu", "(((x & u) | (x' & u)) != 0)"),
+        ("join_absorb_yu", "(((y & u) | (y' & u)) != 0)"),
+        ("join_eq_xu_yz", "((x | u) = (y | z))"),
+        ("join_eq_xy_zu", "((x | y) = (z | u))"),
+        ("join_eq_xz_wu", "((x | z) = (w | u))"),
+        ("meet_nonzero_xz_yu", "(((x & z) | (y & u)) != 0)"),
+        ("meet_nonzero_xu_yz", "(((x & u) | (y & z)) != 0)"),
+        ("meet_nonzero_xw_zu", "(((x & w) | (z & u)) != 0)"),
+        ("triple_join_nonzero", "(((x & u) | (y & z) | (w & u)) != 0)"),
+    ]
+    out: list[Probe] = []
+    for guard_name, guard in guards:
+        for residual_name, residual in residuals:
+            out.append(
+                Probe(
+                    name=f"wide_{guard_name}_{residual_name}",
+                    original=f"(({guard} && {residual}) || (!({guard}) && {residual}))",
+                    target=residual,
+                )
+            )
+    return out
+
+
 def clean(text: str) -> str:
     return ANSI_RE.sub("", text).strip()
 
@@ -293,6 +350,11 @@ def main() -> int:
         help="Use the four-variable equality-chain stress corpus.",
     )
     parser.add_argument(
+        "--wide-path-corpus",
+        action="store_true",
+        help="Use the five-variable equality-chain wide corpus.",
+    )
+    parser.add_argument(
         "--max-generated-cases",
         type=int,
         default=24,
@@ -302,7 +364,10 @@ def main() -> int:
     if not args.tau_bin.exists():
         raise SystemExit(f"Tau binary not found: {args.tau_bin}")
 
-    if args.stress_path_corpus:
+    if args.wide_path_corpus:
+        corpus_kind = "wide_path"
+        corpus = wide_path_probes()
+    elif args.stress_path_corpus:
         corpus_kind = "stress_path"
         corpus = stress_path_probes()
     elif args.generated_path_corpus:
@@ -337,6 +402,7 @@ def main() -> int:
         "extended": args.extended,
         "generated_path_corpus": args.generated_path_corpus,
         "stress_path_corpus": args.stress_path_corpus,
+        "wide_path_corpus": args.wide_path_corpus,
         "useful_reduction_cases": len(useful),
         "matched_target_cases": len(matched),
         "dnf_matched_target_cases": len(dnf_matched),
