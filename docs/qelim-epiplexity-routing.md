@@ -939,8 +939,8 @@ The semantic validation harness is:
 
 ```bash
 python3 scripts/run_qelim_policy_semantic_corpus.py \
-  --reps 3 \
-  --out results/local/qelim-policy-semantic-corpus-reps3.json
+  --reps 5 \
+  --out results/local/qelim-policy-semantic-corpus-reps5.json
 ```
 
 It parses the printed residual formula subset and compares truth tables over
@@ -952,10 +952,12 @@ Receipt:
 case_count:                         9
 semantic parity:                    passed
 syntactic-fail semantic-pass count: 2
-auto route counts:                  { components: 6, dp: 3, monolithic: 18 }
-default qelim total:                118.946030 ms
-auto qelim total:                    17.039850 ms
-auto speedup:                         6.980462 x
+auto route counts:                  { components: 10, dp: 5, monolithic: 30 }
+default qelim total:                218.703000 ms
+auto qelim total:                    42.283483 ms
+auto speedup:                         5.171118 x
+auto+KB guarded total:               43.513830 ms
+KB rewrite steps:                     0
 ```
 
 Interpretation:
@@ -963,5 +965,7 @@ Interpretation:
 - The previously quarantined nested DP-child policy case is semantically valid
   under the residual truth-table checker.
 - Syntactic parity alone is too strict for qelim backend regression tests.
+- The speedup is from the experimental auto BDD/component/DP route, not from
+  KB rewriting on this corpus.
 - The validator is still narrow: it covers the printed residual subset used by
   this corpus, not arbitrary Tau formulas.

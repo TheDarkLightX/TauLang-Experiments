@@ -81,12 +81,15 @@ For a stronger residual-formula validation pass, run:
 
 ```bash
 python3 scripts/run_qelim_policy_semantic_corpus.py \
-  --reps 3 \
-  --out results/local/qelim-policy-semantic-corpus-reps3.json
+  --reps 5 \
+  --out results/local/qelim-policy-semantic-corpus-reps5.json
 ```
 
 This parser is intentionally scoped to the residual formula subset printed by
-the qelim policy corpus.
+the qelim policy corpus. The current receipt shows semantic parity across nine
+policy-shaped cases and a roughly `5.17x` internal qelim speedup for the
+experimental auto route against default qelim. It does not show a KB rewrite
+benefit on that corpus, because the guarded KB pass had zero rewrite steps.
 
 ## Table-demo solver telemetry
 
