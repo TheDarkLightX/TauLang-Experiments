@@ -822,7 +822,10 @@ guarded-presentation characters:      1980
 The feature-gated pass improves fixed-point stability, but the remaining
 `60 / 200` non-idempotent cases are the next normalizer boundary. The guarded
 candidate is a probe-level rule: accept the second `normalize` result only when
-it is no longer than the first result.
+it is no longer than the first result. A direct C++ hook that re-normalized the
+existing AST was tested and did not move the corpus. The next implementation
+needs presentation-aware canonicalization, because the useful probe behavior is
+triggered by reparsing Tau's printed form.
 
 ## Variable-update cache telemetry
 

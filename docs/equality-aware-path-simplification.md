@@ -304,7 +304,10 @@ first-pass outputs still change when passed through `normalize` again. The
 feature-gated pass improves that property relative to baseline, but it does not
 solve fixed-point presentation canonicalization. A guarded second-pass rule
 improves exact target presentation without losing size closure in this probe,
-but it is not yet a Tau C++ patch.
+but it is not yet a Tau C++ patch. A direct AST-level second-normalize hook was
+tested and did not improve this corpus. That negative result narrows the next
+implementation target to presentation-aware canonicalization, not simply running
+the same tree through `normalize` again.
 
 The generated and stress cases are closed by equality-graph implication checks:
 

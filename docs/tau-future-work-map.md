@@ -217,7 +217,9 @@ The feature-gated pass improves idempotence relative to baseline, but does not
 make every first-pass output stable under another `normalize` call.
 The guarded-presentation candidate chooses a second-pass result only when it
 does not increase size. It is a measured candidate for the next implementation
-step, not an implemented Tau patch.
+step, not an implemented Tau patch. A direct AST-level second-normalize hook was
+tested and did not improve the corpus, so the useful next step is a
+presentation-aware canonicalization pass.
 
 The final size failures were closed by equality-graph implication checks:
 alias branches that imply the residual can be recombined when the residual plus

@@ -288,7 +288,11 @@ normalize fixed-point stability on this corpus, but it does not close it. The
 next target is a normalizer presentation pass whose first output is already a
 fixed point under another `normalize` call. The guarded-presentation candidate
 means: use the second `normalize` output only when it does not increase output
-size. This is currently probe evidence, not a Tau C++ optimizer patch.
+size. This is currently probe evidence, not a Tau C++ optimizer patch. A direct
+AST-level second-normalize hook was tested and did not improve the corpus,
+because the measured gain comes from reparsing Tau's printed presentation.
+The implementation target is therefore a presentation-aware canonicalization
+pass, not a blind second pass over the existing tree.
 
 The fixed-width modular arithmetic rewrite-triage corpus is:
 
