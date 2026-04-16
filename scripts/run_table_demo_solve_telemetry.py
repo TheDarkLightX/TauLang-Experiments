@@ -117,6 +117,7 @@ def run_tau(tau_bin: Path, program: str) -> dict[str, object]:
     rr_get_defs_rows = parse_prefixed_stats(combined, "[rr_get_defs]")
     rr_with_defs_rows = parse_prefixed_stats(combined, "[rr_with_defs]")
     rr_formula_rows = parse_prefixed_stats(combined, "[rr_formula]")
+    rr_transform_defs_cache_rows = parse_prefixed_stats(combined, "[rr_transform_defs_cache]")
     rr_skip_audit_rows = parse_prefixed_stats(combined, "[rr_skip_audit]")
     clean_lines = [
         line.strip()
@@ -129,6 +130,7 @@ def run_tau(tau_bin: Path, program: str) -> dict[str, object]:
         and not line.startswith("[rr_get_defs]")
         and not line.startswith("[rr_with_defs]")
         and not line.startswith("[rr_formula]")
+        and not line.startswith("[rr_transform_defs_cache]")
         and not line.startswith("[rr_skip_audit]")
         and line.strip()
     ]
@@ -146,6 +148,7 @@ def run_tau(tau_bin: Path, program: str) -> dict[str, object]:
         "rr_get_defs_stat_count": len(rr_get_defs_rows),
         "rr_with_defs_stat_count": len(rr_with_defs_rows),
         "rr_formula_stat_count": len(rr_formula_rows),
+        "rr_transform_defs_cache_stat_count": len(rr_transform_defs_cache_rows),
         "rr_skip_audit_stat_count": len(rr_skip_audit_rows),
         "infer_outer_rows": infer_outer_rows,
         "infer_core_rows": infer_core_rows,
@@ -154,6 +157,7 @@ def run_tau(tau_bin: Path, program: str) -> dict[str, object]:
         "rr_get_defs_rows": rr_get_defs_rows,
         "rr_with_defs_rows": rr_with_defs_rows,
         "rr_formula_rows": rr_formula_rows,
+        "rr_transform_defs_cache_rows": rr_transform_defs_cache_rows,
         "rr_skip_audit_rows": rr_skip_audit_rows,
     }
 
@@ -209,11 +213,13 @@ def aggregate_rr_stats(rows: list[dict[str, object]]) -> dict[str, object]:
         "rr_get_defs_rows": 0,
         "rr_with_defs_rows": 0,
         "rr_formula_rows": 0,
+        "rr_transform_defs_cache_rows": 0,
         "infer_outer_rows": 0,
         "infer_core_rows": 0,
         "infer_visit_rows": 0,
     }
     branch_counts: dict[str, int] = {}
+    transform_cache = {"rows": 0, "hits": 0}
     visit_counts: dict[str, int] = {}
     for row in rows:
         for run in row["runs"]:
@@ -238,6 +244,11 @@ def aggregate_rr_stats(rows: list[dict[str, object]]) -> dict[str, object]:
                 totals["rr_formula_fixed_point_ms"] += parse_float_default(stat, "fixed_point_ms")
                 totals["rr_formula_rewrite_ms"] += parse_float_default(stat, "rewrite_ms")
                 totals["rr_formula_total_ms"] += parse_float_default(stat, "total_ms")
+            for stat in run["rr_transform_defs_cache_rows"]:
+                counts["rr_transform_defs_cache_rows"] += 1
+                transform_cache["rows"] += 1
+                if stat.get("hit") == "1":
+                    transform_cache["hits"] += 1
             for stat in run["infer_outer_rows"]:
                 counts["infer_outer_rows"] += 1
                 totals["infer_outer_total_ms"] += parse_float_default(stat, "total_ms")
@@ -262,6 +273,7 @@ def aggregate_rr_stats(rows: list[dict[str, object]]) -> dict[str, object]:
         "totals_ms": rounded_totals,
         "counts": counts,
         "rr_branch_counts": branch_counts,
+        "rr_transform_defs_cache": transform_cache,
         "top_visit_counts": top_visit_counts,
     }
 
