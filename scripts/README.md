@@ -475,6 +475,9 @@ The audit-friendly batching variant is:
 
 ```bash
 python3 scripts/run_table_demo_batched_checks.py \
+  --mode batch-only \
+  --transport split-file \
+  --layout grouped \
   --reps 1 \
   --out results/local/table-demo-batched-checks.json
 ```
@@ -482,22 +485,22 @@ python3 scripts/run_table_demo_batched_checks.py \
 Current receipt:
 
 ```text
-checks:                15
-individual processes:  15
-batched processes:      1
-transport:            file
-individual elapsed:  118534.210 ms
-batched elapsed:      58227.056 ms
-elapsed reduction:       50.877%
-result:               passed
+checks:                  15
+batched processes:        1
+transport:       split-file
+layout:             grouped
+old file batch:    54357.861 ms
+split grouped:     33817.738 ms
+batch reduction:      37.787%
+result:                 passed
 ```
 
 Interpretation: Tau's existing CLI grammar can run several REPL commands in one
 input using the prefix-dot shape `cmd_1 . cmd_2 . ... . cmd_n`. The batched demo
-now exercises the opt-in command-file runner with `TAU_CLI_FILE_MODE=1`. This
-keeps one `solve` result per table-vs-raw obligation while avoiding repeated
-process startup and source loading. It is a CLI batching optimization, not a
-solver change.
+now exercises the opt-in split-file command runner with
+`TAU_CLI_FILE_SPLIT_MODE=1`. This keeps one `solve` result per table-vs-raw
+obligation while avoiding one large all-sources-first CLI parse. It is a CLI
+parse-shaping optimization, not a solver change.
 
 The default benchmark script keeps this opt-in because it is slower than the
 standalone micro-benchmarks:

@@ -208,15 +208,19 @@ The audit-friendly batching variant is:
 
 ```bash
 python3 scripts/run_table_demo_batched_checks.py \
+  --mode batch-only \
+  --transport split-file \
+  --layout grouped \
   --out results/local/table-demo-batched-checks.json
 ```
 
 It uses Tau's existing prefix-dot CLI shape and the opt-in
-`TAU_CLI_FILE_MODE=1` command-file path to run all table-vs-raw checks in one
-Tau process while preserving one `solve` result per obligation. The current
-local receipt checks `15` obligations, reduces process count from `15` to `1`,
-and reduces elapsed time by about `50.877%`. This is command-file batching and
-demo harness optimization, not a solver speedup.
+`TAU_CLI_FILE_SPLIT_MODE=1` grouped command-file path to run all table-vs-raw
+checks in one Tau process while preserving one `solve` result per obligation.
+The current local receipt checks `15` obligations and reduces the old
+all-sources-first file batch from `54357.861 ms` to `33817.738 ms`, a
+`37.787%` batch-path reduction. This is command-file parse shaping and demo
+harness optimization, not a solver speedup.
 
 The first equality-aware path simplification prototype is:
 

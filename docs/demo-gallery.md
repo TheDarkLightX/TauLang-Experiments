@@ -280,6 +280,9 @@ Command:
 
 ```bash
 python3 scripts/run_table_demo_batched_checks.py \
+  --mode batch-only \
+  --transport split-file \
+  --layout grouped \
   --reps 1 \
   --out results/local/table-demo-batched-checks.json
 ```
@@ -294,25 +297,25 @@ cmd_1 . cmd_2 . ... . cmd_n
 The current local receipt is:
 
 ```text
-checks:              15
-individual processes: 15
-batched processes:     1
-transport:          file
-individual elapsed:  118534.210 ms
-batched elapsed:      58227.056 ms
-elapsed reduction:       50.877%
-result:             passed
+checks:                  15
+batched processes:        1
+transport:       split-file
+layout:             grouped
+old file batch:    54357.861 ms
+split grouped:     33817.738 ms
+batch reduction:      37.787%
+result:                 passed
 ```
 
 Standard reading: the batched run returned one `no solution` result for each of
 the fifteen table-vs-raw mismatch obligations.
 
-Plain English: this keeps the per-check audit trail while avoiding repeated Tau
-startup and source loading.
+Plain English: this keeps the per-check audit trail while avoiding one large
+all-sources-first CLI parse.
 
 Boundary: this is a CLI batching and demo-harness optimization. It does not
 change Tau's solver, table semantics, or parser grammar. The command-file path
-is opt-in behind `TAU_CLI_FILE_MODE=1`.
+is opt-in behind `TAU_CLI_FILE_SPLIT_MODE=1`.
 
 ## Demo 9: RR Value-Inference Skip
 

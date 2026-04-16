@@ -3264,10 +3264,18 @@ index 0ab92059..b88a6ee9 100644
 \ No newline at end of file
 +#endif // __IDNI__TAU__IO_CONTEXT_H__
 diff --git a/src/main.cpp b/src/main.cpp
-index baf1be99..83229111 100644
+index baf1be99..7741d294 100644
 --- a/src/main.cpp
 +++ b/src/main.cpp
-@@ -24,6 +24,9 @@ using namespace std;
+@@ -3,6 +3,7 @@
+ #include <iostream>
+ #include <fstream>
+ #include <sstream>
++#include <vector>
+ 
+ #ifdef DEBUG
+ // including nso_ba, sbf_ba and interpreter directly instead of
+@@ -24,6 +25,9 @@ using namespace std;
  using namespace idni;
  using namespace idni::tau_lang;
  
@@ -3277,7 +3285,7 @@ index baf1be99..83229111 100644
  cli::options tau_options() {
  	cli::options opts;
  	opts["help"] = cli::option("help", 'h', false)
-@@ -61,10 +64,10 @@ int error(const string& s) { TAU_LOG_ERROR << "" << s; return 1; }
+@@ -61,10 +65,10 @@ int error(const string& s) { TAU_LOG_ERROR << "" << s; return 1; }
  // If a parse result is "Unexpected end of file", it appends next line and repeats.
  // This is used for making the dot ('.') at the end of a statement optional at
  // the end of a line.
@@ -3290,7 +3298,7 @@ index baf1be99..83229111 100644
  	using tau = tree<node>;
  	std::istringstream iss(src);
  	std::string attempt, line, msg;
-@@ -160,11 +163,15 @@ int run_tau_spec(string spec_file, bool charvar, bool /*exp*/,
+@@ -160,11 +164,15 @@ int run_tau_spec(string spec_file, bool charvar, bool /*exp*/,
  	}
  	if (src.empty()) return 0;
  
@@ -3310,7 +3318,7 @@ index baf1be99..83229111 100644
  
  	auto spec_opt = get_spec_multiline(src);
  	if (!spec_opt) return 1;
-@@ -194,7 +201,7 @@ int run_tau_spec_old(string spec_file, bool charvar, bool exp,
+@@ -194,7 +202,7 @@ int run_tau_spec_old(string spec_file, bool charvar, bool exp,
  		src.resize(l), ifs.seekg(0), ifs.read(&src[0], l);
  	}
  	if (src.empty()) return 0;
@@ -3319,7 +3327,7 @@ index baf1be99..83229111 100644
  		.print_history_store = false,
  		.error_quits         = true,
  		.charvar             = charvar,
-@@ -206,6 +213,31 @@ int run_tau_spec_old(string spec_file, bool charvar, bool exp,
+@@ -206,6 +214,170 @@ int run_tau_spec_old(string spec_file, bool charvar, bool exp,
  	return re.eval("run %");
  }
  
@@ -3348,10 +3356,149 @@ index baf1be99..83229111 100644
 +	return re.eval(src);
 +}
 +
++std::string trim_left(std::string s) {
++	auto pos = s.find_first_not_of(" \t\r");
++	if (pos == std::string::npos) return "";
++	return s.substr(pos);
++}
++
++std::string trim_right(std::string s) {
++	auto pos = s.find_last_not_of(" \t\r");
++	if (pos == std::string::npos) return "";
++	return s.substr(0, pos + 1);
++}
++
++bool starts_with_token(const std::string& s, const std::string& token) {
++	return s.rfind(token, 0) == 0
++		&& (s.size() == token.size()
++			|| s[token.size()] == ' '
++			|| s[token.size()] == '\t'
++			|| s[token.size()] == '(');
++}
++
++std::vector<std::string> split_tau_cli_commands(const std::string& src) {
++	std::vector<std::string> commands;
++	std::istringstream iss(src);
++	std::string pending_defs, attempt, line;
++	int paren_depth = 0;
++	int brace_depth = 0;
++	bool in_string = false;
++	bool escaped = false;
++	auto update_depth = [&](const std::string& text) {
++		for (char c : text) {
++			if (escaped) {
++				escaped = false;
++				continue;
++			}
++			if (c == '\\' && in_string) {
++				escaped = true;
++				continue;
++			}
++			if (c == '"') {
++				in_string = !in_string;
++				continue;
++			}
++			if (in_string) continue;
++			if (c == '(') ++paren_depth;
++			else if (c == ')' && paren_depth > 0) --paren_depth;
++			else if (c == '{') ++brace_depth;
++			else if (c == '}' && brace_depth > 0) --brace_depth;
++		}
++	};
++	auto emit_attempt = [&]() {
++		auto trimmed = trim_right(attempt);
++		if (!trimmed.empty()) {
++			if (!pending_defs.empty()) pending_defs += "\n";
++			pending_defs += trimmed;
++		}
++		attempt.clear();
++		paren_depth = 0;
++		brace_depth = 0;
++		in_string = false;
++		escaped = false;
++	};
++	while (std::getline(iss, line)) {
++		std::string working = line;
++		std::string left = trim_left(working);
++		if (left.empty()) continue;
++		if (attempt.empty() && left[0] == '.') {
++			left = trim_left(left.substr(1));
++			working = left;
++		}
++		if (attempt.empty() && starts_with_token(left, "solve")) {
++			std::string command;
++			if (!pending_defs.empty()) {
++				command = pending_defs + "\n" + working;
++				pending_defs.clear();
++			} else command = working;
++			commands.push_back(command);
++			continue;
++		}
++		if (!attempt.empty()) attempt += "\n";
++		attempt += working;
++		update_depth(working);
++		std::string right = trim_right(working);
++		if (!right.empty() && right.back() == '.'
++			&& paren_depth == 0 && brace_depth == 0 && !in_string)
++			emit_attempt();
++	}
++	if (!trim_right(attempt).empty()) emit_attempt();
++	if (!trim_right(pending_defs).empty()) commands.push_back(trim_right(pending_defs));
++	return commands;
++}
++
++int run_tau_cli_file_split(string spec_file, bool charvar, bool exp,
++	boost::log::trivial::severity_level sev)
++{
++	using clock = std::chrono::steady_clock;
++	auto total_start = clock::now();
++	string src = "";
++	if (spec_file == "-") {
++		std::ostringstream oss;
++		oss << std::cin.rdbuf(), src = oss.str();
++	} else {
++		std::ifstream ifs(spec_file, std::ios::binary | std::ios::ate);
++		if (!ifs) return error("Cannot open file " + spec_file);
++		auto l = ifs.tellg();
++		src.resize(l), ifs.seekg(0), ifs.read(&src[0], l);
++	}
++	if (src.empty()) return 0;
++	auto read_end = clock::now();
++	auto commands = split_tau_cli_commands(src);
++	auto split_end = clock::now();
++	runtime_repl re({
++		.print_history_store = false,
++		.error_quits         = true,
++		.charvar             = charvar,
++		.repl_running        = false,
++		.severity	     = sev,
++		.experimental        = exp
++	});
++	for (const auto& command : commands) {
++		int status = re.eval(command);
++		if (status != 0) return status;
++	}
++	auto eval_end = clock::now();
++	const char* env = std::getenv("TAU_CLI_STATS");
++	if (env && std::string(env) == "1") {
++		auto ms = [](const clock::duration& d) {
++			return std::chrono::duration<double, std::milli>(d).count();
++		};
++		std::cerr << "[cli_file_split] bytes=" << src.size()
++			<< " commands=" << commands.size()
++			<< " read_ms=" << ms(read_end - total_start)
++			<< " split_ms=" << ms(split_end - read_end)
++			<< " eval_ms=" << ms(eval_end - split_end)
++			<< " total_ms=" << ms(eval_end - total_start)
++			<< "\n";
++	}
++	return 0;
++}
++
  void welcome() {
  	TAU_LOG_INFO << "Welcome to the " << full_version << " by IDNI AG.\n"
  		<< "This product is protected by patents and copyright."
-@@ -220,7 +252,7 @@ void at_exit() {
+@@ -220,7 +392,7 @@ void at_exit() {
  	// On exit we must clean up the ba constants so the rest of the static
  	// constants managers are able to properly clean everything (in particula,
  	// cvc5::TermManager).
@@ -3360,7 +3507,7 @@ index baf1be99..83229111 100644
  	// On the tests using ba_constants we also need to explicitly call
  	// the clean up in the constants.
  }
-@@ -257,19 +289,23 @@ int main(int argc, char** argv) {
+@@ -257,19 +429,25 @@ int main(int argc, char** argv) {
  	pretty_printer_indenting    = opts["indenting"].get<bool>();
  
  	bool charvar = opts["charvar"].get<bool>();
@@ -3377,6 +3524,8 @@ index baf1be99..83229111 100644
  
  	// spec provided, run it
  	if (files.size()) {
++		if (tau_env_flag_enabled("TAU_CLI_FILE_SPLIT_MODE"))
++			return run_tau_cli_file_split(files.front(), charvar, exp, sev);
 +		if (tau_env_flag_enabled("TAU_CLI_FILE_MODE"))
 +			return run_tau_cli_file(files.front(), charvar, exp, sev);
  		if (exp) return run_tau_spec(files.front(), charvar, exp, sev);
@@ -6426,7 +6575,7 @@ index 00000000..c00f0140
 +
 +#endif
 diff --git a/src/repl_evaluator.tmpl.h b/src/repl_evaluator.tmpl.h
-index 8e944446..182fc3cb 100644
+index 8e944446..c0f8f80a 100644
 --- a/src/repl_evaluator.tmpl.h
 +++ b/src/repl_evaluator.tmpl.h
 @@ -2,6 +2,8 @@
@@ -6737,16 +6886,74 @@ index 8e944446..182fc3cb 100644
  	print_solver_cmd_solution<node>(solution, type);
  }
  
-@@ -622,6 +812,8 @@ void repl_evaluator<BAs...>::def_output_cmd(const tt& /*command*/) {
+@@ -622,16 +812,44 @@ void repl_evaluator<BAs...>::def_output_cmd(const tt& /*command*/) {
  template <typename... BAs>
  requires BAsPack<BAs...>
  tref repl_evaluator<BAs...>::make_cli(const std::string& src) {
++	using clock = std::chrono::steady_clock;
++	auto total_start = clock::now();
 +	if (!finite_table_builtins::ensure_loaded_if_enabled<node>())
 +		return nullptr;
++	auto ensure_end = clock::now();
  	// remove ascii char 22 if exists in the input
  	std::string filt = src;
  	filt.erase(remove_if(filt.begin(), filt.end(), [](unsigned char c) {
-@@ -821,10 +1013,12 @@ void repl_evaluator<BAs...>::update_bool_opt_cmd(repl_option o,
+ 		return c == 22;
+ 	}), filt.end());
++	auto filter_end = clock::now();
+ 	tau_parser::result result = tau_parser::instance()
+ 		.parse(filt.c_str(), filt.size(), {
+ 						.start = tau::cli });
++	auto parse_end = clock::now();
++	auto emit_stats = [&](bool found, size_t commands,
++		const clock::time_point& shape_end,
++		const clock::time_point& bind_end) {
++		const char* env = std::getenv("TAU_CLI_STATS");
++		if (!(env && std::string(env) == "1")) return;
++		auto ms = [](const clock::duration& d) {
++			return std::chrono::duration<double, std::milli>(d).count();
++		};
++		std::cerr << "[cli_make] found=" << (found ? 1 : 0)
++			<< " bytes=" << src.size()
++			<< " filtered_bytes=" << filt.size()
++			<< " commands=" << commands
++			<< " ensure_ms=" << ms(ensure_end - total_start)
++			<< " filter_ms=" << ms(filter_end - ensure_end)
++			<< " parse_ms=" << ms(parse_end - filter_end)
++			<< " shape_ms=" << ms(shape_end - parse_end)
++			<< " bind_ms=" << ms(bind_end - shape_end)
++			<< " total_ms=" << ms(bind_end - total_start)
++			<< "\n";
++	};
+ 	auto fail = [this]() { return error = true, nullptr; };
+ 	if (!result.found) {
++		emit_stats(false, 0, parse_end, parse_end);
+ 		auto msg = result.parse_error
+ 			.to_str(tau_parser::error::info_lvl::INFO_BASIC);
+ 		if (opt.error_quits
+@@ -643,6 +861,7 @@ tref repl_evaluator<BAs...>::make_cli(const std::string& src) {
+ 		return nullptr; // Unexpected eof, continue with reading input
+ 	}
+ 	auto t = result.get_shaped_tree2();
++	auto shape_end = clock::now();
+ 	auto& defs = definitions<node>::instance();
+ 	typename tau::get_options opts = {
+ 		.definition_heads = defs.get_definition_heads(),
+@@ -650,6 +869,13 @@ tref repl_evaluator<BAs...>::make_cli(const std::string& src) {
+ 		.context = defs.get_io_context()
+ 	};
+ 	auto bound = tau::get(tau_parser::tree::get(t), opts);
++	auto bind_end = clock::now();
++	size_t command_count = 0;
++	if (bound) {
++		auto commands = tt(bound) || tau::cli_command;
++		for (const auto& _ : commands()) (void) _, ++command_count;
++	}
++	emit_stats(bound != nullptr, command_count, shape_end, bind_end);
+ 	if (!bound) return fail();
+ 	return bound;
+ }
+@@ -821,16 +1047,20 @@ void repl_evaluator<BAs...>::update_bool_opt_cmd(repl_option o,
  template <typename... BAs>
  requires BAsPack<BAs...>
  bool repl_evaluator<BAs...>::update_charvar(bool value) {
@@ -6760,6 +6967,73 @@ index 8e944446..182fc3cb 100644
 +	std::set<std::string> sbf_guards{ opt.charvar ? "charvar" : "var" };
 +	sbf_parser::instance().get_grammar().set_enabled_productions(sbf_guards);
  	return value;
+ }
+ 
+ template <typename... BAs>
+ requires BAsPack<BAs...>
+ int repl_evaluator<BAs...>::eval_cmd(const tt& n) {
++	using clock = std::chrono::steady_clock;
++	auto total_start = clock::now();
+ 	auto command = n | tt::only_child;
+ 	auto command_type = command | tt::nt;
+ #ifdef DEBUG
+@@ -896,6 +1126,18 @@ int repl_evaluator<BAs...>::eval_cmd(const tt& n) {
+ 		std::cout << "result tree: ") << "\n";
+ #endif // DEBUG
+ 	if (result) history_store(result);
++	const char* env = std::getenv("TAU_CLI_STATS");
++	if (env && std::string(env) == "1") {
++		auto ms = [](const clock::duration& d) {
++			return std::chrono::duration<double, std::milli>(d).count();
++		};
++		auto total_end = clock::now();
++		std::cerr << "[cli_cmd] command=" << node::name(command_type)
++			<< " nt=" << command_type
++			<< " result=" << (result ? 1 : 0)
++			<< " total_ms=" << ms(total_end - total_start)
++			<< "\n";
++	}
+ 	return 0;
+ }
+ 
+@@ -932,17 +1174,38 @@ std::string repl_evaluator<BAs...>::prompt() {
+ template <typename... BAs>
+ requires BAsPack<BAs...>
+ int repl_evaluator<BAs...>::eval(const std::string& src) {
++	using clock = std::chrono::steady_clock;
++	auto total_start = clock::now();
+ 	error = false;
+ 	auto tau_spec = tt(make_cli(src));
++	auto make_end = clock::now();
+ 	int quit = 0;
++	size_t command_count = 0;
+ 	if (tau_spec) {
+ 		auto commands = tau_spec || tau::cli_command;
+-		for (const auto& cmd : commands())
++		for (const auto& cmd : commands()) {
++			++command_count;
+ 			if (quit = eval_cmd(cmd); quit == 1) break;
++		}
+ 	} else if (!error) return 2;
++	auto command_end = clock::now();
+ 	std::cout << "\n", std::cout.flush();
+ 	if (error && opt.error_quits) return quit = 1;
+ 	if (quit == 0) prompt();
++	const char* env = std::getenv("TAU_CLI_STATS");
++	if (env && std::string(env) == "1") {
++		auto ms = [](const clock::duration& d) {
++			return std::chrono::duration<double, std::milli>(d).count();
++		};
++		auto total_end = clock::now();
++		std::cerr << "[cli_eval] bytes=" << src.size()
++			<< " commands=" << command_count
++			<< " make_ms=" << ms(make_end - total_start)
++			<< " commands_ms=" << ms(command_end - make_end)
++			<< " prompt_ms=" << ms(total_end - command_end)
++			<< " total_ms=" << ms(total_end - total_start)
++			<< "\n";
++	}
+ 	return quit;
  }
  
 diff --git a/src/runtime.h b/src/runtime.h

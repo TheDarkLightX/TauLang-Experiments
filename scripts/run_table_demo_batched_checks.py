@@ -21,6 +21,7 @@ import statistics
 import subprocess
 import tempfile
 import time
+from collections import OrderedDict
 from pathlib import Path
 
 from run_table_demo_compound_check import individual_program, table_checks, tau_source
@@ -51,12 +52,29 @@ def batched_program(root: Path) -> str:
     return "\n".join(sources + cli_commands)
 
 
+def grouped_batched_program(root: Path) -> str:
+    checks_by_source: OrderedDict[str, list[str]] = OrderedDict()
+    for check in table_checks():
+        checks_by_source.setdefault(check.source, []).append(check.diff)
+
+    chunks: list[str] = []
+    for source, diffs in checks_by_source.items():
+        commands = [solve_command(diff) for diff in diffs]
+        chunks.append(tau_source(root / source))
+        chunks.append(commands[0])
+        chunks.extend(f". {command}" for command in commands[1:])
+    return "\n".join(chunks)
+
+
 def run_tau(tau_bin: Path, program: str, transport: str) -> dict[str, object]:
     env = os.environ.copy()
     env["TAU_ENABLE_SAFE_TABLES"] = "1"
     tmp_path: Path | None = None
-    if transport == "file":
-        env["TAU_CLI_FILE_MODE"] = "1"
+    if transport in {"file", "split-file"}:
+        if transport == "split-file":
+            env["TAU_CLI_FILE_SPLIT_MODE"] = "1"
+        else:
+            env["TAU_CLI_FILE_MODE"] = "1"
         with tempfile.NamedTemporaryFile(
             "w",
             encoding="utf-8",
@@ -124,12 +142,28 @@ def main() -> int:
     parser.add_argument("--tau-bin", type=Path, default=Path("external/tau-lang/build-Release/tau"))
     parser.add_argument("--reps", type=int, default=1)
     parser.add_argument(
+        "--mode",
+        choices=["compare", "batch-only", "individual-only"],
+        default="compare",
+        help="compare runs both paths; batch-only and individual-only run one side",
+    )
+    parser.add_argument(
         "--transport",
-        choices=["evaluate", "file"],
+        choices=["evaluate", "file", "split-file"],
         default="evaluate",
         help=(
-            "evaluate uses Tau -e; file uses TAU_CLI_FILE_MODE=1 and a temporary "
-            ".taucmd file"
+            "evaluate uses Tau -e; file uses TAU_CLI_FILE_MODE=1; split-file "
+            "uses TAU_CLI_FILE_SPLIT_MODE=1"
+        ),
+    )
+    parser.add_argument(
+        "--layout",
+        choices=["all-sources-first", "grouped"],
+        default="all-sources-first",
+        help=(
+            "all-sources-first preserves the original batch shape; grouped "
+            "places each source next to its own solve commands, which lets "
+            "split-file mode parse smaller command groups"
         ),
     )
     parser.add_argument("--out", type=Path, default=Path("results/local/table-demo-batched-checks.json"))
@@ -144,20 +178,27 @@ def main() -> int:
     individual_runs = []
     batch_runs = []
     for _ in range(args.reps):
-        for check in checks:
-            individual_runs.append(run_tau(args.tau_bin, individual_program(root, check), args.transport))
-        batch_runs.append(run_tau(args.tau_bin, batched_program(root), args.transport))
+        if args.mode in {"compare", "individual-only"}:
+            for check in checks:
+                individual_runs.append(run_tau(args.tau_bin, individual_program(root, check), args.transport))
+        if args.mode in {"compare", "batch-only"}:
+            program = (
+                grouped_batched_program(root)
+                if args.layout == "grouped"
+                else batched_program(root)
+            )
+            batch_runs.append(run_tau(args.tau_bin, program, args.transport))
 
     individual_elapsed = [float(run["elapsed_ms"]) for run in individual_runs]
     batch_elapsed = [float(run["elapsed_ms"]) for run in batch_runs]
     expected_batch_results = len(checks)
-    individual_ok = all(
+    individual_ok = args.mode == "batch-only" or all(
         bool(run["ok"])
         and run["solve_result_count"] == 1
         and run["no_solution_count"] == 1
         for run in individual_runs
     )
-    batch_ok = all(
+    batch_ok = args.mode == "individual-only" or all(
         bool(run["ok"])
         and run["solve_result_count"] == expected_batch_results
         and run["no_solution_count"] == expected_batch_results
@@ -175,7 +216,9 @@ def main() -> int:
         "ok": individual_ok and batch_ok,
         "check_count": len(checks),
         "reps": args.reps,
+        "mode": args.mode,
         "transport": args.transport,
+        "layout": args.layout,
         "individual": summarize_elapsed(individual_elapsed),
         "batched": summarize_elapsed(batch_elapsed),
         "elapsed_reduction_percent": round(elapsed_reduction, 3),
