@@ -831,6 +831,7 @@ target-sized cases:                   200 / 200
 normalized characters:                1480
 first-pass idempotent cases:          190 / 200
 second-pass growth cases:             0 / 200
+whole-command normalize time:         19761.508 ms
 ```
 
 The feature-gated pass improves fixed-point stability, but the remaining
@@ -843,7 +844,9 @@ triggered by reparsing Tau's printed form.
 
 The same probe now measures guarded DNF/MNF presentation candidates. Guarded
 `mnf` is the stronger candidate and is now implemented as an experimental
-Tau patch behind `TAU_NORMALIZE_GUARDED_MNF=1`. It is not a default Tau mode.
+Tau patch behind `TAU_NORMALIZE_GUARDED_MNF=1`. It is not a default Tau mode,
+and the timing is a process-level regression screen rather than an in-process
+optimizer benchmark.
 
 ## Variable-update cache telemetry
 

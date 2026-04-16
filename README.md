@@ -304,6 +304,7 @@ target-sized cases:                   200 / 200
 normalized characters:                1480
 first-pass idempotent cases:          190 / 200
 second-pass growth cases:             0 / 200
+whole-command normalize time:         19761.508 ms
 ```
 
 This sharpens the remaining frontier. The feature-gated pass improves
@@ -317,7 +318,9 @@ because the measured gain comes from reparsing Tau's printed presentation.
 The stronger guarded-MNF route is now implemented as an experimental opt-in
 Tau patch behind `TAU_NORMALIZE_GUARDED_MNF=1`. It uses `mnf` as the printed
 form only when it does not increase size, and it skips recursive-reference
-cases. It is not a default runtime mode.
+cases. It is not a default runtime mode. The timing number above is still a
+whole-command screen with process startup and file I/O, not an in-process
+speedup proof.
 
 The fixed-width modular arithmetic rewrite-triage corpus is:
 

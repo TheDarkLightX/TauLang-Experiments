@@ -311,6 +311,7 @@ target-sized cases:                   200 / 200
 normalized characters:                1480
 first-pass idempotent cases:          190 / 200
 second-pass growth cases:             0 / 200
+whole-command normalize time:         19761.508 ms
 ```
 
 This matters because exact `normalize` text is not the only boundary. Some
@@ -328,7 +329,8 @@ it does not increase printed size. In the wide corpus it is non-growing for all
 `200` cases and shrinks total output from `1980` to `1480` characters. It is
 now implemented as an experimental opt-in Tau patch behind
 `TAU_NORMALIZE_GUARDED_MNF=1`. It is not a proof that `mnf` should replace
-`normalize` globally.
+`normalize` globally. The timing receipt is a process-level screen, not an
+in-process optimizer proof.
 
 The generated and stress cases are closed by equality-graph implication checks:
 
