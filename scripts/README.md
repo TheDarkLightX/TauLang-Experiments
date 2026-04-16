@@ -301,6 +301,30 @@ Interpretation: this broadens the RR skip evidence to ordinary reference
 expansion and Boolean-algebra identity checks. It is still a synthetic corpus,
 not a full Tau workload benchmark.
 
+After enabling the RR skip, rerun the telemetry in compact mode:
+
+```bash
+TAU_RR_SKIP_VALUE_INFER=1 python3 scripts/run_table_demo_solve_telemetry.py \
+  --rr-stats \
+  --reps 1 \
+  --out results/local/table-demo-rr-telemetry-after-rr-skip-compact-reps1.json
+```
+
+Current post-skip receipt:
+
+```text
+rr_get:                  1.800762 ms
+rr_apply_formula:       16.610380 ms
+rr_formula_transform:    9.079930 ms
+rr_formula_rewrite:      6.509593 ms
+solve total:            19.575530 ms
+```
+
+Interpretation: once the redundant value inference is skipped, the next
+internal solver-path target is `apply_rr_to_formula`, not more `get_rr`
+work. The telemetry script now prints this aggregate by default and writes the
+full per-run rows to the JSON receipt.
+
 ## Compound table-equivalence check
 
 ```bash

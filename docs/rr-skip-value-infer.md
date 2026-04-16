@@ -196,6 +196,23 @@ as commutativity, absorption, double prime, De Morgan laws, and guarded choice.
 This does not make the shortcut default-safe, but it reduces the chance that the
 benefit is caused only by the safe-table parser surface.
 
+Post-skip telemetry changes the next target. With
+`TAU_RR_SKIP_VALUE_INFER=1` enabled on the five representative table-demo
+solver checks, the compact RR telemetry receipt shows:
+
+```text
+rr_get:                    1.800762 ms
+rr_apply_formula:         16.610380 ms
+rr_formula_transform:      9.079930 ms
+rr_formula_rewrite:        6.509593 ms
+rr_formula_fixed_point:    0.691629 ms
+solve total:              19.575530 ms
+```
+
+So the next internal solver-path target is not more `get_rr` work on this
+corpus. It is `apply_rr_to_formula`, especially reference-argument
+transformation and recurrence-definition rewriting.
+
 ## Boundary
 
 This is not a default Tau optimization yet.

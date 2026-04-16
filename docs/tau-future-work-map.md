@@ -124,6 +124,20 @@ This is still synthetic. It is useful because the checked programs are ordinary
 named `:tau` definitions and Boolean-algebra identity checks, so the shortcut
 is not only exercised by the safe-table parser surface.
 
+The post-skip telemetry redirects the next optimization target:
+
+```text
+rr_get:                  1.800762 ms
+rr_apply_formula:       16.610380 ms
+rr_formula_transform:    9.079930 ms
+rr_formula_rewrite:      6.509593 ms
+```
+
+After `TAU_RR_SKIP_VALUE_INFER=1`, the remaining internal solver-path work is
+mostly RR formula application, not RR extraction. The next candidate proof or
+patch should target reference-argument transformation, definition rewriting, or
+a safe cache for repeated transformed definitions.
+
 The compound table-equivalence check is documented in
 `docs/demo-gallery.md`. The compound mode uses this law:
 

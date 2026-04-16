@@ -438,3 +438,9 @@ rows were structurally equal to the full-inference path, measured `get_rr` time
 improved by `79.109%`, and solver-command total time improved by `55.564%`.
 This broadens the evidence beyond safe-table syntax but remains a synthetic
 corpus.
+
+Post-skip telemetry now points at the next internal solver-path target. With
+`TAU_RR_SKIP_VALUE_INFER=1`, the five representative table-demo checks spend
+about `1.800762 ms` in `get_rr` but `16.610380 ms` in RR formula application.
+The next target is therefore reference-argument transformation and
+definition-rewrite work inside `apply_rr_to_formula`.
