@@ -96,14 +96,16 @@ Current receipt:
 checks:                15
 individual processes:  15
 batched processes:      1
-individual elapsed:  117482.283 ms
-batched elapsed:      58561.321 ms
-elapsed reduction:       50.153%
+transport:            file
+individual elapsed:  118067.485 ms
+batched elapsed:      57865.218 ms
+elapsed reduction:       50.990%
 ```
 
 This is the second table-demo overhead reduction. It is weaker than the
 compound logical law as a proof compression, but stronger as an audit trail
 because Tau still returns one `no solution` result for each obligation.
+It now exercises an opt-in Tau command-file path behind `TAU_CLI_FILE_MODE=1`.
 
 The equality-aware path simplification experiment is documented in
 `docs/equality-aware-path-simplification.md`. It targets a known Tau README

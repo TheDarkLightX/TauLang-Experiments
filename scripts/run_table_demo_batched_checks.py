@@ -19,6 +19,7 @@ import os
 import re
 import statistics
 import subprocess
+import tempfile
 import time
 from pathlib import Path
 
@@ -50,24 +51,53 @@ def batched_program(root: Path) -> str:
     return "\n".join(sources + cli_commands)
 
 
-def run_tau(tau_bin: Path, program: str) -> dict[str, object]:
+def run_tau(tau_bin: Path, program: str, transport: str) -> dict[str, object]:
     env = os.environ.copy()
     env["TAU_ENABLE_SAFE_TABLES"] = "1"
-    argv = [
-        str(tau_bin),
-        "--charvar",
-        "false",
-        "-e",
-        program,
-        "--severity",
-        "info",
-        "--color",
-        "false",
-        "--status",
-        "true",
-    ]
+    tmp_path: Path | None = None
+    if transport == "file":
+        env["TAU_CLI_FILE_MODE"] = "1"
+        with tempfile.NamedTemporaryFile(
+            "w",
+            encoding="utf-8",
+            dir="results/local",
+            suffix=".taucmd",
+            delete=False,
+        ) as tmp:
+            tmp.write(program)
+            tmp_path = Path(tmp.name)
+        argv = [
+            str(tau_bin),
+            "--charvar",
+            "false",
+            str(tmp_path),
+            "--severity",
+            "info",
+            "--color",
+            "false",
+            "--status",
+            "true",
+        ]
+    else:
+        argv = [
+            str(tau_bin),
+            "--charvar",
+            "false",
+            "-e",
+            program,
+            "--severity",
+            "info",
+            "--color",
+            "false",
+            "--status",
+            "true",
+        ]
     start = time.perf_counter()
-    proc = subprocess.run(argv, env=env, text=True, capture_output=True, check=False)
+    try:
+        proc = subprocess.run(argv, env=env, text=True, capture_output=True, check=False)
+    finally:
+        if tmp_path is not None:
+            tmp_path.unlink(missing_ok=True)
     elapsed_ms = (time.perf_counter() - start) * 1000
     lines = clean_lines(proc.stdout + proc.stderr)
     solve_lines = [line for line in lines if line == "no solution" or line == "solution:"]
@@ -93,6 +123,15 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--tau-bin", type=Path, default=Path("external/tau-lang/build-Release/tau"))
     parser.add_argument("--reps", type=int, default=1)
+    parser.add_argument(
+        "--transport",
+        choices=["evaluate", "file"],
+        default="evaluate",
+        help=(
+            "evaluate uses Tau -e; file uses TAU_CLI_FILE_MODE=1 and a temporary "
+            ".taucmd file"
+        ),
+    )
     parser.add_argument("--out", type=Path, default=Path("results/local/table-demo-batched-checks.json"))
     args = parser.parse_args()
     if args.reps < 1:
@@ -106,8 +145,8 @@ def main() -> int:
     batch_runs = []
     for _ in range(args.reps):
         for check in checks:
-            individual_runs.append(run_tau(args.tau_bin, individual_program(root, check)))
-        batch_runs.append(run_tau(args.tau_bin, batched_program(root)))
+            individual_runs.append(run_tau(args.tau_bin, individual_program(root, check), args.transport))
+        batch_runs.append(run_tau(args.tau_bin, batched_program(root), args.transport))
 
     individual_elapsed = [float(run["elapsed_ms"]) for run in individual_runs]
     batch_elapsed = [float(run["elapsed_ms"]) for run in batch_runs]
@@ -136,6 +175,7 @@ def main() -> int:
         "ok": individual_ok and batch_ok,
         "check_count": len(checks),
         "reps": args.reps,
+        "transport": args.transport,
         "individual": summarize_elapsed(individual_elapsed),
         "batched": summarize_elapsed(batch_elapsed),
         "elapsed_reduction_percent": round(elapsed_reduction, 3),

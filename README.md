@@ -177,11 +177,12 @@ python3 scripts/run_table_demo_batched_checks.py \
   --out results/local/table-demo-batched-checks.json
 ```
 
-It uses Tau's existing prefix-dot CLI shape to run all table-vs-raw checks in
-one Tau process while preserving one `solve` result per obligation. The current
+It uses Tau's existing prefix-dot CLI shape and the opt-in
+`TAU_CLI_FILE_MODE=1` command-file path to run all table-vs-raw checks in one
+Tau process while preserving one `solve` result per obligation. The current
 local receipt checks `15` obligations, reduces process count from `15` to `1`,
-and reduces elapsed time by about `50.153%`. This is command batching and demo
-harness optimization, not a solver speedup.
+and reduces elapsed time by about `50.990%`. This is command-file batching and
+demo harness optimization, not a solver speedup.
 
 The first equality-aware path simplification prototype is:
 

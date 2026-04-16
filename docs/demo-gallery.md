@@ -20,7 +20,8 @@ Run only the safe table syntax and solver-equivalence demo with:
 
 The default demo runner uses the compound equivalence check for the table-vs-raw
 obligations. For an audit-friendly batched path that keeps one solver result
-per obligation while using one Tau process, run:
+per obligation while using one Tau process and the opt-in command-file runner,
+run:
 
 ```bash
 TABLE_DEMO_EQUIV_MODE=batched ./scripts/run_table_demos.sh --accept-tau-license
@@ -296,9 +297,10 @@ The current local receipt is:
 checks:              15
 individual processes: 15
 batched processes:     1
-individual elapsed:  117482.283 ms
-batched elapsed:      58561.321 ms
-elapsed reduction:       50.153%
+transport:          file
+individual elapsed:  118067.485 ms
+batched elapsed:      57865.218 ms
+elapsed reduction:       50.990%
 result:             passed
 ```
 
@@ -309,7 +311,8 @@ Plain English: this keeps the per-check audit trail while avoiding repeated Tau
 startup and source loading.
 
 Boundary: this is a CLI batching and demo-harness optimization. It does not
-change Tau's solver, table semantics, or parser grammar.
+change Tau's solver, table semantics, or parser grammar. The command-file path
+is opt-in behind `TAU_CLI_FILE_MODE=1`.
 
 ## Boundary
 

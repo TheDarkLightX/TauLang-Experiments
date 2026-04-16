@@ -3264,7 +3264,7 @@ index 0ab92059..b88a6ee9 100644
 \ No newline at end of file
 +#endif // __IDNI__TAU__IO_CONTEXT_H__
 diff --git a/src/main.cpp b/src/main.cpp
-index baf1be99..411ae9cb 100644
+index baf1be99..83229111 100644
 --- a/src/main.cpp
 +++ b/src/main.cpp
 @@ -24,6 +24,9 @@ using namespace std;
@@ -3319,7 +3319,39 @@ index baf1be99..411ae9cb 100644
  		.print_history_store = false,
  		.error_quits         = true,
  		.charvar             = charvar,
-@@ -220,7 +227,7 @@ void at_exit() {
+@@ -206,6 +213,31 @@ int run_tau_spec_old(string spec_file, bool charvar, bool exp,
+ 	return re.eval("run %");
+ }
+ 
++int run_tau_cli_file(string spec_file, bool charvar, bool exp,
++	boost::log::trivial::severity_level sev)
++{
++	string src = "";
++	if (spec_file == "-") {
++		std::ostringstream oss;
++		oss << std::cin.rdbuf(), src = oss.str();
++	} else {
++		std::ifstream ifs(spec_file, std::ios::binary | std::ios::ate);
++		if (!ifs) return error("Cannot open file " + spec_file);
++		auto l = ifs.tellg();
++		src.resize(l), ifs.seekg(0), ifs.read(&src[0], l);
++	}
++	if (src.empty()) return 0;
++	runtime_repl re({
++		.print_history_store = false,
++		.error_quits         = true,
++		.charvar             = charvar,
++		.repl_running        = false,
++		.severity	     = sev,
++		.experimental        = exp
++	});
++	return re.eval(src);
++}
++
+ void welcome() {
+ 	TAU_LOG_INFO << "Welcome to the " << full_version << " by IDNI AG.\n"
+ 		<< "This product is protected by patents and copyright."
+@@ -220,7 +252,7 @@ void at_exit() {
  	// On exit we must clean up the ba constants so the rest of the static
  	// constants managers are able to properly clean everything (in particula,
  	// cvc5::TermManager).
@@ -3328,7 +3360,7 @@ index baf1be99..411ae9cb 100644
  	// On the tests using ba_constants we also need to explicitly call
  	// the clean up in the constants.
  }
-@@ -257,9 +264,11 @@ int main(int argc, char** argv) {
+@@ -257,19 +289,23 @@ int main(int argc, char** argv) {
  	pretty_printer_indenting    = opts["indenting"].get<bool>();
  
  	bool charvar = opts["charvar"].get<bool>();
@@ -3343,7 +3375,11 @@ index baf1be99..411ae9cb 100644
  
  	bool exp = opts["experimental"].get<bool>();
  
-@@ -269,7 +278,7 @@ int main(int argc, char** argv) {
+ 	// spec provided, run it
+ 	if (files.size()) {
++		if (tau_env_flag_enabled("TAU_CLI_FILE_MODE"))
++			return run_tau_cli_file(files.front(), charvar, exp, sev);
+ 		if (exp) return run_tau_spec(files.front(), charvar, exp, sev);
  		else return run_tau_spec_old(files.front(), charvar, exp, sev);
  	}
  
@@ -6131,7 +6167,7 @@ index 00000000..c00f0140
 +
 +#endif
 diff --git a/src/repl_evaluator.tmpl.h b/src/repl_evaluator.tmpl.h
-index 8e944446..51cae3cb 100644
+index 8e944446..5a0e21f4 100644
 --- a/src/repl_evaluator.tmpl.h
 +++ b/src/repl_evaluator.tmpl.h
 @@ -2,6 +2,8 @@
@@ -6266,7 +6302,7 @@ index 8e944446..51cae3cb 100644
  template <typename... BAs>
  requires BAsPack<BAs...>
  tref repl_evaluator<BAs...>::normalize_cmd(const tt& n) {
-+	auto guarded_mnf = [](tref applied, tref normalized, bool contains_ref) {
++	auto guarded_mnf = [&](tref applied, tref normalized, bool contains_ref) {
 +		if (!tau_env_flag_enabled("TAU_NORMALIZE_GUARDED_MNF"))
 +			return normalized;
 +		if (!applied || !normalized || contains_ref) return normalized;

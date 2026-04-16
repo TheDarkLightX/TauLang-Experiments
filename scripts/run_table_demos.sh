@@ -124,6 +124,7 @@ elif [[ "$TABLE_DEMO_EQUIV_MODE" == "batched" ]]; then
     python3 scripts/run_table_demo_batched_checks.py \
       --tau-bin "$TAU_BIN" \
       --reps 1 \
+      --transport file \
       --out "$RESULT_DIR/table-demo-batched-checks.json"
   ) > "$RESULT_DIR/table-demo-batched-checks.txt"
   echo "passed: batched_table_equivalence_checks"

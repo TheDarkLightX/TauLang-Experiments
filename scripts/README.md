@@ -251,14 +251,16 @@ Current receipt:
 checks:                15
 individual processes:  15
 batched processes:      1
-individual elapsed:  117482.283 ms
-batched elapsed:      58561.321 ms
-elapsed reduction:       50.153%
+transport:            file
+individual elapsed:  118067.485 ms
+batched elapsed:      57865.218 ms
+elapsed reduction:       50.990%
 result:               passed
 ```
 
 Interpretation: Tau's existing CLI grammar can run several REPL commands in one
-`-e` string using the prefix-dot shape `cmd_1 . cmd_2 . ... . cmd_n`. This
+input using the prefix-dot shape `cmd_1 . cmd_2 . ... . cmd_n`. The batched demo
+now exercises the opt-in command-file runner with `TAU_CLI_FILE_MODE=1`. This
 keeps one `solve` result per table-vs-raw obligation while avoiding repeated
 process startup and source loading. It is a CLI batching optimization, not a
 solver change.
