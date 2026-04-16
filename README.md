@@ -410,3 +410,16 @@ python3 scripts/run_rr_skip_value_infer_demo.py \
 Current audit receipt: `5` of `5` skipped RR branches were structurally equal to
 the full-inference RR branch. Audit mode deliberately runs the full path too, so
 it is correctness evidence, not a speed measurement.
+
+The one-process batched timing lane is:
+
+```bash
+python3 scripts/run_rr_skip_batched_table_checks.py \
+  --reps 1 \
+  --out results/local/rr-skip-batched-table-checks-reps1.json
+```
+
+Current batched receipt: output parity passed across `15` table-vs-raw
+obligations, wall-clock elapsed time improved by `3.186%`, internal
+solve-command time improved by `75.435%`, and measured `get_rr` time improved
+by `99.266%`. This is still a demo-corpus result, not a default Tau promotion.

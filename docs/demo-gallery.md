@@ -378,6 +378,29 @@ structurally equal audit rows: 5
 The audit mode computes the full inference path and checks structural equality
 against the skipped RR. It fails closed on mismatch and is not a timing mode.
 
+Batched timing command:
+
+```bash
+python3 scripts/run_rr_skip_batched_table_checks.py \
+  --reps 1 \
+  --out results/local/rr-skip-batched-table-checks-reps1.json
+```
+
+Current batched timing receipt:
+
+```text
+checks:                 15
+baseline elapsed:    59058.949 ms
+skip elapsed:        57177.551 ms
+elapsed improvement:     3.186%
+solve improvement:      75.435%
+get_rr improvement:     99.266%
+```
+
+This is the first receipt where the RR skip also improves wall-clock time in
+the batched demo harness. The improvement is small at wall-clock level because
+source loading and command overhead still dominate the one-process run.
+
 ## Boundary
 
 These demos prove the patched Tau executable can parse and check a safe

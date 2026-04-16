@@ -72,6 +72,17 @@ fails, the command fails closed.
 
 Audit mode is not a performance mode. It deliberately runs the full path.
 
+To measure the shortcut inside one Tau process over all fifteen table-vs-raw
+obligations:
+
+```bash
+python3 scripts/run_rr_skip_batched_table_checks.py \
+  --reps 1 \
+  --out results/local/rr-skip-batched-table-checks-reps1.json
+```
+
+This uses the same prefix-dot command-file shape as the batched table demo.
+
 ## Current Local Receipt
 
 Fast mode:
@@ -109,6 +120,26 @@ skip branches:
   ref_value_skip_infer: 5
 ```
 
+Batched one-process mode:
+
+```text
+ok: true
+checks: 15
+repetitions: 1
+
+baseline elapsed:      59058.949 ms
+skip elapsed:          57177.551 ms
+elapsed improvement:       3.186%
+
+baseline solve total:    816.446700 ms
+skip solve total:        200.560990 ms
+solve improvement:        75.435%
+
+baseline get_rr:         619.139900 ms
+skip get_rr:               4.544364 ms
+get_rr improvement:       99.266%
+```
+
 ## Interpretation
 
 The internal command-body result is strong: skipping the redundant
@@ -119,10 +150,11 @@ The audit result strengthens the local evidence: on the checked corpus, the
 skipped RR and full-inference RR are structurally equal, not merely
 solver-result equivalent.
 
-The whole-process result is intentionally not claimed as a public demo speedup.
-The current wrapper still launches many Tau processes, so process startup,
-source loading, parsing, and file I/O dominate elapsed time. This is why the
-internal solver time improves while wall-clock time is roughly flat.
+The one-process batched result is the stronger performance receipt. It removes
+most repeated process startup and shows a small wall-clock improvement on the
+demo corpus, while the internal solver-path improvement remains much larger.
+The earlier one-process-per-check wrapper still has roughly flat wall-clock
+time because repeated Tau startup and source loading dominate elapsed time.
 
 ## Boundary
 
@@ -134,12 +166,13 @@ Promotion would require:
 - cases where `type == tau::spec` remains on the full inference path,
 - a code-level invariant or proof artifact that parser-time inference is enough
   for the skipped `ref_value` branch,
-- an in-process benchmark that removes process startup from the timing signal.
+- a broader in-process benchmark beyond the safe-table demo corpus.
 
 The current status is:
 
 ```text
 output parity passed on the checked safe-table solver corpus
 internal RR extraction speedup measured
+batched one-process wall-clock improvement measured on the demo corpus
 default promotion not justified yet
 ```

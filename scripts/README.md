@@ -249,6 +249,35 @@ structurally equal audit rows:  5
 Audit mode runs the full inference path too, so it is a correctness screen, not
 a speed measurement.
 
+The batched one-process timing lane is:
+
+```bash
+python3 scripts/run_rr_skip_batched_table_checks.py \
+  --reps 1 \
+  --out results/local/rr-skip-batched-table-checks-reps1.json
+```
+
+Current batched receipt:
+
+```text
+checks:                   15
+repetitions:               1
+output parity:             passed
+baseline elapsed:      59058.949 ms
+skip elapsed:          57177.551 ms
+elapsed improvement:       3.186%
+baseline solve total:    816.446700 ms
+skip solve total:        200.560990 ms
+solve improvement:        75.435%
+baseline get_rr:         619.139900 ms
+skip get_rr:               4.544364 ms
+get_rr improvement:       99.266%
+```
+
+This is stronger than the one-process-per-check timing because it runs all
+fifteen obligations through one Tau process. It is still scoped to the table
+demo corpus.
+
 ## Compound table-equivalence check
 
 ```bash

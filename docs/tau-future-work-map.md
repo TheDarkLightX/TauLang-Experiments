@@ -94,6 +94,20 @@ structurally equal audit rows: 5
 Audit mode computes the full inference path too, so it is correctness evidence,
 not a timing result.
 
+The batched one-process timing lane now gives a stronger performance receipt:
+
+```text
+checks:             15
+repetitions:        1
+output parity:      passed
+elapsed improvement: 3.186%
+solve improvement:  75.435%
+get_rr improvement: 99.266%
+```
+
+This is still scoped to the safe-table demo corpus, but it removes most of the
+one-process-per-check startup noise.
+
 The compound table-equivalence check is documented in
 `docs/demo-gallery.md`. The compound mode uses this law:
 
