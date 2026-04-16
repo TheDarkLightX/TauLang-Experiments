@@ -157,6 +157,41 @@ the filter to help rewrite time. The useful claim remains narrower:
 active-rule filtering helps when many definition rules are carried through a
 batched solve path and most are irrelevant to the current term.
 
+## Final-Result Audit Mode
+
+The feature also has an audit mode:
+
+```bash
+TAU_RR_ACTIVE_RULES_AUDIT=1
+```
+
+When active rules are enabled, audit mode computes the active repeated-rewrite
+result and the full repeated-rewrite result, then requires structural equality.
+This is deliberately not a performance mode.
+
+Reproduce:
+
+```bash
+TAU_RR_ACTIVE_RULES_AUDIT=1 \
+python3 scripts/run_rr_active_rules_batched.py \
+  --reps 1 \
+  --out results/local/rr-active-rules-batched-audit-reps1.json
+```
+
+Current receipt:
+
+```text
+checks:                              15
+output parity:                       passed
+active audit rows:                   15
+active audit structurally equal rows: 15
+```
+
+Interpretation: on the batched table corpus, the active repeated-rewrite result
+matched the full repeated-rewrite result for every checked obligation. This is
+stronger than ordinary output parity, but it is still corpus evidence rather
+than a proof of the delayed-scheduling invariant.
+
 ## Promotion Boundary
 
 Do not promote this to default behavior until all of the following are true:

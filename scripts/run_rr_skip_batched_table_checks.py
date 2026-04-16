@@ -99,6 +99,7 @@ def run_batched(tau_bin: Path, program: str, skip: bool) -> dict[str, object]:
     rr_formula_rows = parse_prefixed_stats(combined, "[rr_formula]")
     rr_transform_defs_cache_rows = parse_prefixed_stats(combined, "[rr_transform_defs_cache]")
     rr_active_rules_rows = parse_prefixed_stats(combined, "[rr_active_rules]")
+    rr_active_rules_audit_rows = parse_prefixed_stats(combined, "[rr_active_rules_audit]")
     rr_skip_audit_rows = parse_prefixed_stats(combined, "[rr_skip_audit]")
     branch_counts: dict[str, int] = {}
     for row in rr_get_defs_rows:
@@ -118,6 +119,10 @@ def run_batched(tau_bin: Path, program: str, skip: bool) -> dict[str, object]:
         "rr_formula_stat_count": len(rr_formula_rows),
         "rr_transform_defs_cache_stat_count": len(rr_transform_defs_cache_rows),
         "rr_active_rules_stat_count": len(rr_active_rules_rows),
+        "rr_active_rules_audit_stat_count": len(rr_active_rules_audit_rows),
+        "rr_active_rules_audit_equal_count": sum(
+            1 for row in rr_active_rules_audit_rows if row.get("structural_equal") == "1"
+        ),
         "rr_transform_defs_cache_hit_count": sum(
             1 for row in rr_transform_defs_cache_rows if row.get("hit") == "1"
         ),
@@ -193,6 +198,12 @@ def summarize_mode(runs: list[dict[str, object]]) -> dict[str, object]:
         ),
         "rr_active_rules_after": round(
             sum(float(run["rr_active_rules_after"]) for run in runs), 6
+        ),
+        "rr_active_rules_audit_rows": sum(
+            int(run["rr_active_rules_audit_stat_count"]) for run in runs
+        ),
+        "rr_active_rules_audit_equal_rows": sum(
+            int(run["rr_active_rules_audit_equal_count"]) for run in runs
         ),
     }
 

@@ -151,7 +151,10 @@ The current patch is an experiment patch, not an official Tau release. It adds:
   the proof obligation is not closed.
   The ordinary reference-definition corpus preserves outputs but does not show
   rewrite-time benefit, so the current claim is scoped to rule-heavy batched
-  workloads. The proof obligation is documented in
+  workloads. `TAU_RR_ACTIVE_RULES_AUDIT=1` adds a slower final-result audit
+  that checks the active repeated-rewrite result against the full
+  repeated-rewrite result; the current batched audit has `15 / 15`
+  structurally equal rows. The proof obligation is documented in
   `docs/rr-active-rule-filter.md`.
 
 The table syntax is rejected unless `TAU_ENABLE_SAFE_TABLES=1` is set.

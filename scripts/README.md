@@ -409,6 +409,27 @@ ordinary-reference corpus, but it does not improve rewrite time there. That is
 expected for a rule-light corpus and keeps the claim scoped to rule-heavy
 batched workloads.
 
+The final-result audit mode is:
+
+```bash
+TAU_RR_ACTIVE_RULES_AUDIT=1 \
+python3 scripts/run_rr_active_rules_batched.py \
+  --reps 1 \
+  --out results/local/rr-active-rules-batched-audit-reps1.json
+```
+
+Current receipt:
+
+```text
+checks:                              15
+active audit rows:                   15
+active audit structurally equal rows: 15
+```
+
+Interpretation: audit mode compares the active repeated-rewrite result against
+the full repeated-rewrite result. It is correctness evidence, not a performance
+mode.
+
 ## Compound table-equivalence check
 
 ```bash

@@ -4257,7 +4257,7 @@ index 5917175f..f822f393 100644
  		DBG(LOG_DEBUG << "Syntactic_path_simplification result: " << LOG_FM(res) << "\n";)
  		return res;
 diff --git a/src/normalizer.tmpl.h b/src/normalizer.tmpl.h
-index 6e28efc3..d364243e 100644
+index 6e28efc3..65b18561 100644
 --- a/src/normalizer.tmpl.h
 +++ b/src/normalizer.tmpl.h
 @@ -1,5 +1,8 @@
@@ -4269,9 +4269,34 @@ index 6e28efc3..d364243e 100644
  #include "normalizer.h"
  
  #undef LOG_CHANNEL_NAME
-@@ -903,15 +906,32 @@ tref calculate_all_fixed_points(const rr<node>& nso_rr) {
+@@ -898,20 +901,70 @@ tref calculate_all_fixed_points(const rr<node>& nso_rr) {
+ 	return new_main;
+ }
+ 
++template <NodeType node>
++tref apply_rr_rules_without_active_filter(const rewriter::rules& rs, tref n) {
++	tref nn = n;
++	for (auto& r : rs) nn = nso_rr_apply<node>(r, nn);
++	return nn;
++}
++
++template <NodeType node>
++tref repeat_rr_rules_without_active_filter(const rewriter::rules& rs, tref n) {
++	tref nn = n;
++	while (true) {
++		nn = apply_rr_rules_without_active_filter<node>(rs, nn);
++		tref nnn = apply_rr_rules_without_active_filter<node>(rs, nn);
++		if (nnn == nn) break;
++		nn = nnn;
++	}
++	return nn;
++}
++
+ // This function applies the recurrence relations the formula comes with to
+ // the formula
  template <NodeType node>
  tref apply_rr_to_formula(const rr<node>& nso_rr) {
++	using tau = tree<node>;
  	using tt = typename tree<node>::traverser;
 +	using clock = std::chrono::steady_clock;
 +	auto total_start = clock::now();
@@ -4287,6 +4312,19 @@ index 6e28efc3..d364243e 100644
  		| repeat_all<node, step<node>>(step<node>(rr_.rec_relations))
  		| tt::ref;
 +	auto rewrite_end = clock::now();
++	const char* active_env = std::getenv("TAU_RR_ACTIVE_RULES");
++	const char* active_audit_env = std::getenv("TAU_RR_ACTIVE_RULES_AUDIT");
++	const bool active_audit = active_env && std::string(active_env) == "1"
++		&& active_audit_env && std::string(active_audit_env) == "1";
++	if (active_audit) {
++		tref full_main = repeat_rr_rules_without_active_filter<node>(
++			rr_.rec_relations, main);
++		const bool structural_equal = tau::get(new_main) == tau::get(full_main);
++		std::cerr << "[rr_active_rules_audit] structural_equal="
++			<< (structural_equal ? 1 : 0)
++			<< "\n";
++		if (!structural_equal) return nullptr;
++	}
 +	const char* env = std::getenv("TAU_RR_STATS");
 +	if (env && std::string(env) == "1") {
 +		auto ms = [](const clock::duration& d) {

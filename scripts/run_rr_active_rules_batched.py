@@ -147,6 +147,8 @@ def main() -> int:
         "active_rules_before": active["rr_active_rules_before"],
         "active_rules_after": active["rr_active_rules_after"],
         "active_rules_skipped": summary["active_rules_skipped"],
+        "active_audit_rows": active["rr_active_rules_audit_rows"],
+        "active_audit_equal_rows": active["rr_active_rules_audit_equal_rows"],
     }, indent=2, sort_keys=True))
     return 0 if ok else 1
 
