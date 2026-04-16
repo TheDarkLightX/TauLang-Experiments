@@ -259,6 +259,58 @@ Interpretation: the cache substantially reduces the internal formula-application
 path. It is not yet a public demo wall-clock improvement because process-level
 elapsed time remained noisy and worsened on this receipt.
 
+## Active Rule Filtering
+
+After transformed-definition caching, the remaining formula-application hotspot
+is the rewrite pass itself. The next feature-gated candidate is:
+
+```bash
+TAU_RR_ACTIVE_RULES=1
+```
+
+The pass scans the current term for reference signatures and applies only
+definition rules whose head reference signature is currently present. If a
+rewrite introduces a new reference later, the surrounding `repeat_all` loop can
+pick it up in a later pass. Rules with no recognizable head reference are kept
+conservatively.
+
+Reproduce the direct comparison with:
+
+```bash
+python3 scripts/run_rr_active_rules_batched.py \
+  --reps 1 \
+  --out results/local/rr-active-rules-batched-reps1.json
+```
+
+Current local receipt, with `TAU_RR_SKIP_VALUE_INFER=1` and
+`TAU_RR_TRANSFORM_DEFS_CACHE=1` enabled in both modes:
+
+```text
+ok: true
+checks: 15
+
+baseline solve total: 123.479850 ms
+active solve total:    35.047750 ms
+solve improvement:     71.617%
+
+baseline rewrite:      99.341180 ms
+active rewrite:        11.068379 ms
+rewrite improvement:   88.858%
+
+active-rule rows:      45
+rules before filter:   2250
+rules after filter:      60
+rules skipped:         2190
+
+baseline elapsed:      53325.691 ms
+active elapsed:        53391.626 ms
+elapsed change:           -0.124%
+```
+
+Interpretation: this is the strongest current internal-path optimization after
+the RR extraction skip. It is not a whole-command speedup on this receipt
+because the benchmark is dominated by process setup and source loading.
+
 ## Boundary
 
 This is not a default Tau optimization yet.
@@ -273,6 +325,9 @@ Promotion would require:
 - a code-level invariant or proof artifact that parser-time inference is enough
   for the skipped `ref_value` branch,
 - a broader in-process benchmark beyond the safe-table demo corpus.
+- a proof or code invariant for active-rule filtering, namely that skipping a
+  rule whose head reference signature is absent from the current term preserves
+  the fixed point reached by the surrounding rewrite loop.
 
 The current status is:
 
@@ -281,5 +336,6 @@ output parity passed on the checked safe-table solver corpus
 internal RR extraction speedup measured
 batched one-process wall-clock improvement measured on the demo corpus
 ordinary reference-definition corpus passed structural audit
+active-rule filter reduced internal rewrite time on the batched corpus
 default promotion not justified yet
 ```

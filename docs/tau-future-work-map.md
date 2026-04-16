@@ -134,9 +134,8 @@ rr_formula_rewrite:      6.509593 ms
 ```
 
 After `TAU_RR_SKIP_VALUE_INFER=1`, the remaining internal solver-path work is
-mostly RR formula application, not RR extraction. The next candidate proof or
-patch should target reference-argument transformation, definition rewriting, or
-a safe cache for repeated transformed definitions.
+mostly RR formula application, not RR extraction. Two opt-in candidates now
+target that path: transformed-definition caching and active-rule filtering.
 
 The first safe-cache prototype is now feature-gated by:
 
@@ -164,6 +163,36 @@ same original definition list
 implies
 same transformed definition list.
 ```
+
+The next rewrite-stage candidate is feature-gated by:
+
+```bash
+TAU_RR_ACTIVE_RULES=1
+```
+
+Current batched receipt, with `TAU_RR_SKIP_VALUE_INFER=1` and
+`TAU_RR_TRANSFORM_DEFS_CACHE=1` enabled in both comparison modes:
+
+```text
+rules before filter:            2250
+rules after filter:               60
+rules skipped:                  2190
+solve improvement:              71.617%
+rr_formula_rewrite improvement: 88.858%
+elapsed improvement:            -0.124%
+```
+
+The useful proof obligation is dynamic-rule-filter soundness:
+
+```text
+head_sig(rule) not in refs(term)
+implies
+rule cannot rewrite term in the current pass.
+```
+
+The surrounding `repeat_all` loop is part of the intended proof surface,
+because a later pass must still be able to apply a rule if an earlier rewrite
+introduces its head reference.
 
 The compound table-equivalence check is documented in
 `docs/demo-gallery.md`. The compound mode uses this law:

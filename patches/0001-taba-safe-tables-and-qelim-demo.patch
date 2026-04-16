@@ -4303,20 +4303,61 @@ index 6e28efc3..d364243e 100644
  	LOG_DEBUG << "Spec: " << LOG_RR(nso_rr);
  	LOG_DEBUG << "New main: " << LOG_FM(new_main);
 diff --git a/src/nso_rr.tmpl.h b/src/nso_rr.tmpl.h
-index bf691573..ece93291 100644
+index bf691573..520c9a3b 100644
 --- a/src/nso_rr.tmpl.h
 +++ b/src/nso_rr.tmpl.h
-@@ -2,6 +2,9 @@
+@@ -2,6 +2,10 @@
  
  #include "nso_rr.h"
  
 +#include <cstdlib>
 +#include <string>
++#include <unordered_set>
 +
  #ifdef TAU_MEASURE
  #include "utility/measure.h"
  #endif // TAU_MEASURE
-@@ -79,6 +82,11 @@ tref nso_rr_apply(const rewriter::rules& rs, tref n) {
+@@ -67,8 +71,38 @@ tref nso_rr_apply(const rewriter::rules& rs, tref n) {
+ #endif // TAU_CACHE
+ 
+ 	if (rs.empty()) return n;
++	using tau = tree<node>;
++	const char* active_env = std::getenv("TAU_RR_ACTIVE_RULES");
++	const bool active_enabled = active_env && std::string(active_env) == "1";
++	rewriter::rules active_rules;
++	const rewriter::rules* rules_to_apply = &rs;
++	if (active_enabled) {
++		std::unordered_set<rr_sig> active_refs;
++		for (tref ref : tau::get(n).select_all(is<node, tau::ref>))
++			active_refs.insert(get_rr_sig<node>(ref));
++		active_rules.reserve(rs.size());
++		for (const auto& r : rs) {
++			trefs head_refs = tau::get(r.first->get())
++				.select_top(is<node, tau::ref>);
++			if (head_refs.empty()) {
++				active_rules.push_back(r);
++				continue;
++			}
++			if (active_refs.contains(get_rr_sig<node>(head_refs.front())))
++				active_rules.push_back(r);
++		}
++		rules_to_apply = &active_rules;
++		const char* rr_stats = std::getenv("TAU_RR_STATS");
++		if (rr_stats && std::string(rr_stats) == "1") {
++			std::cerr << "[rr_active_rules] enabled=1 refs="
++				<< active_refs.size()
++				<< " before=" << rs.size()
++				<< " after=" << active_rules.size()
++				<< "\n";
++		}
++	}
+ 	tref nn = n;
+-	for (auto& r : rs) nn = nso_rr_apply<node>(r, nn);
++	for (auto& r : *rules_to_apply) nn = nso_rr_apply<node>(r, nn);
+ 
+ #ifdef TAU_CACHE
+ 	cache[{rs, n}] = nn;
+@@ -79,6 +113,11 @@ tref nso_rr_apply(const rewriter::rules& rs, tref n) {
  template <NodeType node>
  rr<node> transform_ref_args_to_captures(const rr<node>& nso_rr) {
  	using tau = tree<node>;
@@ -4328,7 +4369,7 @@ index bf691573..ece93291 100644
  	DBG(	LOG_TRACE << "-- transform_ref_args_to_captures:";)
  	DBG(LOG_TRACE << "nso_rr main: " << tau::get(nso_rr.main->get()).tree_to_str();
  		for (const auto& [k, v] : nso_rr.rec_relations) {
-@@ -133,15 +141,34 @@ rr<node> transform_ref_args_to_captures(const rr<node>& nso_rr) {
+@@ -133,15 +172,34 @@ rr<node> transform_ref_args_to_captures(const rr<node>& nso_rr) {
  		return h;
  	};
  	rr<node> ret(nso_rr);

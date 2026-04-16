@@ -118,6 +118,7 @@ def run_tau(tau_bin: Path, program: str) -> dict[str, object]:
     rr_with_defs_rows = parse_prefixed_stats(combined, "[rr_with_defs]")
     rr_formula_rows = parse_prefixed_stats(combined, "[rr_formula]")
     rr_transform_defs_cache_rows = parse_prefixed_stats(combined, "[rr_transform_defs_cache]")
+    rr_active_rules_rows = parse_prefixed_stats(combined, "[rr_active_rules]")
     rr_skip_audit_rows = parse_prefixed_stats(combined, "[rr_skip_audit]")
     clean_lines = [
         line.strip()
@@ -131,6 +132,7 @@ def run_tau(tau_bin: Path, program: str) -> dict[str, object]:
         and not line.startswith("[rr_with_defs]")
         and not line.startswith("[rr_formula]")
         and not line.startswith("[rr_transform_defs_cache]")
+        and not line.startswith("[rr_active_rules]")
         and not line.startswith("[rr_skip_audit]")
         and line.strip()
     ]
@@ -149,6 +151,7 @@ def run_tau(tau_bin: Path, program: str) -> dict[str, object]:
         "rr_with_defs_stat_count": len(rr_with_defs_rows),
         "rr_formula_stat_count": len(rr_formula_rows),
         "rr_transform_defs_cache_stat_count": len(rr_transform_defs_cache_rows),
+        "rr_active_rules_stat_count": len(rr_active_rules_rows),
         "rr_skip_audit_stat_count": len(rr_skip_audit_rows),
         "infer_outer_rows": infer_outer_rows,
         "infer_core_rows": infer_core_rows,
@@ -158,6 +161,7 @@ def run_tau(tau_bin: Path, program: str) -> dict[str, object]:
         "rr_with_defs_rows": rr_with_defs_rows,
         "rr_formula_rows": rr_formula_rows,
         "rr_transform_defs_cache_rows": rr_transform_defs_cache_rows,
+        "rr_active_rules_rows": rr_active_rules_rows,
         "rr_skip_audit_rows": rr_skip_audit_rows,
     }
 
@@ -214,12 +218,14 @@ def aggregate_rr_stats(rows: list[dict[str, object]]) -> dict[str, object]:
         "rr_with_defs_rows": 0,
         "rr_formula_rows": 0,
         "rr_transform_defs_cache_rows": 0,
+        "rr_active_rules_rows": 0,
         "infer_outer_rows": 0,
         "infer_core_rows": 0,
         "infer_visit_rows": 0,
     }
     branch_counts: dict[str, int] = {}
     transform_cache = {"rows": 0, "hits": 0}
+    active_rules = {"rows": 0, "before": 0, "after": 0, "skipped": 0}
     visit_counts: dict[str, int] = {}
     for row in rows:
         for run in row["runs"]:
@@ -249,6 +255,14 @@ def aggregate_rr_stats(rows: list[dict[str, object]]) -> dict[str, object]:
                 transform_cache["rows"] += 1
                 if stat.get("hit") == "1":
                     transform_cache["hits"] += 1
+            for stat in run["rr_active_rules_rows"]:
+                before = int(stat.get("before", "0") or "0")
+                after = int(stat.get("after", "0") or "0")
+                counts["rr_active_rules_rows"] += 1
+                active_rules["rows"] += 1
+                active_rules["before"] += before
+                active_rules["after"] += after
+                active_rules["skipped"] += max(0, before - after)
             for stat in run["infer_outer_rows"]:
                 counts["infer_outer_rows"] += 1
                 totals["infer_outer_total_ms"] += parse_float_default(stat, "total_ms")
@@ -274,6 +288,7 @@ def aggregate_rr_stats(rows: list[dict[str, object]]) -> dict[str, object]:
         "counts": counts,
         "rr_branch_counts": branch_counts,
         "rr_transform_defs_cache": transform_cache,
+        "rr_active_rules": active_rules,
         "top_visit_counts": top_visit_counts,
     }
 

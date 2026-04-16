@@ -98,6 +98,7 @@ def run_batched(tau_bin: Path, program: str, skip: bool) -> dict[str, object]:
     rr_with_defs_rows = parse_prefixed_stats(combined, "[rr_with_defs]")
     rr_formula_rows = parse_prefixed_stats(combined, "[rr_formula]")
     rr_transform_defs_cache_rows = parse_prefixed_stats(combined, "[rr_transform_defs_cache]")
+    rr_active_rules_rows = parse_prefixed_stats(combined, "[rr_active_rules]")
     rr_skip_audit_rows = parse_prefixed_stats(combined, "[rr_skip_audit]")
     branch_counts: dict[str, int] = {}
     for row in rr_get_defs_rows:
@@ -116,9 +117,12 @@ def run_batched(tau_bin: Path, program: str, skip: bool) -> dict[str, object]:
         "rr_with_defs_stat_count": len(rr_with_defs_rows),
         "rr_formula_stat_count": len(rr_formula_rows),
         "rr_transform_defs_cache_stat_count": len(rr_transform_defs_cache_rows),
+        "rr_active_rules_stat_count": len(rr_active_rules_rows),
         "rr_transform_defs_cache_hit_count": sum(
             1 for row in rr_transform_defs_cache_rows if row.get("hit") == "1"
         ),
+        "rr_active_rules_before": sum(as_float(row, "before") for row in rr_active_rules_rows),
+        "rr_active_rules_after": sum(as_float(row, "after") for row in rr_active_rules_rows),
         "rr_skip_audit_stat_count": len(rr_skip_audit_rows),
         "solve_total_ms": round(sum(as_float(row, "total_ms") for row in solve_rows), 6),
         "solve_apply_ms": round(sum(as_float(row, "apply_ms") for row in solve_rows), 6),
@@ -180,6 +184,15 @@ def summarize_mode(runs: list[dict[str, object]]) -> dict[str, object]:
         ),
         "rr_transform_defs_cache_hits": sum(
             int(run["rr_transform_defs_cache_hit_count"]) for run in runs
+        ),
+        "rr_active_rules_rows": sum(
+            int(run["rr_active_rules_stat_count"]) for run in runs
+        ),
+        "rr_active_rules_before": round(
+            sum(float(run["rr_active_rules_before"]) for run in runs), 6
+        ),
+        "rr_active_rules_after": round(
+            sum(float(run["rr_active_rules_after"]) for run in runs), 6
         ),
     }
 

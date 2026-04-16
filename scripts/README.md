@@ -351,6 +351,40 @@ Interpretation: the cache hits the intended repeated-definition shape and
 substantially reduces internal formula-application time. It is not a wall-clock
 demo speedup on this receipt.
 
+The next rewrite-stage experiment is active-rule filtering:
+
+```bash
+python3 scripts/run_rr_active_rules_batched.py \
+  --reps 1 \
+  --out results/local/rr-active-rules-batched-reps1.json
+```
+
+This keeps both earlier RR flags enabled:
+
+```bash
+TAU_RR_SKIP_VALUE_INFER=1
+TAU_RR_TRANSFORM_DEFS_CACHE=1
+```
+
+It then compares baseline rewriting with `TAU_RR_ACTIVE_RULES=1`.
+
+Current receipt:
+
+```text
+checks:                         15
+active-rule rows:               45
+rules considered before filter: 2250
+rules considered after filter:    60
+rules skipped by filter:        2190
+solve improvement:              71.617%
+rr_formula_rewrite improvement: 88.858%
+elapsed improvement:            -0.124%
+```
+
+Interpretation: the active-rule filter hits the intended rewrite bottleneck.
+It reduces internal solver work, but the current wall-clock harness is still
+dominated by process and source-loading costs.
+
 ## Compound table-equivalence check
 
 ```bash
