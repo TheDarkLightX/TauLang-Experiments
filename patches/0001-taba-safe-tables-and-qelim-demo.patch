@@ -6131,7 +6131,7 @@ index 00000000..c00f0140
 +
 +#endif
 diff --git a/src/repl_evaluator.tmpl.h b/src/repl_evaluator.tmpl.h
-index 8e944446..1b6d36d9 100644
+index 8e944446..51cae3cb 100644
 --- a/src/repl_evaluator.tmpl.h
 +++ b/src/repl_evaluator.tmpl.h
 @@ -2,6 +2,8 @@
@@ -6262,7 +6262,46 @@ index 8e944446..1b6d36d9 100644
  }
  
  template <typename... BAs>
-@@ -366,11 +436,42 @@ tref repl_evaluator<BAs...>::normalize_cmd(const tt& n) {
+@@ -352,25 +422,78 @@ tref repl_evaluator<BAs...>::inst_cmd(const tt& n) {
+ template <typename... BAs>
+ requires BAsPack<BAs...>
+ tref repl_evaluator<BAs...>::normalize_cmd(const tt& n) {
++	auto guarded_mnf = [](tref applied, tref normalized, bool contains_ref) {
++		if (!tau_env_flag_enabled("TAU_NORMALIZE_GUARDED_MNF"))
++			return normalized;
++		if (!applied || !normalized || contains_ref) return normalized;
++		tref candidate = nullptr;
++		switch (tau::get(applied).get_type()) {
++		case tau::wff: candidate = unequal_to_not_equal<node>(
++			reduce<node>(to_dnf<node>(
++				bf_reduce_canonical<node>()(applied)
++				)));
++			break;
++		case tau::bf: candidate = bf_reduced_dnf<node>(applied);
++			break;
++		default: return normalized;
++		}
++		if (!candidate) return normalized;
++		const size_t normalized_size = tau::get(normalized).to_str().size();
++		const size_t candidate_size = tau::get(candidate).to_str().size();
++		return candidate_size <= normalized_size ? candidate : normalized;
++	};
+ 	tref arg = n[1].get();
+ 	auto opt_nso_rr = get_nso_rr_with_defs(arg);
+ 	if (!opt_nso_rr || !opt_nso_rr.value().main) return invalid_argument();
+ 	rr<node> nso_rr = opt_nso_rr.value();
+ 	const auto& main = tau::get(nso_rr.main);
+ 	bool contains_ref = contains(main.get(), tau::ref);
+-	if (!main.is(tau::bf)) return normalizer<node>(nso_rr);
+-	else if (contains_ref) return bf_normalizer_with_rec_relation<node>(nso_rr);
+-	return bf_normalizer_without_rec_relation<node>(main.get());
++	tref result = nullptr;
++	if (!main.is(tau::bf)) result = normalizer<node>(nso_rr);
++	else if (contains_ref) result = bf_normalizer_with_rec_relation<node>(nso_rr);
++	else result = bf_normalizer_without_rec_relation<node>(main.get());
++	return guarded_mnf(main.get(), result, contains_ref);
+ }
+ 
  template <typename... BAs>
  requires BAsPack<BAs...>
  tref repl_evaluator<BAs...>::qelim_cmd(const tt& n) {
@@ -6306,7 +6345,7 @@ index 8e944446..1b6d36d9 100644
  	}
  	return invalid_argument();
  }
-@@ -458,6 +559,8 @@ void print_solver_cmd_solution(std::optional<solution<node>>& solution,
+@@ -458,6 +581,8 @@ void print_solver_cmd_solution(std::optional<solution<node>>& solution,
  template <typename... BAs>
  requires BAsPack<BAs...>
  void repl_evaluator<BAs...>::solve_cmd(const tt& n) {
@@ -6315,7 +6354,7 @@ index 8e944446..1b6d36d9 100644
  	// setting solver options
  	solver_options options = {
  		.splitter_one = node::nso_factory::
-@@ -469,6 +572,7 @@ void repl_evaluator<BAs...>::solve_cmd(const tt& n) {
+@@ -469,6 +594,7 @@ void repl_evaluator<BAs...>::solve_cmd(const tt& n) {
  	while (tau::get(arg).has_right_sibling())
  		arg = tau::get(arg).right_sibling();
  	tref applied = apply_rr_to_nso_rr_with_defs(arg);
@@ -6323,7 +6362,7 @@ index 8e944446..1b6d36d9 100644
  	if (!applied) {
  		TAU_LOG_ERROR << "Invalid argument(s)\n";
  		return;
-@@ -482,14 +586,35 @@ void repl_evaluator<BAs...>::solve_cmd(const tt& n) {
+@@ -482,14 +608,35 @@ void repl_evaluator<BAs...>::solve_cmd(const tt& n) {
  	DBG(TAU_LOG_TRACE << "solve_cmd/applied: " << applied << "\n";)
  
  	size_t type = get_solver_cmd_type<node>(applied);
@@ -6360,7 +6399,7 @@ index 8e944446..1b6d36d9 100644
  	print_solver_cmd_solution<node>(solution, type);
  }
  
-@@ -622,6 +747,8 @@ void repl_evaluator<BAs...>::def_output_cmd(const tt& /*command*/) {
+@@ -622,6 +769,8 @@ void repl_evaluator<BAs...>::def_output_cmd(const tt& /*command*/) {
  template <typename... BAs>
  requires BAsPack<BAs...>
  tref repl_evaluator<BAs...>::make_cli(const std::string& src) {
@@ -6369,7 +6408,7 @@ index 8e944446..1b6d36d9 100644
  	// remove ascii char 22 if exists in the input
  	std::string filt = src;
  	filt.erase(remove_if(filt.begin(), filt.end(), [](unsigned char c) {
-@@ -821,10 +948,12 @@ void repl_evaluator<BAs...>::update_bool_opt_cmd(repl_option o,
+@@ -821,10 +970,12 @@ void repl_evaluator<BAs...>::update_bool_opt_cmd(repl_option o,
  template <typename... BAs>
  requires BAsPack<BAs...>
  bool repl_evaluator<BAs...>::update_charvar(bool value) {

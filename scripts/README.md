@@ -822,6 +822,17 @@ guarded-MNF shrinking cases:          40 / 200
 guarded-MNF characters:               1480
 ```
 
+Native opt-in guarded-MNF receipt with
+`TAU_NORMALIZE_GUARDED_MNF=1`:
+
+```text
+exact normalize-text matches:         200 / 200
+target-sized cases:                   200 / 200
+normalized characters:                1480
+first-pass idempotent cases:          190 / 200
+second-pass growth cases:             0 / 200
+```
+
 The feature-gated pass improves fixed-point stability, but the remaining
 `60 / 200` non-idempotent cases are the next normalizer boundary. The guarded
 candidate is a probe-level rule: accept the second `normalize` result only when
@@ -831,9 +842,8 @@ needs presentation-aware canonicalization, because the useful probe behavior is
 triggered by reparsing Tau's printed form.
 
 The same probe now measures guarded DNF/MNF presentation candidates. Guarded
-`mnf` is the stronger current candidate: it is non-growing on all wide-corpus
-cases and shrinks total printed text from `1980` to `1480` characters. This is
-still a presentation experiment, not a default Tau mode.
+`mnf` is the stronger candidate and is now implemented as an experimental
+Tau patch behind `TAU_NORMALIZE_GUARDED_MNF=1`. It is not a default Tau mode.
 
 ## Variable-update cache telemetry
 

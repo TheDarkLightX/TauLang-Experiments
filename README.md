@@ -286,6 +286,26 @@ guarded-MNF shrinking cases:          40 / 200
 guarded-MNF characters:               1480
 ```
 
+Native opt-in guarded-MNF run:
+
+```bash
+TAU_EQUALITY_SPLIT_RECOMBINE=1 TAU_NORMALIZE_GUARDED_MNF=1 \
+  python3 scripts/run_equality_split_tau_probe.py \
+  --wide-path-corpus \
+  --check-idempotence \
+  --out results/local/equality-split-wide-enabled-cxx-guarded-mnf-idempotence.json
+```
+
+Native opt-in receipt:
+
+```text
+exact normalize-text matches:         200 / 200
+target-sized cases:                   200 / 200
+normalized characters:                1480
+first-pass idempotent cases:          190 / 200
+second-pass growth cases:             0 / 200
+```
+
 This sharpens the remaining frontier. The feature-gated pass improves
 normalize fixed-point stability on this corpus, but it does not close it. The
 next target is a normalizer presentation pass whose first output is already a
@@ -294,14 +314,10 @@ means: use the second `normalize` output only when it does not increase output
 size. This is currently probe evidence, not a Tau C++ optimizer patch. A direct
 AST-level second-normalize hook was tested and did not improve the corpus,
 because the measured gain comes from reparsing Tau's printed presentation.
-The implementation target is therefore a presentation-aware canonicalization
-pass, not a blind second pass over the existing tree.
-
-A stronger presentation candidate is guarded `mnf`: use `mnf` as the printed
-form only when it does not increase size. On the same wide corpus it is
-non-growing on every case, shrinks `40 / 200` cases, and reduces total printed
-characters from `1980` to `1480`. This is also probe evidence, not a default
-runtime mode.
+The stronger guarded-MNF route is now implemented as an experimental opt-in
+Tau patch behind `TAU_NORMALIZE_GUARDED_MNF=1`. It uses `mnf` as the printed
+form only when it does not increase size, and it skips recursive-reference
+cases. It is not a default runtime mode.
 
 The fixed-width modular arithmetic rewrite-triage corpus is:
 

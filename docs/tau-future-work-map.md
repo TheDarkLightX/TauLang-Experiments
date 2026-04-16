@@ -216,6 +216,17 @@ guarded-MNF shrinking cases:          40 / 200
 guarded-MNF characters:               1480
 ```
 
+Native opt-in guarded-MNF receipt with
+`TAU_NORMALIZE_GUARDED_MNF=1`:
+
+```text
+exact normalize-text matches:         200 / 200
+target-sized cases:                   200 / 200
+normalized characters:                1480
+first-pass idempotent cases:          190 / 200
+second-pass growth cases:             0 / 200
+```
+
 The feature-gated pass improves idempotence relative to baseline, but does not
 make every first-pass output stable under another `normalize` call.
 The guarded-presentation candidate chooses a second-pass result only when it
@@ -226,7 +237,8 @@ presentation-aware canonicalization pass.
 
 Guarded `mnf` is the current strongest presentation candidate. It preserves
 the size boundary on all wide-corpus cases and shrinks `40 / 200` cases, but it
-is still a candidate mode rather than a default replacement for `normalize`.
+is now implemented only as an experimental opt-in mode behind
+`TAU_NORMALIZE_GUARDED_MNF=1`, not as a default replacement for `normalize`.
 
 The final size failures were closed by equality-graph implication checks:
 alias branches that imply the residual can be recombined when the residual plus

@@ -302,6 +302,17 @@ guarded-MNF shrinking cases:          40 / 200
 guarded-MNF characters:               1480
 ```
 
+Native opt-in guarded-MNF receipt with
+`TAU_NORMALIZE_GUARDED_MNF=1`:
+
+```text
+exact normalize-text matches:         200 / 200
+target-sized cases:                   200 / 200
+normalized characters:                1480
+first-pass idempotent cases:          190 / 200
+second-pass growth cases:             0 / 200
+```
+
 This matters because exact `normalize` text is not the only boundary. Some
 first-pass outputs still change when passed through `normalize` again. The
 feature-gated pass improves that property relative to baseline, but it does not
@@ -314,8 +325,9 @@ the same tree through `normalize` again.
 
 The stronger measured candidate is guarded `mnf`: keep `mnf` output only when
 it does not increase printed size. In the wide corpus it is non-growing for all
-`200` cases and shrinks total output from `1980` to `1480` characters. This is
-a candidate presentation mode, not a proof that `mnf` should replace
+`200` cases and shrinks total output from `1980` to `1480` characters. It is
+now implemented as an experimental opt-in Tau patch behind
+`TAU_NORMALIZE_GUARDED_MNF=1`. It is not a proof that `mnf` should replace
 `normalize` globally.
 
 The generated and stress cases are closed by equality-graph implication checks:
