@@ -13,10 +13,10 @@ if [[ "${1:-}" == "--accept-tau-license" ]]; then
 fi
 
 case "$TABLE_DEMO_EQUIV_MODE" in
-  compound|individual) ;;
+  compound|batched|individual) ;;
   *)
     echo "Unsupported TABLE_DEMO_EQUIV_MODE=$TABLE_DEMO_EQUIV_MODE" >&2
-    echo "Use TABLE_DEMO_EQUIV_MODE=compound or TABLE_DEMO_EQUIV_MODE=individual." >&2
+    echo "Use TABLE_DEMO_EQUIV_MODE=compound, TABLE_DEMO_EQUIV_MODE=batched, or TABLE_DEMO_EQUIV_MODE=individual." >&2
     exit 2
     ;;
 esac
@@ -118,6 +118,15 @@ if [[ "$TABLE_DEMO_EQUIV_MODE" == "compound" ]]; then
       --out "$RESULT_DIR/table-demo-compound-check.json"
   ) > "$RESULT_DIR/table-demo-compound-check.txt"
   echo "passed: compound_table_equivalence_check"
+elif [[ "$TABLE_DEMO_EQUIV_MODE" == "batched" ]]; then
+  (
+    cd "$ROOT"
+    python3 scripts/run_table_demo_batched_checks.py \
+      --tau-bin "$TAU_BIN" \
+      --reps 1 \
+      --out "$RESULT_DIR/table-demo-batched-checks.json"
+  ) > "$RESULT_DIR/table-demo-batched-checks.txt"
+  echo "passed: batched_table_equivalence_checks"
 else
   expect_no_solution \
     "tau_native_table_agrees_with_raw" \

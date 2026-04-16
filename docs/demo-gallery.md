@@ -19,7 +19,14 @@ Run only the safe table syntax and solver-equivalence demo with:
 ```
 
 The default demo runner uses the compound equivalence check for the table-vs-raw
-obligations. For the older one-check-at-a-time audit path, run:
+obligations. For an audit-friendly batched path that keeps one solver result
+per obligation while using one Tau process, run:
+
+```bash
+TABLE_DEMO_EQUIV_MODE=batched ./scripts/run_table_demos.sh --accept-tau-license
+```
+
+For the older one-check-at-a-time audit path, run:
 
 ```bash
 TABLE_DEMO_EQUIV_MODE=individual ./scripts/run_table_demos.sh --accept-tau-license
@@ -266,6 +273,44 @@ compound mismatch predicate is equivalent to unsatisfiability of every listed
 mismatch predicate. The packet is intentionally about the logical harness law,
 not Tau's solver implementation.
 
+## Demo 8: Batched Table Checks
+
+Command:
+
+```bash
+python3 scripts/run_table_demo_batched_checks.py \
+  --reps 1 \
+  --out results/local/table-demo-batched-checks.json
+```
+
+Tau's CLI grammar accepts multiple commands in one input when each command
+after the first is prefixed by a dot:
+
+```text
+cmd_1 . cmd_2 . ... . cmd_n
+```
+
+The current local receipt is:
+
+```text
+checks:              15
+individual processes: 15
+batched processes:     1
+individual elapsed:  117482.283 ms
+batched elapsed:      58561.321 ms
+elapsed reduction:       50.153%
+result:             passed
+```
+
+Standard reading: the batched run returned one `no solution` result for each of
+the fifteen table-vs-raw mismatch obligations.
+
+Plain English: this keeps the per-check audit trail while avoiding repeated Tau
+startup and source loading.
+
+Boundary: this is a CLI batching and demo-harness optimization. It does not
+change Tau's solver, table semantics, or parser grammar.
+
 ## Boundary
 
 These demos prove the patched Tau executable can parse and check a safe
@@ -275,4 +320,6 @@ Successor lowering. The qelim-backed policy-shape demo proves a separate kernel
 optimization path, not a speedup of the current table solver checks. The solver
 telemetry demo identifies a separate optimization surface for the ordinary
 table checks. The compound table check shows one concrete way to reduce repeated
-demo overhead without changing the semantics.
+demo overhead without changing the semantics. The batched table check shows a
+second way to reduce repeated overhead while preserving one solver result per
+obligation.

@@ -63,7 +63,7 @@ on the current safe-table solver corpus, so it is negative optimization
 evidence, not a promoted speedup.
 
 The compound table-equivalence check is documented in
-`docs/demo-gallery.md`. It uses this law:
+`docs/demo-gallery.md`. The compound mode uses this law:
 
 ```text
 unsat(diff_1 or ... or diff_n)
@@ -82,6 +82,28 @@ elapsed reduction:       55.167%
 
 This is the first successful table-demo overhead reduction. It changes the
 shape of the proof obligation and harness, not Tau's table semantics.
+
+The audit-friendly batching mode keeps the obligations separate but runs them
+inside one Tau CLI input using the prefix-dot command shape:
+
+```text
+cmd_1 . cmd_2 . ... . cmd_n
+```
+
+Current receipt:
+
+```text
+checks:                15
+individual processes:  15
+batched processes:      1
+individual elapsed:  117482.283 ms
+batched elapsed:      58561.321 ms
+elapsed reduction:       50.153%
+```
+
+This is the second table-demo overhead reduction. It is weaker than the
+compound logical law as a proof compression, but stronger as an audit trail
+because Tau still returns one `no solution` result for each obligation.
 
 The equality-aware path simplification experiment is documented in
 `docs/equality-aware-path-simplification.md`. It targets a known Tau README

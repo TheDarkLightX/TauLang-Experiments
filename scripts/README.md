@@ -237,6 +237,32 @@ this corpus while reducing repeated process startup, parsing, source loading,
 and repeated command setup. It is a harness and obligation-shaping
 optimization, not a new table semantic feature.
 
+The audit-friendly batching variant is:
+
+```bash
+python3 scripts/run_table_demo_batched_checks.py \
+  --reps 1 \
+  --out results/local/table-demo-batched-checks.json
+```
+
+Current receipt:
+
+```text
+checks:                15
+individual processes:  15
+batched processes:      1
+individual elapsed:  117482.283 ms
+batched elapsed:      58561.321 ms
+elapsed reduction:       50.153%
+result:               passed
+```
+
+Interpretation: Tau's existing CLI grammar can run several REPL commands in one
+`-e` string using the prefix-dot shape `cmd_1 . cmd_2 . ... . cmd_n`. This
+keeps one `solve` result per table-vs-raw obligation while avoiding repeated
+process startup and source loading. It is a CLI batching optimization, not a
+solver change.
+
 The default benchmark script keeps this opt-in because it is slower than the
 standalone micro-benchmarks:
 

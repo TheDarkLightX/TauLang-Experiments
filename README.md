@@ -170,6 +170,19 @@ mismatch query. The current local receipt preserves the same equivalence family
 and reduces elapsed time by about `55.167%` on the checked corpus. This is a
 demo-obligation optimization, not a new table semantic feature.
 
+The audit-friendly batching variant is:
+
+```bash
+python3 scripts/run_table_demo_batched_checks.py \
+  --out results/local/table-demo-batched-checks.json
+```
+
+It uses Tau's existing prefix-dot CLI shape to run all table-vs-raw checks in
+one Tau process while preserving one `solve` result per obligation. The current
+local receipt checks `15` obligations, reduces process count from `15` to `1`,
+and reduces elapsed time by about `50.153%`. This is command batching and demo
+harness optimization, not a solver speedup.
+
 The first equality-aware path simplification prototype is:
 
 ```bash
