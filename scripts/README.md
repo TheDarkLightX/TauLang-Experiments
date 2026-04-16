@@ -848,6 +848,10 @@ Tau patch behind `TAU_NORMALIZE_GUARDED_MNF=1`. It is not a default Tau mode,
 and the timing is a process-level regression screen rather than an in-process
 optimizer benchmark.
 
+The attempted print-and-reparse stabilizer is negative evidence. It did not
+close the remaining `10 / 200` same-size ordering flips and increased
+whole-command time, so it is not part of the patch.
+
 ## Variable-update cache telemetry
 
 ```bash

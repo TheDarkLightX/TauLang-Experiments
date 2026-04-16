@@ -322,6 +322,11 @@ cases. It is not a default runtime mode. The timing number above is still a
 whole-command screen with process startup and file I/O, not an in-process
 speedup proof.
 
+A follow-up print-and-reparse stabilization was tested and rejected. It did not
+close the remaining `10 / 200` same-size ordering flips and increased
+whole-command time. The remaining target is an internal ordering rule for
+Boolean-algebra term representatives.
+
 The fixed-width modular arithmetic rewrite-triage corpus is:
 
 ```bash

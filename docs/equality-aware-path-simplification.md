@@ -332,6 +332,12 @@ now implemented as an experimental opt-in Tau patch behind
 `normalize` globally. The timing receipt is a process-level screen, not an
 in-process optimizer proof.
 
+A second negative result is now recorded: reparsing the guarded-MNF candidate
+inside the C++ normalizer did not close the remaining `10 / 200` same-size
+ordering flips, and it increased whole-command time on the corpus. The
+remaining target is a real ordering rule for Boolean-algebra term
+representatives, not print-and-reparse stabilization.
+
 The generated and stress cases are closed by equality-graph implication checks:
 
 ```text

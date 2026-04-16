@@ -243,6 +243,12 @@ is now implemented only as an experimental opt-in mode behind
 The timing receipt is a process-level regression screen rather than an
 in-process speedup proof.
 
+The attempted follow-up `print -> reparse -> MNF` stabilization did not close
+the remaining `10 / 200` same-size ordering flips and increased whole-command
+time. This removes the reparse shortcut from the candidate list. The remaining
+presentation target is an internal ordering rule for Boolean-algebra term
+representatives.
+
 The final size failures were closed by equality-graph implication checks:
 alias branches that imply the residual can be recombined when the residual plus
 the failed guard-disjunction reconstructs the alias branch. A separate
