@@ -97,6 +97,8 @@ def run_batched(tau_bin: Path, program: str, skip: bool) -> dict[str, object]:
     rr_get_defs_rows = parse_prefixed_stats(combined, "[rr_get_defs]")
     rr_with_defs_rows = parse_prefixed_stats(combined, "[rr_with_defs]")
     rr_formula_rows = parse_prefixed_stats(combined, "[rr_formula]")
+    rr_reachable_defs_rows = parse_prefixed_stats(combined, "[rr_reachable_defs]")
+    rr_reachable_defs_audit_rows = parse_prefixed_stats(combined, "[rr_reachable_defs_audit]")
     rr_transform_defs_cache_rows = parse_prefixed_stats(combined, "[rr_transform_defs_cache]")
     rr_active_rules_rows = parse_prefixed_stats(combined, "[rr_active_rules]")
     rr_active_rules_audit_rows = parse_prefixed_stats(combined, "[rr_active_rules_audit]")
@@ -117,6 +119,8 @@ def run_batched(tau_bin: Path, program: str, skip: bool) -> dict[str, object]:
         "rr_get_defs_stat_count": len(rr_get_defs_rows),
         "rr_with_defs_stat_count": len(rr_with_defs_rows),
         "rr_formula_stat_count": len(rr_formula_rows),
+        "rr_reachable_defs_stat_count": len(rr_reachable_defs_rows),
+        "rr_reachable_defs_audit_stat_count": len(rr_reachable_defs_audit_rows),
         "rr_transform_defs_cache_stat_count": len(rr_transform_defs_cache_rows),
         "rr_active_rules_stat_count": len(rr_active_rules_rows),
         "rr_active_rules_audit_stat_count": len(rr_active_rules_audit_rows),
@@ -128,6 +132,15 @@ def run_batched(tau_bin: Path, program: str, skip: bool) -> dict[str, object]:
         ),
         "rr_active_rules_before": sum(as_float(row, "before") for row in rr_active_rules_rows),
         "rr_active_rules_after": sum(as_float(row, "after") for row in rr_active_rules_rows),
+        "rr_reachable_defs_before": sum(as_float(row, "before") for row in rr_reachable_defs_rows),
+        "rr_reachable_defs_after": sum(as_float(row, "after") for row in rr_reachable_defs_rows),
+        "rr_reachable_defs_hit_count": sum(
+            1 for row in rr_reachable_defs_rows if row.get("hit") == "1"
+        ),
+        "rr_reachable_defs_audit_equal": sum(
+            1 for row in rr_reachable_defs_audit_rows
+            if row.get("structural_equal") == "1"
+        ),
         "rr_skip_audit_stat_count": len(rr_skip_audit_rows),
         "solve_total_ms": round(sum(as_float(row, "total_ms") for row in solve_rows), 6),
         "solve_apply_ms": round(sum(as_float(row, "apply_ms") for row in solve_rows), 6),
@@ -198,6 +211,24 @@ def summarize_mode(runs: list[dict[str, object]]) -> dict[str, object]:
         ),
         "rr_active_rules_after": round(
             sum(float(run["rr_active_rules_after"]) for run in runs), 6
+        ),
+        "rr_reachable_defs_rows": sum(
+            int(run["rr_reachable_defs_stat_count"]) for run in runs
+        ),
+        "rr_reachable_defs_before": round(
+            sum(float(run["rr_reachable_defs_before"]) for run in runs), 6
+        ),
+        "rr_reachable_defs_after": round(
+            sum(float(run["rr_reachable_defs_after"]) for run in runs), 6
+        ),
+        "rr_reachable_defs_hits": sum(
+            int(run["rr_reachable_defs_hit_count"]) for run in runs
+        ),
+        "rr_reachable_defs_audit_rows": sum(
+            int(run["rr_reachable_defs_audit_stat_count"]) for run in runs
+        ),
+        "rr_reachable_defs_audit_equal": sum(
+            int(run["rr_reachable_defs_audit_equal"]) for run in runs
         ),
         "rr_active_rules_audit_rows": sum(
             int(run["rr_active_rules_audit_stat_count"]) for run in runs

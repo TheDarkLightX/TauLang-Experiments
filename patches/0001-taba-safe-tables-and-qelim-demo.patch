@@ -4257,19 +4257,21 @@ index 5917175f..f822f393 100644
  		DBG(LOG_DEBUG << "Syntactic_path_simplification result: " << LOG_FM(res) << "\n";)
  		return res;
 diff --git a/src/normalizer.tmpl.h b/src/normalizer.tmpl.h
-index 6e28efc3..65b18561 100644
+index 6e28efc3..85398f90 100644
 --- a/src/normalizer.tmpl.h
 +++ b/src/normalizer.tmpl.h
-@@ -1,5 +1,8 @@
+@@ -1,5 +1,10 @@
  // To view the license please visit https://github.com/IDNI/tau-lang/blob/main/LICENSE.md
  
 +#include <chrono>
 +#include <cstdlib>
++#include <map>
++#include <set>
 +
  #include "normalizer.h"
  
  #undef LOG_CHANNEL_NAME
-@@ -898,20 +901,70 @@ tref calculate_all_fixed_points(const rr<node>& nso_rr) {
+@@ -898,20 +903,179 @@ tref calculate_all_fixed_points(const rr<node>& nso_rr) {
  	return new_main;
  }
  
@@ -4292,6 +4294,90 @@ index 6e28efc3..65b18561 100644
 +	return nn;
 +}
 +
++template <NodeType node>
++rr<node> filter_reachable_rr_defs(
++	const rr<node>& nso_rr,
++	bool force_enabled = false,
++	const char* phase = "pre")
++{
++	using tau = tree<node>;
++	const char* prune_env = std::getenv("TAU_RR_REACHABLE_DEFS");
++	const bool prune_enabled = prune_env && std::string(prune_env) == "1";
++	if ((!force_enabled && !prune_enabled) || nso_rr.rec_relations.empty())
++		return nso_rr;
++
++	using name_sig_t = std::pair<size_t, size_t>;
++	auto name_sig = [](const rr_sig& sig) -> name_sig_t {
++		return { sig.name, sig.arg_arity };
++	};
++	std::set<name_sig_t> reachable;
++	for (tref ref : tau::get(nso_rr.main->get()).select_all(is<node, tau::ref>))
++		reachable.insert(name_sig(get_rr_sig<node>(ref)));
++
++	rr<node> filtered(nso_rr);
++	using cache_key_t = std::pair<rewriter::rules, std::vector<name_sig_t>>;
++	using reachable_cache_t = std::map<cache_key_t, rewriter::rules>;
++	static reachable_cache_t reachable_cache;
++	const char* cache_env = std::getenv("TAU_RR_REACHABLE_DEFS_CACHE");
++	const bool cache_enabled = cache_env && std::string(cache_env) == "1";
++	const std::vector<name_sig_t> seed_refs(reachable.begin(), reachable.end());
++	const cache_key_t cache_key = { nso_rr.rec_relations, seed_refs };
++	bool cache_hit = false;
++	if (cache_enabled) {
++		if (auto it = reachable_cache.find(cache_key);
++			it != reachable_cache.end())
++		{
++			filtered.rec_relations = it->second;
++			cache_hit = true;
++		}
++	}
++	if (!cache_hit) {
++		std::vector<bool> keep(nso_rr.rec_relations.size(), false);
++		bool changed = true;
++		while (changed) {
++			changed = false;
++			for (size_t i = 0; i != nso_rr.rec_relations.size(); ++i) {
++				if (keep[i]) continue;
++				const auto& rule = nso_rr.rec_relations[i];
++				trefs head_refs = tau::get(rule.first->get())
++					.select_top(is<node, tau::ref>);
++				bool should_keep = head_refs.empty();
++				for (tref head : head_refs)
++					if (reachable.contains(name_sig(get_rr_sig<node>(head))))
++						should_keep = true;
++				if (!should_keep) continue;
++				keep[i] = true;
++				changed = true;
++				for (tref ref : tau::get(rule.second->get())
++					.select_all(is<node, tau::ref>))
++				{
++					reachable.insert(name_sig(get_rr_sig<node>(ref)));
++				}
++				for (tref ref : head_refs)
++					reachable.insert(name_sig(get_rr_sig<node>(ref)));
++			}
++		}
++
++		filtered.rec_relations.clear();
++		for (size_t i = 0; i != nso_rr.rec_relations.size(); ++i)
++			if (keep[i]) filtered.rec_relations.push_back(nso_rr.rec_relations[i]);
++		if (cache_enabled)
++			reachable_cache.insert_or_assign(cache_key, filtered.rec_relations);
++	}
++
++	const char* rr_stats = std::getenv("TAU_RR_STATS");
++	if (rr_stats && std::string(rr_stats) == "1") {
++		std::cerr << "[rr_reachable_defs] enabled=1 refs="
++			<< seed_refs.size()
++			<< " phase=" << phase
++			<< " hit=" << (cache_hit ? 1 : 0)
++			<< " before=" << nso_rr.rec_relations.size()
++			<< " after=" << filtered.rec_relations.size()
++			<< "\n";
++	}
++	return filtered;
++}
++
  // This function applies the recurrence relations the formula comes with to
  // the formula
  template <NodeType node>
@@ -4302,7 +4388,15 @@ index 6e28efc3..65b18561 100644
 +	auto total_start = clock::now();
  	LOG_DEBUG << "Start apply_rr_to_formula";
  	LOG_DEBUG << "Spec: " << LOG_RR(nso_rr);
- 	rr<node> rr_ = transform_ref_args_to_captures<node>(nso_rr);
+-	rr<node> rr_ = transform_ref_args_to_captures<node>(nso_rr);
++	const char* post_prune_env =
++		std::getenv("TAU_RR_REACHABLE_DEFS_POST_TRANSFORM");
++	const bool post_prune = post_prune_env
++		&& std::string(post_prune_env) == "1";
++	rr<node> transform_input = post_prune
++		? nso_rr : filter_reachable_rr_defs<node>(nso_rr);
++	rr<node> rr_ = transform_ref_args_to_captures<node>(transform_input);
++	if (post_prune) rr_ = filter_reachable_rr_defs<node>(rr_, true, "post");
 +	auto transform_end = clock::now();
  	tref main = calculate_all_fixed_points<node>(rr_);
 +	auto fixed_point_end = clock::now();
@@ -4321,6 +4415,24 @@ index 6e28efc3..65b18561 100644
 +			rr_.rec_relations, main);
 +		const bool structural_equal = tau::get(new_main) == tau::get(full_main);
 +		std::cerr << "[rr_active_rules_audit] structural_equal="
++			<< (structural_equal ? 1 : 0)
++			<< "\n";
++		if (!structural_equal) return nullptr;
++	}
++	const char* reachable_audit_env =
++		std::getenv("TAU_RR_REACHABLE_DEFS_AUDIT");
++	const bool reachable_audit = reachable_audit_env
++		&& std::string(reachable_audit_env) == "1";
++	if (reachable_audit) {
++		rr<node> full_rr = transform_ref_args_to_captures<node>(nso_rr);
++		tref full_main = calculate_all_fixed_points<node>(full_rr);
++		if (!full_main) return nullptr;
++		tref full_new_main = full_main
++			| repeat_all<node, step<node>>(step<node>(full_rr.rec_relations))
++			| tt::ref;
++		const bool structural_equal =
++			tau::get(new_main) == tau::get(full_new_main);
++		std::cerr << "[rr_reachable_defs_audit] structural_equal="
 +			<< (structural_equal ? 1 : 0)
 +			<< "\n";
 +		if (!structural_equal) return nullptr;
