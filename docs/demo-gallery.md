@@ -359,6 +359,25 @@ roughly flat because this wrapper is dominated by process startup and source
 loading. Promotion would need a larger corpus and a proof or code invariant for
 the parser-time typing premise.
 
+Audit command:
+
+```bash
+python3 scripts/run_rr_skip_value_infer_demo.py \
+  --audit \
+  --reps 1 \
+  --out results/local/rr-skip-value-infer-audit-reps1.json
+```
+
+Current audit receipt:
+
+```text
+audit rows:                    5
+structurally equal audit rows: 5
+```
+
+The audit mode computes the full inference path and checks structural equality
+against the skipped RR. It fails closed on mismatch and is not a timing mode.
+
 ## Boundary
 
 These demos prove the patched Tau executable can parse and check a safe

@@ -113,6 +113,7 @@ def run_tau(tau_bin: Path, program: str) -> dict[str, object]:
     rr_get_defs_rows = parse_prefixed_stats(combined, "[rr_get_defs]")
     rr_with_defs_rows = parse_prefixed_stats(combined, "[rr_with_defs]")
     rr_formula_rows = parse_prefixed_stats(combined, "[rr_formula]")
+    rr_skip_audit_rows = parse_prefixed_stats(combined, "[rr_skip_audit]")
     clean_lines = [
         line.strip()
         for line in combined.splitlines()
@@ -124,6 +125,7 @@ def run_tau(tau_bin: Path, program: str) -> dict[str, object]:
         and not line.startswith("[rr_get_defs]")
         and not line.startswith("[rr_with_defs]")
         and not line.startswith("[rr_formula]")
+        and not line.startswith("[rr_skip_audit]")
         and line.strip()
     ]
     last_line = clean_lines[-1] if clean_lines else ""
@@ -140,6 +142,7 @@ def run_tau(tau_bin: Path, program: str) -> dict[str, object]:
         "rr_get_defs_stat_count": len(rr_get_defs_rows),
         "rr_with_defs_stat_count": len(rr_with_defs_rows),
         "rr_formula_stat_count": len(rr_formula_rows),
+        "rr_skip_audit_stat_count": len(rr_skip_audit_rows),
         "infer_outer_rows": infer_outer_rows,
         "infer_core_rows": infer_core_rows,
         "infer_visit_rows": infer_visit_rows,
@@ -147,6 +150,7 @@ def run_tau(tau_bin: Path, program: str) -> dict[str, object]:
         "rr_get_defs_rows": rr_get_defs_rows,
         "rr_with_defs_rows": rr_with_defs_rows,
         "rr_formula_rows": rr_formula_rows,
+        "rr_skip_audit_rows": rr_skip_audit_rows,
     }
 
 

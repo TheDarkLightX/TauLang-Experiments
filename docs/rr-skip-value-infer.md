@@ -50,7 +50,31 @@ The wrapper runs the same safe-table solver checks twice:
 It requires output parity first. Speed is measured only after all solver checks
 still return `no solution`.
 
+To run the local structural audit:
+
+```bash
+python3 scripts/run_rr_skip_value_infer_demo.py \
+  --audit \
+  --reps 1 \
+  --out results/local/rr-skip-value-infer-audit-reps1.json
+```
+
+Audit mode sets:
+
+```bash
+TAU_RR_SKIP_VALUE_INFER=1
+TAU_RR_SKIP_VALUE_INFER_AUDIT=1
+```
+
+For each skipped branch, Tau also computes the full inference path and checks
+that the extracted RR is structurally equal to the skipped RR. If the comparison
+fails, the command fails closed.
+
+Audit mode is not a performance mode. It deliberately runs the full path.
+
 ## Current Local Receipt
+
+Fast mode:
 
 ```text
 ok: true
@@ -73,11 +97,27 @@ skip branches:
   ref_value_skip_infer: 15
 ```
 
+Audit mode:
+
+```text
+ok: true
+checks: 5
+repetitions: 1
+audit rows: 5
+structurally equal audit rows: 5
+skip branches:
+  ref_value_skip_infer: 5
+```
+
 ## Interpretation
 
 The internal command-body result is strong: skipping the redundant
 value-argument inference pass removes almost all measured `get_rr` time on this
 corpus.
+
+The audit result strengthens the local evidence: on the checked corpus, the
+skipped RR and full-inference RR are structurally equal, not merely
+solver-result equivalent.
 
 The whole-process result is intentionally not claimed as a public demo speedup.
 The current wrapper still launches many Tau processes, so process startup,

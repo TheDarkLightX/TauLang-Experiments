@@ -397,3 +397,16 @@ receipt: output parity passed, internal solve-command time improved by
 `76.963%`, and measured `get_rr` time improved by `97.804%` on the safe-table
 solver corpus. It is not a public demo wall-clock speedup yet, because the
 current harness is dominated by repeated Tau process startup.
+
+The structural audit mode is:
+
+```bash
+python3 scripts/run_rr_skip_value_infer_demo.py \
+  --audit \
+  --reps 1 \
+  --out results/local/rr-skip-value-infer-audit-reps1.json
+```
+
+Current audit receipt: `5` of `5` skipped RR branches were structurally equal to
+the full-inference RR branch. Audit mode deliberately runs the full path too, so
+it is correctness evidence, not a speed measurement.

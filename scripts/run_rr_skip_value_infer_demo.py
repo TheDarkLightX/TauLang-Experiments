@@ -26,14 +26,19 @@ def as_float(row: dict[str, str], key: str) -> float:
     return float(row.get(key, "0") or "0")
 
 
-def run_mode(tau_bin: Path, reps: int, skip: bool) -> dict[str, object]:
+def run_mode(tau_bin: Path, reps: int, skip: bool, audit: bool = False) -> dict[str, object]:
     old_rr = os.environ.get("TAU_RR_STATS")
     old_skip = os.environ.get("TAU_RR_SKIP_VALUE_INFER")
+    old_audit = os.environ.get("TAU_RR_SKIP_VALUE_INFER_AUDIT")
     os.environ["TAU_RR_STATS"] = "1"
     if skip:
         os.environ["TAU_RR_SKIP_VALUE_INFER"] = "1"
     else:
         os.environ.pop("TAU_RR_SKIP_VALUE_INFER", None)
+    if skip and audit:
+        os.environ["TAU_RR_SKIP_VALUE_INFER_AUDIT"] = "1"
+    else:
+        os.environ.pop("TAU_RR_SKIP_VALUE_INFER_AUDIT", None)
 
     try:
         rows: list[dict[str, object]] = []
@@ -48,6 +53,12 @@ def run_mode(tau_bin: Path, reps: int, skip: bool) -> dict[str, object]:
                 ok = ok and result["solve_stat_count"] == 1
                 ok = ok and result["rr_get_defs_stat_count"] == 1
                 ok = ok and result["rr_with_defs_stat_count"] == 1
+                if skip and audit:
+                    ok = ok and result.get("rr_skip_audit_stat_count", 0) == 1
+                    audit_rows = result.get("rr_skip_audit_rows", [])
+                    if audit_rows:
+                        ok = ok and audit_rows[0].get("inferred") == "1"
+                        ok = ok and audit_rows[0].get("structural_equal") == "1"
             rows.append({"name": case["name"], "runs": runs})
     finally:
         if old_rr is None:
@@ -58,6 +69,10 @@ def run_mode(tau_bin: Path, reps: int, skip: bool) -> dict[str, object]:
             os.environ.pop("TAU_RR_SKIP_VALUE_INFER", None)
         else:
             os.environ["TAU_RR_SKIP_VALUE_INFER"] = old_skip
+        if old_audit is None:
+            os.environ.pop("TAU_RR_SKIP_VALUE_INFER_AUDIT", None)
+        else:
+            os.environ["TAU_RR_SKIP_VALUE_INFER_AUDIT"] = old_audit
 
     solve_total_ms = 0.0
     solve_apply_ms = 0.0
@@ -66,6 +81,8 @@ def run_mode(tau_bin: Path, reps: int, skip: bool) -> dict[str, object]:
     rr_total_ms = 0.0
     elapsed_ms = 0.0
     branches: dict[str, int] = {}
+    audit_rows = 0
+    audit_equal = 0
     for row in rows:
         for run in row["runs"]:
             solve = run["solve_rows"][0] if run["solve_rows"] else {}
@@ -79,6 +96,10 @@ def run_mode(tau_bin: Path, reps: int, skip: bool) -> dict[str, object]:
             elapsed_ms += float(run["elapsed_ms"])
             branch = rr_get_defs.get("branch", "missing")
             branches[branch] = branches.get(branch, 0) + 1
+            for audit_row in run.get("rr_skip_audit_rows", []):
+                audit_rows += 1
+                if audit_row.get("inferred") == "1" and audit_row.get("structural_equal") == "1":
+                    audit_equal += 1
 
     elapsed_values = [
         float(run["elapsed_ms"])
@@ -99,6 +120,8 @@ def run_mode(tau_bin: Path, reps: int, skip: bool) -> dict[str, object]:
         "elapsed_ms": round(elapsed_ms, 3),
         "median_elapsed_ms": round(statistics.median(elapsed_values), 3),
         "rr_get_defs_branches": branches,
+        "audit_rows": audit_rows,
+        "audit_structural_equal_rows": audit_equal,
         "rows": rows,
     }
 
@@ -113,6 +136,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--tau-bin", type=Path, default=Path("external/tau-lang/build-Release/tau"))
     parser.add_argument("--reps", type=int, default=3)
+    parser.add_argument("--audit", action="store_true")
     parser.add_argument("--out", type=Path, default=Path("results/local/rr-skip-value-infer-demo.json"))
     args = parser.parse_args()
     if args.reps < 1:
@@ -121,7 +145,7 @@ def main() -> int:
         raise SystemExit(f"Tau binary not found: {args.tau_bin}")
 
     baseline = run_mode(args.tau_bin, args.reps, skip=False)
-    skip = run_mode(args.tau_bin, args.reps, skip=True)
+    skip = run_mode(args.tau_bin, args.reps, skip=True, audit=args.audit)
     ok = bool(baseline["ok"]) and bool(skip["ok"])
     summary = {
         "scope": "feature-gated RR value-argument infer-skip comparison",
@@ -155,7 +179,8 @@ def main() -> int:
         "boundary": (
             "This compares one feature-gated shortcut on the safe-table "
             "solver corpus. It is a candidate Tau RR extraction optimization, "
-            "not a default-on general correctness claim."
+            "not a default-on general correctness claim. Audit mode computes "
+            "the full path too and is not a performance mode."
         ),
     }
     args.out.parent.mkdir(parents=True, exist_ok=True)
@@ -171,6 +196,8 @@ def main() -> int:
         "baseline_elapsed_ms": baseline["elapsed_ms"],
         "skip_elapsed_ms": skip["elapsed_ms"],
         "elapsed_improvement_percent": summary["elapsed_improvement_percent"],
+        "audit_rows": skip["audit_rows"],
+        "audit_structural_equal_rows": skip["audit_structural_equal_rows"],
         "skip_branches": skip["rr_get_defs_branches"],
     }, indent=2, sort_keys=True))
     return 0 if ok else 1

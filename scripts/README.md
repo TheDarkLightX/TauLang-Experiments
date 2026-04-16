@@ -228,6 +228,27 @@ on the safe-table solver corpus. It is not a whole-demo wall-clock speedup yet,
 because the wrapper still spends most elapsed time launching Tau processes and
 loading sources.
 
+For the structural audit lane:
+
+```bash
+python3 scripts/run_rr_skip_value_infer_demo.py \
+  --audit \
+  --reps 1 \
+  --out results/local/rr-skip-value-infer-audit-reps1.json
+```
+
+Current audit receipt:
+
+```text
+checks:                         5
+repetitions:                    1
+audit rows:                     5
+structurally equal audit rows:  5
+```
+
+Audit mode runs the full inference path too, so it is a correctness screen, not
+a speed measurement.
+
 ## Compound table-equivalence check
 
 ```bash

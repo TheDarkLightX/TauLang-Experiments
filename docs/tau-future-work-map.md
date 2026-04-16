@@ -82,6 +82,18 @@ This is an internal command-body improvement on the safe-table solver corpus,
 not a whole-demo wall-clock speedup claim. The current wrapper remains dominated
 by repeated Tau process startup and source loading.
 
+The structural audit lane also passed:
+
+```text
+checks:                        5
+repetitions:                   1
+audit rows:                    5
+structurally equal audit rows: 5
+```
+
+Audit mode computes the full inference path too, so it is correctness evidence,
+not a timing result.
+
 The compound table-equivalence check is documented in
 `docs/demo-gallery.md`. The compound mode uses this law:
 
