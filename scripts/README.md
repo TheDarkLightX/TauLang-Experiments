@@ -796,7 +796,7 @@ enabled MNF time:            16813.717 ms
 These timings include Tau process startup for each command. They are a
 regression screen, not an in-process microbenchmark. The wide corpus did not
 expose a new size-failure class or a whole-command timing regression. The
-remaining gap is still textual presentation canonicalization.
+remaining gap at that stage was textual presentation canonicalization.
 
 To screen whether `normalize` has already reached a fixed point:
 
@@ -822,25 +822,24 @@ guarded-MNF shrinking cases:          40 / 200
 guarded-MNF characters:               1480
 ```
 
-Native opt-in guarded-MNF receipt with
-`TAU_NORMALIZE_GUARDED_MNF=1`:
+With the native guarded-MNF mode enabled and the corrected one-character
+parser mode for compact pretty-output replay:
 
 ```text
 exact normalize-text matches:         200 / 200
 target-sized cases:                   200 / 200
 normalized characters:                1480
-first-pass idempotent cases:          190 / 200
+first-pass idempotent cases:          200 / 200
 second-pass growth cases:             0 / 200
-whole-command normalize time:         19761.508 ms
+same-size second-pass changes:        0 / 200
+whole-command normalize time:         18893.125 ms
 ```
 
-The feature-gated pass improves fixed-point stability, but the remaining
-`60 / 200` non-idempotent cases are the next normalizer boundary. The guarded
-candidate is a probe-level rule: accept the second `normalize` result only when
-it is no longer than the first result. A direct C++ hook that re-normalized the
-existing AST was tested and did not move the corpus. The next implementation
-needs presentation-aware canonicalization, because the useful probe behavior is
-triggered by reparsing Tau's printed form.
+The corrected idempotence screen uses Tau's one-character-variable parser mode
+for compact pretty-output replay. That matters because Tau prints meets by
+adjacency, so `wx` must be read as `w & x`, not as one multi-character
+variable. With that parser mode, the native guarded-MNF pass is stable on the
+full wide corpus.
 
 The same probe now measures guarded DNF/MNF presentation candidates. Guarded
 `mnf` is the stronger candidate and is now implemented as an experimental
@@ -849,8 +848,8 @@ and the timing is a process-level regression screen rather than an in-process
 optimizer benchmark.
 
 The attempted print-and-reparse stabilizer is negative evidence. It did not
-close the remaining `10 / 200` same-size ordering flips and increased
-whole-command time, so it is not part of the patch.
+improve the corpus and increased whole-command time, so it is not part of the
+patch.
 
 ## Variable-update cache telemetry
 

@@ -223,18 +223,19 @@ Native opt-in guarded-MNF receipt with
 exact normalize-text matches:         200 / 200
 target-sized cases:                   200 / 200
 normalized characters:                1480
-first-pass idempotent cases:          190 / 200
+first-pass idempotent cases:          200 / 200
 second-pass growth cases:             0 / 200
-whole-command normalize time:         19761.508 ms
+same-size second-pass changes:        0 / 200
+whole-command normalize time:         18893.125 ms
 ```
 
-The feature-gated pass improves idempotence relative to baseline, but does not
-make every first-pass output stable under another `normalize` call.
-The guarded-presentation candidate chooses a second-pass result only when it
-does not increase size. It is a measured candidate for the next implementation
-step, not an implemented Tau patch. A direct AST-level second-normalize hook was
-tested and did not improve the corpus, so the useful next step is a
-presentation-aware canonicalization pass.
+The corrected idempotence screen reparses compact pretty output in Tau's
+one-character-variable mode. That matters because Tau prints meets by
+adjacency, so `wx` must be read back as `w & x`, not as one multi-character
+variable. With that parser mode, the native guarded-MNF pass is fixed-point
+stable on the wide corpus. A direct AST-level second-normalize hook was tested
+and did not improve the corpus, so the useful implementation path is guarded
+presentation selection, not another call to `normalize` on the same tree.
 
 Guarded `mnf` is the current strongest presentation candidate. It preserves
 the size boundary on all wide-corpus cases and shrinks `40 / 200` cases, but it
@@ -243,11 +244,9 @@ is now implemented only as an experimental opt-in mode behind
 The timing receipt is a process-level regression screen rather than an
 in-process speedup proof.
 
-The attempted follow-up `print -> reparse -> MNF` stabilization did not close
-the remaining `10 / 200` same-size ordering flips and increased whole-command
-time. This removes the reparse shortcut from the candidate list. The remaining
-presentation target is an internal ordering rule for Boolean-algebra term
-representatives.
+The attempted follow-up `print -> reparse -> MNF` stabilization did not improve
+the corpus and increased whole-command time. This removes the reparse shortcut
+from the candidate list.
 
 The final size failures were closed by equality-graph implication checks:
 alias branches that imply the residual can be recombined when the residual plus

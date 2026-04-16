@@ -309,20 +309,23 @@ Native opt-in guarded-MNF receipt with
 exact normalize-text matches:         200 / 200
 target-sized cases:                   200 / 200
 normalized characters:                1480
-first-pass idempotent cases:          190 / 200
+first-pass idempotent cases:          200 / 200
 second-pass growth cases:             0 / 200
-whole-command normalize time:         19761.508 ms
+same-size second-pass changes:        0 / 200
+whole-command normalize time:         18893.125 ms
 ```
 
-This matters because exact `normalize` text is not the only boundary. Some
-first-pass outputs still change when passed through `normalize` again. The
-feature-gated pass improves that property relative to baseline, but it does not
-solve fixed-point presentation canonicalization. A guarded second-pass rule
-improves exact target presentation without losing size closure in this probe,
-but it is not yet a Tau C++ patch. A direct AST-level second-normalize hook was
-tested and did not improve this corpus. That negative result narrows the next
-implementation target to presentation-aware canonicalization, not simply running
-the same tree through `normalize` again.
+This matters because exact `normalize` text is not the only boundary. The
+second-pass idempotence screen must reparse Tau's compact pretty output in
+one-character-variable mode, because adjacency in that output denotes meet. If
+`wx` is reparsed as a single multi-character variable, the screen reports a
+false presentation flip. With the corrected replay mode, the native
+guarded-MNF pass is fixed-point stable on the 200-case wide corpus.
+
+A direct AST-level second-normalize hook was tested and did not improve this
+corpus. That negative result narrows the implementation lesson: the successful
+path is guarded-MNF presentation selection, not simply running the same tree
+through `normalize` again.
 
 The stronger measured candidate is guarded `mnf`: keep `mnf` output only when
 it does not increase printed size. In the wide corpus it is non-growing for all
@@ -332,11 +335,11 @@ now implemented as an experimental opt-in Tau patch behind
 `normalize` globally. The timing receipt is a process-level screen, not an
 in-process optimizer proof.
 
-A second negative result is now recorded: reparsing the guarded-MNF candidate
-inside the C++ normalizer did not close the remaining `10 / 200` same-size
-ordering flips, and it increased whole-command time on the corpus. The
-remaining target is a real ordering rule for Boolean-algebra term
-representatives, not print-and-reparse stabilization.
+A second negative result is also recorded: reparsing the guarded-MNF candidate
+inside the C++ normalizer increased whole-command time on the corpus. The
+useful fix was not print-and-reparse stabilization, it was correcting the probe
+so compact printed meets are reparsed with the intended one-character-variable
+semantics.
 
 The generated and stress cases are closed by equality-graph implication checks:
 

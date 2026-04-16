@@ -293,7 +293,7 @@ TAU_EQUALITY_SPLIT_RECOMBINE=1 TAU_NORMALIZE_GUARDED_MNF=1 \
   python3 scripts/run_equality_split_tau_probe.py \
   --wide-path-corpus \
   --check-idempotence \
-  --out results/local/equality-split-wide-enabled-cxx-guarded-mnf-idempotence.json
+  --out results/local/equality-split-wide-enabled-cxx-guarded-mnf-charvar-true-idempotence-rerun.json
 ```
 
 Native opt-in receipt:
@@ -302,30 +302,23 @@ Native opt-in receipt:
 exact normalize-text matches:         200 / 200
 target-sized cases:                   200 / 200
 normalized characters:                1480
-first-pass idempotent cases:          190 / 200
+first-pass idempotent cases:          200 / 200
 second-pass growth cases:             0 / 200
-whole-command normalize time:         19761.508 ms
+same-size second-pass changes:        0 / 200
+whole-command normalize time:         18893.125 ms
 ```
 
-This sharpens the remaining frontier. The feature-gated pass improves
-normalize fixed-point stability on this corpus, but it does not close it. The
-next target is a normalizer presentation pass whose first output is already a
-fixed point under another `normalize` call. The guarded-presentation candidate
-means: use the second `normalize` output only when it does not increase output
-size. This is currently probe evidence, not a Tau C++ optimizer patch. A direct
-AST-level second-normalize hook was tested and did not improve the corpus,
-because the measured gain comes from reparsing Tau's printed presentation.
-The stronger guarded-MNF route is now implemented as an experimental opt-in
-Tau patch behind `TAU_NORMALIZE_GUARDED_MNF=1`. It uses `mnf` as the printed
-form only when it does not increase size, and it skips recursive-reference
-cases. It is not a default runtime mode. The timing number above is still a
+The idempotence screen uses Tau's one-character-variable parser mode. That is
+load-bearing because Tau's compact pretty printer writes meets by adjacency, so
+`wx` must be reparsed as `w & x`, not as one multi-character variable.
+
+This closes the wide-corpus presentation frontier for the current guarded-MNF
+experiment. The guarded-MNF route is implemented as an experimental opt-in Tau
+patch behind `TAU_NORMALIZE_GUARDED_MNF=1`. It uses `mnf` as the printed form
+only when it does not increase size, and it skips recursive-reference cases.
+It is not a default runtime mode. The timing number above is still a
 whole-command screen with process startup and file I/O, not an in-process
 speedup proof.
-
-A follow-up print-and-reparse stabilization was tested and rejected. It did not
-close the remaining `10 / 200` same-size ordering flips and increased
-whole-command time. The remaining target is an internal ordering rule for
-Boolean-algebra term representatives.
 
 The fixed-width modular arithmetic rewrite-triage corpus is:
 

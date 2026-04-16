@@ -249,7 +249,7 @@ def tau_cmd(tau_bin: Path, command: str) -> dict[str, object]:
     argv = [
         str(tau_bin),
         "--charvar",
-        "false",
+        "true",
         "-e",
         command,
         "--severity",
