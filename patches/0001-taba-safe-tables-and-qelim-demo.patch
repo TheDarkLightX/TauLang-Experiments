@@ -4302,6 +4302,74 @@ index 6e28efc3..d364243e 100644
  	LOG_DEBUG << "End apply_rr_to_formula";
  	LOG_DEBUG << "Spec: " << LOG_RR(nso_rr);
  	LOG_DEBUG << "New main: " << LOG_FM(new_main);
+diff --git a/src/nso_rr.tmpl.h b/src/nso_rr.tmpl.h
+index bf691573..ece93291 100644
+--- a/src/nso_rr.tmpl.h
++++ b/src/nso_rr.tmpl.h
+@@ -2,6 +2,9 @@
+ 
+ #include "nso_rr.h"
+ 
++#include <cstdlib>
++#include <string>
++
+ #ifdef TAU_MEASURE
+ #include "utility/measure.h"
+ #endif // TAU_MEASURE
+@@ -79,6 +82,11 @@ tref nso_rr_apply(const rewriter::rules& rs, tref n) {
+ template <NodeType node>
+ rr<node> transform_ref_args_to_captures(const rr<node>& nso_rr) {
+ 	using tau = tree<node>;
++	const char* cache_env = std::getenv("TAU_RR_TRANSFORM_DEFS_CACHE");
++	const bool cache_enabled = cache_env && std::string(cache_env) == "1";
++	using defs_cache_t = std::map<rewriter::rules, rewriter::rules>;
++	static defs_cache_t defs_cache;
++	bool defs_cache_hit = false;
+ 	DBG(	LOG_TRACE << "-- transform_ref_args_to_captures:";)
+ 	DBG(LOG_TRACE << "nso_rr main: " << tau::get(nso_rr.main->get()).tree_to_str();
+ 		for (const auto& [k, v] : nso_rr.rec_relations) {
+@@ -133,15 +141,34 @@ rr<node> transform_ref_args_to_captures(const rr<node>& nso_rr) {
+ 		return h;
+ 	};
+ 	rr<node> ret(nso_rr);
+-	for (auto& r : ret.rec_relations) {
+-		head_vars.clear();
+-		collecting = true;
+-		r .first = transform(r.first, true);
+-		collecting = false;
+-		// Only convert vars to capture that appear in the head of the definition
+-		r.second = transform(r.second, true);
++	if (cache_enabled) {
++		if (auto it = defs_cache.find(nso_rr.rec_relations);
++				it != defs_cache.end()) {
++			ret.rec_relations = it->second;
++			defs_cache_hit = true;
++		}
++	}
++	if (!defs_cache_hit) {
++		for (auto& r : ret.rec_relations) {
++			head_vars.clear();
++			collecting = true;
++			r .first = transform(r.first, true);
++			collecting = false;
++			// Only convert vars to capture that appear in the head of the definition
++			r.second = transform(r.second, true);
++		}
++		if (cache_enabled)
++			defs_cache.insert_or_assign(nso_rr.rec_relations, ret.rec_relations);
+ 	}
+ 	ret.main = transform(nso_rr.main);
++	const char* rr_stats = std::getenv("TAU_RR_STATS");
++	if (rr_stats && std::string(rr_stats) == "1" && cache_enabled) {
++		std::cerr << "[rr_transform_defs_cache] enabled=1 hit="
++			<< (defs_cache_hit ? 1 : 0)
++			<< " size=" << defs_cache.size()
++			<< " defs=" << nso_rr.rec_relations.size()
++			<< "\n";
++	}
+ 	DBG(LOG_TRACE << "-- transform_ref_args_to_captures result: " << LOG_RR_DUMP(ret);)
+ 	DBG(LOG_TRACE << "ret main: " << tau::get(ret.main->get()).tree_to_str();
+ 		for (const auto& [k, v] : ret.rec_relations) {
 diff --git a/src/qelim_bdd_experiment.tmpl.h b/src/qelim_bdd_experiment.tmpl.h
 new file mode 100644
 index 00000000..c00f0140

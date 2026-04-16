@@ -213,6 +213,52 @@ So the next internal solver-path target is not more `get_rr` work on this
 corpus. It is `apply_rr_to_formula`, especially reference-argument
 transformation and recurrence-definition rewriting.
 
+The first feature-gated response is:
+
+```bash
+TAU_RR_TRANSFORM_DEFS_CACHE=1
+```
+
+This cache stores transformed recurrence-definition lists inside one Tau
+process. It is designed for batched workloads where several `solve` obligations
+share the same stored definitions and differ only in the main query.
+
+Reproduce the direct comparison with:
+
+```bash
+python3 scripts/run_rr_transform_defs_cache_batched.py \
+  --reps 1 \
+  --out results/local/rr-transform-defs-cache-batched-reps1.json
+```
+
+Current local receipt, with `TAU_RR_SKIP_VALUE_INFER=1` enabled in both modes:
+
+```text
+ok: true
+checks: 15
+cache hits: 14 / 15
+
+no-cache solve total: 201.090410 ms
+cache solve total:    130.026990 ms
+solve improvement:     35.339%
+
+no-cache rr_apply_formula: 187.126540 ms
+cache rr_apply_formula:    115.095850 ms
+apply improvement:          38.493%
+
+no-cache rr_formula_transform: 81.398570 ms
+cache rr_formula_transform:     6.625784 ms
+transform improvement:         91.860%
+
+no-cache elapsed: 54390.996 ms
+cache elapsed:    56725.073 ms
+elapsed change:      -4.291%
+```
+
+Interpretation: the cache substantially reduces the internal formula-application
+path. It is not yet a public demo wall-clock improvement because process-level
+elapsed time remained noisy and worsened on this receipt.
+
 ## Boundary
 
 This is not a default Tau optimization yet.

@@ -138,6 +138,33 @@ mostly RR formula application, not RR extraction. The next candidate proof or
 patch should target reference-argument transformation, definition rewriting, or
 a safe cache for repeated transformed definitions.
 
+The first safe-cache prototype is now feature-gated by:
+
+```bash
+TAU_RR_TRANSFORM_DEFS_CACHE=1
+```
+
+Current batched receipt, with `TAU_RR_SKIP_VALUE_INFER=1` enabled in both
+comparison modes:
+
+```text
+cache hits:                       14 / 15
+solve improvement:                35.339%
+rr_apply_formula improvement:     38.493%
+rr_formula_transform improvement: 91.860%
+elapsed improvement:              -4.291%
+```
+
+This is a promising internal-path result, but not a public demo speedup yet.
+The useful next proof obligation is cache soundness for transformed recurrence
+definition lists:
+
+```text
+same original definition list
+implies
+same transformed definition list.
+```
+
 The compound table-equivalence check is documented in
 `docs/demo-gallery.md`. The compound mode uses this law:
 

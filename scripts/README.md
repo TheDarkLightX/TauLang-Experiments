@@ -325,6 +325,32 @@ internal solver-path target is `apply_rr_to_formula`, not more `get_rr`
 work. The telemetry script now prints this aggregate by default and writes the
 full per-run rows to the JSON receipt.
 
+The first transformed-definition cache experiment is:
+
+```bash
+python3 scripts/run_rr_transform_defs_cache_batched.py \
+  --reps 1 \
+  --out results/local/rr-transform-defs-cache-batched-reps1.json
+```
+
+This keeps `TAU_RR_SKIP_VALUE_INFER=1` enabled in both modes and compares only
+`TAU_RR_TRANSFORM_DEFS_CACHE`.
+
+Current receipt:
+
+```text
+checks:                         15
+cache hits:                     14 / 15
+solve improvement:              35.339%
+rr_apply_formula improvement:   38.493%
+rr_formula_transform improvement: 91.860%
+elapsed improvement:            -4.291%
+```
+
+Interpretation: the cache hits the intended repeated-definition shape and
+substantially reduces internal formula-application time. It is not a wall-clock
+demo speedup on this receipt.
+
 ## Compound table-equivalence check
 
 ```bash

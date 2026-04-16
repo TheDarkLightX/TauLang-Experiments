@@ -132,6 +132,14 @@ The current patch is an experiment patch, not an official Tau release. It adds:
   reference-definition corpus passes `9` of `9` structural audit rows with a
   `79.109%` measured `get_rr` improvement. This is still opt-in evidence, not
   default-promotion evidence.
+- an opt-in transformed-definition cache,
+  `TAU_RR_TRANSFORM_DEFS_CACHE=1`, for the next RR formula-application
+  bottleneck after the value-inference skip. With
+  `TAU_RR_SKIP_VALUE_INFER=1` held fixed, the batched table-check receipt shows
+  `14` cache hits over `15` formula applications, a `91.860%` reduction in RR
+  formula transform time, and a `35.339%` reduction in internal solve-command
+  time. The same run did not improve whole-process elapsed time, so this is an
+  internal-path optimization candidate, not a public demo default.
 
 The table syntax is rejected unless `TAU_ENABLE_SAFE_TABLES=1` is set.
 
@@ -444,3 +452,17 @@ Post-skip telemetry now points at the next internal solver-path target. With
 about `1.800762 ms` in `get_rr` but `16.610380 ms` in RR formula application.
 The next target is therefore reference-argument transformation and
 definition-rewrite work inside `apply_rr_to_formula`.
+
+The first scoped response is:
+
+```bash
+python3 scripts/run_rr_transform_defs_cache_batched.py \
+  --reps 1 \
+  --out results/local/rr-transform-defs-cache-batched-reps1.json
+```
+
+Current receipt: with the value-inference skip enabled in both modes, the
+transformed-definition cache hit `14` of `15` formula applications, reduced RR
+formula transform time by `91.860%`, reduced RR formula-application time by
+`38.493%`, and reduced internal solve-command time by `35.339%`. It did not
+improve whole-process elapsed time on that run.

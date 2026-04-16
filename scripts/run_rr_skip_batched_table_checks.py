@@ -96,6 +96,8 @@ def run_batched(tau_bin: Path, program: str, skip: bool) -> dict[str, object]:
     solve_rows = parse_prefixed_stats(combined, "[solve_cmd]")
     rr_get_defs_rows = parse_prefixed_stats(combined, "[rr_get_defs]")
     rr_with_defs_rows = parse_prefixed_stats(combined, "[rr_with_defs]")
+    rr_formula_rows = parse_prefixed_stats(combined, "[rr_formula]")
+    rr_transform_defs_cache_rows = parse_prefixed_stats(combined, "[rr_transform_defs_cache]")
     rr_skip_audit_rows = parse_prefixed_stats(combined, "[rr_skip_audit]")
     branch_counts: dict[str, int] = {}
     for row in rr_get_defs_rows:
@@ -112,11 +114,29 @@ def run_batched(tau_bin: Path, program: str, skip: bool) -> dict[str, object]:
         "solve_stat_count": len(solve_rows),
         "rr_get_defs_stat_count": len(rr_get_defs_rows),
         "rr_with_defs_stat_count": len(rr_with_defs_rows),
+        "rr_formula_stat_count": len(rr_formula_rows),
+        "rr_transform_defs_cache_stat_count": len(rr_transform_defs_cache_rows),
+        "rr_transform_defs_cache_hit_count": sum(
+            1 for row in rr_transform_defs_cache_rows if row.get("hit") == "1"
+        ),
         "rr_skip_audit_stat_count": len(rr_skip_audit_rows),
         "solve_total_ms": round(sum(as_float(row, "total_ms") for row in solve_rows), 6),
         "solve_apply_ms": round(sum(as_float(row, "apply_ms") for row in solve_rows), 6),
         "rr_get_ms": round(sum(as_float(row, "get_rr_ms") for row in rr_with_defs_rows), 6),
+        "rr_apply_formula_ms": round(
+            sum(as_float(row, "apply_formula_ms") for row in rr_with_defs_rows), 6
+        ),
         "rr_total_ms": round(sum(as_float(row, "total_ms") for row in rr_with_defs_rows), 6),
+        "rr_formula_total_ms": round(sum(as_float(row, "total_ms") for row in rr_formula_rows), 6),
+        "rr_formula_transform_ms": round(
+            sum(as_float(row, "transform_ms") for row in rr_formula_rows), 6
+        ),
+        "rr_formula_fixed_point_ms": round(
+            sum(as_float(row, "fixed_point_ms") for row in rr_formula_rows), 6
+        ),
+        "rr_formula_rewrite_ms": round(
+            sum(as_float(row, "rewrite_ms") for row in rr_formula_rows), 6
+        ),
         "rr_infer_ms": round(sum(as_float(row, "infer_ms") for row in rr_get_defs_rows), 6),
         "rr_branch_counts": branch_counts,
     }
@@ -138,8 +158,29 @@ def summarize_mode(runs: list[dict[str, object]]) -> dict[str, object]:
         "solve_total_ms": round(sum(float(run["solve_total_ms"]) for run in runs), 6),
         "solve_apply_ms": round(sum(float(run["solve_apply_ms"]) for run in runs), 6),
         "rr_get_ms": round(sum(float(run["rr_get_ms"]) for run in runs), 6),
+        "rr_apply_formula_ms": round(
+            sum(float(run["rr_apply_formula_ms"]) for run in runs), 6
+        ),
         "rr_total_ms": round(sum(float(run["rr_total_ms"]) for run in runs), 6),
+        "rr_formula_total_ms": round(
+            sum(float(run["rr_formula_total_ms"]) for run in runs), 6
+        ),
+        "rr_formula_transform_ms": round(
+            sum(float(run["rr_formula_transform_ms"]) for run in runs), 6
+        ),
+        "rr_formula_fixed_point_ms": round(
+            sum(float(run["rr_formula_fixed_point_ms"]) for run in runs), 6
+        ),
+        "rr_formula_rewrite_ms": round(
+            sum(float(run["rr_formula_rewrite_ms"]) for run in runs), 6
+        ),
         "rr_infer_ms": round(sum(float(run["rr_infer_ms"]) for run in runs), 6),
+        "rr_transform_defs_cache_rows": sum(
+            int(run["rr_transform_defs_cache_stat_count"]) for run in runs
+        ),
+        "rr_transform_defs_cache_hits": sum(
+            int(run["rr_transform_defs_cache_hit_count"]) for run in runs
+        ),
     }
 
 
@@ -167,6 +208,7 @@ def main() -> int:
         ok = ok and run["solve_stat_count"] == expected
         ok = ok and run["rr_get_defs_stat_count"] == expected
         ok = ok and run["rr_with_defs_stat_count"] == expected
+        ok = ok and run["rr_formula_stat_count"] == expected
 
     baseline = summarize_mode(baseline_runs)
     skip = summarize_mode(skip_runs)
@@ -208,6 +250,12 @@ def main() -> int:
         "baseline_rr_get_ms": baseline["rr_get_ms"],
         "skip_rr_get_ms": skip["rr_get_ms"],
         "rr_get_improvement_percent": summary["rr_get_improvement_percent"],
+        "baseline_rr_apply_formula_ms": baseline["rr_apply_formula_ms"],
+        "skip_rr_apply_formula_ms": skip["rr_apply_formula_ms"],
+        "skip_rr_formula_transform_ms": skip["rr_formula_transform_ms"],
+        "skip_rr_formula_rewrite_ms": skip["rr_formula_rewrite_ms"],
+        "skip_rr_transform_defs_cache_hits": skip["rr_transform_defs_cache_hits"],
+        "skip_rr_transform_defs_cache_rows": skip["rr_transform_defs_cache_rows"],
     }, indent=2, sort_keys=True))
     return 0 if ok else 1
 
