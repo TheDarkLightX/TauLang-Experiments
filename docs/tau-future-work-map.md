@@ -108,6 +108,22 @@ get_rr improvement: 99.266%
 This is still scoped to the safe-table demo corpus, but it removes most of the
 one-process-per-check startup noise.
 
+The ordinary reference-definition corpus broadens the scope beyond table
+syntax:
+
+```text
+cases:                         9
+audit rows:                    9
+structurally equal audit rows: 9
+elapsed improvement:           1.157%
+solve improvement:            55.564%
+get_rr improvement:           79.109%
+```
+
+This is still synthetic. It is useful because the checked programs are ordinary
+named `:tau` definitions and Boolean-algebra identity checks, so the shortcut
+is not only exercised by the safe-table parser surface.
+
 The compound table-equivalence check is documented in
 `docs/demo-gallery.md`. The compound mode uses this law:
 

@@ -83,6 +83,19 @@ python3 scripts/run_rr_skip_batched_table_checks.py \
 
 This uses the same prefix-dot command-file shape as the batched table demo.
 
+To test the same shortcut outside safe-table syntax, run the ordinary reference
+solver corpus:
+
+```bash
+python3 scripts/run_rr_skip_reference_solver_corpus.py \
+  --out results/local/rr-skip-reference-solver-corpus.json
+```
+
+This corpus uses small named `:tau` definitions and asks Tau to prove ordinary
+Boolean-algebra identities unsatisfiable after reference expansion. It compares
+baseline, skip, and audit mode. It is deliberately small, but it checks that the
+optimization is not only a table-syntax artifact.
+
 ## Current Local Receipt
 
 Fast mode:
@@ -140,6 +153,27 @@ skip get_rr:               4.544364 ms
 get_rr improvement:       99.266%
 ```
 
+Ordinary reference-definition corpus:
+
+```text
+ok: true
+cases: 9
+audit rows: 9
+structurally equal audit rows: 9
+
+baseline elapsed: 692.424 ms
+skip elapsed:     684.416 ms
+elapsed improvement: 1.157%
+
+baseline solve total: 16.448360 ms
+skip solve total:      7.309008 ms
+solve improvement:    55.564%
+
+baseline get_rr: 11.644820 ms
+skip get_rr:      2.432774 ms
+get_rr improvement: 79.109%
+```
+
 ## Interpretation
 
 The internal command-body result is strong: skipping the redundant
@@ -156,6 +190,12 @@ demo corpus, while the internal solver-path improvement remains much larger.
 The earlier one-process-per-check wrapper still has roughly flat wall-clock
 time because repeated Tau startup and source loading dominate elapsed time.
 
+The ordinary-reference corpus broadens the evidence. The skip path preserved
+`no solution` results and passed the structural audit on named definitions such
+as commutativity, absorption, double prime, De Morgan laws, and guarded choice.
+This does not make the shortcut default-safe, but it reduces the chance that the
+benefit is caused only by the safe-table parser surface.
+
 ## Boundary
 
 This is not a default Tau optimization yet.
@@ -163,6 +203,9 @@ This is not a default Tau optimization yet.
 Promotion would require:
 
 - a larger non-table corpus,
+- a decision about the excluded three-variable distributivity candidate, which
+  segfaulted in this Tau build before solver stats in the baseline and skip
+  paths,
 - cases where `type == tau::spec` remains on the full inference path,
 - a code-level invariant or proof artifact that parser-time inference is enough
   for the skipped `ref_value` branch,
@@ -174,5 +217,6 @@ The current status is:
 output parity passed on the checked safe-table solver corpus
 internal RR extraction speedup measured
 batched one-process wall-clock improvement measured on the demo corpus
+ordinary reference-definition corpus passed structural audit
 default promotion not justified yet
 ```

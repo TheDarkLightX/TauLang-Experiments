@@ -125,11 +125,13 @@ The current patch is an experiment patch, not an official Tau release. It adds:
 - an opt-in RR extraction shortcut,
   `TAU_RR_SKIP_VALUE_INFER=1`, for ref-valued command arguments that have
   already passed parser-time type inference. Current evidence is scoped to the
-  safe-table solver corpus: it preserves the checked `no solution` results,
-  reduces internal solve-command time by `76.963%`, and reduces measured
-  `get_rr` time by `97.804%` on the three-repetition receipt. Whole-process
-  elapsed time is not improved in the current wrapper because repeated Tau
-  process startup dominates.
+  checked corpora: it preserves the checked `no solution` results, reduces
+  internal solve-command time by `76.963%`, and reduces measured `get_rr` time
+  by `97.804%` on the safe-table three-repetition receipt. The one-process
+  table corpus shows a `3.186%` wall-clock improvement, and the ordinary
+  reference-definition corpus passes `9` of `9` structural audit rows with a
+  `79.109%` measured `get_rr` improvement. This is still opt-in evidence, not
+  default-promotion evidence.
 
 The table syntax is rejected unless `TAU_ENABLE_SAFE_TABLES=1` is set.
 
@@ -423,3 +425,16 @@ Current batched receipt: output parity passed across `15` table-vs-raw
 obligations, wall-clock elapsed time improved by `3.186%`, internal
 solve-command time improved by `75.435%`, and measured `get_rr` time improved
 by `99.266%`. This is still a demo-corpus result, not a default Tau promotion.
+
+The ordinary reference-definition corpus is:
+
+```bash
+python3 scripts/run_rr_skip_reference_solver_corpus.py \
+  --out results/local/rr-skip-reference-solver-corpus.json
+```
+
+Current receipt: `9` Boolean-algebra identity cases passed, `9` of `9` audit
+rows were structurally equal to the full-inference path, measured `get_rr` time
+improved by `79.109%`, and solver-command total time improved by `55.564%`.
+This broadens the evidence beyond safe-table syntax but remains a synthetic
+corpus.

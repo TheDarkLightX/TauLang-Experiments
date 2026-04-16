@@ -278,6 +278,29 @@ This is stronger than the one-process-per-check timing because it runs all
 fifteen obligations through one Tau process. It is still scoped to the table
 demo corpus.
 
+The ordinary reference-definition corpus checks the same skip on named `:tau`
+definitions without safe-table syntax:
+
+```bash
+python3 scripts/run_rr_skip_reference_solver_corpus.py \
+  --out results/local/rr-skip-reference-solver-corpus.json
+```
+
+Current receipt:
+
+```text
+cases:                         9
+audit rows:                    9
+structurally equal audit rows: 9
+elapsed improvement:           1.157%
+solve improvement:            55.564%
+get_rr improvement:           79.109%
+```
+
+Interpretation: this broadens the RR skip evidence to ordinary reference
+expansion and Boolean-algebra identity checks. It is still a synthetic corpus,
+not a full Tau workload benchmark.
+
 ## Compound table-equivalence check
 
 ```bash
