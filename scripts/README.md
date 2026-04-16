@@ -108,10 +108,17 @@ benefit on that corpus, because the guarded KB pass had zero rewrite steps.
 
 ## Table-demo solver telemetry
 
-The smooth table demo runner now defaults to the compound equivalence path:
+The smooth table demo runner now defaults to the grouped batched equivalence
+path:
 
 ```bash
 ./scripts/run_table_demos.sh --accept-tau-license
+```
+
+To run the compound proof-compression query:
+
+```bash
+TABLE_DEMO_EQUIV_MODE=compound ./scripts/run_table_demos.sh --accept-tau-license
 ```
 
 To run the older one-check-at-a-time audit path:

@@ -18,13 +18,14 @@ Run only the safe table syntax and solver-equivalence demo with:
 ./scripts/run_table_demos.sh --accept-tau-license
 ```
 
-The default demo runner uses the compound equivalence check for the table-vs-raw
-obligations. For an audit-friendly batched path that keeps one solver result
-per obligation while using one Tau process and the opt-in command-file runner,
-run:
+The default demo runner uses the grouped batched equivalence check for the
+table-vs-raw obligations. It keeps one solver result per obligation while using
+one Tau process and the opt-in split-file command runner.
+
+To run the compound proof-compression query instead, run:
 
 ```bash
-TABLE_DEMO_EQUIV_MODE=batched ./scripts/run_table_demos.sh --accept-tau-license
+TABLE_DEMO_EQUIV_MODE=compound ./scripts/run_table_demos.sh --accept-tau-license
 ```
 
 For the older one-check-at-a-time audit path, run:

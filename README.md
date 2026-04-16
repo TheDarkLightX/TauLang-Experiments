@@ -68,8 +68,14 @@ To run only the table demo, use:
 
 That command clones official Tau if needed, applies the local experiment patch,
 regenerates Tau's parser, builds Tau, and runs the safe table demos. By default
-it uses the compound equivalence check for the table-vs-raw obligations. To run
-the older separate-check audit path, use:
+it uses the grouped batched equivalence check for the table-vs-raw obligations.
+To run the proof-compression compound query instead, use:
+
+```bash
+TABLE_DEMO_EQUIV_MODE=compound ./scripts/run_table_demos.sh --accept-tau-license
+```
+
+To run the older separate-check audit path, use:
 
 ```bash
 TABLE_DEMO_EQUIV_MODE=individual ./scripts/run_table_demos.sh --accept-tau-license

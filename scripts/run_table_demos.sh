@@ -6,7 +6,7 @@ TAU_DIR="${TAU_DIR:-"$ROOT/external/tau-lang"}"
 BUILD_DIR="${TAU_BUILD_DIR:-"$TAU_DIR/build-Release"}"
 JOBS="${JOBS:-2}"
 ACCEPT_FLAG=""
-TABLE_DEMO_EQUIV_MODE="${TABLE_DEMO_EQUIV_MODE:-compound}"
+TABLE_DEMO_EQUIV_MODE="${TABLE_DEMO_EQUIV_MODE:-batched}"
 
 if [[ "${1:-}" == "--accept-tau-license" ]]; then
   ACCEPT_FLAG="--accept-tau-license"
