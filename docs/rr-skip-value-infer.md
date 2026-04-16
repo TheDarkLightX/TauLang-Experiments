@@ -278,8 +278,8 @@ Reproduce the direct comparison with:
 
 ```bash
 python3 scripts/run_rr_active_rules_batched.py \
-  --reps 1 \
-  --out results/local/rr-active-rules-batched-reps1.json
+  --reps 3 \
+  --out results/local/rr-active-rules-batched-reps3.json
 ```
 
 Current local receipt, with `TAU_RR_SKIP_VALUE_INFER=1` and
@@ -288,28 +288,30 @@ Current local receipt, with `TAU_RR_SKIP_VALUE_INFER=1` and
 ```text
 ok: true
 checks: 15
+repetitions: 3
 
-baseline solve total: 123.479850 ms
-active solve total:    35.047750 ms
-solve improvement:     71.617%
+baseline solve total: 385.513630 ms
+active solve total:   102.538519 ms
+solve improvement:     73.402%
 
-baseline rewrite:      99.341180 ms
-active rewrite:        11.068379 ms
-rewrite improvement:   88.858%
+baseline rewrite:     309.808340 ms
+active rewrite:        34.633010 ms
+rewrite improvement:   88.821%
 
-active-rule rows:      45
-rules before filter:   2250
-rules after filter:      60
-rules skipped:         2190
+active-rule rows:      135
+rules before filter:   6750
+rules after filter:     180
+rules skipped:         6570
 
-baseline elapsed:      53325.691 ms
-active elapsed:        53391.626 ms
-elapsed change:           -0.124%
+baseline elapsed:     165857.993 ms
+active elapsed:       159845.454 ms
+elapsed improvement:       3.625%
 ```
 
 Interpretation: this is the strongest current internal-path optimization after
-the RR extraction skip. It is not a whole-command speedup on this receipt
-because the benchmark is dominated by process setup and source loading.
+the RR extraction skip. The three-repetition receipt now shows a small
+whole-command speedup, but the main evidence remains the internal rewrite and
+solve-command reduction.
 
 ## Boundary
 

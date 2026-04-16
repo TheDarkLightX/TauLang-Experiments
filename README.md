@@ -144,10 +144,15 @@ The current patch is an experiment patch, not an official Tau release. It adds:
   `TAU_RR_ACTIVE_RULES=1`, for the remaining RR rewrite bottleneck after the
   first two RR flags are enabled. On the batched table-check receipt, with
   `TAU_RR_SKIP_VALUE_INFER=1` and `TAU_RR_TRANSFORM_DEFS_CACHE=1` held fixed,
-  the pass skipped `2190` of `2250` rule applications considered by dynamic
-  signature reachability, reduced RR formula rewrite time by `88.858%`, and
-  reduced internal solve-command time by `71.617%`. Whole-process elapsed time
-  was unchanged on this corpus, so this remains an internal-path candidate.
+  the three-repetition receipt skipped `6570` of `6750` rule applications
+  considered by dynamic signature reachability, reduced RR formula rewrite time
+  by `88.821%`, reduced internal solve-command time by `73.402%`, and reduced
+  whole-process elapsed time by `3.625%`. This remains feature-gated because
+  the proof obligation is not closed.
+  The ordinary reference-definition corpus preserves outputs but does not show
+  rewrite-time benefit, so the current claim is scoped to rule-heavy batched
+  workloads. The proof obligation is documented in
+  `docs/rr-active-rule-filter.md`.
 
 The table syntax is rejected unless `TAU_ENABLE_SAFE_TABLES=1` is set.
 

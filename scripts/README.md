@@ -355,8 +355,8 @@ The next rewrite-stage experiment is active-rule filtering:
 
 ```bash
 python3 scripts/run_rr_active_rules_batched.py \
-  --reps 1 \
-  --out results/local/rr-active-rules-batched-reps1.json
+  --reps 3 \
+  --out results/local/rr-active-rules-batched-reps3.json
 ```
 
 This keeps both earlier RR flags enabled:
@@ -372,18 +372,42 @@ Current receipt:
 
 ```text
 checks:                         15
-active-rule rows:               45
-rules considered before filter: 2250
-rules considered after filter:    60
-rules skipped by filter:        2190
-solve improvement:              71.617%
-rr_formula_rewrite improvement: 88.858%
-elapsed improvement:            -0.124%
+repetitions:                    3
+active-rule rows:               135
+rules considered before filter: 6750
+rules considered after filter:   180
+rules skipped by filter:        6570
+solve improvement:              73.402%
+rr_formula_rewrite improvement: 88.821%
+elapsed improvement:            3.625%
 ```
 
 Interpretation: the active-rule filter hits the intended rewrite bottleneck.
-It reduces internal solver work, but the current wall-clock harness is still
-dominated by process and source-loading costs.
+It reduces internal solver work and now shows a small wall-clock improvement on
+the three-repetition batched receipt.
+
+The ordinary-reference boundary check is:
+
+```bash
+python3 scripts/run_rr_active_rules_reference_corpus.py \
+  --out results/local/rr-active-rules-reference-corpus.json
+```
+
+Current receipt:
+
+```text
+cases:                         9
+output parity:                 passed
+rules skipped:                 19 / 34
+solve improvement:             0.736%
+rr_formula_rewrite improvement: -45.847%
+elapsed improvement:           0.326%
+```
+
+Interpretation: the active-rule filter preserves outputs on the small
+ordinary-reference corpus, but it does not improve rewrite time there. That is
+expected for a rule-light corpus and keeps the claim scoped to rule-heavy
+batched workloads.
 
 ## Compound table-equivalence check
 

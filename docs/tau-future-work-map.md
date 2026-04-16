@@ -174,12 +174,13 @@ Current batched receipt, with `TAU_RR_SKIP_VALUE_INFER=1` and
 `TAU_RR_TRANSFORM_DEFS_CACHE=1` enabled in both comparison modes:
 
 ```text
-rules before filter:            2250
-rules after filter:               60
-rules skipped:                  2190
-solve improvement:              71.617%
-rr_formula_rewrite improvement: 88.858%
-elapsed improvement:            -0.124%
+repetitions:                    3
+rules before filter:            6750
+rules after filter:              180
+rules skipped:                  6570
+solve improvement:              73.402%
+rr_formula_rewrite improvement: 88.821%
+elapsed improvement:            3.625%
 ```
 
 The useful proof obligation is dynamic-rule-filter soundness:
@@ -193,6 +194,8 @@ rule cannot rewrite term in the current pass.
 The surrounding `repeat_all` loop is part of the intended proof surface,
 because a later pass must still be able to apply a rule if an earlier rewrite
 introduces its head reference.
+
+The dedicated proof-boundary note is `docs/rr-active-rule-filter.md`.
 
 The compound table-equivalence check is documented in
 `docs/demo-gallery.md`. The compound mode uses this law:
