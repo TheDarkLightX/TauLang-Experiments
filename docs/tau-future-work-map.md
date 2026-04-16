@@ -211,6 +211,9 @@ enabled second-pass growth cases:     30 / 200
 guarded-presentation target-sized:    200 / 200
 guarded-presentation exact matches:   160 / 200
 guarded-presentation characters:      1980
+guarded-MNF non-growing cases:        200 / 200
+guarded-MNF shrinking cases:          40 / 200
+guarded-MNF characters:               1480
 ```
 
 The feature-gated pass improves idempotence relative to baseline, but does not
@@ -220,6 +223,10 @@ does not increase size. It is a measured candidate for the next implementation
 step, not an implemented Tau patch. A direct AST-level second-normalize hook was
 tested and did not improve the corpus, so the useful next step is a
 presentation-aware canonicalization pass.
+
+Guarded `mnf` is the current strongest presentation candidate. It preserves
+the size boundary on all wide-corpus cases and shrinks `40 / 200` cases, but it
+is still a candidate mode rather than a default replacement for `normalize`.
 
 The final size failures were closed by equality-graph implication checks:
 alias branches that imply the residual can be recombined when the residual plus

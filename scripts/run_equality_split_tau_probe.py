@@ -303,8 +303,22 @@ def analyze(tau_bin: Path, probe: Probe, check_idempotence: bool) -> dict[str, o
     if check_idempotence:
         original_second_norm = normalize(tau_bin, original_text)
         target_second_norm = normalize(tau_bin, target_text)
-    dnf_matches = str(original_dnf["normalized"]) == str(target_dnf["normalized"])
-    mnf_matches = str(original_mnf["normalized"]) == str(target_mnf["normalized"])
+    original_dnf_text = str(original_dnf["normalized"])
+    target_dnf_text = str(target_dnf["normalized"])
+    original_mnf_text = str(original_mnf["normalized"])
+    target_mnf_text = str(target_mnf["normalized"])
+    dnf_matches = original_dnf_text == target_dnf_text
+    mnf_matches = original_mnf_text == target_mnf_text
+    dnf_presentation_chars = (
+        len(original_dnf_text)
+        if len(original_dnf_text) <= len(original_text)
+        else len(original_text)
+    )
+    mnf_presentation_chars = (
+        len(original_mnf_text)
+        if len(original_mnf_text) <= len(original_text)
+        else len(original_text)
+    )
     row = {
         "name": probe.name,
         "original": probe.original,
@@ -322,6 +336,18 @@ def analyze(tau_bin: Path, probe: Probe, check_idempotence: bool) -> dict[str, o
         "target_mnf_elapsed_ms": target_mnf["elapsed_ms"],
         "tau_normalized_chars": len(original_text),
         "target_normalized_chars": len(target_text),
+        "tau_dnf_normalized_chars": len(original_dnf_text),
+        "target_dnf_normalized_chars": len(target_dnf_text),
+        "tau_mnf_normalized_chars": len(original_mnf_text),
+        "target_mnf_normalized_chars": len(target_mnf_text),
+        "dnf_presentation_non_growing": len(original_dnf_text) <= len(original_text),
+        "dnf_presentation_shrinking": len(original_dnf_text) < len(original_text),
+        "dnf_presentation_target_sized": dnf_presentation_chars <= len(target_text),
+        "dnf_presentation_chars": dnf_presentation_chars,
+        "mnf_presentation_non_growing": len(original_mnf_text) <= len(original_text),
+        "mnf_presentation_shrinking": len(original_mnf_text) < len(original_text),
+        "mnf_presentation_target_sized": mnf_presentation_chars <= len(target_text),
+        "mnf_presentation_chars": mnf_presentation_chars,
         "char_reduction_if_targeted_percent": (
             round(100.0 * (len(original_text) - len(target_text)) / len(original_text), 3)
             if original_text
@@ -432,6 +458,24 @@ def main() -> int:
         row for row in rows
         if int(row["tau_normalized_chars"]) <= int(row["target_normalized_chars"])
     ]
+    dnf_presentation_non_growing = [
+        row for row in rows if bool(row["dnf_presentation_non_growing"])
+    ]
+    dnf_presentation_shrinking = [
+        row for row in rows if bool(row["dnf_presentation_shrinking"])
+    ]
+    dnf_presentation_target_sized = [
+        row for row in rows if bool(row["dnf_presentation_target_sized"])
+    ]
+    mnf_presentation_non_growing = [
+        row for row in rows if bool(row["mnf_presentation_non_growing"])
+    ]
+    mnf_presentation_shrinking = [
+        row for row in rows if bool(row["mnf_presentation_shrinking"])
+    ]
+    mnf_presentation_target_sized = [
+        row for row in rows if bool(row["mnf_presentation_target_sized"])
+    ]
     total_tau = sum(int(row["tau_normalized_chars"]) for row in rows)
     total_target = sum(int(row["target_normalized_chars"]) for row in rows)
     total_tau_normalize_elapsed_ms = round(
@@ -462,6 +506,18 @@ def main() -> int:
         "dnf_matched_target_cases": len(dnf_matched),
         "mnf_matched_target_cases": len(mnf_matched),
         "target_sized_cases": len(target_sized),
+        "dnf_presentation_non_growing_cases": len(dnf_presentation_non_growing),
+        "dnf_presentation_shrinking_cases": len(dnf_presentation_shrinking),
+        "dnf_presentation_target_sized_cases": len(dnf_presentation_target_sized),
+        "dnf_presentation_chars": sum(
+            int(row["dnf_presentation_chars"]) for row in rows
+        ),
+        "mnf_presentation_non_growing_cases": len(mnf_presentation_non_growing),
+        "mnf_presentation_shrinking_cases": len(mnf_presentation_shrinking),
+        "mnf_presentation_target_sized_cases": len(mnf_presentation_target_sized),
+        "mnf_presentation_chars": sum(
+            int(row["mnf_presentation_chars"]) for row in rows
+        ),
         "tau_normalized_chars": total_tau,
         "target_normalized_chars": total_target,
         "tau_normalize_elapsed_ms": total_tau_normalize_elapsed_ms,
@@ -479,7 +535,9 @@ def main() -> int:
             "is a branch-recombination probe; with TAU_EQUALITY_SPLIT_RECOMBINE=1 "
             "it also measures the experimental Tau normalizer patch. DNF/MNF "
             "matches distinguish semantic canonical agreement from normalize-text "
-            "presentation differences."
+            "presentation differences. DNF/MNF presentation fields measure guarded "
+            "presentation candidates, accepting those forms only when they do not "
+            "increase normalized text size."
         ),
     }
     if args.check_idempotence:

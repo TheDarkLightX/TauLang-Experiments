@@ -281,6 +281,9 @@ enabled second-pass growth cases:     30 / 200
 guarded-presentation target-sized:    200 / 200
 guarded-presentation exact matches:   160 / 200
 guarded-presentation characters:      1980
+guarded-MNF non-growing cases:        200 / 200
+guarded-MNF shrinking cases:          40 / 200
+guarded-MNF characters:               1480
 ```
 
 This sharpens the remaining frontier. The feature-gated pass improves
@@ -293,6 +296,12 @@ AST-level second-normalize hook was tested and did not improve the corpus,
 because the measured gain comes from reparsing Tau's printed presentation.
 The implementation target is therefore a presentation-aware canonicalization
 pass, not a blind second pass over the existing tree.
+
+A stronger presentation candidate is guarded `mnf`: use `mnf` as the printed
+form only when it does not increase size. On the same wide corpus it is
+non-growing on every case, shrinks `40 / 200` cases, and reduces total printed
+characters from `1980` to `1480`. This is also probe evidence, not a default
+runtime mode.
 
 The fixed-width modular arithmetic rewrite-triage corpus is:
 

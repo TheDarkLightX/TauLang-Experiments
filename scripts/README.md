@@ -817,6 +817,9 @@ enabled second-pass growth cases:     30 / 200
 guarded-presentation target-sized:    200 / 200
 guarded-presentation exact matches:   160 / 200
 guarded-presentation characters:      1980
+guarded-MNF non-growing cases:        200 / 200
+guarded-MNF shrinking cases:          40 / 200
+guarded-MNF characters:               1480
 ```
 
 The feature-gated pass improves fixed-point stability, but the remaining
@@ -826,6 +829,11 @@ it is no longer than the first result. A direct C++ hook that re-normalized the
 existing AST was tested and did not move the corpus. The next implementation
 needs presentation-aware canonicalization, because the useful probe behavior is
 triggered by reparsing Tau's printed form.
+
+The same probe now measures guarded DNF/MNF presentation candidates. Guarded
+`mnf` is the stronger current candidate: it is non-growing on all wide-corpus
+cases and shrinks total printed text from `1980` to `1480` characters. This is
+still a presentation experiment, not a default Tau mode.
 
 ## Variable-update cache telemetry
 
