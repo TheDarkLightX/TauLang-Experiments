@@ -20,7 +20,7 @@ read as proof-guided prototypes, not as claims about official IDNI plans.
 | --- | --- | --- | --- |
 | Fixed-width modular arithmetic | `run_bitvector_modular_demo.py` and the bitvector Lean packets | Exhaustive small-width rewrite triage, Lean-proved safe modular laws, Aristotle-audited identity rewrites, and a proof-backed constant-folder for a small expression kernel | Parser/runtime bitvector syntax, solver integration, broader rewrite basis, and large-corpus benchmarks |
 | Boolean-function storage and manipulation | Safe tables, pointwise revision, finite CBF lowering, and symbolic helper forms | Tau patch demos for feature-gated tables, Lean proof artifacts for finite and safe-recursive kernels | Official table syntax, chosen runtime carrier, full lowering, and unrestricted TABA coverage if that is intended |
-| Normalization and satisfiability performance | Restricted rewrite normalizer, qelim backend routing, table-demo solver telemetry, compound table-equivalence checks, equality-aware path simplification, incremental execution prototype, derivative-style perturbation analysis, and scoped var-name cache-key model | Confluent seven-rule normalizer proof, qelim parity checks, internal telemetry, compound-query demo speedup, equality-substitution proof, read-set soundness, derivative soundness, proof-backed incremental-cache kernel, partial-evaluation soundness, and scoped cache-key counterexample discipline | Integration into Tau's typed IR, default-on profit selector, equality-aware path pass in Tau's normalizer, read-set storage for real nodes, derivative or delta runtime support, cache-key proof for real nodes, and full runtime benchmarks |
+| Normalization and satisfiability performance | Restricted rewrite normalizer, qelim backend routing, table-demo solver telemetry, compound table-equivalence checks, RR value-inference skipping, equality-aware path simplification, incremental execution prototype, derivative-style perturbation analysis, and scoped var-name cache-key model | Confluent seven-rule normalizer proof, qelim parity checks, internal telemetry, compound-query demo speedup, feature-gated RR extraction speedup on the safe-table solver corpus, equality-substitution proof, read-set soundness, derivative soundness, proof-backed incremental-cache kernel, partial-evaluation soundness, and scoped cache-key counterexample discipline | Integration into Tau's typed IR, default-on profit selector, proof or code invariant for the RR skip branch, equality-aware path pass in Tau's normalizer, read-set storage for real nodes, derivative or delta runtime support, cache-key proof for real nodes, and full runtime benchmarks |
 | Redefinitions of functions or predicates | Guarded pointwise revision as a safe redefinition model | Aristotle-checked guarded revision laws, compatibility-needed counterexample, and satisfiability-preservation theorem under compatibility | Tau syntax for redefinition, compatibility checker, diagnostic output, and rollback behavior |
 | Arbitrary stream names | Stream-key rename semantic kernel | Lean proof that renaming preserves denotation when the renamed environment agrees with the original | Parser/runtime support, canonical naming policy, collision handling, and source-map diagnostics |
 | Boolean-function normalization performance | KB normalizer, BDD/qelim probes, and future BDD carrier candidates | Proof-backed normalizer for a restricted expression fragment and generated-corpus node reductions | General Boolean-function normal form, BDD or AIG carrier choice, equivalence/minimization strategy, and Tau integration |
@@ -62,6 +62,26 @@ The first Tau-side variable-update cache attempt is documented in
 on the current safe-table solver corpus, so it is negative optimization
 evidence, not a promoted speedup.
 
+The first successful internal RR extraction shortcut is documented in
+`docs/rr-skip-value-infer.md`. It uses `TAU_RR_SKIP_VALUE_INFER=1` to skip the
+second full inference pass for non-`spec`, ref-valued command arguments that
+already passed parser-time type inference.
+
+Current receipt:
+
+```text
+checks:             5
+repetitions:        3
+output parity:      passed
+solve improvement:  76.963%
+get_rr improvement: 97.804%
+elapsed change:     -0.343%
+```
+
+This is an internal command-body improvement on the safe-table solver corpus,
+not a whole-demo wall-clock speedup claim. The current wrapper remains dominated
+by repeated Tau process startup and source loading.
+
 The compound table-equivalence check is documented in
 `docs/demo-gallery.md`. The compound mode uses this law:
 
@@ -97,9 +117,9 @@ checks:                15
 individual processes:  15
 batched processes:      1
 transport:            file
-individual elapsed:  118067.485 ms
-batched elapsed:      57865.218 ms
-elapsed reduction:       50.990%
+individual elapsed:  118534.210 ms
+batched elapsed:      58227.056 ms
+elapsed reduction:       50.877%
 ```
 
 This is the second table-demo overhead reduction. It is weaker than the

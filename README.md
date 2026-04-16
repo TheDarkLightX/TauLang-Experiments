@@ -122,6 +122,14 @@ The current patch is an experiment patch, not an official Tau release. It adds:
   generated absorption-heavy matrices. A separate auto-route matrix shows it
   does not materially improve `TAU_QELIM_BACKEND=auto`, so it is not validated
   as a default Tau optimization.
+- an opt-in RR extraction shortcut,
+  `TAU_RR_SKIP_VALUE_INFER=1`, for ref-valued command arguments that have
+  already passed parser-time type inference. Current evidence is scoped to the
+  safe-table solver corpus: it preserves the checked `no solution` results,
+  reduces internal solve-command time by `76.963%`, and reduces measured
+  `get_rr` time by `97.804%` on the three-repetition receipt. Whole-process
+  elapsed time is not improved in the current wrapper because repeated Tau
+  process startup dominates.
 
 The table syntax is rejected unless `TAU_ENABLE_SAFE_TABLES=1` is set.
 
@@ -181,7 +189,7 @@ It uses Tau's existing prefix-dot CLI shape and the opt-in
 `TAU_CLI_FILE_MODE=1` command-file path to run all table-vs-raw checks in one
 Tau process while preserving one `solve` result per obligation. The current
 local receipt checks `15` obligations, reduces process count from `15` to `1`,
-and reduces elapsed time by about `50.990%`. This is command-file batching and
+and reduces elapsed time by about `50.877%`. This is command-file batching and
 demo harness optimization, not a solver speedup.
 
 The first equality-aware path simplification prototype is:
@@ -375,3 +383,17 @@ The first Tau-side variable-update cache attempt is documented in
 `docs/infer-variable-update-cache.md`. It preserved outputs but was slower on
 the current safe-table solver corpus, so it remains negative optimization
 evidence.
+
+The first successful internal RR extraction shortcut is:
+
+```bash
+python3 scripts/run_rr_skip_value_infer_demo.py \
+  --reps 3 \
+  --out results/local/rr-skip-value-infer-demo-reps3.json
+```
+
+It compares baseline RR extraction with `TAU_RR_SKIP_VALUE_INFER=1`. Current
+receipt: output parity passed, internal solve-command time improved by
+`76.963%`, and measured `get_rr` time improved by `97.804%` on the safe-table
+solver corpus. It is not a public demo wall-clock speedup yet, because the
+current harness is dominated by repeated Tau process startup.

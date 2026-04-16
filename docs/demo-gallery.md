@@ -298,9 +298,9 @@ checks:              15
 individual processes: 15
 batched processes:     1
 transport:          file
-individual elapsed:  118067.485 ms
-batched elapsed:      57865.218 ms
-elapsed reduction:       50.990%
+individual elapsed:  118534.210 ms
+batched elapsed:      58227.056 ms
+elapsed reduction:       50.877%
 result:             passed
 ```
 
@@ -314,6 +314,51 @@ Boundary: this is a CLI batching and demo-harness optimization. It does not
 change Tau's solver, table semantics, or parser grammar. The command-file path
 is opt-in behind `TAU_CLI_FILE_MODE=1`.
 
+## Demo 9: RR Value-Inference Skip
+
+Command:
+
+```bash
+python3 scripts/run_rr_skip_value_infer_demo.py \
+  --reps 3 \
+  --out results/local/rr-skip-value-infer-demo-reps3.json
+```
+
+This demo measures a feature-gated internal shortcut:
+
+```bash
+TAU_RR_SKIP_VALUE_INFER=1
+```
+
+The shortcut skips the second full type-inference pass for non-`spec`,
+ref-valued command arguments that already passed parser-time type inference.
+
+Current local receipt:
+
+```text
+checks:                       5
+repetitions:                  3
+output parity:                passed
+baseline solve total:       261.038000 ms
+skip solve total:            60.136580 ms
+solve improvement:           76.963%
+baseline get_rr:            209.216570 ms
+skip get_rr:                  4.595369 ms
+get_rr improvement:          97.804%
+whole-process elapsed change: -0.343%
+```
+
+Standard reading: on the checked corpus, the skip branch returns the same
+solver results while reducing measured command-body RR extraction time.
+
+Plain English: Tau was typing an already-typed value a second time on this
+path. The feature flag removes that redundant pass for the scoped branch.
+
+Boundary: this is not a default Tau optimization. Whole-process elapsed time is
+roughly flat because this wrapper is dominated by process startup and source
+loading. Promotion would need a larger corpus and a proof or code invariant for
+the parser-time typing premise.
+
 ## Boundary
 
 These demos prove the patched Tau executable can parse and check a safe
@@ -325,4 +370,5 @@ telemetry demo identifies a separate optimization surface for the ordinary
 table checks. The compound table check shows one concrete way to reduce repeated
 demo overhead without changing the semantics. The batched table check shows a
 second way to reduce repeated overhead while preserving one solver result per
-obligation.
+obligation. The RR value-inference skip shows an internal command-body
+optimization candidate, not a default runtime claim.

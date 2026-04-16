@@ -196,6 +196,38 @@ Interpretation: the next optimization target is repeated core type-inference
 traversal over the expanded solver term. This is still telemetry, not a
 semantics-preserving cache proof.
 
+The first successful RR extraction shortcut is:
+
+```bash
+python3 scripts/run_rr_skip_value_infer_demo.py \
+  --reps 3 \
+  --out results/local/rr-skip-value-infer-demo-reps3.json
+```
+
+It compares baseline RR extraction with `TAU_RR_SKIP_VALUE_INFER=1`. The flag
+skips the second full inference pass only for non-`spec`, ref-valued command
+arguments that already passed parser-time type inference.
+
+Current local receipt:
+
+```text
+checks:                       5
+repetitions:                  3
+output parity:                passed
+baseline solve total:       261.038000 ms
+skip solve total:            60.136580 ms
+solve improvement:           76.963%
+baseline get_rr:            209.216570 ms
+skip get_rr:                  4.595369 ms
+get_rr improvement:          97.804%
+whole-process elapsed change: -0.343%
+```
+
+Interpretation: this is an internal `solve_cmd` and RR-extraction improvement
+on the safe-table solver corpus. It is not a whole-demo wall-clock speedup yet,
+because the wrapper still spends most elapsed time launching Tau processes and
+loading sources.
+
 ## Compound table-equivalence check
 
 ```bash
@@ -252,9 +284,9 @@ checks:                15
 individual processes:  15
 batched processes:      1
 transport:            file
-individual elapsed:  118067.485 ms
-batched elapsed:      57865.218 ms
-elapsed reduction:       50.990%
+individual elapsed:  118534.210 ms
+batched elapsed:      58227.056 ms
+elapsed reduction:       50.877%
 result:               passed
 ```
 

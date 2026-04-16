@@ -6167,7 +6167,7 @@ index 00000000..c00f0140
 +
 +#endif
 diff --git a/src/repl_evaluator.tmpl.h b/src/repl_evaluator.tmpl.h
-index 8e944446..5a0e21f4 100644
+index 8e944446..f1c94a97 100644
 --- a/src/repl_evaluator.tmpl.h
 +++ b/src/repl_evaluator.tmpl.h
 @@ -2,6 +2,8 @@
@@ -6223,7 +6223,7 @@ index 8e944446..5a0e21f4 100644
  	if (contains(value, tau::ref)) {
  		if (type == tau::spec) {
  			if (auto x = get_nso_rr<node>(ctx, value); x)
-@@ -108,31 +141,68 @@ std::optional<rr<node<tau_ba<BAs...>, BAs...>>>
+@@ -108,31 +141,78 @@ std::optional<rr<node<tau_ba<BAs...>, BAs...>>>
  			else return {};
  		} else nso_rr = rr<node>(tau::geth(
  				resolve_io_vars<node>(ctx, value)));
@@ -6232,6 +6232,16 @@ index 8e944446..5a0e21f4 100644
  		nso_rr.rec_relations.insert(nso_rr.rec_relations.end(),
  			definitions.begin(), definitions.end());
 +		auto defs_end = clock::now();
++		const char* skip_value_infer_env =
++			std::getenv("TAU_RR_SKIP_VALUE_INFER");
++		if (type != tau::spec && skip_value_infer_env
++			&& std::string(skip_value_infer_env) == "1")
++		{
++			auto result_end = clock::now();
++			emit_stats("ref_value_skip_infer", ensure_end, type_arg_end,
++				setup_end, extract_end, defs_end, defs_end, result_end);
++			return nso_rr;
++		}
  		if (auto [infr, n_global_scope] = infer_ba_types<node>(
  			build_spec<node>(nso_rr), defs.get_global_scope(),
  			defs.get_definition_heads()); infr)
@@ -6298,7 +6308,7 @@ index 8e944446..5a0e21f4 100644
  }
  
  template <typename... BAs>
-@@ -352,25 +422,78 @@ tref repl_evaluator<BAs...>::inst_cmd(const tt& n) {
+@@ -352,25 +432,78 @@ tref repl_evaluator<BAs...>::inst_cmd(const tt& n) {
  template <typename... BAs>
  requires BAsPack<BAs...>
  tref repl_evaluator<BAs...>::normalize_cmd(const tt& n) {
@@ -6381,7 +6391,7 @@ index 8e944446..5a0e21f4 100644
  	}
  	return invalid_argument();
  }
-@@ -458,6 +581,8 @@ void print_solver_cmd_solution(std::optional<solution<node>>& solution,
+@@ -458,6 +591,8 @@ void print_solver_cmd_solution(std::optional<solution<node>>& solution,
  template <typename... BAs>
  requires BAsPack<BAs...>
  void repl_evaluator<BAs...>::solve_cmd(const tt& n) {
@@ -6390,7 +6400,7 @@ index 8e944446..5a0e21f4 100644
  	// setting solver options
  	solver_options options = {
  		.splitter_one = node::nso_factory::
-@@ -469,6 +594,7 @@ void repl_evaluator<BAs...>::solve_cmd(const tt& n) {
+@@ -469,6 +604,7 @@ void repl_evaluator<BAs...>::solve_cmd(const tt& n) {
  	while (tau::get(arg).has_right_sibling())
  		arg = tau::get(arg).right_sibling();
  	tref applied = apply_rr_to_nso_rr_with_defs(arg);
@@ -6398,7 +6408,7 @@ index 8e944446..5a0e21f4 100644
  	if (!applied) {
  		TAU_LOG_ERROR << "Invalid argument(s)\n";
  		return;
-@@ -482,14 +608,35 @@ void repl_evaluator<BAs...>::solve_cmd(const tt& n) {
+@@ -482,14 +618,35 @@ void repl_evaluator<BAs...>::solve_cmd(const tt& n) {
  	DBG(TAU_LOG_TRACE << "solve_cmd/applied: " << applied << "\n";)
  
  	size_t type = get_solver_cmd_type<node>(applied);
@@ -6435,7 +6445,7 @@ index 8e944446..5a0e21f4 100644
  	print_solver_cmd_solution<node>(solution, type);
  }
  
-@@ -622,6 +769,8 @@ void repl_evaluator<BAs...>::def_output_cmd(const tt& /*command*/) {
+@@ -622,6 +779,8 @@ void repl_evaluator<BAs...>::def_output_cmd(const tt& /*command*/) {
  template <typename... BAs>
  requires BAsPack<BAs...>
  tref repl_evaluator<BAs...>::make_cli(const std::string& src) {
@@ -6444,7 +6454,7 @@ index 8e944446..5a0e21f4 100644
  	// remove ascii char 22 if exists in the input
  	std::string filt = src;
  	filt.erase(remove_if(filt.begin(), filt.end(), [](unsigned char c) {
-@@ -821,10 +970,12 @@ void repl_evaluator<BAs...>::update_bool_opt_cmd(repl_option o,
+@@ -821,10 +980,12 @@ void repl_evaluator<BAs...>::update_bool_opt_cmd(repl_option o,
  template <typename... BAs>
  requires BAsPack<BAs...>
  bool repl_evaluator<BAs...>::update_charvar(bool value) {
