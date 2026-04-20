@@ -1,0 +1,99 @@
+# Neuro-symbolic qNS evidence masks.
+#
+# Carrier:
+# - qns8 is a finite powerset Boolean algebra over eight neural proposal rows.
+# - Each bit denotes one proposal, search region, proof artifact, or DeFi market
+#   scenario.
+#
+# Scope:
+# - The neural component supplies proposed row masks and score-derived evidence.
+# - Tau owns exact qNS filtering and table memory revision.
+# - This is a finite executable qNS lane, not unrestricted TABA tables.
+
+all8() : qns8 := { #xFF }:qns8.
+not8(x:qns8) : qns8 := x ^ all8().
+
+research_promoted(
+  proposed:qns8,parse_ok:qns8,symbolic_ok:qns8,proof_ok:qns8,
+  counterexample:qns8,review:qns8,hard_reject:qns8
+) : qns8 :=
+  proposed & parse_ok & symbolic_ok & proof_ok &
+  not8(counterexample) & not8(review) & not8(hard_reject).
+
+research_falsified(proposed:qns8,counterexample:qns8) : qns8 :=
+  proposed & counterexample.
+
+research_hard_reject(proposed:qns8,parse_ok:qns8,hard_reject:qns8) : qns8 :=
+  proposed & (not8(parse_ok) | hard_reject).
+
+research_review(
+  proposed:qns8,parse_ok:qns8,symbolic_ok:qns8,proof_ok:qns8,
+  counterexample:qns8,review:qns8,hard_reject:qns8
+) : qns8 :=
+  proposed &
+  not8(research_promoted(proposed,parse_ok,symbolic_ok,proof_ok,counterexample,review,hard_reject)) &
+  not8(research_falsified(proposed,counterexample)) &
+  not8(research_hard_reject(proposed,parse_ok,hard_reject)).
+
+frontier_certify(region:qns8,exact_witness:qns8) : qns8 :=
+  region & exact_witness.
+
+frontier_expand(region:qns8,exact_witness:qns8,high_yield:qns8,high_cost:qns8) : qns8 :=
+  region & not8(exact_witness) & high_yield & not8(high_cost).
+
+frontier_repair(
+  region:qns8,exact_witness:qns8,high_yield:qns8,near_miss:qns8,stale_low_yield:qns8
+) : qns8 :=
+  region & not8(exact_witness) & not8(high_yield) & near_miss & not8(stale_low_yield).
+
+frontier_prune(
+  region:qns8,exact_witness:qns8,high_yield:qns8,near_miss:qns8,stale_low_yield:qns8
+) : qns8 :=
+  region & not8(exact_witness) & not8(high_yield) & not8(near_miss) & stale_low_yield.
+
+frontier_throttle(
+  region:qns8,exact_witness:qns8,high_yield:qns8,near_miss:qns8,stale_low_yield:qns8,high_cost:qns8
+) : qns8 :=
+  region & not8(exact_witness) & not8(high_yield) & not8(near_miss) &
+  not8(stale_low_yield) & high_cost.
+
+defi_freeze(market:qns8,exploit_witness:qns8) : qns8 :=
+  market & exploit_witness.
+
+defi_quarantine_oracle(market:qns8,exploit_witness:qns8,oracle_divergence:qns8) : qns8 :=
+  market & not8(exploit_witness) & oracle_divergence.
+
+defi_pause_borrow(
+  market:qns8,exploit_witness:qns8,oracle_divergence:qns8,solvency_gap:qns8
+) : qns8 :=
+  market & not8(exploit_witness) & not8(oracle_divergence) & solvency_gap.
+
+defi_cap_liquidation(
+  market:qns8,exploit_witness:qns8,oracle_divergence:qns8,solvency_gap:qns8,liquidation_cascade:qns8
+) : qns8 :=
+  market & not8(exploit_witness) & not8(oracle_divergence) &
+  not8(solvency_gap) & liquidation_cascade.
+
+defi_governance_review(
+  market:qns8,exploit_witness:qns8,oracle_divergence:qns8,
+  solvency_gap:qns8,liquidation_cascade:qns8,governance_override:qns8
+) : qns8 :=
+  market & not8(exploit_witness) & not8(oracle_divergence) &
+  not8(solvency_gap) & not8(liquidation_cascade) & governance_override.
+
+defi_allow(
+  market:qns8,exploit_witness:qns8,oracle_divergence:qns8,
+  solvency_gap:qns8,liquidation_cascade:qns8,governance_override:qns8,healthy:qns8
+) : qns8 :=
+  market & not8(exploit_witness) & not8(oracle_divergence) &
+  not8(solvency_gap) & not8(liquidation_cascade) &
+  not8(governance_override) & healthy.
+
+qns_memory_revise(old:qns8, guard:qns8, replacement:qns8) : qns8 :=
+  table {
+    when guard => replacement;
+    else => old
+  }.
+
+qns_memory_revise_raw(old:qns8, guard:qns8, replacement:qns8) : qns8 :=
+  (guard & replacement) | (not8(guard) & old).

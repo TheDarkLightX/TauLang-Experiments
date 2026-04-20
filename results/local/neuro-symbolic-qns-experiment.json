@@ -1,0 +1,271 @@
+{
+  "rows": [
+    {
+      "actual": 33,
+      "actual_names": [
+        "fixed_revision_law",
+        "safe_revision_packet"
+      ],
+      "expected": 33,
+      "expected_names": [
+        "fixed_revision_law",
+        "safe_revision_packet"
+      ],
+      "expr": "({ #xFF }:qns8 & { #xF7 }:qns8 & { #x21 }:qns8 & { #x21 }:qns8 & ({ #xFF }:qns8 ^ ({ #x82 }:qns8)) & ({ #xFF }:qns8 ^ ({ #x54 }:qns8)) & ({ #xFF }:qns8 ^ ({ #x08 }:qns8)))",
+      "name": "promoted",
+      "ok": true,
+      "raw": "%1: { 33 }:qns8",
+      "suite": "research_qns"
+    },
+    {
+      "actual": 130,
+      "actual_names": [
+        "current_guard_law",
+        "unrestricted_taba_claim"
+      ],
+      "expected": 130,
+      "expected_names": [
+        "current_guard_law",
+        "unrestricted_taba_claim"
+      ],
+      "expr": "({ #xFF }:qns8 & { #x82 }:qns8)",
+      "name": "falsified",
+      "ok": true,
+      "raw": "%1: { 130 }:qns8",
+      "suite": "research_qns"
+    },
+    {
+      "actual": 8,
+      "actual_names": [
+        "malformed_claim"
+      ],
+      "expected": 8,
+      "expected_names": [
+        "malformed_claim"
+      ],
+      "expr": "({ #xFF }:qns8 & (({ #xFF }:qns8 ^ ({ #xF7 }:qns8)) | { #x08 }:qns8))",
+      "name": "hard_reject",
+      "ok": true,
+      "raw": "%1: { 8 }:qns8",
+      "suite": "research_qns"
+    },
+    {
+      "actual": 84,
+      "actual_names": [
+        "arbitrary_select_law",
+        "depth5_region",
+        "runtime_lowering_gap"
+      ],
+      "expected": 84,
+      "expected_names": [
+        "arbitrary_select_law",
+        "depth5_region",
+        "runtime_lowering_gap"
+      ],
+      "expr": "({ #xFF }:qns8 & ({ #xFF }:qns8 ^ (({ #xFF }:qns8 & { #xF7 }:qns8 & { #x21 }:qns8 & { #x21 }:qns8 & ({ #xFF }:qns8 ^ ({ #x82 }:qns8)) & ({ #xFF }:qns8 ^ ({ #x54 }:qns8)) & ({ #xFF }:qns8 ^ ({ #x08 }:qns8))))) & ({ #xFF }:qns8 ^ (({ #xFF }:qns8 & { #x82 }:qns8))) & ({ #xFF }:qns8 ^ (({ #xFF }:qns8 & (({ #xFF }:qns8 ^ ({ #xF7 }:qns8)) | { #x08 }:qns8)))))",
+      "name": "review",
+      "ok": true,
+      "raw": "%1: { 84 }:qns8",
+      "suite": "research_qns"
+    },
+    {
+      "actual": 33,
+      "actual_names": [
+        "fixed_revision_law",
+        "safe_revision_packet"
+      ],
+      "expected": 33,
+      "expected_names": [
+        "fixed_revision_law",
+        "safe_revision_packet"
+      ],
+      "expr": "table { when { #x21 }:qns8 => { #xFF }:qns8; else => { #x00 }:qns8 }",
+      "name": "memory_revise_promoted",
+      "ok": true,
+      "raw": "%1: { 33 }:qns8",
+      "suite": "research_qns"
+    },
+    {
+      "actual": 1,
+      "actual_names": [
+        "depth4_ln_exact"
+      ],
+      "expected": 1,
+      "expected_names": [
+        "depth4_ln_exact"
+      ],
+      "expr": "({ #x1F }:qns8 & { #x01 }:qns8)",
+      "name": "certify",
+      "ok": true,
+      "raw": "%1: { 1 }:qns8",
+      "suite": "frontier_qns"
+    },
+    {
+      "actual": 2,
+      "actual_names": [
+        "depth5_guided_region"
+      ],
+      "expected": 2,
+      "expected_names": [
+        "depth5_guided_region"
+      ],
+      "expr": "({ #x1F }:qns8 & ({ #xFF }:qns8 ^ ({ #x01 }:qns8)) & { #x03 }:qns8 & ({ #xFF }:qns8 ^ ({ #x14 }:qns8)))",
+      "name": "expand",
+      "ok": true,
+      "raw": "%1: { 2 }:qns8",
+      "suite": "frontier_qns"
+    },
+    {
+      "actual": 4,
+      "actual_names": [
+        "exp_exp_near_miss"
+      ],
+      "expected": 4,
+      "expected_names": [
+        "exp_exp_near_miss"
+      ],
+      "expr": "({ #x1F }:qns8 & ({ #xFF }:qns8 ^ ({ #x01 }:qns8)) & ({ #xFF }:qns8 ^ ({ #x03 }:qns8)) & { #x04 }:qns8 & ({ #xFF }:qns8 ^ ({ #x08 }:qns8)))",
+      "name": "repair",
+      "ok": true,
+      "raw": "%1: { 4 }:qns8",
+      "suite": "frontier_qns"
+    },
+    {
+      "actual": 8,
+      "actual_names": [
+        "cold_random_shard"
+      ],
+      "expected": 8,
+      "expected_names": [
+        "cold_random_shard"
+      ],
+      "expr": "({ #x1F }:qns8 & ({ #xFF }:qns8 ^ ({ #x01 }:qns8)) & ({ #xFF }:qns8 ^ ({ #x03 }:qns8)) & ({ #xFF }:qns8 ^ ({ #x04 }:qns8)) & { #x08 }:qns8)",
+      "name": "prune",
+      "ok": true,
+      "raw": "%1: { 8 }:qns8",
+      "suite": "frontier_qns"
+    },
+    {
+      "actual": 16,
+      "actual_names": [
+        "expensive_proof_lane"
+      ],
+      "expected": 16,
+      "expected_names": [
+        "expensive_proof_lane"
+      ],
+      "expr": "({ #x1F }:qns8 & ({ #xFF }:qns8 ^ ({ #x01 }:qns8)) & ({ #xFF }:qns8 ^ ({ #x03 }:qns8)) & ({ #xFF }:qns8 ^ ({ #x04 }:qns8)) & ({ #xFF }:qns8 ^ ({ #x08 }:qns8)) & { #x14 }:qns8)",
+      "name": "throttle",
+      "ok": true,
+      "raw": "%1: { 16 }:qns8",
+      "suite": "frontier_qns"
+    },
+    {
+      "actual": 1,
+      "actual_names": [
+        "oracle_and_exploit_overlap"
+      ],
+      "expected": 1,
+      "expected_names": [
+        "oracle_and_exploit_overlap"
+      ],
+      "expr": "({ #x3F }:qns8 & { #x01 }:qns8)",
+      "name": "freeze",
+      "ok": true,
+      "raw": "%1: { 1 }:qns8",
+      "suite": "defi_qns"
+    },
+    {
+      "actual": 2,
+      "actual_names": [
+        "oracle_divergence_only"
+      ],
+      "expected": 2,
+      "expected_names": [
+        "oracle_divergence_only"
+      ],
+      "expr": "({ #x3F }:qns8 & ({ #xFF }:qns8 ^ ({ #x01 }:qns8)) & { #x03 }:qns8)",
+      "name": "quarantine_oracle",
+      "ok": true,
+      "raw": "%1: { 2 }:qns8",
+      "suite": "defi_qns"
+    },
+    {
+      "actual": 4,
+      "actual_names": [
+        "solvency_gap_with_healthy_flag"
+      ],
+      "expected": 4,
+      "expected_names": [
+        "solvency_gap_with_healthy_flag"
+      ],
+      "expr": "({ #x3F }:qns8 & ({ #xFF }:qns8 ^ ({ #x01 }:qns8)) & ({ #xFF }:qns8 ^ ({ #x03 }:qns8)) & { #x04 }:qns8)",
+      "name": "pause_borrow",
+      "ok": true,
+      "raw": "%1: { 4 }:qns8",
+      "suite": "defi_qns"
+    },
+    {
+      "actual": 8,
+      "actual_names": [
+        "liquidation_cascade"
+      ],
+      "expected": 8,
+      "expected_names": [
+        "liquidation_cascade"
+      ],
+      "expr": "({ #x3F }:qns8 & ({ #xFF }:qns8 ^ ({ #x01 }:qns8)) & ({ #xFF }:qns8 ^ ({ #x03 }:qns8)) & ({ #xFF }:qns8 ^ ({ #x04 }:qns8)) & { #x08 }:qns8)",
+      "name": "cap_liquidation",
+      "ok": true,
+      "raw": "%1: { 8 }:qns8",
+      "suite": "defi_qns"
+    },
+    {
+      "actual": 32,
+      "actual_names": [
+        "governance_override"
+      ],
+      "expected": 32,
+      "expected_names": [
+        "governance_override"
+      ],
+      "expr": "({ #x3F }:qns8 & ({ #xFF }:qns8 ^ ({ #x01 }:qns8)) & ({ #xFF }:qns8 ^ ({ #x03 }:qns8)) & ({ #xFF }:qns8 ^ ({ #x04 }:qns8)) & ({ #xFF }:qns8 ^ ({ #x08 }:qns8)) & { #x20 }:qns8)",
+      "name": "governance_review",
+      "ok": true,
+      "raw": "%1: { 32 }:qns8",
+      "suite": "defi_qns"
+    },
+    {
+      "actual": 16,
+      "actual_names": [
+        "normal_market"
+      ],
+      "expected": 16,
+      "expected_names": [
+        "normal_market"
+      ],
+      "expr": "({ #x3F }:qns8 & ({ #xFF }:qns8 ^ ({ #x01 }:qns8)) & ({ #xFF }:qns8 ^ ({ #x03 }:qns8)) & ({ #xFF }:qns8 ^ ({ #x04 }:qns8)) & ({ #xFF }:qns8 ^ ({ #x08 }:qns8)) & ({ #xFF }:qns8 ^ ({ #x20 }:qns8)) & { #x15 }:qns8)",
+      "name": "allow",
+      "ok": true,
+      "raw": "%1: { 16 }:qns8",
+      "suite": "defi_qns"
+    }
+  ],
+  "schema": "neuro_symbolic_qns_experiment_v1",
+  "scope": {
+    "claim": "Tau qNS8 acts as the finite neuro-symbolic Boolean algebra for proposal/evidence masks.",
+    "not_claimed": [
+      "not live LLM inference",
+      "not probabilistic arithmetic inside Tau",
+      "not unrestricted TABA tables",
+      "not financial advice"
+    ]
+  },
+  "summary": {
+    "ok": true,
+    "row_count": 16,
+    "rows_ok": true,
+    "suite_count": 3
+  },
+  "tau_source": "examples/tau/neuro_symbolic_qns_evidence_v1.tau"
+}

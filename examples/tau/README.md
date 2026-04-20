@@ -192,6 +192,47 @@ The public harness checks:
 Boundary: Tau does not compute the neural scores. Tau checks the exact symbolic
 filtering step, and the host script renormalizes the surviving neural mass.
 
+## Neuro-symbolic table programs
+
+Files:
+
+```text
+examples/tau/neuro_symbolic_research_tables_v1.tau
+examples/tau/defi_lending_risk_table_v1.tau
+examples/tau/neuro_symbolic_qns_evidence_v1.tau
+```
+
+These examples turn neural proposal rows into safe symbolic table decisions:
+
+- counterexample garden,
+- frontier weather routing,
+- proof debt ledger,
+- DeFi lending risk routing.
+
+Run them with:
+
+```bash
+python3 scripts/run_neuro_symbolic_table_programs.py
+```
+
+The runner checks table-vs-raw equivalence, priority slices, and deterministic
+finite fixtures. The DeFi example is a policy-shape fixture only; it is not
+financial advice or a live risk engine.
+
+The qNS evidence-mask lane uses Tau `qns8` as the finite neuro-symbolic Boolean
+algebra:
+
+```bash
+python3 scripts/run_neuro_symbolic_qns_experiment.py
+```
+
+The live local-LLM variant asks Qwen to assign evidence bits, then lets Tau qNS8
+compute the exact masks:
+
+```bash
+python3 scripts/run_neuro_symbolic_qns_llm_experiment.py --model qwen3.6:35b
+```
+
 ## EML/qNS certificate demo
 
 This demo uses checked EML regression fixture artifacts outside Tau, then sends

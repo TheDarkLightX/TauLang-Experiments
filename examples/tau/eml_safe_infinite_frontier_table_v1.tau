@@ -1,0 +1,23 @@
+# EML safe infinite-frontier table, finite Tau witness.
+#
+# Scope:
+# - The mathematical table is indexed by a countable candidate stream.
+# - This executable Tau file checks the pointwise revision law on one arbitrary
+#   row of a finite frontier approximant.
+# - Host code supplies fixed lower-stratum guard/replacement evidence for each
+#   candidate row.
+# - The safe infinite-table proof lane justifies taking the omega-supremum of
+#   these finite approximants when the update remains monotone and
+#   omega-continuous.
+#
+# This is not unrestricted TABA tables: guards must not inspect the current
+# same-stratum recursive state.
+
+eml_memory_update_table(old,guard,replacement) : tau :=
+  table {
+    when guard => replacement;
+    else => old
+  }.
+
+eml_memory_update_raw(old,guard,replacement) : tau :=
+  (guard & replacement) | (guard' & old).

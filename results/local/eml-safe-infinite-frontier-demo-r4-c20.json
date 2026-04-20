@@ -1,0 +1,3259 @@
+{
+  "schema": "eml_safe_infinite_frontier_demo_v1",
+  "scope": {
+    "claim": "The scaled EML/qNS experiment is a finite executable approximant of a safe infinite candidate table.",
+    "not_claimed": [
+      "not an unrestricted TABA proof",
+      "not a proof that Qwen candidates are true by generation alone",
+      "not full analytic Tau semantics for EML",
+      "not an exhaustive depth-5 or depth-6 search"
+    ],
+    "infinite_table_reading": {
+      "index_set": "countable candidate stream, modeled by natural-number candidate indices",
+      "finite_lane": "this receipt materializes finite frontier prefixes only",
+      "state": "T_n(i) is the qNS evidence memory for candidate row i at approximant n",
+      "guard": "G_n(i) is fixed lower-stratum evidence: promoted rows get top, rejected rows get bottom",
+      "replacement": "A_n(i) is the fixed accepted-evidence qNS mask for row i",
+      "update": "T_{n+1}(i) = (G_n(i) & A_n(i)) | (G_n(i)' & T_n(i))"
+    }
+  },
+  "inputs": {
+    "proposal": "results/local/eml-qns-scaled-sweep-proposals-r4-c20.json",
+    "receipt": "results/local/eml-qns-scaled-sweep-receipt-r4-c20.json",
+    "mlx_probe": "results/local/eml-depth4-mlx-probe-full.json",
+    "tau_source": "examples/tau/eml_safe_infinite_frontier_table_v1.tau",
+    "proposal_sha256": "a55be149450600053a1a15f9c8124a44f14e315646100a7906ae3847cc571ac7",
+    "receipt_sha256": "dc623e296f7ead7fe846eb07f128ad3a80cd2ff51566bc7e765aeaaf0b06438e",
+    "mlx_probe_sha256": "9d7d40991a7c3fee775eb23f4e1229f85368b52916d5e65fb7c45463d9592dd4",
+    "tau_source_sha256": "c25a9e0ecd6dbf8bfea3d9bd8d9281237293cb0a876e51201329c8a8e8792347",
+    "proposal_data_sha256": "bbf9cb7397334250580c224da1a414f9489586006abc8bc24c279ec879dbda4d",
+    "receipt_data_sha256": "aef70a07a7c913776cd01a9a80bd9f3e98c46e5f011b7b6013cbf98191bab434"
+  },
+  "source_summary": {
+    "proposal_rounds": [
+      {
+        "round": 1,
+        "temperature": 0.25,
+        "model": {
+          "model": "qwen3.6:35b",
+          "total_duration_ns": 56600356125,
+          "load_duration_ns": 152181000,
+          "prompt_eval_count": 378,
+          "eval_count": 1790,
+          "temperature": 0.25,
+          "num_predict": 4096,
+          "num_gpu": 999
+        },
+        "raw_candidate_count": 29,
+        "accepted_new": 28
+      },
+      {
+        "round": 2,
+        "temperature": 0.35,
+        "model": {
+          "model": "qwen3.6:35b",
+          "total_duration_ns": 66571537667,
+          "load_duration_ns": 131168209,
+          "prompt_eval_count": 802,
+          "eval_count": 2109,
+          "temperature": 0.35,
+          "num_predict": 4096,
+          "num_gpu": 999
+        },
+        "raw_candidate_count": 30,
+        "accepted_new": 17
+      },
+      {
+        "round": 3,
+        "temperature": 0.45,
+        "model": {
+          "model": "qwen3.6:35b",
+          "total_duration_ns": 98310822125,
+          "load_duration_ns": 146314416,
+          "prompt_eval_count": 888,
+          "eval_count": 2224,
+          "temperature": 0.45,
+          "num_predict": 4096,
+          "num_gpu": 999
+        },
+        "raw_candidate_count": 30,
+        "accepted_new": 20
+      },
+      {
+        "round": 4,
+        "temperature": 0.55,
+        "model": {
+          "model": "qwen3.6:35b",
+          "total_duration_ns": 68966522917,
+          "load_duration_ns": 124883250,
+          "prompt_eval_count": 914,
+          "eval_count": 1464,
+          "temperature": 0.55,
+          "num_predict": 4096,
+          "num_gpu": 999
+        },
+        "raw_candidate_count": 20,
+        "accepted_new": 18
+      }
+    ],
+    "receipt_summary": {
+      "candidate_count": 86,
+      "parse_ok_count": 86,
+      "promoted_count": 4,
+      "review_count": 82,
+      "memory_updated_count": 3,
+      "rejected_count": 82,
+      "rejected_preserved_count": 82,
+      "qns_table_regression_ok": true,
+      "symbolic_tau_table_check_ok": true,
+      "ok": true
+    },
+    "mlx_probe": {
+      "schema": "eml_depth4_mlx_probe_v1",
+      "corpus": {
+        "per_exact_depth_counts": [
+          2,
+          4,
+          32,
+          1408,
+          2089472
+        ],
+        "depth3_total": 1446,
+        "exact_depth4_count": 2089472,
+        "depth4_total": 2090918,
+        "lower3_count": 1446,
+        "depth_lt3_count": 38,
+        "depth3_count": 1408
+      },
+      "metrics": {
+        "device": "Device(gpu, 0)",
+        "setup_elapsed_s": 0.06305345800000002,
+        "eval_elapsed_s": 0.09542758300000001,
+        "scanned": 2089472,
+        "valid_evals": 1414404,
+        "evals_per_second": 14821752.32291066
+      },
+      "results": {
+        "x": {
+          "first_fit_at": 232,
+          "first_fit_expr": "eml(x,eml(eml(x,eml(x,1)),1))",
+          "best_error": 0.0,
+          "best_expr": "eml(eml(1,x),eml(eml(eml(1,x),eml(x,1)),1))"
+        },
+        "exp(x)": {
+          "first_fit_at": null,
+          "first_fit_expr": null,
+          "best_error": 0.5352201461791992,
+          "best_expr": "eml(eml(1,eml(1,x)),eml(eml(1,x),eml(eml(x,x),x)))"
+        },
+        "ln(x)": {
+          "first_fit_at": 6586,
+          "first_fit_expr": "eml(eml(1,x),eml(eml(eml(1,x),x),1))",
+          "best_error": 4.76837158203125e-07,
+          "best_expr": "eml(eml(1,x),eml(eml(eml(1,x),x),1))"
+        },
+        "exp(exp(x))": {
+          "first_fit_at": null,
+          "first_fit_expr": null,
+          "best_error": 0.030646562576293945,
+          "best_expr": "eml(eml(eml(x,eml(1,1)),eml(x,eml(x,1))),eml(x,eml(x,1)))"
+        }
+      }
+    }
+  },
+  "proof_bridge": [
+    {
+      "path": "docs/infinite-tables.md",
+      "role": "finite executable lane embeds into completed reference semantics",
+      "exists": true,
+      "sha256": "aa4455cbe545eaa039aa1e6d5e983cf9fcf13c6f9d6a033aa06ecec2367f6dca"
+    },
+    {
+      "path": "docs/safe-table-select-revision.md",
+      "role": "pointwise revision law and fixed-guard discipline",
+      "exists": true,
+      "sha256": "1fa741de767d1eadbaf020753684a5cc3f3c6a8ea8642901cfd3421849321155"
+    },
+    {
+      "path": "proofs/lean/infinite_tables/CURRENT_STATUS.md",
+      "role": "checked monotone omega-continuous safe table syntax status",
+      "exists": true,
+      "sha256": "13e300c27922d13f9b9cd4f1175fda25c713cc287f37c82afa6f67ed0797e2d0"
+    },
+    {
+      "path": "proofs/lean/infinite_tables/safe_table_select_revision/README.md",
+      "role": "select/revision packet for fixed guards and replacement tables",
+      "exists": true,
+      "sha256": "ec5a6fbde5d2c99d0a9f07b9fbdef686fc562e47be44bf5db41ecb6ae955bc0f"
+    },
+    {
+      "path": "/Users/danax/projects/Formal_Methods_Philosophy/tutorials/safe-infinite-tables-in-tau-language.md",
+      "role": "tutorial framing for safe infinite-recursive table approximants",
+      "exists": true,
+      "sha256": "c9ea87867b7e0c6b5b1899376f40ac4f156f1a532cdbf2913be58d82d3d60855"
+    }
+  ],
+  "tau_frontier_table_check": {
+    "source": "examples/tau/eml_safe_infinite_frontier_table_v1.tau",
+    "ok": true,
+    "returncode": 0,
+    "last_line": "no solution"
+  },
+  "approximants": [
+    {
+      "stage": 1,
+      "key": "mlx_depth4_frontier",
+      "label": "MLX depth-4 GPU frontier",
+      "new_rows": 3,
+      "screened_count": 2089472,
+      "promoted_new": 1,
+      "review_new": 2,
+      "rejected_new": 2,
+      "finite_prefix_rows": 3,
+      "finite_support_rows": 1,
+      "cumulative_promoted_rows": 1,
+      "target_promotions": {
+        "ln(x)": 1
+      }
+    },
+    {
+      "stage": 2,
+      "key": "qwen36_sweep_round_1",
+      "label": "Qwen 3.6 sweep round 1",
+      "new_rows": 28,
+      "screened_count": 29,
+      "promoted_new": 3,
+      "review_new": 25,
+      "rejected_new": 25,
+      "finite_prefix_rows": 31,
+      "finite_support_rows": 4,
+      "cumulative_promoted_rows": 4,
+      "target_promotions": {
+        "exp(exp(x))": 1,
+        "exp(x)": 1,
+        "ln(x)": 2
+      }
+    },
+    {
+      "stage": 3,
+      "key": "qwen36_sweep_round_2",
+      "label": "Qwen 3.6 sweep round 2",
+      "new_rows": 17,
+      "screened_count": 30,
+      "promoted_new": 0,
+      "review_new": 17,
+      "rejected_new": 17,
+      "finite_prefix_rows": 48,
+      "finite_support_rows": 4,
+      "cumulative_promoted_rows": 4,
+      "target_promotions": {
+        "exp(exp(x))": 1,
+        "exp(x)": 1,
+        "ln(x)": 2
+      }
+    },
+    {
+      "stage": 4,
+      "key": "qwen36_sweep_round_3",
+      "label": "Qwen 3.6 sweep round 3",
+      "new_rows": 20,
+      "screened_count": 30,
+      "promoted_new": 0,
+      "review_new": 20,
+      "rejected_new": 20,
+      "finite_prefix_rows": 68,
+      "finite_support_rows": 4,
+      "cumulative_promoted_rows": 4,
+      "target_promotions": {
+        "exp(exp(x))": 1,
+        "exp(x)": 1,
+        "ln(x)": 2
+      }
+    },
+    {
+      "stage": 5,
+      "key": "qwen36_sweep_round_4",
+      "label": "Qwen 3.6 sweep round 4",
+      "new_rows": 18,
+      "screened_count": 20,
+      "promoted_new": 0,
+      "review_new": 18,
+      "rejected_new": 18,
+      "finite_prefix_rows": 86,
+      "finite_support_rows": 4,
+      "cumulative_promoted_rows": 4,
+      "target_promotions": {
+        "exp(exp(x))": 1,
+        "exp(x)": 1,
+        "ln(x)": 2
+      }
+    }
+  ],
+  "rows": [
+    {
+      "index": 0,
+      "target": "exp(x)",
+      "origin": "mlx_depth4",
+      "source_round": null,
+      "expr": "eml(eml(1,eml(1,x)),eml(eml(1,x),eml(eml(x,x),x)))",
+      "canonical_expr": "eml(eml(1,eml(1,x)),eml(eml(1,x),eml(eml(x,x),x)))",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 1.6499261161310659",
+        "holdout error 0.4010901398589395"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 1,
+      "target": "ln(x)",
+      "origin": "mlx_depth4",
+      "source_round": null,
+      "expr": "eml(eml(1,x),eml(eml(eml(1,x),x),1))",
+      "canonical_expr": "eml(eml(1,x),eml(eml(eml(1,x),x),1))",
+      "accepted_mask": 63,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok",
+        "train_fit",
+        "holdout_fit",
+        "memory_update_ready"
+      ],
+      "review_mask": 0,
+      "review_reasons": [],
+      "promoted": true,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 255,
+        "replacement_mask": 63,
+        "new_mask": 63,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 2,
+      "target": "exp(exp(x))",
+      "origin": "mlx_depth4",
+      "source_round": null,
+      "expr": "eml(eml(eml(x,eml(1,1)),eml(x,eml(x,1))),eml(x,eml(x,1)))",
+      "canonical_expr": "eml(eml(eml(x,eml(1,1)),eml(x,eml(x,1))),eml(x,eml(x,1)))",
+      "accepted_mask": 3,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "exp guard failure",
+        "train error inf",
+        "holdout error inf"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 3,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 3,
+      "target": "exp(x)",
+      "origin": "local_llm_sweep",
+      "source_round": 1,
+      "expr": "eml(x,1)",
+      "canonical_expr": "eml(x,1)",
+      "accepted_mask": 63,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok",
+        "train_fit",
+        "holdout_fit",
+        "memory_update_ready"
+      ],
+      "review_mask": 0,
+      "review_reasons": [],
+      "promoted": true,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 255,
+        "replacement_mask": 63,
+        "new_mask": 63,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 4,
+      "target": "exp(x)",
+      "origin": "local_llm_sweep",
+      "source_round": 1,
+      "expr": "eml(eml(1,eml(1,x)),eml(1,1))",
+      "canonical_expr": "eml(eml(1,eml(1,x)),eml(1,1))",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 1.856659696301835",
+        "holdout error 1.924398596619981"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 5,
+      "target": "exp(x)",
+      "origin": "local_llm_sweep",
+      "source_round": 1,
+      "expr": "eml(eml(x,eml(1,1)),1)",
+      "canonical_expr": "eml(eml(x,eml(1,1)),1)",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 28.032906088468387",
+        "holdout error 587.9053592818232"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 6,
+      "target": "exp(x)",
+      "origin": "local_llm_sweep",
+      "source_round": 1,
+      "expr": "eml(1,eml(eml(1,x),eml(1,1)))",
+      "canonical_expr": "eml(1,eml(eml(1,x),eml(1,1)))",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 3.9719938587842987",
+        "holdout error 6.554372920845649"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 7,
+      "target": "exp(x)",
+      "origin": "local_llm_sweep",
+      "source_round": 1,
+      "expr": "eml(eml(1,x),eml(1,1))",
+      "canonical_expr": "eml(eml(1,x),eml(1,1))",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 58.33302354922929",
+        "holdout error 17.088682972026337"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 8,
+      "target": "exp(x)",
+      "origin": "local_llm_sweep",
+      "source_round": 1,
+      "expr": "eml(eml(x,1),eml(1,1))",
+      "canonical_expr": "eml(eml(x,1),eml(1,1))",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 82.90214410954795",
+        "holdout error 1609.7889358137231"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 9,
+      "target": "exp(x)",
+      "origin": "local_llm_sweep",
+      "source_round": 1,
+      "expr": "eml(1,eml(x,eml(1,1)))",
+      "canonical_expr": "eml(1,eml(x,eml(1,1)))",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 3.0109247829535652",
+        "holdout error 6.525360812602746"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 10,
+      "target": "exp(x)",
+      "origin": "local_llm_sweep",
+      "source_round": 1,
+      "expr": "eml(eml(1,1),eml(x,1))",
+      "canonical_expr": "eml(eml(1,1),eml(x,1))",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 13.62023682479152",
+        "holdout error 12.287262224866588"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 11,
+      "target": "exp(x)",
+      "origin": "local_llm_sweep",
+      "source_round": 1,
+      "expr": "eml(eml(x,eml(1,1)),eml(1,1))",
+      "canonical_expr": "eml(eml(x,eml(1,1)),eml(1,1))",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 27.032906088468387",
+        "holdout error 586.9053592818232"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 12,
+      "target": "exp(x)",
+      "origin": "local_llm_sweep",
+      "source_round": 1,
+      "expr": "eml(1,eml(eml(1,1),x))",
+      "canonical_expr": "eml(1,eml(eml(1,1),x))",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 4.4545687710595185",
+        "holdout error 7.34223759770903"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 13,
+      "target": "ln(x)",
+      "origin": "local_llm_sweep",
+      "source_round": 1,
+      "expr": "eml(1,eml(eml(1,x),1))",
+      "canonical_expr": "eml(1,eml(eml(1,x),1))",
+      "accepted_mask": 63,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok",
+        "train_fit",
+        "holdout_fit",
+        "memory_update_ready"
+      ],
+      "review_mask": 0,
+      "review_reasons": [],
+      "promoted": true,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 255,
+        "replacement_mask": 63,
+        "new_mask": 63,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 14,
+      "target": "ln(x)",
+      "origin": "local_llm_sweep",
+      "source_round": 1,
+      "expr": "eml(eml(1,eml(1,x)),eml(1,1))",
+      "canonical_expr": "eml(eml(1,eml(1,x)),eml(1,1))",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 5.146831971091517",
+        "holdout error 5.789941540084128"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 15,
+      "target": "ln(x)",
+      "origin": "local_llm_sweep",
+      "source_round": 1,
+      "expr": "eml(1,eml(x,eml(1,1)))",
+      "canonical_expr": "eml(1,eml(x,eml(1,1)))",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 5.363267739024968",
+        "holdout error 2.89531736595118"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 16,
+      "target": "ln(x)",
+      "origin": "local_llm_sweep",
+      "source_round": 1,
+      "expr": "eml(eml(1,x),eml(1,1))",
+      "canonical_expr": "eml(eml(1,x),eml(1,1))",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 61.003343327036916",
+        "holdout error 19.493365061090792"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 17,
+      "target": "ln(x)",
+      "origin": "local_llm_sweep",
+      "source_round": 1,
+      "expr": "eml(eml(1,eml(1,1)),eml(x,1))",
+      "canonical_expr": "eml(eml(1,eml(1,1)),eml(x,1))",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 6.711235885880771",
+        "holdout error 5.112623597212661"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 18,
+      "target": "ln(x)",
+      "origin": "local_llm_sweep",
+      "source_round": 1,
+      "expr": "eml(1,eml(eml(1,x),eml(1,1)))",
+      "canonical_expr": "eml(1,eml(eml(1,x),eml(1,1)))",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 0.10423010344560146",
+        "holdout error 0.14153599752505552"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 19,
+      "target": "ln(x)",
+      "origin": "local_llm_sweep",
+      "source_round": 1,
+      "expr": "eml(eml(1,x),1)",
+      "canonical_expr": "eml(eml(1,x),1)",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 62.003343327036916",
+        "holdout error 20.493365061090792"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 20,
+      "target": "ln(x)",
+      "origin": "local_llm_sweep",
+      "source_round": 1,
+      "expr": "eml(eml(1,1),eml(x,1))",
+      "canonical_expr": "eml(eml(1,1),eml(x,1))",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 16.290556602599153",
+        "holdout error 14.691944313931044"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 21,
+      "target": "exp(exp(x))",
+      "origin": "local_llm_sweep",
+      "source_round": 1,
+      "expr": "eml(eml(x,1),1)",
+      "canonical_expr": "eml(eml(x,1),1)",
+      "accepted_mask": 63,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok",
+        "train_fit",
+        "holdout_fit",
+        "memory_update_ready"
+      ],
+      "review_mask": 0,
+      "review_reasons": [],
+      "promoted": true,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 255,
+        "replacement_mask": 63,
+        "new_mask": 63,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 22,
+      "target": "exp(exp(x))",
+      "origin": "local_llm_sweep",
+      "source_round": 1,
+      "expr": "eml(eml(eml(x,1),eml(1,1)),1)",
+      "canonical_expr": "eml(eml(eml(x,1),eml(1,1)),1)",
+      "accepted_mask": 3,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "exp guard failure",
+        "train error inf",
+        "holdout error inf"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 3,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 23,
+      "target": "exp(exp(x))",
+      "origin": "local_llm_sweep",
+      "source_round": 1,
+      "expr": "eml(eml(x,eml(1,1)),eml(1,1))",
+      "canonical_expr": "eml(eml(x,eml(1,1)),eml(1,1))",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 56.86923802107956",
+        "holdout error 1023.8835765319001"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 24,
+      "target": "exp(exp(x))",
+      "origin": "local_llm_sweep",
+      "source_round": 1,
+      "expr": "eml(1,eml(eml(x,1),1))",
+      "canonical_expr": "eml(1,eml(eml(x,1),1))",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 90.14724042176503",
+        "holdout error 1622.8487661831255"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 25,
+      "target": "exp(exp(x))",
+      "origin": "local_llm_sweep",
+      "source_round": 1,
+      "expr": "eml(eml(1,1),eml(eml(x,1),1))",
+      "canonical_expr": "eml(eml(1,1),eml(eml(x,1),1))",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 77.71126000874482",
+        "holdout error 1610.4127857701053"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 26,
+      "target": "exp(exp(x))",
+      "origin": "local_llm_sweep",
+      "source_round": 1,
+      "expr": "eml(eml(x,1),eml(1,1))",
+      "canonical_expr": "eml(eml(x,1),eml(1,1))",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 1.0",
+        "holdout error 1.0"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 27,
+      "target": "exp(exp(x))",
+      "origin": "local_llm_sweep",
+      "source_round": 1,
+      "expr": "eml(eml(1,eml(x,1)),1)",
+      "canonical_expr": "eml(eml(1,eml(x,1)),1)",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 85.00246021901344",
+        "holdout error 1616.1270855399614"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 28,
+      "target": "exp(exp(x))",
+      "origin": "local_llm_sweep",
+      "source_round": 1,
+      "expr": "eml(eml(x,eml(1,1)),1)",
+      "canonical_expr": "eml(eml(x,eml(1,1)),1)",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 55.86923802107956",
+        "holdout error 1022.8835765319001"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 29,
+      "target": "exp(exp(x))",
+      "origin": "local_llm_sweep",
+      "source_round": 1,
+      "expr": "eml(1,eml(eml(x,eml(1,1)),1))",
+      "canonical_expr": "eml(1,eml(eml(x,eml(1,1)),1))",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 89.14724042176503",
+        "holdout error 1621.8487661831255"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 30,
+      "target": "exp(exp(x))",
+      "origin": "local_llm_sweep",
+      "source_round": 1,
+      "expr": "eml(eml(1,1),eml(x,1))",
+      "canonical_expr": "eml(eml(1,1),eml(x,1))",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 74.72957093840675",
+        "holdout error 1605.0237296711746"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 31,
+      "target": "exp(x)",
+      "origin": "local_llm_sweep",
+      "source_round": 2,
+      "expr": "eml(1,eml(eml(x,1),1))",
+      "canonical_expr": "eml(1,eml(eml(x,1),1))",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 6.245096312217084",
+        "holdout error 12.059830369402256"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 32,
+      "target": "exp(x)",
+      "origin": "local_llm_sweep",
+      "source_round": 2,
+      "expr": "eml(eml(1,x),1)",
+      "canonical_expr": "eml(eml(1,x),1)",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 59.33302354922929",
+        "holdout error 18.088682972026337"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 33,
+      "target": "exp(x)",
+      "origin": "local_llm_sweep",
+      "source_round": 2,
+      "expr": "eml(1,eml(eml(1,x),1))",
+      "canonical_expr": "eml(1,eml(eml(1,x),1))",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 4.0762239622299",
+        "holdout error 6.695908918370705"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 34,
+      "target": "ln(x)",
+      "origin": "local_llm_sweep",
+      "source_round": 2,
+      "expr": "eml(1,eml(eml(1,1),x))",
+      "canonical_expr": "eml(1,eml(eml(1,1),x))",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 1.2987608486391344",
+        "holdout error 0.6463286793383246"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 35,
+      "target": "ln(x)",
+      "origin": "local_llm_sweep",
+      "source_round": 2,
+      "expr": "eml(eml(1,1),eml(1,x))",
+      "canonical_expr": "eml(eml(1,1),eml(1,x))",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 15.128454107514541",
+        "holdout error 14.341346031684072"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 36,
+      "target": "ln(x)",
+      "origin": "local_llm_sweep",
+      "source_round": 2,
+      "expr": "eml(1,eml(eml(x,1),1))",
+      "canonical_expr": "eml(1,eml(eml(x,1),1))",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 2.8205507728911945",
+        "holdout error 5.363921451031551"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 37,
+      "target": "ln(x)",
+      "origin": "local_llm_sweep",
+      "source_round": 2,
+      "expr": "eml(eml(x,1),eml(1,1))",
+      "canonical_expr": "eml(eml(x,1),eml(1,1))",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 86.97836807177785",
+        "holdout error 1616.484844732094"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 38,
+      "target": "ln(x)",
+      "origin": "local_llm_sweep",
+      "source_round": 2,
+      "expr": "eml(eml(1,1),eml(1,eml(1,x)))",
+      "canonical_expr": "eml(eml(1,1),eml(1,eml(1,x)))",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 16.273450266183673",
+        "holdout error 14.960949097728923"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 39,
+      "target": "ln(x)",
+      "origin": "local_llm_sweep",
+      "source_round": 2,
+      "expr": "eml(1,eml(eml(x,eml(1,1)),1))",
+      "canonical_expr": "eml(1,eml(eml(x,eml(1,1)),1))",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 3.8205507728911945",
+        "holdout error 4.36392145103155"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 40,
+      "target": "exp(exp(x))",
+      "origin": "local_llm_sweep",
+      "source_round": 2,
+      "expr": "eml(eml(eml(x,1),1),eml(1,1))",
+      "canonical_expr": "eml(eml(eml(x,1),1),eml(1,1))",
+      "accepted_mask": 3,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "exp guard failure",
+        "train error inf",
+        "holdout error inf"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 3,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 41,
+      "target": "exp(exp(x))",
+      "origin": "local_llm_sweep",
+      "source_round": 2,
+      "expr": "eml(eml(eml(x,eml(1,1)),1),eml(1,1))",
+      "canonical_expr": "eml(eml(eml(x,eml(1,1)),1),eml(1,1))",
+      "accepted_mask": 3,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "exp guard failure",
+        "train error inf",
+        "holdout error inf"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 3,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 42,
+      "target": "exp(exp(x))",
+      "origin": "local_llm_sweep",
+      "source_round": 2,
+      "expr": "eml(1,eml(eml(eml(x,1),1),1))",
+      "canonical_expr": "eml(1,eml(eml(eml(x,1),1),1))",
+      "accepted_mask": 3,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "exp guard failure",
+        "train error inf",
+        "holdout error inf"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 3,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 43,
+      "target": "exp(exp(x))",
+      "origin": "local_llm_sweep",
+      "source_round": 2,
+      "expr": "eml(eml(1,eml(x,1)),eml(1,1))",
+      "canonical_expr": "eml(eml(1,eml(x,1)),eml(1,1))",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 86.00246021901344",
+        "holdout error 1617.1270855399614"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 44,
+      "target": "exp(exp(x))",
+      "origin": "local_llm_sweep",
+      "source_round": 2,
+      "expr": "eml(eml(1,eml(x,eml(1,1))),1)",
+      "canonical_expr": "eml(eml(1,eml(x,eml(1,1))),1)",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 84.03127270267838",
+        "holdout error 1615.8060825090072"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 45,
+      "target": "exp(exp(x))",
+      "origin": "local_llm_sweep",
+      "source_round": 2,
+      "expr": "eml(eml(eml(1,x),1),eml(1,1))",
+      "canonical_expr": "eml(eml(eml(1,x),1),eml(1,1))",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 2.1166540171559558e+26",
+        "holdout error 595959323.1925311"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 46,
+      "target": "exp(exp(x))",
+      "origin": "local_llm_sweep",
+      "source_round": 2,
+      "expr": "eml(eml(eml(x,1),1),1)",
+      "canonical_expr": "eml(eml(eml(x,1),1),1)",
+      "accepted_mask": 3,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "exp guard failure",
+        "train error inf",
+        "holdout error inf"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 3,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 47,
+      "target": "exp(exp(x))",
+      "origin": "local_llm_sweep",
+      "source_round": 2,
+      "expr": "eml(eml(1,1),eml(eml(x,eml(1,1)),1))",
+      "canonical_expr": "eml(eml(1,1),eml(eml(x,eml(1,1)),1))",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 76.71126000874482",
+        "holdout error 1609.4127857701053"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 48,
+      "target": "exp(x)",
+      "origin": "local_llm_sweep",
+      "source_round": 3,
+      "expr": "eml(eml(x,1),x)",
+      "canonical_expr": "eml(eml(x,1),x)",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 83.49667900143979",
+        "holdout error 1610.0957886331632"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 49,
+      "target": "exp(x)",
+      "origin": "local_llm_sweep",
+      "source_round": 3,
+      "expr": "eml(eml(x,eml(1,1)),x)",
+      "canonical_expr": "eml(eml(x,eml(1,1)),x)",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 27.62744098036022",
+        "holdout error 587.2122121012633"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 50,
+      "target": "exp(x)",
+      "origin": "local_llm_sweep",
+      "source_round": 3,
+      "expr": "eml(eml(x,eml(1,1)),eml(x,1))",
+      "canonical_expr": "eml(eml(x,eml(1,1)),eml(x,1))",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 26.532906088468387",
+        "holdout error 585.9053592818232"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 51,
+      "target": "ln(x)",
+      "origin": "local_llm_sweep",
+      "source_round": 3,
+      "expr": "eml(eml(1,1),eml(x,eml(1,1)))",
+      "canonical_expr": "eml(eml(1,1),eml(x,eml(1,1)))",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 17.799248152045184",
+        "holdout error 15.331297778971399"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 52,
+      "target": "ln(x)",
+      "origin": "local_llm_sweep",
+      "source_round": 3,
+      "expr": "eml(eml(x,eml(1,1)),eml(1,1))",
+      "canonical_expr": "eml(eml(x,eml(1,1)),eml(1,1))",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 31.109130050698287",
+        "holdout error 593.6012682001939"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 53,
+      "target": "ln(x)",
+      "origin": "local_llm_sweep",
+      "source_round": 3,
+      "expr": "eml(1,eml(x,eml(1,eml(1,1))))",
+      "canonical_expr": "eml(1,eml(x,eml(1,eml(1,1))))",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 4.402038517086831",
+        "holdout error 2.551280046202242"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 54,
+      "target": "ln(x)",
+      "origin": "local_llm_sweep",
+      "source_round": 3,
+      "expr": "eml(eml(1,x),eml(1,eml(1,1)))",
+      "canonical_expr": "eml(eml(1,x),eml(1,eml(1,1)))",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 61.462018472424",
+        "holdout error 19.952040206477875"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 55,
+      "target": "ln(x)",
+      "origin": "local_llm_sweep",
+      "source_round": 3,
+      "expr": "eml(eml(x,1),eml(1,eml(1,1)))",
+      "canonical_expr": "eml(eml(x,1),eml(1,eml(1,1)))",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 87.43704321716493",
+        "holdout error 1616.943519877481"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 56,
+      "target": "ln(x)",
+      "origin": "local_llm_sweep",
+      "source_round": 3,
+      "expr": "eml(eml(1,1),eml(eml(1,x),1))",
+      "canonical_expr": "eml(eml(1,1),eml(eml(1,x),1))",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 12.435980413020218",
+        "holdout error 12.435980413020218"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 57,
+      "target": "ln(x)",
+      "origin": "local_llm_sweep",
+      "source_round": 3,
+      "expr": "eml(eml(x,eml(1,1)),eml(x,1))",
+      "canonical_expr": "eml(eml(x,eml(1,1)),eml(x,1))",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 30.609130050698287",
+        "holdout error 592.6012682001939"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 58,
+      "target": "ln(x)",
+      "origin": "local_llm_sweep",
+      "source_round": 3,
+      "expr": "eml(eml(1,x),eml(x,1))",
+      "canonical_expr": "eml(eml(1,x),eml(x,1))",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 61.753343327036916",
+        "holdout error 19.743365061090792"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 59,
+      "target": "exp(exp(x))",
+      "origin": "local_llm_sweep",
+      "source_round": 3,
+      "expr": "eml(eml(eml(x,1),eml(1,1)),eml(1,1))",
+      "canonical_expr": "eml(eml(eml(x,1),eml(1,1)),eml(1,1))",
+      "accepted_mask": 3,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "exp guard failure",
+        "train error inf",
+        "holdout error inf"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 3,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 60,
+      "target": "exp(exp(x))",
+      "origin": "local_llm_sweep",
+      "source_round": 3,
+      "expr": "eml(eml(1,eml(x,1)),eml(x,1))",
+      "canonical_expr": "eml(eml(1,eml(x,1)),eml(x,1))",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 86.50246021901344",
+        "holdout error 1618.1270855399614"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 61,
+      "target": "exp(exp(x))",
+      "origin": "local_llm_sweep",
+      "source_round": 3,
+      "expr": "eml(eml(x,eml(1,1)),eml(eml(x,1),1))",
+      "canonical_expr": "eml(eml(x,eml(1,1)),eml(eml(x,1),1))",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 60.350927091417624",
+        "holdout error 1030.2726326308307"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 62,
+      "target": "exp(exp(x))",
+      "origin": "local_llm_sweep",
+      "source_round": 3,
+      "expr": "eml(eml(1,x),eml(eml(1,1),1))",
+      "canonical_expr": "eml(eml(1,x),eml(eml(1,1),1))",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 80.99927351402555",
+        "holdout error 1613.3191426203732"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 63,
+      "target": "exp(exp(x))",
+      "origin": "local_llm_sweep",
+      "source_round": 3,
+      "expr": "eml(eml(x,eml(1,1)),eml(x,eml(1,1)))",
+      "canonical_expr": "eml(eml(x,eml(1,1)),eml(x,eml(1,1)))",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 57.11675556215411",
+        "holdout error 1024.7381630740313"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 64,
+      "target": "exp(exp(x))",
+      "origin": "local_llm_sweep",
+      "source_round": 3,
+      "expr": "eml(eml(1,eml(x,eml(1,1))),eml(1,1))",
+      "canonical_expr": "eml(eml(1,eml(x,eml(1,1))),eml(1,1))",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 85.03127270267838",
+        "holdout error 1616.8060825090072"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 65,
+      "target": "exp(exp(x))",
+      "origin": "local_llm_sweep",
+      "source_round": 3,
+      "expr": "eml(eml(x,1),eml(eml(x,1),1))",
+      "canonical_expr": "eml(eml(x,1),eml(eml(x,1),1))",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 4.481689070338064",
+        "holdout error 7.389056098930723"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 66,
+      "target": "exp(exp(x))",
+      "origin": "local_llm_sweep",
+      "source_round": 3,
+      "expr": "eml(eml(1,x),eml(1,eml(1,1)))",
+      "canonical_expr": "eml(eml(1,x),eml(1,eml(1,1)))",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 78.82231654017941",
+        "holdout error 1611.1421856465272"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 67,
+      "target": "exp(exp(x))",
+      "origin": "local_llm_sweep",
+      "source_round": 3,
+      "expr": "eml(eml(eml(x,eml(1,1)),eml(1,1)),1)",
+      "canonical_expr": "eml(eml(eml(x,eml(1,1)),eml(1,1)),1)",
+      "accepted_mask": 3,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "exp guard failure",
+        "train error inf",
+        "holdout error inf"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 3,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 68,
+      "target": "exp(x)",
+      "origin": "local_llm_sweep",
+      "source_round": 4,
+      "expr": "eml(x,eml(eml(1,1),1))",
+      "canonical_expr": "eml(x,eml(eml(1,1),1))",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 2.718281828459045",
+        "holdout error 2.718281828459045"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 69,
+      "target": "exp(x)",
+      "origin": "local_llm_sweep",
+      "source_round": 4,
+      "expr": "eml(eml(1,eml(x,1)),eml(1,1))",
+      "canonical_expr": "eml(eml(1,eml(x,1)),eml(1,1))",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 9.51812588384573",
+        "holdout error 6.338149726238149"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 70,
+      "target": "exp(x)",
+      "origin": "local_llm_sweep",
+      "source_round": 4,
+      "expr": "eml(eml(x,eml(1,eml(1,1))),1)",
+      "canonical_expr": "eml(eml(x,eml(1,eml(1,1))),1)",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 46.955643104179906",
+        "holdout error 934.3528427628156"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 71,
+      "target": "exp(x)",
+      "origin": "local_llm_sweep",
+      "source_round": 4,
+      "expr": "eml(eml(eml(1,1),x),1)",
+      "canonical_expr": "eml(eml(eml(1,1),x),1)",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 15257115.135015443",
+        "holdout error 5085703.356013606"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 72,
+      "target": "ln(x)",
+      "origin": "local_llm_sweep",
+      "source_round": 4,
+      "expr": "eml(eml(1,eml(1,1)),eml(eml(1,1),x))",
+      "canonical_expr": "eml(eml(1,eml(1,1)),eml(eml(1,1),x))",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 4.155420544940969",
+        "holdout error 3.1255361334761056"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 73,
+      "target": "ln(x)",
+      "origin": "local_llm_sweep",
+      "source_round": 4,
+      "expr": "eml(eml(1,x),eml(eml(1,1),eml(1,1)))",
+      "canonical_expr": "eml(eml(1,x),eml(eml(1,1),eml(1,1)))",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 59.35332752982575",
+        "holdout error 17.843349263879624"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 74,
+      "target": "ln(x)",
+      "origin": "local_llm_sweep",
+      "source_round": 4,
+      "expr": "eml(eml(1,eml(x,eml(1,1))),eml(1,1))",
+      "canonical_expr": "eml(eml(1,eml(x,eml(1,1))),eml(1,1))",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 53.74159762308082",
+        "holdout error 12.85461315221566"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 75,
+      "target": "ln(x)",
+      "origin": "local_llm_sweep",
+      "source_round": 4,
+      "expr": "eml(eml(1,eml(1,x)),eml(eml(1,1),eml(1,1)))",
+      "canonical_expr": "eml(eml(1,eml(1,x)),eml(eml(1,1),eml(1,1)))",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 3.496816173880349",
+        "holdout error 4.1399257428729594"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 76,
+      "target": "exp(exp(x))",
+      "origin": "local_llm_sweep",
+      "source_round": 4,
+      "expr": "eml(eml(eml(x,eml(1,1)),eml(1,1)),eml(1,1))",
+      "canonical_expr": "eml(eml(eml(x,eml(1,1)),eml(1,1)),eml(1,1))",
+      "accepted_mask": 3,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "exp guard failure",
+        "train error inf",
+        "holdout error inf"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 3,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 77,
+      "target": "exp(exp(x))",
+      "origin": "local_llm_sweep",
+      "source_round": 4,
+      "expr": "eml(eml(x,eml(eml(1,1),1)),eml(1,1))",
+      "canonical_expr": "eml(eml(x,eml(eml(1,1),1)),eml(1,1))",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 83.55155762786556",
+        "holdout error 1512.3976045782258"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 78,
+      "target": "exp(exp(x))",
+      "origin": "local_llm_sweep",
+      "source_round": 4,
+      "expr": "eml(eml(eml(1,1),eml(x,1)),eml(1,1))",
+      "canonical_expr": "eml(eml(eml(1,1),eml(x,1)),eml(1,1))",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 2970558.942493274",
+        "holdout error 1801728.5657260001"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 79,
+      "target": "exp(exp(x))",
+      "origin": "local_llm_sweep",
+      "source_round": 4,
+      "expr": "eml(eml(x,1),eml(eml(1,1),eml(1,1)))",
+      "canonical_expr": "eml(eml(x,1),eml(eml(1,1),eml(1,1)))",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 2.6500157972111684",
+        "holdout error 2.650015797211168"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 80,
+      "target": "exp(exp(x))",
+      "origin": "local_llm_sweep",
+      "source_round": 4,
+      "expr": "eml(eml(eml(x,eml(1,eml(1,1))),1),1)",
+      "canonical_expr": "eml(eml(eml(x,eml(1,eml(1,1))),1),1)",
+      "accepted_mask": 3,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "exp guard failure",
+        "train error inf",
+        "holdout error inf"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 3,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 81,
+      "target": "exp(exp(x))",
+      "origin": "local_llm_sweep",
+      "source_round": 4,
+      "expr": "eml(eml(eml(x,1),eml(1,1)),eml(eml(1,1),1))",
+      "canonical_expr": "eml(eml(eml(x,1),eml(1,1)),eml(eml(1,1),1))",
+      "accepted_mask": 3,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "exp guard failure",
+        "train error inf",
+        "holdout error inf"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 3,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 82,
+      "target": "exp(exp(x))",
+      "origin": "local_llm_sweep",
+      "source_round": 4,
+      "expr": "eml(eml(x,eml(1,1)),eml(eml(1,1),eml(1,1)))",
+      "canonical_expr": "eml(eml(x,eml(1,1)),eml(eml(1,1),eml(1,1)))",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 58.51925381829073",
+        "holdout error 1025.5335923291113"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 83,
+      "target": "exp(x)",
+      "origin": "local_llm_sweep",
+      "source_round": 4,
+      "expr": "eml(eml(1,eml(1,1)),eml(x,1))",
+      "canonical_expr": "eml(eml(1,eml(1,1)),eml(x,1))",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 4.040916108073139",
+        "holdout error 3.8141145741697704"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 84,
+      "target": "ln(x)",
+      "origin": "local_llm_sweep",
+      "source_round": 4,
+      "expr": "eml(eml(1,eml(1,1)),eml(1,eml(x,1)))",
+      "canonical_expr": "eml(eml(1,eml(1,1)),eml(1,eml(x,1)))",
+      "accepted_mask": 7,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "train error 6.0577135933024415",
+        "holdout error 5.21268761240499"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 7,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    },
+    {
+      "index": 85,
+      "target": "exp(exp(x))",
+      "origin": "local_llm_sweep",
+      "source_round": 4,
+      "expr": "eml(eml(eml(x,eml(1,1)),eml(1,1)),eml(eml(1,1),eml(1,1)))",
+      "canonical_expr": "eml(eml(eml(x,eml(1,1)),eml(1,1)),eml(eml(1,1),eml(1,1)))",
+      "accepted_mask": 3,
+      "accepted_atoms": [
+        "proposed",
+        "parse_ok"
+      ],
+      "review_mask": 128,
+      "review_reasons": [
+        "exp guard failure",
+        "train error inf",
+        "holdout error inf"
+      ],
+      "promoted": false,
+      "safe_table_revision": {
+        "old_mask": 0,
+        "guard_mask": 0,
+        "replacement_mask": 3,
+        "new_mask": 0,
+        "pointwise_formula": "(guard & replacement) | (guard' & old)",
+        "guard_fixed_lower_stratum": true,
+        "guard_reads_current_state": false,
+        "tau_qns_gate_ok": true
+      }
+    }
+  ],
+  "final_state": {
+    "0": {
+      "mask": 0,
+      "atoms": []
+    },
+    "1": {
+      "mask": 63,
+      "atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok",
+        "train_fit",
+        "holdout_fit",
+        "memory_update_ready"
+      ]
+    },
+    "2": {
+      "mask": 0,
+      "atoms": []
+    },
+    "3": {
+      "mask": 63,
+      "atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok",
+        "train_fit",
+        "holdout_fit",
+        "memory_update_ready"
+      ]
+    },
+    "4": {
+      "mask": 0,
+      "atoms": []
+    },
+    "5": {
+      "mask": 0,
+      "atoms": []
+    },
+    "6": {
+      "mask": 0,
+      "atoms": []
+    },
+    "7": {
+      "mask": 0,
+      "atoms": []
+    },
+    "8": {
+      "mask": 0,
+      "atoms": []
+    },
+    "9": {
+      "mask": 0,
+      "atoms": []
+    },
+    "10": {
+      "mask": 0,
+      "atoms": []
+    },
+    "11": {
+      "mask": 0,
+      "atoms": []
+    },
+    "12": {
+      "mask": 0,
+      "atoms": []
+    },
+    "13": {
+      "mask": 63,
+      "atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok",
+        "train_fit",
+        "holdout_fit",
+        "memory_update_ready"
+      ]
+    },
+    "14": {
+      "mask": 0,
+      "atoms": []
+    },
+    "15": {
+      "mask": 0,
+      "atoms": []
+    },
+    "16": {
+      "mask": 0,
+      "atoms": []
+    },
+    "17": {
+      "mask": 0,
+      "atoms": []
+    },
+    "18": {
+      "mask": 0,
+      "atoms": []
+    },
+    "19": {
+      "mask": 0,
+      "atoms": []
+    },
+    "20": {
+      "mask": 0,
+      "atoms": []
+    },
+    "21": {
+      "mask": 63,
+      "atoms": [
+        "proposed",
+        "parse_ok",
+        "domain_ok",
+        "train_fit",
+        "holdout_fit",
+        "memory_update_ready"
+      ]
+    },
+    "22": {
+      "mask": 0,
+      "atoms": []
+    },
+    "23": {
+      "mask": 0,
+      "atoms": []
+    },
+    "24": {
+      "mask": 0,
+      "atoms": []
+    },
+    "25": {
+      "mask": 0,
+      "atoms": []
+    },
+    "26": {
+      "mask": 0,
+      "atoms": []
+    },
+    "27": {
+      "mask": 0,
+      "atoms": []
+    },
+    "28": {
+      "mask": 0,
+      "atoms": []
+    },
+    "29": {
+      "mask": 0,
+      "atoms": []
+    },
+    "30": {
+      "mask": 0,
+      "atoms": []
+    },
+    "31": {
+      "mask": 0,
+      "atoms": []
+    },
+    "32": {
+      "mask": 0,
+      "atoms": []
+    },
+    "33": {
+      "mask": 0,
+      "atoms": []
+    },
+    "34": {
+      "mask": 0,
+      "atoms": []
+    },
+    "35": {
+      "mask": 0,
+      "atoms": []
+    },
+    "36": {
+      "mask": 0,
+      "atoms": []
+    },
+    "37": {
+      "mask": 0,
+      "atoms": []
+    },
+    "38": {
+      "mask": 0,
+      "atoms": []
+    },
+    "39": {
+      "mask": 0,
+      "atoms": []
+    },
+    "40": {
+      "mask": 0,
+      "atoms": []
+    },
+    "41": {
+      "mask": 0,
+      "atoms": []
+    },
+    "42": {
+      "mask": 0,
+      "atoms": []
+    },
+    "43": {
+      "mask": 0,
+      "atoms": []
+    },
+    "44": {
+      "mask": 0,
+      "atoms": []
+    },
+    "45": {
+      "mask": 0,
+      "atoms": []
+    },
+    "46": {
+      "mask": 0,
+      "atoms": []
+    },
+    "47": {
+      "mask": 0,
+      "atoms": []
+    },
+    "48": {
+      "mask": 0,
+      "atoms": []
+    },
+    "49": {
+      "mask": 0,
+      "atoms": []
+    },
+    "50": {
+      "mask": 0,
+      "atoms": []
+    },
+    "51": {
+      "mask": 0,
+      "atoms": []
+    },
+    "52": {
+      "mask": 0,
+      "atoms": []
+    },
+    "53": {
+      "mask": 0,
+      "atoms": []
+    },
+    "54": {
+      "mask": 0,
+      "atoms": []
+    },
+    "55": {
+      "mask": 0,
+      "atoms": []
+    },
+    "56": {
+      "mask": 0,
+      "atoms": []
+    },
+    "57": {
+      "mask": 0,
+      "atoms": []
+    },
+    "58": {
+      "mask": 0,
+      "atoms": []
+    },
+    "59": {
+      "mask": 0,
+      "atoms": []
+    },
+    "60": {
+      "mask": 0,
+      "atoms": []
+    },
+    "61": {
+      "mask": 0,
+      "atoms": []
+    },
+    "62": {
+      "mask": 0,
+      "atoms": []
+    },
+    "63": {
+      "mask": 0,
+      "atoms": []
+    },
+    "64": {
+      "mask": 0,
+      "atoms": []
+    },
+    "65": {
+      "mask": 0,
+      "atoms": []
+    },
+    "66": {
+      "mask": 0,
+      "atoms": []
+    },
+    "67": {
+      "mask": 0,
+      "atoms": []
+    },
+    "68": {
+      "mask": 0,
+      "atoms": []
+    },
+    "69": {
+      "mask": 0,
+      "atoms": []
+    },
+    "70": {
+      "mask": 0,
+      "atoms": []
+    },
+    "71": {
+      "mask": 0,
+      "atoms": []
+    },
+    "72": {
+      "mask": 0,
+      "atoms": []
+    },
+    "73": {
+      "mask": 0,
+      "atoms": []
+    },
+    "74": {
+      "mask": 0,
+      "atoms": []
+    },
+    "75": {
+      "mask": 0,
+      "atoms": []
+    },
+    "76": {
+      "mask": 0,
+      "atoms": []
+    },
+    "77": {
+      "mask": 0,
+      "atoms": []
+    },
+    "78": {
+      "mask": 0,
+      "atoms": []
+    },
+    "79": {
+      "mask": 0,
+      "atoms": []
+    },
+    "80": {
+      "mask": 0,
+      "atoms": []
+    },
+    "81": {
+      "mask": 0,
+      "atoms": []
+    },
+    "82": {
+      "mask": 0,
+      "atoms": []
+    },
+    "83": {
+      "mask": 0,
+      "atoms": []
+    },
+    "84": {
+      "mask": 0,
+      "atoms": []
+    },
+    "85": {
+      "mask": 0,
+      "atoms": []
+    }
+  },
+  "summary": {
+    "finite_prefix_rows": 86,
+    "approximant_count": 5,
+    "promoted_rows": 4,
+    "review_rows": 82,
+    "rejected_rows": 82,
+    "tau_frontier_table_check_ok": true,
+    "source_receipt_ok": true,
+    "row_gate_ok": true,
+    "ok": true
+  }
+}
