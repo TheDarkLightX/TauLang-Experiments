@@ -23,6 +23,21 @@ TAU_QELIM_DEMO_SKIP_SETUP_PATCH=1 \
   "$ROOT/scripts/run_qelim_table_demos.sh" \
   --reps "${QELIM_TABLE_DEMO_REPS:-5}"
 
+echo
+echo "== qNS semantic Boolean-algebra demo =="
+TAU_QNS_DEMO_SKIP_SETUP_PATCH=1 \
+  "$ROOT/scripts/run_qns_semantic_ba_demo.sh"
+
+echo
+echo "== EML/qNS certificate demo =="
+TAU_EML_QNS_DEMO_SKIP_SETUP_PATCH=1 \
+  "$ROOT/scripts/run_eml_qns_demo.sh"
+
+echo
+echo "== EML/qNS table-memory demo =="
+TAU_EML_QNS_LLM_DEMO_SKIP_SETUP_PATCH=1 \
+  "$ROOT/scripts/run_eml_qns_llm_memory_demo.sh"
+
 if [[ "${RUN_PUBLIC_BENCHMARKS:-0}" == "1" ]]; then
   echo
   echo "== Optional research benchmark suite =="

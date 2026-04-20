@@ -54,6 +54,130 @@ If the scripts are not executable after checkout, run:
 chmod +x scripts/*.sh
 ```
 
+## EML/qNS certificate demo
+
+```bash
+./scripts/run_eml_qns_demo.sh --accept-tau-license
+```
+
+This demo uses checked EML regression fixture artifacts outside Tau, then sends
+finite evidence masks through Tau's `qns8` carrier. It also runs a negative
+tamper corpus.
+
+For the non-default depth-4 scaling probe, run:
+
+```bash
+python3 scripts/run_eml_depth4_probe.py \
+  --limit 250000 \
+  --out results/local/eml-depth4-probe.json
+```
+
+The depth-4 probe is intentionally not part of the public default demo because
+the depth-4 corpus has `2090918` candidate trees.
+
+For a process-parallel CPU probe, run:
+
+```bash
+python3 scripts/run_eml_depth4_parallel_probe.py \
+  --limit 250000 \
+  --workers 4 \
+  --out results/local/eml-depth4-parallel-probe.json
+```
+
+This uses Python worker processes rather than Python threads.
+
+For an exact-depth-5 shard probe, run:
+
+```bash
+python3 scripts/run_eml_depth5_probe.py \
+  --limit 100000 \
+  --depth4-seed-limit 1000 \
+  --out results/local/eml-depth5-probe.json
+```
+
+Depth-5 has `4371935991808` exact-depth candidates, so this is a shard probe,
+not an exhaustive search.
+
+Future runners should use hardware tiers:
+
+```text
+default       depth-3 checked fixtures
+--deep        depth-4 process-parallel probe on modern CPUs
+--accelerated depth-4/depth-5 batched search with GPU or large unified memory
+```
+
+The accelerated mode should not bypass qNS or proof gates. It only changes how
+candidate formulas are scored.
+
+## EML/qNS local LLM memory demo
+
+The default path uses fixture proposals, not a local model:
+
+```bash
+./scripts/run_eml_qns_llm_memory_demo.sh --skip-setup-patch
+```
+
+This smoke test validates candidate formulas, sends finite evidence masks
+through Tau `qns8`, and records the exact named `qns8` table memory update call
+for each candidate. It uses
+`examples/tau/eml_qns_evidence_memory_v1.tau` for the named qNS operations.
+That source file contains the table-backed `memory_revise_qns8` definition.
+The harness also runs `qns8` table regressions and checks
+`examples/tau/eml_symbolic_memory_table_v1.tau`, which uses Tau's
+`table { when ... else ... }` syntax for the same pointwise revision shape over
+symbolic `tau` values.
+
+The harness writes both machine-readable and human-readable receipts:
+
+```text
+results/local/eml-qns-llm-memory-demo.json
+results/local/eml-qns-llm-memory-demo.md
+```
+
+To verify the JSON receipt without rerunning Tau:
+
+```bash
+python3 scripts/verify_eml_qns_memory_receipt.py
+```
+
+The runner calls this verifier automatically after writing the receipt and runs
+a mutation self-test that confirms a broken fail-closed memory update is
+rejected. Use `--skip-verify` only for debugging the harness itself.
+
+To use an installed Ollama model as the proposer:
+
+```bash
+./scripts/run_eml_qns_llm_memory_demo.sh --skip-setup-patch --live-ollama --model llama3.2:3b
+```
+
+The live path forces CPU inference with `num_gpu = 0` by default to avoid
+small-GPU memory failures.
+
+To use a different installed local model:
+
+```bash
+./scripts/run_eml_qns_llm_memory_demo.sh --skip-setup-patch --live-ollama --model bonsai-8b
+```
+
+To make model setup easier:
+
+```bash
+./scripts/setup_local_llm_proposer.sh --profile installed --run-smoke
+```
+
+The setup helper supports:
+
+```text
+installed  llama3.2:3b
+tiny       gemma3:270m
+compact    qwen3:0.6b
+smol       smollm2:1.7b
+bonsai     bonsai-8b, if registered locally
+```
+
+The model is never trusted. It only proposes rows; the checker and Tau gate
+decide which rows update memory.
+
 ## Qelim-backed table policy demo
 
 To run the public demo suite in one command:
@@ -62,9 +186,10 @@ To run the public demo suite in one command:
 ./scripts/run_public_demos.sh --accept-tau-license
 ```
 
-That script runs `run_table_demos.sh` first, then reuses the patched checkout
-for the qelim-backed policy-shape demo. Set `RUN_PUBLIC_BENCHMARKS=1` to append
-the broader research benchmark suite.
+That script runs the safe table demo first, then reuses the patched checkout
+for the qelim-backed policy-shape demo, qNS semantic Boolean-algebra demo,
+EML/qNS certificate demo, and EML/qNS table-memory demo. Set
+`RUN_PUBLIC_BENCHMARKS=1` to append the broader research benchmark suite.
 
 To run only the qelim-backed policy demo:
 

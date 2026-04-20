@@ -13,6 +13,9 @@ https://github.com/IDNI/tau-lang
 This repo is for educational and research work around Tau Language, including:
 
 - finite table semantics experiments
+- bounded game-theory table experiments
+- finite neuro-symbolic Boolean-algebra carrier experiments
+- EML symbolic-regression certificate gating over qNS masks
 - infinite table reference-semantics research
 - quantifier-elimination dispatch experiments
 - restricted Tau rewrite-normalizer experiments
@@ -55,10 +58,13 @@ cd TauLang-Experiments
 By default, the script checks out the Tau commit used by the current patch
 evidence. Set `TAU_REF=main` only when intentionally testing patch drift.
 
-The public demo wrapper runs both:
+The public demo wrapper runs:
 
 - the safe table syntax and solver-equivalence demo,
 - the qelim-backed policy-shape demo with residual semantic validation.
+- the finite qNS semantic Boolean-algebra demo.
+- the EML/qNS certificate demo.
+- the EML/qNS table-memory demo.
 
 To run only the table demo, use:
 
@@ -87,6 +93,51 @@ To run only the qelim-backed policy-shape demo, use:
 ./scripts/run_qelim_table_demos.sh --accept-tau-license
 ```
 
+To run the bounded game-table demo, use:
+
+```bash
+./scripts/run_game_table_demo.sh --accept-tau-license
+```
+
+To run the finite qNS semantic Boolean-algebra demo, use:
+
+```bash
+./scripts/run_qns_semantic_ba_demo.sh --accept-tau-license
+```
+
+To run the EML/qNS certificate demo, use:
+
+```bash
+./scripts/run_eml_qns_demo.sh --accept-tau-license
+```
+
+To run the optional local-LLM memory smoke demo, use:
+
+```bash
+./scripts/run_eml_qns_llm_memory_demo.sh --skip-setup-patch
+```
+
+This default path is model-free and uses fixture proposals. It checks the
+candidate formulas with EML parsing, then uses
+`examples/tau/eml_qns_evidence_memory_v1.tau` for Tau `qns8` promotion and
+named `qns8` table memory revision. That Tau source contains the table-backed
+`memory_revise_qns8` definition. The result artifact records the exact named
+call, the equivalent direct table expression, and table regression checks. It
+also checks `examples/tau/eml_symbolic_memory_table_v1.tau`, a table-syntax
+companion for the same pointwise revision shape over symbolic `tau` values.
+
+To use an installed Ollama model as the untrusted proposer:
+
+```bash
+./scripts/run_eml_qns_llm_memory_demo.sh --skip-setup-patch --live-ollama --model llama3.2:3b
+```
+
+For guided local-model setup:
+
+```bash
+./scripts/setup_local_llm_proposer.sh --profile installed --run-smoke
+```
+
 The current table demo gallery is documented in:
 
 ```text
@@ -106,6 +157,8 @@ The current patch is an experiment patch, not an official Tau release. It adds:
 - pointwise revision helper aliases for finite masks and symbolic `tau` values,
 - feature-gated `table { when ... else ... }` syntax for guarded choice,
 - guarded qelim experiment code used by the optimization research thread.
+- feature-gated finite `qns8` and `qns64` powerset Boolean algebras,
+  `TAU_ENABLE_QNS_BA=1`, used by the neuro-symbolic candidate-filter demo.
 - a feature-gated equality-split recombination pass,
   `TAU_EQUALITY_SPLIT_RECOMBINE=1`. Current evidence is scoped: it reaches
   target-sized output on `8` of `8` extended recombination probes, matches all
@@ -176,6 +229,11 @@ The table syntax is rejected unless `TAU_ENABLE_SAFE_TABLES=1` is set.
 - Restricted Knuth-Bendix-style rewrite normalization for Tau expressions.
 - Upstream future-work experiments: Boolean-function storage, safe
   redefinitions, normalization/sat performance, and incremental execution.
+- Bounded game-theory tables for small mechanism-design demos.
+- Finite neuro-symbolic Boolean algebras for exact symbolic filtering after
+  neural candidate generation.
+- Bounded EML symbolic-regression certificates gated by Tau `qns8`.
+- Lean proof packets for scoped qNS partition and no-leak laws.
 
 The future-work experiment map is:
 

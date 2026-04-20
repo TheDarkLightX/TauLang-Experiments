@@ -61,7 +61,34 @@ Goal: keep runtime experiments behind feature flags and patches.
 
 The repo should demonstrate behavior without redistributing Tau itself.
 
-## 6. Upstream Future-Work Alignment
+## 6. Neuro-Symbolic Boolean Algebras
+
+Goal: make the symbolic side of a neuro-symbolic loop exact, replayable, and
+small enough to audit.
+
+Current artifact:
+
+```bash
+./scripts/run_qns_semantic_ba_demo.sh --accept-tau-license
+```
+
+The first carrier family is `qns8` and `qns64`, finite powerset Boolean
+algebras over audited atoms. It is useful for candidate filtering,
+controlled-vocabulary concept sets, and bounded trace-class quotients. It is
+not raw natural-language semantics and it is not probabilistic Tau.
+
+The EML/qNS certificate demo uses the same finite carrier as a fast evidence
+gate after bounded symbolic-regression search:
+
+```bash
+./scripts/run_eml_qns_demo.sh --accept-tau-license
+```
+
+This is not full symbolic regression and not native Tau analytic semantics.
+The point is the public architecture: slow formula search outside Tau, compact
+certificate masks inside Tau, and fail-closed rejection for missing evidence.
+
+## 7. Upstream Future-Work Alignment
 
 Goal: map official Tau future-work items to small reproducible experiments.
 

@@ -1,0 +1,111 @@
+# Post-AGI tokenomics bounded game table.
+#
+# This is a finite table demo, not general game theory.
+# The rows classify one bounded game surface:
+# agent action in {contribute, extract, exit}
+# protocol action in {reward, tax, quarantine}
+#
+# The profile guards are one-hot guards. They stay meaningful in ordinary Tau
+# Boolean algebra because every row explicitly excludes the other actions.
+
+profile_contribute_reward(contribute,extract,exit,reward,tax,quarantine) : tau :=
+  contribute & extract' & exit' & reward & tax' & quarantine'.
+
+profile_extract_reward(contribute,extract,exit,reward,tax,quarantine) : tau :=
+  contribute' & extract & exit' & reward & tax' & quarantine'.
+
+profile_exit_reward(contribute,extract,exit,reward,tax,quarantine) : tau :=
+  contribute' & extract' & exit & reward & tax' & quarantine'.
+
+profile_contribute_tax(contribute,extract,exit,reward,tax,quarantine) : tau :=
+  contribute & extract' & exit' & reward' & tax & quarantine'.
+
+profile_extract_tax(contribute,extract,exit,reward,tax,quarantine) : tau :=
+  contribute' & extract & exit' & reward' & tax & quarantine'.
+
+profile_exit_tax(contribute,extract,exit,reward,tax,quarantine) : tau :=
+  contribute' & extract' & exit & reward' & tax & quarantine'.
+
+profile_contribute_quarantine(contribute,extract,exit,reward,tax,quarantine) : tau :=
+  contribute & extract' & exit' & reward' & tax' & quarantine.
+
+profile_extract_quarantine(contribute,extract,exit,reward,tax,quarantine) : tau :=
+  contribute' & extract & exit' & reward' & tax' & quarantine.
+
+profile_exit_quarantine(contribute,extract,exit,reward,tax,quarantine) : tau :=
+  contribute' & extract' & exit & reward' & tax' & quarantine.
+
+post_agi_tokenomics_table(
+  contribute,extract,exit,reward,tax,quarantine,
+  safe_nash,unsafe_extract,allowed_but_not_equilibrium,not_desired,invalid_profile
+) : tau :=
+  table {
+    when profile_contribute_reward(contribute,extract,exit,reward,tax,quarantine) => safe_nash;
+    when profile_extract_reward(contribute,extract,exit,reward,tax,quarantine) => unsafe_extract;
+    when profile_exit_reward(contribute,extract,exit,reward,tax,quarantine) => allowed_but_not_equilibrium;
+    when profile_contribute_tax(contribute,extract,exit,reward,tax,quarantine) => not_desired;
+    when profile_extract_tax(contribute,extract,exit,reward,tax,quarantine) => not_desired;
+    when profile_exit_tax(contribute,extract,exit,reward,tax,quarantine) => not_desired;
+    when profile_contribute_quarantine(contribute,extract,exit,reward,tax,quarantine) => not_desired;
+    when profile_extract_quarantine(contribute,extract,exit,reward,tax,quarantine) => not_desired;
+    when profile_exit_quarantine(contribute,extract,exit,reward,tax,quarantine) => not_desired;
+    else => invalid_profile
+  }.
+
+post_agi_tokenomics_raw(
+  contribute,extract,exit,reward,tax,quarantine,
+  safe_nash,unsafe_extract,allowed_but_not_equilibrium,not_desired,invalid_profile
+) : tau :=
+  (
+    profile_contribute_reward(contribute,extract,exit,reward,tax,quarantine) & safe_nash
+  ) | (
+    profile_contribute_reward(contribute,extract,exit,reward,tax,quarantine)' & (
+      (
+        profile_extract_reward(contribute,extract,exit,reward,tax,quarantine) & unsafe_extract
+      ) | (
+        profile_extract_reward(contribute,extract,exit,reward,tax,quarantine)' & (
+          (
+            profile_exit_reward(contribute,extract,exit,reward,tax,quarantine) & allowed_but_not_equilibrium
+          ) | (
+            profile_exit_reward(contribute,extract,exit,reward,tax,quarantine)' & (
+              (
+                profile_contribute_tax(contribute,extract,exit,reward,tax,quarantine) & not_desired
+              ) | (
+                profile_contribute_tax(contribute,extract,exit,reward,tax,quarantine)' & (
+                  (
+                    profile_extract_tax(contribute,extract,exit,reward,tax,quarantine) & not_desired
+                  ) | (
+                    profile_extract_tax(contribute,extract,exit,reward,tax,quarantine)' & (
+                      (
+                        profile_exit_tax(contribute,extract,exit,reward,tax,quarantine) & not_desired
+                      ) | (
+                        profile_exit_tax(contribute,extract,exit,reward,tax,quarantine)' & (
+                          (
+                            profile_contribute_quarantine(contribute,extract,exit,reward,tax,quarantine) & not_desired
+                          ) | (
+                            profile_contribute_quarantine(contribute,extract,exit,reward,tax,quarantine)' & (
+                              (
+                                profile_extract_quarantine(contribute,extract,exit,reward,tax,quarantine) & not_desired
+                              ) | (
+                                profile_extract_quarantine(contribute,extract,exit,reward,tax,quarantine)' & (
+                                  (
+                                    profile_exit_quarantine(contribute,extract,exit,reward,tax,quarantine) & not_desired
+                                  ) | (
+                                    profile_exit_quarantine(contribute,extract,exit,reward,tax,quarantine)' & invalid_profile
+                                  )
+                                )
+                              )
+                            )
+                          )
+                        )
+                      )
+                    )
+                  )
+                )
+              )
+            )
+          )
+        )
+      )
+    )
+  ).

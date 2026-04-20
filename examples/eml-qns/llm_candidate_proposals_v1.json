@@ -1,0 +1,35 @@
+{
+  "schema": "eml_candidate_proposals_v1",
+  "candidates": [
+    {
+      "target": "exp(x)",
+      "origin": "fixture",
+      "expr": "eml(x,1)",
+      "note": "fixture proposal for exp(x)"
+    },
+    {
+      "target": "ln(x)",
+      "origin": "fixture",
+      "expr": "eml(1,eml(eml(1,x),1))",
+      "note": "fixture proposal for ln(x)"
+    },
+    {
+      "target": "exp(exp(x))",
+      "origin": "fixture",
+      "expr": "eml(eml(x,1),1)",
+      "note": "fixture proposal for exp(exp(x))"
+    },
+    {
+      "target": "bad-example",
+      "origin": "fixture",
+      "expr": "eml(x,0)",
+      "note": "intentional grammar rejection, 0 is not a terminal"
+    },
+    {
+      "target": "exp(x)",
+      "origin": "fixture",
+      "expr": "eml(x,0)",
+      "note": "intentional same-slot rejection after exp(x) has already been accepted"
+    }
+  ]
+}

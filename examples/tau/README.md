@@ -15,6 +15,24 @@ Run the qelim-backed policy-shape demo with:
 ./scripts/run_qelim_table_demos.sh --accept-tau-license
 ```
 
+Run the bounded game-table demo with:
+
+```bash
+./scripts/run_game_table_demo.sh --accept-tau-license
+```
+
+Run the finite qNS semantic Boolean-algebra demo with:
+
+```bash
+./scripts/run_qns_semantic_ba_demo.sh --accept-tau-license
+```
+
+Run the EML/qNS certificate demo with:
+
+```bash
+./scripts/run_eml_qns_demo.sh --accept-tau-license
+```
+
 ## `full_style_taba_demo_v1.tau`
 
 This is the main public demo. It uses Tau-native table syntax:
@@ -139,3 +157,46 @@ It runs `qelim` commands whose formulas mirror the table examples. The purpose
 is to show that the experimental qelim backend has a visible, runnable table-
 domain benchmark. It is not a claim that the current table solver checks use the
 qelim backend.
+
+## `post_agi_tokenomics_game_table_v1.tau`
+
+This demo classifies a finite post-AGI tokenomics game surface. The agent can
+contribute, extract, or exit. The protocol can reward, tax, or quarantine. The
+table returns a symbolic classification such as safe Nash, unsafe extraction,
+allowed but not equilibrium, or not desired.
+
+The public harness checks the finite payoff model in Python and, when Tau is
+available, checks that the Tau table syntax has the same meaning as the raw
+guarded-choice expansion.
+
+Boundary: this is a finite listed pure-strategy game. It is not mixed-strategy
+game theory, continuous mechanism design, or an official Tau game-theory
+feature.
+
+## `qns_candidate_filter_v1.tau`
+
+This demo uses feature-gated `qns8` and `qns64` Boolean algebras. The carriers
+are finite powersets over audited atoms. In the main candidate-filter example,
+each atom is a proposed action. In the concept and trace examples, the same
+carrier shape is reused as a controlled-vocabulary concept set and as a bounded
+trace-class quotient.
+
+The public harness checks:
+
+- native `qns8` and `qns64` meet, join, and prime-as-XOR-with-top behavior,
+- exact Tau filtering of neural candidate masks through symbolic allow,
+  review, and hard-reject masks,
+- concept-set checks for missing requirements and risk hits,
+- trace-class checks for safe, forbidden, and unclassified behavior.
+
+Boundary: Tau does not compute the neural scores. Tau checks the exact symbolic
+filtering step, and the host script renormalizes the surviving neural mass.
+
+## EML/qNS certificate demo
+
+This demo uses checked EML regression fixture artifacts outside Tau, then sends
+finite evidence masks through Tau's `qns8` carrier. It verifies that all seven
+valid certificates promote and all twenty-eight tampered certificates reject.
+
+Boundary: Tau does not evaluate analytic EML expressions. Tau gates the finite
+certificate masks that describe proof, holdout, residual, and review evidence.

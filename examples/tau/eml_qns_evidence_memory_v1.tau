@@ -1,0 +1,18 @@
+# EML/qNS evidence memory, finite Tau experiment.
+#
+# Scope:
+# - qns8 is a finite powerset Boolean algebra over eight evidence atoms.
+# - EML parsing and numeric checks happen in the host script.
+# - Tau owns the finite evidence-mask algebra.
+# - memory_revise_qns8 uses direct qns8 table syntax for pointwise revision.
+# - This is not native analytic Tau semantics and not full TABA tables.
+
+not8(x) := x ^ { #xFF }:qns8.
+missing_required(accepted) := { #x3F }:qns8 & not8(accepted).
+blocker(accepted, review) := missing_required(accepted) | review.
+
+memory_revise_qns8(old:qns8, guard:qns8, replacement:qns8) : qns8 :=
+  table {
+    when guard => replacement;
+    else => old
+  }.

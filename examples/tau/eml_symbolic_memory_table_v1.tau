@@ -1,0 +1,17 @@
+# EML symbolic memory table, finite Tau experiment.
+#
+# Scope:
+# - This file exercises Tau's feature-gated table syntax over symbolic tau
+#   values.
+# - The qNS evidence-mask demo decides which updates are allowed.
+# - This table file checks the pointwise revision shape used once an update is
+#   allowed.
+
+eml_memory_update_table(old,guard,replacement) : tau :=
+  table {
+    when guard => replacement;
+    else => old
+  }.
+
+eml_memory_update_raw(old,guard,replacement) : tau :=
+  (guard & replacement) | (guard' & old).

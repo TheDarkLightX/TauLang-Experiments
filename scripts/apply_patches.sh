@@ -18,8 +18,31 @@ if [[ ${#patches[@]} -eq 0 ]]; then
   exit 0
 fi
 
+patch_present() {
+  local patch_name="$1"
+  case "$patch_name" in
+    0001-taba-safe-tables-and-qelim-demo.patch)
+      [[ -f "$TAU_DIR/src/boolean_algebras/finite_table_ba.h" ]] &&
+      grep -q "safe_table_expr" "$TAU_DIR/parser/tau.tgf" &&
+      grep -q "safe_table_ba_enabled" "$TAU_DIR/src/finite_table_builtins.h"
+      ;;
+    0002-qns-candidate-ba.patch)
+      [[ -f "$TAU_DIR/src/boolean_algebras/qns_candidate_ba.h" ]] &&
+      grep -q "qns64_ba" "$TAU_DIR/src/runtime.h" &&
+      grep -q "TAU_ENABLE_QNS_BA" "$TAU_DIR/src/boolean_algebras/qns_candidate_ba.h"
+      ;;
+    *)
+      return 1
+      ;;
+  esac
+}
+
 for patch in "${patches[@]}"; do
   echo "Applying $patch"
+  if patch_present "$(basename "$patch")"; then
+    echo "Already present: $patch"
+    continue
+  fi
   if git -C "$TAU_DIR" apply --reverse --check "../../$patch" >/dev/null 2>&1; then
     echo "Already applied: $patch"
     continue
