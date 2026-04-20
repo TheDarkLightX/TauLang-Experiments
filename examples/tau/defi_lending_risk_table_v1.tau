@@ -1,0 +1,97 @@
+# DeFi lending risk table.
+#
+# Scope:
+# - A neural risk monitor may propose alarms: exploit witness, oracle divergence,
+#   solvency gap, liquidation cascade, governance override, or healthy state.
+# - The table is the symbolic policy router. It decides which guarded action
+#   label survives when alarms overlap.
+# - The raw definition is the exact priority expansion checked by Tau.
+#
+# This is a finite safe-table example. It is not financial advice, not a live
+# DeFi risk engine, and not an oracle implementation.
+
+defi_lending_action_table(
+  exploit_witness,oracle_divergence,solvency_gap,liquidation_cascade,governance_override,healthy,
+  freeze_market,quarantine_oracle,pause_borrow,cap_liquidation,governance_review,allow,deny
+) : tau :=
+  table {
+    when exploit_witness => freeze_market;
+    when oracle_divergence => quarantine_oracle;
+    when solvency_gap => pause_borrow;
+    when liquidation_cascade => cap_liquidation;
+    when governance_override => governance_review;
+    when healthy => allow;
+    else => deny
+  }.
+
+defi_lending_action_raw(
+  exploit_witness,oracle_divergence,solvency_gap,liquidation_cascade,governance_override,healthy,
+  freeze_market,quarantine_oracle,pause_borrow,cap_liquidation,governance_review,allow,deny
+) : tau :=
+  (exploit_witness & freeze_market) |
+  (exploit_witness' & (
+    (oracle_divergence & quarantine_oracle) |
+    (oracle_divergence' & (
+      (solvency_gap & pause_borrow) |
+      (solvency_gap' & (
+        (liquidation_cascade & cap_liquidation) |
+        (liquidation_cascade' & (
+          (governance_override & governance_review) |
+          (governance_override' & (
+            (healthy & allow) |
+            (healthy' & deny)
+          ))
+        ))
+      ))
+    ))
+  )).
+
+defi_lending_exploit_priority_slice_table(
+  exploit_witness,oracle_divergence,solvency_gap,liquidation_cascade,governance_override,healthy,
+  freeze_market,quarantine_oracle,pause_borrow,cap_liquidation,governance_review,allow,deny
+) : tau :=
+  exploit_witness &
+  defi_lending_action_table(
+    exploit_witness,oracle_divergence,solvency_gap,liquidation_cascade,governance_override,healthy,
+    freeze_market,quarantine_oracle,pause_borrow,cap_liquidation,governance_review,allow,deny
+  ).
+
+defi_lending_exploit_priority_slice_raw(
+  exploit_witness,oracle_divergence,solvency_gap,liquidation_cascade,governance_override,healthy,
+  freeze_market,quarantine_oracle,pause_borrow,cap_liquidation,governance_review,allow,deny
+) : tau :=
+  exploit_witness & freeze_market.
+
+defi_lending_oracle_slice_table(
+  exploit_witness,oracle_divergence,solvency_gap,liquidation_cascade,governance_override,healthy,
+  freeze_market,quarantine_oracle,pause_borrow,cap_liquidation,governance_review,allow,deny
+) : tau :=
+  exploit_witness' & oracle_divergence &
+  defi_lending_action_table(
+    exploit_witness,oracle_divergence,solvency_gap,liquidation_cascade,governance_override,healthy,
+    freeze_market,quarantine_oracle,pause_borrow,cap_liquidation,governance_review,allow,deny
+  ).
+
+defi_lending_oracle_slice_raw(
+  exploit_witness,oracle_divergence,solvency_gap,liquidation_cascade,governance_override,healthy,
+  freeze_market,quarantine_oracle,pause_borrow,cap_liquidation,governance_review,allow,deny
+) : tau :=
+  exploit_witness' & oracle_divergence & quarantine_oracle.
+
+defi_lending_allow_slice_table(
+  exploit_witness,oracle_divergence,solvency_gap,liquidation_cascade,governance_override,healthy,
+  freeze_market,quarantine_oracle,pause_borrow,cap_liquidation,governance_review,allow,deny
+) : tau :=
+  exploit_witness' & oracle_divergence' & solvency_gap' & liquidation_cascade' &
+  governance_override' & healthy &
+  defi_lending_action_table(
+    exploit_witness,oracle_divergence,solvency_gap,liquidation_cascade,governance_override,healthy,
+    freeze_market,quarantine_oracle,pause_borrow,cap_liquidation,governance_review,allow,deny
+  ).
+
+defi_lending_allow_slice_raw(
+  exploit_witness,oracle_divergence,solvency_gap,liquidation_cascade,governance_override,healthy,
+  freeze_market,quarantine_oracle,pause_borrow,cap_liquidation,governance_review,allow,deny
+) : tau :=
+  exploit_witness' & oracle_divergence' & solvency_gap' & liquidation_cascade' &
+  governance_override' & healthy & allow.

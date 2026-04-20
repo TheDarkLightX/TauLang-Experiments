@@ -1,0 +1,883 @@
+{
+  "masks": {
+    "defi": {
+      "exploit_witness": 1,
+      "governance_override": 32,
+      "healthy": 244,
+      "liquidation_cascade": 9,
+      "market": 63,
+      "oracle_divergence": 3,
+      "solvency_gap": 13
+    },
+    "frontier": {
+      "exact_witness": 1,
+      "high_cost": 16,
+      "high_yield": 19,
+      "near_miss": 4,
+      "region": 31,
+      "stale_low_yield": 8
+    },
+    "research": {
+      "counterexample": 130,
+      "hard_reject": 8,
+      "parse_ok": 247,
+      "proof_ok": 33,
+      "proposed": 255,
+      "review": 84,
+      "symbolic_ok": 243
+    }
+  },
+  "model": {
+    "eval_count": 2110,
+    "load_duration_ns": 156508125,
+    "model": "qwen3.6:35b",
+    "num_gpu": 999,
+    "num_predict": 4096,
+    "prompt_eval_count": 631,
+    "temperature": 0.2,
+    "total_duration_ns": 62897467458
+  },
+  "normalized_rows": {
+    "defi": [
+      {
+        "bit": 0,
+        "exploit_witness": true,
+        "governance_override": false,
+        "healthy": false,
+        "id": "oracle_and_exploit_overlap",
+        "liquidation_cascade": true,
+        "market": true,
+        "market_forced_by_experiment": true,
+        "note": "DeFi exploit outranks oracle signals.",
+        "oracle_divergence": true,
+        "solvency_gap": true
+      },
+      {
+        "bit": 1,
+        "exploit_witness": false,
+        "governance_override": false,
+        "healthy": false,
+        "id": "oracle_divergence_only",
+        "liquidation_cascade": false,
+        "market": true,
+        "market_forced_by_experiment": true,
+        "note": "Oracle divergence without exploit.",
+        "oracle_divergence": true,
+        "solvency_gap": false
+      },
+      {
+        "bit": 2,
+        "exploit_witness": false,
+        "governance_override": false,
+        "healthy": true,
+        "id": "solvency_gap_with_healthy_flag",
+        "liquidation_cascade": false,
+        "market": true,
+        "market_forced_by_experiment": true,
+        "note": "Solvency gap flagged as healthy.",
+        "oracle_divergence": false,
+        "solvency_gap": true
+      },
+      {
+        "bit": 3,
+        "exploit_witness": false,
+        "governance_override": false,
+        "healthy": false,
+        "id": "liquidation_cascade",
+        "liquidation_cascade": true,
+        "market": true,
+        "market_forced_by_experiment": true,
+        "note": "Active liquidation cascade.",
+        "oracle_divergence": false,
+        "solvency_gap": true
+      },
+      {
+        "bit": 4,
+        "exploit_witness": false,
+        "governance_override": false,
+        "healthy": true,
+        "id": "normal_market",
+        "liquidation_cascade": false,
+        "market": true,
+        "market_forced_by_experiment": true,
+        "note": "Normal market condition.",
+        "oracle_divergence": false,
+        "solvency_gap": false
+      },
+      {
+        "bit": 5,
+        "exploit_witness": false,
+        "governance_override": true,
+        "healthy": true,
+        "id": "governance_override",
+        "liquidation_cascade": false,
+        "market": true,
+        "market_forced_by_experiment": true,
+        "note": "Active market via governance override.",
+        "oracle_divergence": false,
+        "solvency_gap": false
+      },
+      {
+        "bit": 6,
+        "exploit_witness": false,
+        "governance_override": false,
+        "healthy": true,
+        "id": "reserve_6",
+        "liquidation_cascade": false,
+        "market": false,
+        "market_forced_by_experiment": true,
+        "note": "Inactive reserve.",
+        "oracle_divergence": false,
+        "solvency_gap": false
+      },
+      {
+        "bit": 7,
+        "exploit_witness": false,
+        "governance_override": false,
+        "healthy": true,
+        "id": "reserve_7",
+        "liquidation_cascade": false,
+        "market": false,
+        "market_forced_by_experiment": true,
+        "note": "Inactive reserve.",
+        "oracle_divergence": false,
+        "solvency_gap": false
+      }
+    ],
+    "frontier": [
+      {
+        "bit": 0,
+        "exact_witness": true,
+        "high_cost": false,
+        "high_yield": true,
+        "id": "depth4_ln_exact",
+        "near_miss": false,
+        "note": "Active search region with exact witness.",
+        "region": true,
+        "region_forced_by_experiment": true,
+        "stale_low_yield": false
+      },
+      {
+        "bit": 1,
+        "exact_witness": false,
+        "high_cost": false,
+        "high_yield": true,
+        "id": "depth5_guided_region",
+        "near_miss": false,
+        "note": "Active search region requiring depth5 review.",
+        "region": true,
+        "region_forced_by_experiment": true,
+        "stale_low_yield": false
+      },
+      {
+        "bit": 2,
+        "exact_witness": false,
+        "high_cost": false,
+        "high_yield": false,
+        "id": "exp_exp_near_miss",
+        "near_miss": true,
+        "note": "Near miss candidate, not an active region.",
+        "region": true,
+        "region_forced_by_experiment": true,
+        "stale_low_yield": false
+      },
+      {
+        "bit": 3,
+        "exact_witness": false,
+        "high_cost": false,
+        "high_yield": false,
+        "id": "cold_random_shard",
+        "near_miss": false,
+        "note": "Stale low yield shard.",
+        "region": true,
+        "region_forced_by_experiment": true,
+        "stale_low_yield": true
+      },
+      {
+        "bit": 4,
+        "exact_witness": false,
+        "high_cost": true,
+        "high_yield": true,
+        "id": "expensive_proof_lane",
+        "near_miss": false,
+        "note": "Active search region via expensive proof lane.",
+        "region": true,
+        "region_forced_by_experiment": true,
+        "stale_low_yield": false
+      },
+      {
+        "bit": 5,
+        "exact_witness": false,
+        "high_cost": false,
+        "high_yield": false,
+        "id": "reserve_5",
+        "near_miss": false,
+        "note": "Inactive reserve.",
+        "region": false,
+        "region_forced_by_experiment": true,
+        "stale_low_yield": false
+      },
+      {
+        "bit": 6,
+        "exact_witness": false,
+        "high_cost": false,
+        "high_yield": false,
+        "id": "reserve_6",
+        "near_miss": false,
+        "note": "Inactive reserve.",
+        "region": false,
+        "region_forced_by_experiment": true,
+        "stale_low_yield": false
+      },
+      {
+        "bit": 7,
+        "exact_witness": false,
+        "high_cost": false,
+        "high_yield": false,
+        "id": "reserve_7",
+        "near_miss": false,
+        "note": "Inactive reserve.",
+        "region": false,
+        "region_forced_by_experiment": true,
+        "stale_low_yield": false
+      }
+    ],
+    "research": [
+      {
+        "bit": 0,
+        "counterexample": false,
+        "hard_reject": false,
+        "id": "fixed_revision_law",
+        "note": "Strong proof candidate with valid symbolic derivation.",
+        "parse_ok": true,
+        "proof_ok": true,
+        "proposed": true,
+        "proposed_forced_by_experiment": true,
+        "review": false,
+        "symbolic_ok": true
+      },
+      {
+        "bit": 1,
+        "counterexample": true,
+        "hard_reject": false,
+        "id": "current_guard_law",
+        "note": "Counterexample risk identified in guard logic.",
+        "parse_ok": true,
+        "proof_ok": false,
+        "proposed": true,
+        "proposed_forced_by_experiment": true,
+        "review": false,
+        "symbolic_ok": true
+      },
+      {
+        "bit": 2,
+        "counterexample": false,
+        "hard_reject": false,
+        "id": "arbitrary_select_law",
+        "note": "Requires review due to arbitrary selection ambiguity.",
+        "parse_ok": true,
+        "proof_ok": false,
+        "proposed": true,
+        "proposed_forced_by_experiment": true,
+        "review": true,
+        "symbolic_ok": false
+      },
+      {
+        "bit": 3,
+        "counterexample": false,
+        "hard_reject": true,
+        "id": "malformed_claim",
+        "note": "Failed parse validation.",
+        "parse_ok": false,
+        "proof_ok": false,
+        "proposed": true,
+        "proposed_forced_by_experiment": true,
+        "review": false,
+        "symbolic_ok": false
+      },
+      {
+        "bit": 4,
+        "counterexample": false,
+        "hard_reject": false,
+        "id": "depth5_region",
+        "note": "Needs review for depth5 consistency.",
+        "parse_ok": true,
+        "proof_ok": false,
+        "proposed": true,
+        "proposed_forced_by_experiment": true,
+        "review": true,
+        "symbolic_ok": true
+      },
+      {
+        "bit": 5,
+        "counterexample": false,
+        "hard_reject": false,
+        "id": "safe_revision_packet",
+        "note": "Strong proof candidate with safe packet structure.",
+        "parse_ok": true,
+        "proof_ok": true,
+        "proposed": true,
+        "proposed_forced_by_experiment": true,
+        "review": false,
+        "symbolic_ok": true
+      },
+      {
+        "bit": 6,
+        "counterexample": false,
+        "hard_reject": false,
+        "id": "runtime_lowering_gap",
+        "note": "Needs review for runtime lowering gap analysis.",
+        "parse_ok": true,
+        "proof_ok": false,
+        "proposed": true,
+        "proposed_forced_by_experiment": true,
+        "review": true,
+        "symbolic_ok": true
+      },
+      {
+        "bit": 7,
+        "counterexample": true,
+        "hard_reject": false,
+        "id": "unrestricted_taba_claim",
+        "note": "Counterexample risk in unrestricted TABA claim.",
+        "parse_ok": true,
+        "proof_ok": false,
+        "proposed": true,
+        "proposed_forced_by_experiment": true,
+        "review": false,
+        "symbolic_ok": true
+      }
+    ]
+  },
+  "prompt": "Return one JSON object only. No Markdown.\n\nYou are an untrusted neural proposer for a Tau qNS8 experiment.\nEach listed label corresponds to one qNS8 bit. Set boolean evidence fields.\nThe experiment materializes the fixed row frontier separately:\n- all research ids are proposed rows,\n- frontier ids through expensive_proof_lane are active search regions,\n- DeFi ids through governance_override are active markets.\nTau will compute the actual promoted/rejected/action masks later.\n\nUse conservative, plausible evidence:\n- current_guard_law and unrestricted_taba_claim should be counterexample risks.\n- fixed_revision_law and safe_revision_packet should be strong proof candidates.\n- malformed_claim should fail parse.\n- depth5_region and runtime_lowering_gap should need review.\n- DeFi exploit should outrank oracle/healthy signals.\n\nSchema:\n{\n  \"schema\": \"neuro_symbolic_qns_llm_proposal_v1\",\n  \"research\": [\n    {\n      \"id\": \"fixed_revision_law\",\n      \"proposed\": true,\n      \"parse_ok\": true,\n      \"symbolic_ok\": true,\n      \"proof_ok\": true,\n      \"counterexample\": false,\n      \"review\": false,\n      \"hard_reject\": false,\n      \"note\": \"short reason\"\n    }\n  ],\n  \"frontier\": [\n    {\n      \"id\": \"depth4_ln_exact\",\n      \"region\": true,\n      \"exact_witness\": true,\n      \"high_yield\": true,\n      \"near_miss\": false,\n      \"stale_low_yield\": false,\n      \"high_cost\": false,\n      \"note\": \"short reason\"\n    }\n  ],\n  \"defi\": [\n    {\n      \"id\": \"oracle_and_exploit_overlap\",\n      \"market\": true,\n      \"exploit_witness\": true,\n      \"oracle_divergence\": true,\n      \"solvency_gap\": true,\n      \"liquidation_cascade\": true,\n      \"governance_override\": false,\n      \"healthy\": true,\n      \"note\": \"short reason\"\n    }\n  ]\n}\n\nResearch ids, exactly once each:\nfixed_revision_law, current_guard_law, arbitrary_select_law, malformed_claim, depth5_region, safe_revision_packet, runtime_lowering_gap, unrestricted_taba_claim\n\nFrontier ids, exactly once each:\ndepth4_ln_exact, depth5_guided_region, exp_exp_near_miss, cold_random_shard, expensive_proof_lane, reserve_5, reserve_6, reserve_7\n\nDeFi ids, exactly once each:\noracle_and_exploit_overlap, oracle_divergence_only, solvency_gap_with_healthy_flag, liquidation_cascade, normal_market, governance_override, reserve_6, reserve_7\n",
+  "proposal": {
+    "defi": [
+      {
+        "exploit_witness": true,
+        "governance_override": false,
+        "healthy": false,
+        "id": "oracle_and_exploit_overlap",
+        "liquidation_cascade": true,
+        "market": true,
+        "note": "DeFi exploit outranks oracle signals.",
+        "oracle_divergence": true,
+        "solvency_gap": true
+      },
+      {
+        "exploit_witness": false,
+        "governance_override": false,
+        "healthy": false,
+        "id": "oracle_divergence_only",
+        "liquidation_cascade": false,
+        "market": true,
+        "note": "Oracle divergence without exploit.",
+        "oracle_divergence": true,
+        "solvency_gap": false
+      },
+      {
+        "exploit_witness": false,
+        "governance_override": false,
+        "healthy": true,
+        "id": "solvency_gap_with_healthy_flag",
+        "liquidation_cascade": false,
+        "market": true,
+        "note": "Solvency gap flagged as healthy.",
+        "oracle_divergence": false,
+        "solvency_gap": true
+      },
+      {
+        "exploit_witness": false,
+        "governance_override": false,
+        "healthy": false,
+        "id": "liquidation_cascade",
+        "liquidation_cascade": true,
+        "market": true,
+        "note": "Active liquidation cascade.",
+        "oracle_divergence": false,
+        "solvency_gap": true
+      },
+      {
+        "exploit_witness": false,
+        "governance_override": false,
+        "healthy": true,
+        "id": "normal_market",
+        "liquidation_cascade": false,
+        "market": true,
+        "note": "Normal market condition.",
+        "oracle_divergence": false,
+        "solvency_gap": false
+      },
+      {
+        "exploit_witness": false,
+        "governance_override": true,
+        "healthy": true,
+        "id": "governance_override",
+        "liquidation_cascade": false,
+        "market": true,
+        "note": "Active market via governance override.",
+        "oracle_divergence": false,
+        "solvency_gap": false
+      },
+      {
+        "exploit_witness": false,
+        "governance_override": false,
+        "healthy": true,
+        "id": "reserve_6",
+        "liquidation_cascade": false,
+        "market": false,
+        "note": "Inactive reserve.",
+        "oracle_divergence": false,
+        "solvency_gap": false
+      },
+      {
+        "exploit_witness": false,
+        "governance_override": false,
+        "healthy": true,
+        "id": "reserve_7",
+        "liquidation_cascade": false,
+        "market": false,
+        "note": "Inactive reserve.",
+        "oracle_divergence": false,
+        "solvency_gap": false
+      }
+    ],
+    "frontier": [
+      {
+        "exact_witness": true,
+        "high_cost": false,
+        "high_yield": true,
+        "id": "depth4_ln_exact",
+        "near_miss": false,
+        "note": "Active search region with exact witness.",
+        "region": true,
+        "stale_low_yield": false
+      },
+      {
+        "exact_witness": false,
+        "high_cost": false,
+        "high_yield": true,
+        "id": "depth5_guided_region",
+        "near_miss": false,
+        "note": "Active search region requiring depth5 review.",
+        "region": true,
+        "stale_low_yield": false
+      },
+      {
+        "exact_witness": false,
+        "high_cost": false,
+        "high_yield": false,
+        "id": "exp_exp_near_miss",
+        "near_miss": true,
+        "note": "Near miss candidate, not an active region.",
+        "region": false,
+        "stale_low_yield": false
+      },
+      {
+        "exact_witness": false,
+        "high_cost": false,
+        "high_yield": false,
+        "id": "cold_random_shard",
+        "near_miss": false,
+        "note": "Stale low yield shard.",
+        "region": false,
+        "stale_low_yield": true
+      },
+      {
+        "exact_witness": false,
+        "high_cost": true,
+        "high_yield": true,
+        "id": "expensive_proof_lane",
+        "near_miss": false,
+        "note": "Active search region via expensive proof lane.",
+        "region": true,
+        "stale_low_yield": false
+      },
+      {
+        "exact_witness": false,
+        "high_cost": false,
+        "high_yield": false,
+        "id": "reserve_5",
+        "near_miss": false,
+        "note": "Inactive reserve.",
+        "region": false,
+        "stale_low_yield": false
+      },
+      {
+        "exact_witness": false,
+        "high_cost": false,
+        "high_yield": false,
+        "id": "reserve_6",
+        "near_miss": false,
+        "note": "Inactive reserve.",
+        "region": false,
+        "stale_low_yield": false
+      },
+      {
+        "exact_witness": false,
+        "high_cost": false,
+        "high_yield": false,
+        "id": "reserve_7",
+        "near_miss": false,
+        "note": "Inactive reserve.",
+        "region": false,
+        "stale_low_yield": false
+      }
+    ],
+    "research": [
+      {
+        "counterexample": false,
+        "hard_reject": false,
+        "id": "fixed_revision_law",
+        "note": "Strong proof candidate with valid symbolic derivation.",
+        "parse_ok": true,
+        "proof_ok": true,
+        "proposed": true,
+        "review": false,
+        "symbolic_ok": true
+      },
+      {
+        "counterexample": true,
+        "hard_reject": false,
+        "id": "current_guard_law",
+        "note": "Counterexample risk identified in guard logic.",
+        "parse_ok": true,
+        "proof_ok": false,
+        "proposed": false,
+        "review": false,
+        "symbolic_ok": true
+      },
+      {
+        "counterexample": false,
+        "hard_reject": false,
+        "id": "arbitrary_select_law",
+        "note": "Requires review due to arbitrary selection ambiguity.",
+        "parse_ok": true,
+        "proof_ok": false,
+        "proposed": false,
+        "review": true,
+        "symbolic_ok": false
+      },
+      {
+        "counterexample": false,
+        "hard_reject": true,
+        "id": "malformed_claim",
+        "note": "Failed parse validation.",
+        "parse_ok": false,
+        "proof_ok": false,
+        "proposed": false,
+        "review": false,
+        "symbolic_ok": false
+      },
+      {
+        "counterexample": false,
+        "hard_reject": false,
+        "id": "depth5_region",
+        "note": "Needs review for depth5 consistency.",
+        "parse_ok": true,
+        "proof_ok": false,
+        "proposed": false,
+        "review": true,
+        "symbolic_ok": true
+      },
+      {
+        "counterexample": false,
+        "hard_reject": false,
+        "id": "safe_revision_packet",
+        "note": "Strong proof candidate with safe packet structure.",
+        "parse_ok": true,
+        "proof_ok": true,
+        "proposed": true,
+        "review": false,
+        "symbolic_ok": true
+      },
+      {
+        "counterexample": false,
+        "hard_reject": false,
+        "id": "runtime_lowering_gap",
+        "note": "Needs review for runtime lowering gap analysis.",
+        "parse_ok": true,
+        "proof_ok": false,
+        "proposed": false,
+        "review": true,
+        "symbolic_ok": true
+      },
+      {
+        "counterexample": true,
+        "hard_reject": false,
+        "id": "unrestricted_taba_claim",
+        "note": "Counterexample risk in unrestricted TABA claim.",
+        "parse_ok": true,
+        "proof_ok": false,
+        "proposed": false,
+        "review": false,
+        "symbolic_ok": true
+      }
+    ],
+    "schema": "neuro_symbolic_qns_llm_proposal_v1"
+  },
+  "rows": [
+    {
+      "actual": 33,
+      "actual_names": [
+        "fixed_revision_law",
+        "safe_revision_packet"
+      ],
+      "expected": 33,
+      "expected_names": [
+        "fixed_revision_law",
+        "safe_revision_packet"
+      ],
+      "expr": "({ #xFF }:qns8 & { #xF7 }:qns8 & { #xF3 }:qns8 & { #x21 }:qns8 & ({ #xFF }:qns8 ^ ({ #x82 }:qns8)) & ({ #xFF }:qns8 ^ ({ #x54 }:qns8)) & ({ #xFF }:qns8 ^ ({ #x08 }:qns8)))",
+      "name": "promoted",
+      "ok": true,
+      "raw": "%1: { 33 }:qns8",
+      "suite": "llm_research_qns"
+    },
+    {
+      "actual": 130,
+      "actual_names": [
+        "current_guard_law",
+        "unrestricted_taba_claim"
+      ],
+      "expected": 130,
+      "expected_names": [
+        "current_guard_law",
+        "unrestricted_taba_claim"
+      ],
+      "expr": "({ #xFF }:qns8 & { #x82 }:qns8)",
+      "name": "falsified",
+      "ok": true,
+      "raw": "%1: { 130 }:qns8",
+      "suite": "llm_research_qns"
+    },
+    {
+      "actual": 8,
+      "actual_names": [
+        "malformed_claim"
+      ],
+      "expected": 8,
+      "expected_names": [
+        "malformed_claim"
+      ],
+      "expr": "({ #xFF }:qns8 & (({ #xFF }:qns8 ^ ({ #xF7 }:qns8)) | { #x08 }:qns8))",
+      "name": "hard_reject",
+      "ok": true,
+      "raw": "%1: { 8 }:qns8",
+      "suite": "llm_research_qns"
+    },
+    {
+      "actual": 84,
+      "actual_names": [
+        "arbitrary_select_law",
+        "depth5_region",
+        "runtime_lowering_gap"
+      ],
+      "expected": 84,
+      "expected_names": [
+        "arbitrary_select_law",
+        "depth5_region",
+        "runtime_lowering_gap"
+      ],
+      "expr": "({ #xFF }:qns8 & ({ #xFF }:qns8 ^ (({ #xFF }:qns8 & { #xF7 }:qns8 & { #xF3 }:qns8 & { #x21 }:qns8 & ({ #xFF }:qns8 ^ ({ #x82 }:qns8)) & ({ #xFF }:qns8 ^ ({ #x54 }:qns8)) & ({ #xFF }:qns8 ^ ({ #x08 }:qns8))))) & ({ #xFF }:qns8 ^ (({ #xFF }:qns8 & { #x82 }:qns8))) & ({ #xFF }:qns8 ^ (({ #xFF }:qns8 & (({ #xFF }:qns8 ^ ({ #xF7 }:qns8)) | { #x08 }:qns8)))))",
+      "name": "review",
+      "ok": true,
+      "raw": "%1: { 84 }:qns8",
+      "suite": "llm_research_qns"
+    },
+    {
+      "actual": 33,
+      "actual_names": [
+        "fixed_revision_law",
+        "safe_revision_packet"
+      ],
+      "expected": 33,
+      "expected_names": [
+        "fixed_revision_law",
+        "safe_revision_packet"
+      ],
+      "expr": "table { when { #x21 }:qns8 => { #xFF }:qns8; else => { #x00 }:qns8 }",
+      "name": "memory_revise_promoted",
+      "ok": true,
+      "raw": "%1: { 33 }:qns8",
+      "suite": "llm_research_qns"
+    },
+    {
+      "actual": 1,
+      "actual_names": [
+        "depth4_ln_exact"
+      ],
+      "expected": 1,
+      "expected_names": [
+        "depth4_ln_exact"
+      ],
+      "expr": "({ #x1F }:qns8 & { #x01 }:qns8)",
+      "name": "certify",
+      "ok": true,
+      "raw": "%1: { 1 }:qns8",
+      "suite": "llm_frontier_qns"
+    },
+    {
+      "actual": 2,
+      "actual_names": [
+        "depth5_guided_region"
+      ],
+      "expected": 2,
+      "expected_names": [
+        "depth5_guided_region"
+      ],
+      "expr": "({ #x1F }:qns8 & ({ #xFF }:qns8 ^ ({ #x01 }:qns8)) & { #x13 }:qns8 & ({ #xFF }:qns8 ^ ({ #x10 }:qns8)))",
+      "name": "expand",
+      "ok": true,
+      "raw": "%1: { 2 }:qns8",
+      "suite": "llm_frontier_qns"
+    },
+    {
+      "actual": 4,
+      "actual_names": [
+        "exp_exp_near_miss"
+      ],
+      "expected": 4,
+      "expected_names": [
+        "exp_exp_near_miss"
+      ],
+      "expr": "({ #x1F }:qns8 & ({ #xFF }:qns8 ^ ({ #x01 }:qns8)) & ({ #xFF }:qns8 ^ ({ #x13 }:qns8)) & { #x04 }:qns8 & ({ #xFF }:qns8 ^ ({ #x08 }:qns8)))",
+      "name": "repair",
+      "ok": true,
+      "raw": "%1: { 4 }:qns8",
+      "suite": "llm_frontier_qns"
+    },
+    {
+      "actual": 8,
+      "actual_names": [
+        "cold_random_shard"
+      ],
+      "expected": 8,
+      "expected_names": [
+        "cold_random_shard"
+      ],
+      "expr": "({ #x1F }:qns8 & ({ #xFF }:qns8 ^ ({ #x01 }:qns8)) & ({ #xFF }:qns8 ^ ({ #x13 }:qns8)) & ({ #xFF }:qns8 ^ ({ #x04 }:qns8)) & { #x08 }:qns8)",
+      "name": "prune",
+      "ok": true,
+      "raw": "%1: { 8 }:qns8",
+      "suite": "llm_frontier_qns"
+    },
+    {
+      "actual": 0,
+      "actual_names": [],
+      "expected": 0,
+      "expected_names": [],
+      "expr": "({ #x1F }:qns8 & ({ #xFF }:qns8 ^ ({ #x01 }:qns8)) & ({ #xFF }:qns8 ^ ({ #x13 }:qns8)) & ({ #xFF }:qns8 ^ ({ #x04 }:qns8)) & ({ #xFF }:qns8 ^ ({ #x08 }:qns8)) & { #x10 }:qns8)",
+      "name": "throttle",
+      "ok": true,
+      "raw": "%1: 0",
+      "suite": "llm_frontier_qns"
+    },
+    {
+      "actual": 1,
+      "actual_names": [
+        "oracle_and_exploit_overlap"
+      ],
+      "expected": 1,
+      "expected_names": [
+        "oracle_and_exploit_overlap"
+      ],
+      "expr": "({ #x3F }:qns8 & { #x01 }:qns8)",
+      "name": "freeze",
+      "ok": true,
+      "raw": "%1: { 1 }:qns8",
+      "suite": "llm_defi_qns"
+    },
+    {
+      "actual": 2,
+      "actual_names": [
+        "oracle_divergence_only"
+      ],
+      "expected": 2,
+      "expected_names": [
+        "oracle_divergence_only"
+      ],
+      "expr": "({ #x3F }:qns8 & ({ #xFF }:qns8 ^ ({ #x01 }:qns8)) & { #x03 }:qns8)",
+      "name": "quarantine_oracle",
+      "ok": true,
+      "raw": "%1: { 2 }:qns8",
+      "suite": "llm_defi_qns"
+    },
+    {
+      "actual": 12,
+      "actual_names": [
+        "solvency_gap_with_healthy_flag",
+        "liquidation_cascade"
+      ],
+      "expected": 12,
+      "expected_names": [
+        "solvency_gap_with_healthy_flag",
+        "liquidation_cascade"
+      ],
+      "expr": "({ #x3F }:qns8 & ({ #xFF }:qns8 ^ ({ #x01 }:qns8)) & ({ #xFF }:qns8 ^ ({ #x03 }:qns8)) & { #x0D }:qns8)",
+      "name": "pause_borrow",
+      "ok": true,
+      "raw": "%1: { 12 }:qns8",
+      "suite": "llm_defi_qns"
+    },
+    {
+      "actual": 0,
+      "actual_names": [],
+      "expected": 0,
+      "expected_names": [],
+      "expr": "({ #x3F }:qns8 & ({ #xFF }:qns8 ^ ({ #x01 }:qns8)) & ({ #xFF }:qns8 ^ ({ #x03 }:qns8)) & ({ #xFF }:qns8 ^ ({ #x0D }:qns8)) & { #x09 }:qns8)",
+      "name": "cap_liquidation",
+      "ok": true,
+      "raw": "%1: 0",
+      "suite": "llm_defi_qns"
+    },
+    {
+      "actual": 32,
+      "actual_names": [
+        "governance_override"
+      ],
+      "expected": 32,
+      "expected_names": [
+        "governance_override"
+      ],
+      "expr": "({ #x3F }:qns8 & ({ #xFF }:qns8 ^ ({ #x01 }:qns8)) & ({ #xFF }:qns8 ^ ({ #x03 }:qns8)) & ({ #xFF }:qns8 ^ ({ #x0D }:qns8)) & ({ #xFF }:qns8 ^ ({ #x09 }:qns8)) & { #x20 }:qns8)",
+      "name": "governance_review",
+      "ok": true,
+      "raw": "%1: { 32 }:qns8",
+      "suite": "llm_defi_qns"
+    },
+    {
+      "actual": 16,
+      "actual_names": [
+        "normal_market"
+      ],
+      "expected": 16,
+      "expected_names": [
+        "normal_market"
+      ],
+      "expr": "({ #x3F }:qns8 & ({ #xFF }:qns8 ^ ({ #x01 }:qns8)) & ({ #xFF }:qns8 ^ ({ #x03 }:qns8)) & ({ #xFF }:qns8 ^ ({ #x0D }:qns8)) & ({ #xFF }:qns8 ^ ({ #x09 }:qns8)) & ({ #xFF }:qns8 ^ ({ #x20 }:qns8)) & { #xF4 }:qns8)",
+      "name": "allow",
+      "ok": true,
+      "raw": "%1: { 16 }:qns8",
+      "suite": "llm_defi_qns"
+    }
+  ],
+  "schema": "neuro_symbolic_qns_llm_experiment_v1",
+  "scope": {
+    "claim": "A live local LLM can propose evidence bits while Tau qNS8 performs exact symbolic mask computation.",
+    "not_claimed": [
+      "not trusting model output",
+      "not probabilistic arithmetic inside Tau",
+      "not unrestricted TABA tables",
+      "not financial advice"
+    ]
+  },
+  "summary": {
+    "defi_rows": 8,
+    "frontier_rows": 8,
+    "model": "qwen3.6:35b",
+    "ok": true,
+    "research_rows": 8,
+    "tau_row_count": 16,
+    "tau_rows_ok": true
+  }
+}

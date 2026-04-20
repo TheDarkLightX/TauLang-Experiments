@@ -1,0 +1,369 @@
+{
+  "fixture_suites": {
+    "counterexample_garden": {
+      "ok": true,
+      "row_count": 5,
+      "rows": [
+        {
+          "actual": "falsified",
+          "checked_counterexample": true,
+          "expected": "falsified",
+          "id": "law_current_guard_breaks_monotone",
+          "needs_more_models": false,
+          "ok": true,
+          "parse_bad": false,
+          "proof_checked": false,
+          "unsafe_pattern": true
+        },
+        {
+          "actual": "promoted",
+          "checked_counterexample": false,
+          "expected": "promoted",
+          "id": "law_fixed_revision_monotone",
+          "needs_more_models": false,
+          "ok": true,
+          "parse_bad": false,
+          "proof_checked": true,
+          "unsafe_pattern": false
+        },
+        {
+          "actual": "unsafe_boundary",
+          "checked_counterexample": false,
+          "expected": "unsafe_boundary",
+          "id": "law_arbitrary_select_unknown",
+          "needs_more_models": true,
+          "ok": true,
+          "parse_bad": false,
+          "proof_checked": false,
+          "unsafe_pattern": true
+        },
+        {
+          "actual": "reject_parse",
+          "checked_counterexample": true,
+          "expected": "reject_parse",
+          "id": "malformed_neural_claim",
+          "needs_more_models": true,
+          "ok": true,
+          "parse_bad": true,
+          "proof_checked": true,
+          "unsafe_pattern": true
+        },
+        {
+          "actual": "search_more",
+          "checked_counterexample": false,
+          "expected": "search_more",
+          "id": "needs_finite_model_search",
+          "needs_more_models": true,
+          "ok": true,
+          "parse_bad": false,
+          "proof_checked": false,
+          "unsafe_pattern": false
+        }
+      ]
+    },
+    "defi_lending_risk": {
+      "ok": true,
+      "row_count": 5,
+      "rows": [
+        {
+          "actual": "freeze_market",
+          "expected": "freeze_market",
+          "exploit_witness": true,
+          "governance_override": false,
+          "healthy": true,
+          "id": "oracle_and_exploit_overlap",
+          "liquidation_cascade": true,
+          "ok": true,
+          "oracle_divergence": true,
+          "solvency_gap": true
+        },
+        {
+          "actual": "quarantine_oracle",
+          "expected": "quarantine_oracle",
+          "exploit_witness": false,
+          "governance_override": false,
+          "healthy": true,
+          "id": "oracle_divergence_only",
+          "liquidation_cascade": false,
+          "ok": true,
+          "oracle_divergence": true,
+          "solvency_gap": false
+        },
+        {
+          "actual": "pause_borrow",
+          "expected": "pause_borrow",
+          "exploit_witness": false,
+          "governance_override": false,
+          "healthy": true,
+          "id": "solvency_gap_with_healthy_flag",
+          "liquidation_cascade": false,
+          "ok": true,
+          "oracle_divergence": false,
+          "solvency_gap": true
+        },
+        {
+          "actual": "cap_liquidation",
+          "expected": "cap_liquidation",
+          "exploit_witness": false,
+          "governance_override": false,
+          "healthy": false,
+          "id": "liquidation_cascade",
+          "liquidation_cascade": true,
+          "ok": true,
+          "oracle_divergence": false,
+          "solvency_gap": false
+        },
+        {
+          "actual": "allow",
+          "expected": "allow",
+          "exploit_witness": false,
+          "governance_override": false,
+          "healthy": true,
+          "id": "normal_market",
+          "liquidation_cascade": false,
+          "ok": true,
+          "oracle_divergence": false,
+          "solvency_gap": false
+        }
+      ]
+    },
+    "frontier_weather": {
+      "ok": true,
+      "row_count": 5,
+      "rows": [
+        {
+          "actual": "certify",
+          "exact_witness": true,
+          "expected": "certify",
+          "high_cost": false,
+          "high_yield": true,
+          "id": "depth4_ln_exact",
+          "near_miss": false,
+          "ok": true,
+          "stale_low_yield": false
+        },
+        {
+          "actual": "expand",
+          "exact_witness": false,
+          "expected": "expand",
+          "high_cost": false,
+          "high_yield": true,
+          "id": "depth5_guided_region_a",
+          "near_miss": false,
+          "ok": true,
+          "stale_low_yield": false
+        },
+        {
+          "actual": "repair",
+          "exact_witness": false,
+          "expected": "repair",
+          "high_cost": true,
+          "high_yield": false,
+          "id": "exp_exp_near_miss_cluster",
+          "near_miss": true,
+          "ok": true,
+          "stale_low_yield": false
+        },
+        {
+          "actual": "prune",
+          "exact_witness": false,
+          "expected": "prune",
+          "high_cost": false,
+          "high_yield": false,
+          "id": "cold_random_depth5_shard",
+          "near_miss": false,
+          "ok": true,
+          "stale_low_yield": true
+        },
+        {
+          "actual": "throttle",
+          "exact_witness": false,
+          "expected": "throttle",
+          "high_cost": true,
+          "high_yield": false,
+          "id": "expensive_unpromising_proof_lane",
+          "near_miss": false,
+          "ok": true,
+          "stale_low_yield": false
+        }
+      ]
+    },
+    "proof_debt_ledger": {
+      "ok": true,
+      "row_count": 4,
+      "rows": [
+        {
+          "actual": "verified",
+          "boundary_open": false,
+          "counterexample_found": false,
+          "expected": "verified",
+          "id": "safe_revision_packet",
+          "missing_lean": false,
+          "missing_runtime": false,
+          "ok": true,
+          "replay_ok": true
+        },
+        {
+          "actual": "lean_debt",
+          "boundary_open": false,
+          "counterexample_found": false,
+          "expected": "lean_debt",
+          "id": "frontier_weather_semantics",
+          "missing_lean": true,
+          "missing_runtime": false,
+          "ok": true,
+          "replay_ok": true
+        },
+        {
+          "actual": "runtime_debt",
+          "boundary_open": false,
+          "counterexample_found": false,
+          "expected": "runtime_debt",
+          "id": "runtime_lowering_gap",
+          "missing_lean": false,
+          "missing_runtime": true,
+          "ok": true,
+          "replay_ok": true
+        },
+        {
+          "actual": "falsified",
+          "boundary_open": false,
+          "counterexample_found": true,
+          "expected": "falsified",
+          "id": "unrestricted_taba_claim",
+          "missing_lean": false,
+          "missing_runtime": false,
+          "ok": true,
+          "replay_ok": true
+        }
+      ]
+    }
+  },
+  "grouped_tau_checks": [],
+  "schema": "neuro_symbolic_table_programs_v1",
+  "scope": {
+    "claim": "Safe table programs can classify neural proposal rows with symbolic priority and replayable Tau table/raw checks.",
+    "not_claimed": [
+      "not a live autonomous agent",
+      "not unrestricted TABA tables",
+      "not financial advice",
+      "not proof that neural proposals are true"
+    ]
+  },
+  "summary": {
+    "fixture_rows": 19,
+    "fixture_suite_count": 4,
+    "fixture_suites_ok": true,
+    "ok": true,
+    "tau_check_count": 13,
+    "tau_checks_ok": true,
+    "tau_group_count": 13,
+    "tau_mode": "individual"
+  },
+  "tau_checks": [
+    {
+      "elapsed_ms": 10377.084,
+      "last_line": "no solution",
+      "name": "counterexample_garden_table_agrees_with_raw",
+      "ok": true,
+      "returncode": 0,
+      "source": "examples/tau/neuro_symbolic_research_tables_v1.tau"
+    },
+    {
+      "elapsed_ms": 11028.467,
+      "last_line": "no solution",
+      "name": "counterexample_garden_counterexample_priority",
+      "ok": true,
+      "returncode": 0,
+      "source": "examples/tau/neuro_symbolic_research_tables_v1.tau"
+    },
+    {
+      "elapsed_ms": 11070.538,
+      "last_line": "no solution",
+      "name": "counterexample_garden_proof_slice",
+      "ok": true,
+      "returncode": 0,
+      "source": "examples/tau/neuro_symbolic_research_tables_v1.tau"
+    },
+    {
+      "elapsed_ms": 10854.487,
+      "last_line": "no solution",
+      "name": "frontier_weather_table_agrees_with_raw",
+      "ok": true,
+      "returncode": 0,
+      "source": "examples/tau/neuro_symbolic_research_tables_v1.tau"
+    },
+    {
+      "elapsed_ms": 10174.948,
+      "last_line": "no solution",
+      "name": "frontier_weather_exact_priority",
+      "ok": true,
+      "returncode": 0,
+      "source": "examples/tau/neuro_symbolic_research_tables_v1.tau"
+    },
+    {
+      "elapsed_ms": 10194.701,
+      "last_line": "no solution",
+      "name": "frontier_weather_expand_slice",
+      "ok": true,
+      "returncode": 0,
+      "source": "examples/tau/neuro_symbolic_research_tables_v1.tau"
+    },
+    {
+      "elapsed_ms": 10942.148,
+      "last_line": "no solution",
+      "name": "proof_debt_ledger_table_agrees_with_raw",
+      "ok": true,
+      "returncode": 0,
+      "source": "examples/tau/neuro_symbolic_research_tables_v1.tau"
+    },
+    {
+      "elapsed_ms": 10994.518,
+      "last_line": "no solution",
+      "name": "proof_debt_ledger_falsified_priority",
+      "ok": true,
+      "returncode": 0,
+      "source": "examples/tau/neuro_symbolic_research_tables_v1.tau"
+    },
+    {
+      "elapsed_ms": 11115.582,
+      "last_line": "no solution",
+      "name": "proof_debt_ledger_verified_slice",
+      "ok": true,
+      "returncode": 0,
+      "source": "examples/tau/neuro_symbolic_research_tables_v1.tau"
+    },
+    {
+      "elapsed_ms": 6574.388,
+      "last_line": "no solution",
+      "name": "defi_lending_action_table_agrees_with_raw",
+      "ok": true,
+      "returncode": 0,
+      "source": "examples/tau/defi_lending_risk_table_v1.tau"
+    },
+    {
+      "elapsed_ms": 6667.335,
+      "last_line": "no solution",
+      "name": "defi_lending_exploit_priority",
+      "ok": true,
+      "returncode": 0,
+      "source": "examples/tau/defi_lending_risk_table_v1.tau"
+    },
+    {
+      "elapsed_ms": 6657.083,
+      "last_line": "no solution",
+      "name": "defi_lending_oracle_slice",
+      "ok": true,
+      "returncode": 0,
+      "source": "examples/tau/defi_lending_risk_table_v1.tau"
+    },
+    {
+      "elapsed_ms": 6745.499,
+      "last_line": "no solution",
+      "name": "defi_lending_allow_slice",
+      "ok": true,
+      "returncode": 0,
+      "source": "examples/tau/defi_lending_risk_table_v1.tau"
+    }
+  ]
+}

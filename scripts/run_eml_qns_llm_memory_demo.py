@@ -185,14 +185,24 @@ def extract_json_object(text: str) -> dict[str, Any]:
     return json.loads(text[start : end + 1])
 
 
-def call_ollama(model: str, prompt: str, *, url: str, timeout_s: float, num_gpu: int) -> dict[str, Any]:
+def call_ollama(
+    model: str,
+    prompt: str,
+    *,
+    url: str,
+    timeout_s: float,
+    num_gpu: int,
+    num_predict: int,
+    temperature: float,
+) -> dict[str, Any]:
     payload = {
         "model": model,
         "prompt": prompt,
         "stream": False,
+        "think": False,
         "options": {
-            "temperature": 0.0,
-            "num_predict": 512,
+            "temperature": temperature,
+            "num_predict": num_predict,
             "num_gpu": num_gpu,
         },
     }
@@ -211,6 +221,9 @@ def call_ollama(model: str, prompt: str, *, url: str, timeout_s: float, num_gpu:
         "load_duration_ns": data.get("load_duration"),
         "prompt_eval_count": data.get("prompt_eval_count"),
         "eval_count": data.get("eval_count"),
+        "temperature": temperature,
+        "num_predict": num_predict,
+        "num_gpu": num_gpu,
     }
 
 
@@ -515,6 +528,8 @@ def load_or_call_model(args: argparse.Namespace, prompt: str) -> tuple[dict[str,
         url=args.ollama_url,
         timeout_s=args.ollama_timeout_s,
         num_gpu=args.num_gpu,
+        num_predict=args.num_predict,
+        temperature=args.temperature,
     )
     data = extract_json_object(str(ollama["raw_response"]))
     return {"source": "ollama", **ollama}, data
@@ -661,6 +676,8 @@ def main() -> int:
     parser.add_argument("--ollama-url", default=os.environ.get("QNS_OLLAMA_URL", "http://127.0.0.1:11434/api/generate"))
     parser.add_argument("--ollama-timeout-s", type=float, default=180.0)
     parser.add_argument("--num-gpu", type=int, default=int(os.environ.get("QNS_OLLAMA_NUM_GPU", "0")))
+    parser.add_argument("--num-predict", type=int, default=int(os.environ.get("QNS_OLLAMA_NUM_PREDICT", "512")))
+    parser.add_argument("--temperature", type=float, default=float(os.environ.get("QNS_OLLAMA_TEMPERATURE", "0.0")))
     parser.add_argument("--candidate-count", type=int, default=5)
     parser.add_argument("--live-ollama", action="store_true", help="Call Ollama instead of using fixture proposals.")
     parser.add_argument(
@@ -690,24 +707,11 @@ def main() -> int:
     if not isinstance(candidates, list):
         raise SystemExit("proposal candidates must be a list")
 
-    memory: dict[str, int] = {"exp(x)": 0, "ln(x)": 0, "exp(exp(x))": 0}
     rows: list[dict[str, Any]] = []
     for index, item in enumerate(candidates):
         if not isinstance(item, dict):
             item = {"expr": None, "target": None, "origin": "invalid"}
         evidence = candidate_evidence(item)
-        target = str(item.get("target"))
-        old = memory.get(target, 0)
-        tau_check = tau_promote_and_revise(
-            args.tau_bin,
-            old,
-            evidence["accepted_mask"],
-            evidence["review_mask"],
-            timeout_s=args.tau_timeout_s,
-            source=source,
-        )
-        if target in memory:
-            memory[target] = tau_check["new_memory_mask"]
         rows.append(
             {
                 "index": index,
@@ -717,9 +721,23 @@ def main() -> int:
                 **evidence,
                 "accepted_atoms": evidence_names(evidence["accepted_mask"]),
                 "review_atoms": evidence_names(evidence["review_mask"]),
-                "tau_check": tau_check,
             }
         )
+    memory: dict[str, int] = {"exp(x)": 0, "ln(x)": 0, "exp(exp(x))": 0}
+    for row in rows:
+        target = str(row.get("target"))
+        old = memory.get(target, 0)
+        tau_check = tau_promote_and_revise(
+            args.tau_bin,
+            old,
+            row["accepted_mask"],
+            row["review_mask"],
+            timeout_s=args.tau_timeout_s,
+            source=source,
+        )
+        if target in memory:
+            memory[target] = tau_check["new_memory_mask"]
+        row["tau_check"] = tau_check
 
     result = {
         "schema": "eml_qns_llm_memory_demo_v1",

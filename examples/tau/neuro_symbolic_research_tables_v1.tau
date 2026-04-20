@@ -1,0 +1,207 @@
+# Neuro-symbolic research table programs.
+#
+# Scope:
+# - Neural components propose rows: laws, counterexamples, proof sketches,
+#   search regions, repairs, and replay artifacts.
+# - Tau checks the symbolic table programs that classify those rows.
+# - Guards are fixed lower-stratum evidence. They do not read same-stratum
+#   recursive table state.
+# - The raw definitions are the exact guarded-choice expansions checked by the
+#   experiment runner.
+#
+# These are definitional examples for safe table programs, not full autonomous
+# research agents.
+
+counterexample_garden_table(
+  parse_bad,checked_counterexample,unsafe_pattern,proof_checked,needs_more_models,
+  reject_parse,falsified,unsafe_boundary,promoted,search_more,review
+) : tau :=
+  table {
+    when parse_bad => reject_parse;
+    when checked_counterexample => falsified;
+    when unsafe_pattern => unsafe_boundary;
+    when proof_checked => promoted;
+    when needs_more_models => search_more;
+    else => review
+  }.
+
+counterexample_garden_raw(
+  parse_bad,checked_counterexample,unsafe_pattern,proof_checked,needs_more_models,
+  reject_parse,falsified,unsafe_boundary,promoted,search_more,review
+) : tau :=
+  (parse_bad & reject_parse) |
+  (parse_bad' & (
+    (checked_counterexample & falsified) |
+    (checked_counterexample' & (
+      (unsafe_pattern & unsafe_boundary) |
+      (unsafe_pattern' & (
+        (proof_checked & promoted) |
+        (proof_checked' & (
+          (needs_more_models & search_more) |
+          (needs_more_models' & review)
+        ))
+      ))
+    ))
+  )).
+
+counterexample_garden_counterexample_slice_table(
+  parse_bad,checked_counterexample,unsafe_pattern,proof_checked,needs_more_models,
+  reject_parse,falsified,unsafe_boundary,promoted,search_more,review
+) : tau :=
+  parse_bad' & checked_counterexample &
+  counterexample_garden_table(
+    parse_bad,checked_counterexample,unsafe_pattern,proof_checked,needs_more_models,
+    reject_parse,falsified,unsafe_boundary,promoted,search_more,review
+  ).
+
+counterexample_garden_counterexample_slice_raw(
+  parse_bad,checked_counterexample,unsafe_pattern,proof_checked,needs_more_models,
+  reject_parse,falsified,unsafe_boundary,promoted,search_more,review
+) : tau :=
+  parse_bad' & checked_counterexample & falsified.
+
+counterexample_garden_proof_slice_table(
+  parse_bad,checked_counterexample,unsafe_pattern,proof_checked,needs_more_models,
+  reject_parse,falsified,unsafe_boundary,promoted,search_more,review
+) : tau :=
+  parse_bad' & checked_counterexample' & unsafe_pattern' & proof_checked &
+  counterexample_garden_table(
+    parse_bad,checked_counterexample,unsafe_pattern,proof_checked,needs_more_models,
+    reject_parse,falsified,unsafe_boundary,promoted,search_more,review
+  ).
+
+counterexample_garden_proof_slice_raw(
+  parse_bad,checked_counterexample,unsafe_pattern,proof_checked,needs_more_models,
+  reject_parse,falsified,unsafe_boundary,promoted,search_more,review
+) : tau :=
+  parse_bad' & checked_counterexample' & unsafe_pattern' & proof_checked &
+  promoted.
+
+frontier_weather_table(
+  exact_witness,high_yield,near_miss,stale_low_yield,high_cost,
+  certify,expand,repair,prune,throttle,observe
+) : tau :=
+  table {
+    when exact_witness => certify;
+    when high_yield & high_cost' => expand;
+    when near_miss => repair;
+    when stale_low_yield => prune;
+    when high_cost => throttle;
+    else => observe
+  }.
+
+frontier_weather_raw(
+  exact_witness,high_yield,near_miss,stale_low_yield,high_cost,
+  certify,expand,repair,prune,throttle,observe
+) : tau :=
+  (exact_witness & certify) |
+  (exact_witness' & (
+    ((high_yield & high_cost') & expand) |
+    ((high_yield & high_cost')' & (
+      (near_miss & repair) |
+      (near_miss' & (
+        (stale_low_yield & prune) |
+        (stale_low_yield' & (
+          (high_cost & throttle) |
+          (high_cost' & observe)
+        ))
+      ))
+    ))
+  )).
+
+frontier_weather_exact_slice_table(
+  exact_witness,high_yield,near_miss,stale_low_yield,high_cost,
+  certify,expand,repair,prune,throttle,observe
+) : tau :=
+  exact_witness &
+  frontier_weather_table(
+    exact_witness,high_yield,near_miss,stale_low_yield,high_cost,
+    certify,expand,repair,prune,throttle,observe
+  ).
+
+frontier_weather_exact_slice_raw(
+  exact_witness,high_yield,near_miss,stale_low_yield,high_cost,
+  certify,expand,repair,prune,throttle,observe
+) : tau :=
+  exact_witness & certify.
+
+frontier_weather_expand_slice_table(
+  exact_witness,high_yield,near_miss,stale_low_yield,high_cost,
+  certify,expand,repair,prune,throttle,observe
+) : tau :=
+  exact_witness' & high_yield & high_cost' &
+  frontier_weather_table(
+    exact_witness,high_yield,near_miss,stale_low_yield,high_cost,
+    certify,expand,repair,prune,throttle,observe
+  ).
+
+frontier_weather_expand_slice_raw(
+  exact_witness,high_yield,near_miss,stale_low_yield,high_cost,
+  certify,expand,repair,prune,throttle,observe
+) : tau :=
+  exact_witness' & high_yield & high_cost' & expand.
+
+proof_debt_ledger_table(
+  counterexample_found,replay_ok,missing_lean,missing_runtime,boundary_open,
+  falsified,lean_debt,runtime_debt,boundary_debt,verified,experimental
+) : tau :=
+  table {
+    when counterexample_found => falsified;
+    when replay_ok & missing_lean => lean_debt;
+    when replay_ok & missing_runtime => runtime_debt;
+    when replay_ok & boundary_open => boundary_debt;
+    when replay_ok => verified;
+    else => experimental
+  }.
+
+proof_debt_ledger_raw(
+  counterexample_found,replay_ok,missing_lean,missing_runtime,boundary_open,
+  falsified,lean_debt,runtime_debt,boundary_debt,verified,experimental
+) : tau :=
+  (counterexample_found & falsified) |
+  (counterexample_found' & (
+    ((replay_ok & missing_lean) & lean_debt) |
+    ((replay_ok & missing_lean)' & (
+      ((replay_ok & missing_runtime) & runtime_debt) |
+      ((replay_ok & missing_runtime)' & (
+        ((replay_ok & boundary_open) & boundary_debt) |
+        ((replay_ok & boundary_open)' & (
+          (replay_ok & verified) |
+          (replay_ok' & experimental)
+        ))
+      ))
+    ))
+  )).
+
+proof_debt_ledger_falsified_slice_table(
+  counterexample_found,replay_ok,missing_lean,missing_runtime,boundary_open,
+  falsified,lean_debt,runtime_debt,boundary_debt,verified,experimental
+) : tau :=
+  counterexample_found &
+  proof_debt_ledger_table(
+    counterexample_found,replay_ok,missing_lean,missing_runtime,boundary_open,
+    falsified,lean_debt,runtime_debt,boundary_debt,verified,experimental
+  ).
+
+proof_debt_ledger_falsified_slice_raw(
+  counterexample_found,replay_ok,missing_lean,missing_runtime,boundary_open,
+  falsified,lean_debt,runtime_debt,boundary_debt,verified,experimental
+) : tau :=
+  counterexample_found & falsified.
+
+proof_debt_ledger_verified_slice_table(
+  counterexample_found,replay_ok,missing_lean,missing_runtime,boundary_open,
+  falsified,lean_debt,runtime_debt,boundary_debt,verified,experimental
+) : tau :=
+  counterexample_found' & replay_ok & missing_lean' & missing_runtime' & boundary_open' &
+  proof_debt_ledger_table(
+    counterexample_found,replay_ok,missing_lean,missing_runtime,boundary_open,
+    falsified,lean_debt,runtime_debt,boundary_debt,verified,experimental
+  ).
+
+proof_debt_ledger_verified_slice_raw(
+  counterexample_found,replay_ok,missing_lean,missing_runtime,boundary_open,
+  falsified,lean_debt,runtime_debt,boundary_debt,verified,experimental
+) : tau :=
+  counterexample_found' & replay_ok & missing_lean' & missing_runtime' & boundary_open' &
+  verified.
