@@ -20,7 +20,9 @@ from .jepa import TauJepaModel, default_jepa_model
 from .optimizer import (
     SparseTauWorkload,
     build_optimizer_workbench,
+    build_optimizer_training_report,
     verify_optimizer_receipt,
+    verify_optimizer_training_report,
 )
 from .syntax import build_syntax_corpus, build_tau_syntax_snapshot
 from .training import build_training_bundle
@@ -34,6 +36,7 @@ __all__ = [
     "TauJepaModel",
     "build_proposal_packet",
     "build_optimizer_workbench",
+    "build_optimizer_training_report",
     "build_syntax_corpus",
     "build_tau_syntax_snapshot",
     "build_training_bundle",
@@ -42,4 +45,5 @@ __all__ = [
     "fit_energy_model",
     "label_candidate",
     "verify_optimizer_receipt",
+    "verify_optimizer_training_report",
 ]

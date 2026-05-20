@@ -37,6 +37,16 @@ python3 scripts/run_tau_optimizer_workbench.py \
   --verify results/local/tau-energy/optimizer_workbench.json
 ```
 
+Train a small route ranker from live Tau labels:
+
+```bash
+python3 scripts/train_tau_optimizer_energy.py \
+  --tau-bin external/tau-lang/build-Release/tau \
+  --out results/local/tau-energy/optimizer_training_report.json
+python3 scripts/train_tau_optimizer_energy.py \
+  --verify results/local/tau-energy/optimizer_training_report.json
+```
+
 ## What Counts As Success
 
 The receipt is accepted only when:
@@ -57,3 +67,18 @@ candidate to Tau receipt.
 
 This is not a full semantic world model for all of Tau. It is the smallest
 world model that makes one optimizer claim inspectable.
+
+## Training Status
+
+The first trainable model is a small linear ranker over live Tau-labeled route
+rows. Each workload generates a Tau formula, records a fragment profile
+(top-level conjunction, nonzero factors, support sizes, impacted factor ratio),
+and supplies three candidates: indexed factor solving, full factor scan, and an
+unchecked-cache negative control. Tau labels the indexed route useful only when
+it reports scan/index parity, zero errors, and fewer solver calls than the full
+scan.
+
+This is still an early EBRM baseline. It is trained enough to learn this narrow
+route family, but not trained enough to generalize across all Tau optimizer
+designs. If Tau syntax changes, regenerate the synthetic formulas and relabel
+them with the current Tau binary instead of treating old rows as stable facts.

@@ -8,11 +8,13 @@ from tau_energy import (
     SparseTauWorkload,
     TauProposalCandidate,
     build_optimizer_workbench,
+    build_optimizer_training_report,
     build_proposal_packet,
     build_syntax_corpus,
     build_training_bundle,
     default_energy_model,
     verify_optimizer_receipt,
+    verify_optimizer_training_report,
 )
 from tau_energy.optimizer import (
     build_solve_command,
@@ -118,3 +120,22 @@ def test_live_optimizer_workbench_receipt_if_tau_exists() -> None:
     assert accepted["candidate_id"] == "indexed_factor_solve"
     assert accepted["solver_call_reduction"] > 1.0
     assert receipt["wes_schedule"]["invalid_accept_count"] == 0
+
+
+def test_live_optimizer_training_report_if_tau_exists() -> None:
+    tau_bin = Path("external/tau-lang/build-Release/tau")
+    if not tau_bin.exists():
+        return
+    report = build_optimizer_training_report(tau_bin=tau_bin, timeout_s=120)
+    assert verify_optimizer_training_report(report)
+    assert report["fitted_model"]["trained"] is True
+    assert report["training_row_count"] >= 18
+    assert report["formula_corpus"]["formula_count"] >= 6
+    assert "sparse_delta" in report["formula_corpus"]["fragment_counts"]
+    assert report["fitted_eval"]["eligible_top1_useful_rate"] == 1.0
+    assert report["fitted_eval"]["eligible_mean_calls_to_first_useful"] == 1.0
+    assert report["fitted_eval"]["invalid_accept_count"] == 0
+    assert (
+        report["fitted_eval"]["no_useful_safe_top1_count"]
+        == report["fitted_eval"]["no_useful_workload_count"]
+    )
