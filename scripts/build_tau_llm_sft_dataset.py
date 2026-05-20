@@ -19,10 +19,17 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--prompt", action="append", dest="prompts", default=None)
     parser.add_argument("--format", choices=("json", "jsonl"), default="jsonl")
+    parser.add_argument("--tau-bin", type=Path)
+    parser.add_argument("--require-live-syntax", action="store_true")
     parser.add_argument("--out", type=Path, default=Path("results/local/tau-energy/tau_llm_sft.jsonl"))
     args = parser.parse_args()
 
-    bundle = build_training_bundle(args.prompts or list(DEFAULT_PROMPTS), root=str(ROOT))
+    bundle = build_training_bundle(
+        args.prompts or list(DEFAULT_PROMPTS),
+        root=str(ROOT),
+        tau_bin=str(args.tau_bin) if args.tau_bin else None,
+        require_live_syntax=args.require_live_syntax,
+    )
     rows = bundle["sft_rows"]
     if args.format == "jsonl":
         write_jsonl(args.out, rows)

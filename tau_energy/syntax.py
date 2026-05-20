@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import subprocess
 from pathlib import Path
 from typing import Any
 
@@ -66,12 +67,49 @@ def surface_tau_syntax_check(text: str) -> dict[str, Any]:
     return {"ok": True, "reason": "surface check only; run current Tau for authority"}
 
 
+def live_tau_syntax_check(
+    tau_bin: Path | str | None,
+    formula: str,
+    *,
+    timeout_s: int = 5,
+) -> dict[str, Any]:
+    if tau_bin is None:
+        return {"ok": None, "status": "not_run", "reason": "no Tau binary supplied"}
+    path = Path(tau_bin)
+    if not path.exists():
+        return {"ok": None, "status": "not_run", "reason": "Tau binary missing", "tau_bin": path.name}
+    command = f"solve --tau {formula}\n"
+    try:
+        proc = subprocess.run(
+            [str(path)],
+            input=command,
+            text=True,
+            capture_output=True,
+            timeout=timeout_s,
+            check=False,
+        )
+    except subprocess.TimeoutExpired:
+        return {"ok": False, "status": "timeout", "tau_bin": path.name}
+    output = (proc.stdout or "") + (proc.stderr or "")
+    syntax_error = "Syntax Error" in output or "Parse error" in output
+    return {
+        "ok": proc.returncode == 0 and not syntax_error,
+        "status": "passed" if proc.returncode == 0 and not syntax_error else "failed",
+        "returncode": proc.returncode,
+        "tau_bin": path.name,
+        "command": "solve --tau <formula>",
+        "formula": formula,
+        "syntax_error": syntax_error,
+    }
+
+
 def semantic_templates() -> list[dict[str, Any]]:
     return [
         {
             "template_id": "one_hot_policy_gate",
             "intent": "A host computes action flags and Tau checks the allowed boolean shape.",
             "tau_text": "claim allow_trade := action_trade && has_receipt && !emergency_pause",
+            "tau_formula": "(action & receipt & pause' != 0)",
             "semantic_ir": {
                 "inputs": ["action_trade", "has_receipt", "emergency_pause"],
                 "guarantee": "allow_trade only when action_trade and has_receipt are true and emergency_pause is false",
@@ -85,6 +123,7 @@ def semantic_templates() -> list[dict[str, Any]]:
             "template_id": "grammar_drift_gate",
             "intent": "A generated Tau sketch must be tied to a grammar snapshot.",
             "tau_text": "claim sketch_current := grammar_hash_matches && syntax_probe_passed",
+            "tau_formula": "(grammar & syntax != 0)",
             "semantic_ir": {
                 "inputs": ["grammar_hash_matches", "syntax_probe_passed"],
                 "guarantee": "stale syntax rows are not promoted to current sketches",
@@ -98,6 +137,7 @@ def semantic_templates() -> list[dict[str, Any]]:
             "template_id": "tau_net_experiment_rollout",
             "intent": "A Tau Net proposal stays in an experiment lane until receipts exist.",
             "tau_text": "claim rollout_allowed := experiment_lane && receipt_bundle_passed && rollback_defined",
+            "tau_formula": "(experiment & receipt & rollback != 0)",
             "semantic_ir": {
                 "inputs": ["experiment_lane", "receipt_bundle_passed", "rollback_defined"],
                 "guarantee": "broad rollout needs experiment scope, receipts, and rollback",
@@ -110,13 +150,23 @@ def semantic_templates() -> list[dict[str, Any]]:
     ]
 
 
-def build_syntax_corpus(root: Path | str = ".", *, limit: int | None = None) -> dict[str, Any]:
+def build_syntax_corpus(
+    root: Path | str = ".",
+    *,
+    limit: int | None = None,
+    tau_bin: Path | str | None = None,
+    require_live: bool = False,
+    timeout_s: int = 5,
+) -> dict[str, Any]:
     snapshot = build_tau_syntax_snapshot(root)
     rows: list[dict[str, Any]] = []
     model = default_energy_model()
     jepa = default_jepa_model()
     for template in semantic_templates()[:limit]:
         syntax_check = surface_tau_syntax_check(str(template["tau_text"]))
+        live_check = live_tau_syntax_check(tau_bin, str(template["tau_formula"]), timeout_s=timeout_s)
+        if require_live and live_check["ok"] is not True:
+            continue
         candidate = TauProposalCandidate(
             candidate_id=f"syntax:{template['template_id']}",
             kind="tau_syntax_example",
@@ -143,9 +193,11 @@ def build_syntax_corpus(root: Path | str = ".", *, limit: int | None = None) -> 
             "template_id": template["template_id"],
             "grammar_hash": snapshot["grammar_hash"],
             "tau_text": template["tau_text"],
+            "tau_formula": template["tau_formula"],
             "semantic_ir": template["semantic_ir"],
             "counterexamples": template["counterexamples"],
             "surface_syntax_check": syntax_check,
+            "live_tau_syntax_check": live_check,
             "energy": model.energy(candidate),
             "jepa_top_scenario": jepa.rank([candidate])[0],
             "authority": "training data only; current Tau must parse and verify before use",

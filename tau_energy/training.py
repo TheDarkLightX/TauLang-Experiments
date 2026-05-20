@@ -76,10 +76,17 @@ def build_training_bundle(
     *,
     root: str = ".",
     syntax_limit: int | None = None,
+    tau_bin: str | None = None,
+    require_live_syntax: bool = False,
 ) -> dict[str, Any]:
     selected_prompts = prompts or list(DEFAULT_PROMPTS)
     packets = [build_proposal_packet(prompt, root=root) for prompt in selected_prompts]
-    syntax = build_syntax_corpus(root, limit=syntax_limit)
+    syntax = build_syntax_corpus(
+        root,
+        limit=syntax_limit,
+        tau_bin=tau_bin,
+        require_live=require_live_syntax,
+    )
     training_rows: list[dict[str, Any]] = []
     sft_rows: list[dict[str, Any]] = []
     for packet in packets:

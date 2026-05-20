@@ -10,6 +10,7 @@ from tau_energy import (
     build_training_bundle,
     default_energy_model,
 )
+from tau_energy.syntax import live_tau_syntax_check
 
 
 def test_authority_boundary_is_closed() -> None:
@@ -71,3 +72,10 @@ def test_training_bundle_has_trainable_energy_and_sft_rows(tmp_path) -> None:
     encoded = json.dumps(bundle)
     assert "/" + "home" + "/" not in encoded
     assert "tau_energy_can_accept" in encoded
+
+
+def test_live_tau_syntax_check_is_optional(tmp_path) -> None:
+    missing = tmp_path / "tau"
+    result = live_tau_syntax_check(missing, "(a & b != 0)")
+    assert result["ok"] is None
+    assert result["status"] == "not_run"

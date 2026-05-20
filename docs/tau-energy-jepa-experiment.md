@@ -64,6 +64,16 @@ python3 scripts/build_tau_energy_training_bundle.py \
   --out results/local/tau-energy/training_bundle.json
 ```
 
+Require generated formulas to pass the current local Tau binary before they
+enter the syntax corpus:
+
+```bash
+python3 scripts/build_tau_energy_training_bundle.py \
+  --tau-bin external/tau-lang/build-Release/tau \
+  --require-live-syntax \
+  --out results/local/tau-energy/training_bundle.live.json
+```
+
 Export chat SFT rows:
 
 ```bash
