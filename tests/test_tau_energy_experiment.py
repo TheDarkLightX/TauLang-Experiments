@@ -10,6 +10,7 @@ from tau_energy import (
     build_fragment_training_report,
     build_measured_fragment_training_report,
     build_measured_fragment_stress_report,
+    build_ordered_bdd_curriculum_report,
     build_optimizer_workbench,
     build_optimizer_training_report,
     build_proposal_packet,
@@ -19,6 +20,7 @@ from tau_energy import (
     verify_fragment_training_report,
     verify_measured_fragment_training_report,
     verify_measured_fragment_stress_report,
+    verify_ordered_bdd_curriculum_report,
     verify_optimizer_receipt,
     verify_optimizer_training_report,
 )
@@ -205,3 +207,22 @@ def test_live_measured_fragment_stress_report_if_tau_exists() -> None:
     assert report["cross_seed"]["seed_count"] == 2
     assert report["family_holdout"]["evaluated_family_count"] >= 4
     assert report["invalid_accept_count"] == 0
+
+
+def test_live_ordered_bdd_curriculum_report_if_tau_exists() -> None:
+    tau_bin = Path("external/tau-lang/build-Release/tau")
+    if not tau_bin.exists():
+        return
+    report = build_ordered_bdd_curriculum_report(
+        tau_bin=tau_bin,
+        base_examples=24,
+        bdd_pool_examples=18,
+        bdd_train_sizes=[0, 2, 4, 8],
+        real_spec_limit=1,
+        seed=20260527,
+        tau_timeout_s=10,
+        route_timeout_s=10,
+    )
+    assert verify_ordered_bdd_curriculum_report(report)
+    assert report["invalid_accept_count"] == 0
+    assert report["improvement"]["best_fitted_top1"] >= report["curriculum_steps"][0]["fitted_top1"]

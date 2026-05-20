@@ -83,6 +83,20 @@ python3 scripts/stress_tau_measured_fragment_energy.py \
   --verify results/local/tau-energy/measured_fragment_stress_report.json
 ```
 
+Run the targeted ordered-BDD curriculum:
+
+```bash
+python3 scripts/train_tau_ordered_bdd_curriculum.py \
+  --base-examples 120 \
+  --bdd-pool-examples 96 \
+  --bdd-train-sizes 0 2 4 8 16 32 \
+  --real-spec-limit 4 \
+  --tau-bin external/tau-lang/build-Release/tau \
+  --out results/local/tau-energy/ordered_bdd_curriculum_report.json
+python3 scripts/train_tau_ordered_bdd_curriculum.py \
+  --verify results/local/tau-energy/ordered_bdd_curriculum_report.json
+```
+
 ## What Counts As Success
 
 The receipt is accepted only when:
@@ -139,3 +153,8 @@ The stress report runs the measured-label trainer across multiple seeds and
 then evaluates leave-one-family-out route selection. The family-holdout numbers
 are intentionally diagnostic: a low score is evidence that the corpus does not
 yet teach that fragment family well enough.
+
+The ordered-BDD curriculum directly follows from the stress report. It keeps a
+fixed non-BDD measured corpus, adds increasing counts of measured ordered-BDD
+examples, and tests on held-out BDD formulas. This answers whether the weak
+family-holdout result is a lack of data for that route family.

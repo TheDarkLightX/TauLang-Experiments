@@ -25,6 +25,7 @@ from typing import Any
 FRAGMENT_TRAINING_REPORT_SCHEMA = "tau-energy-fragment-training-report-v1"
 MEASURED_FRAGMENT_TRAINING_REPORT_SCHEMA = "tau-energy-measured-fragment-training-report-v1"
 MEASURED_FRAGMENT_STRESS_REPORT_SCHEMA = "tau-energy-measured-fragment-stress-report-v1"
+ORDERED_BDD_CURRICULUM_REPORT_SCHEMA = "tau-energy-ordered-bdd-curriculum-report-v1"
 FRAGMENT_ROUTES: tuple[str, ...] = (
     "read_once_structural",
     "small_truth_table_or_certificate",
@@ -760,6 +761,35 @@ def generate_fragment_cases(
             "oracle_route": oracle_route(profile),
         })
     return cases
+
+
+def generate_family_cases(*, family: str, count: int, seed: int) -> list[dict[str, Any]]:
+    if count <= 0:
+        return []
+    out: list[dict[str, Any]] = []
+    index = 0
+    while len(out) < count:
+        rng = random.Random(seed + index * 7919)
+        expr, variables, quantifier = _generate_expr_for_family(rng, family)
+        profile = formula_profile(expr, variables, quantifier)
+        formula = tau_formula_text(expr, variables, quantifier)
+        expected_status = (
+            "sat" if brute_force_sat(expr, variables) else "unsat"
+        ) if quantifier is None and len(variables) <= 12 else None
+        out.append({
+            "case_id": f"curriculum_{family}_{index:05d}",
+            "family": family,
+            "variables": variables,
+            "_expr": expr,
+            "expr_ast": expr_to_obj(expr),
+            "formula": formula,
+            "formula_sha256": hashlib.sha256(formula.encode("utf-8")).hexdigest(),
+            "profile": profile,
+            "expected_status": expected_status,
+            "oracle_route": oracle_route(profile),
+        })
+        index += 1
+    return out
 
 
 def command_shape_profile(command: str) -> dict[str, Any]:
@@ -1721,6 +1751,167 @@ def verify_measured_fragment_stress_report(data: dict[str, Any]) -> bool:
     )
 
 
+def _rows_for_case_ids(rows: list[dict[str, Any]], case_ids: set[str]) -> list[dict[str, Any]]:
+    return [row for row in rows if str(row["case_id"]) in case_ids]
+
+
+def build_ordered_bdd_curriculum_report(
+    *,
+    tau_bin: Path | str = Path("external/tau-lang/build-Release/tau"),
+    base_examples: int = 120,
+    bdd_pool_examples: int = 96,
+    bdd_train_sizes: list[int] | None = None,
+    seed: int = 20260526,
+    real_spec_limit: int = 4,
+    tau_timeout_s: int = 10,
+    route_timeout_s: int = 10,
+    minisat_bin: str | None = None,
+    root: Path | str = Path("."),
+) -> dict[str, Any]:
+    train_sizes = bdd_train_sizes or [0, 2, 4, 8, 16, 32]
+    if any(size < 0 for size in train_sizes):
+        raise ValueError("bdd_train_sizes must be non-negative")
+    max_train = max(train_sizes) if train_sizes else 0
+    if bdd_pool_examples <= max_train:
+        raise ValueError("bdd_pool_examples must exceed the largest train size")
+    path = Path(tau_bin)
+    if not path.exists():
+        raise FileNotFoundError(f"Tau binary not found: {path}")
+    root_path = Path(root)
+    selected_minisat = minisat_bin if minisat_bin is not None else (shutil.which("minisat") or "")
+
+    non_bdd_families = ["read_once", "small_truth", "tseitin", "quantified"]
+    per_family = max(1, base_examples // len(non_bdd_families))
+    base_cases: list[dict[str, Any]] = []
+    for offset, family in enumerate(non_bdd_families):
+        base_cases.extend(generate_family_cases(
+            family=family,
+            count=per_family,
+            seed=seed + 100 * offset,
+        ))
+    base_cases = base_cases[:base_examples]
+    base_cases.extend(load_real_tau_command_cases(root_path, limit=real_spec_limit))
+    bdd_cases = generate_family_cases(
+        family="ordered_bdd",
+        count=bdd_pool_examples,
+        seed=seed + 10_000,
+    )
+    collected = collect_measured_route_rows(
+        tau_bin=path,
+        split_cases=[
+            *[(case, "train") for case in base_cases],
+            *[(case, "test") for case in bdd_cases],
+        ],
+        minisat_bin=selected_minisat,
+        tau_timeout_s=tau_timeout_s,
+        route_timeout_s=route_timeout_s,
+    )
+    base_rows = collected["train_rows"]
+    bdd_rows = collected["test_rows"]
+    bdd_case_ids = sorted({str(row["case_id"]) for row in bdd_rows})
+    hand = hand_fragment_energy_model()
+    steps: list[dict[str, Any]] = []
+    for train_size in train_sizes:
+        train_ids = set(bdd_case_ids[:train_size])
+        test_ids = set(bdd_case_ids[train_size:])
+        train_rows = [*base_rows, *_rows_for_case_ids(bdd_rows, train_ids)]
+        test_rows = _rows_for_case_ids(bdd_rows, test_ids)
+        fitted = fit_fragment_energy_model(train_rows)
+        hand_eval = evaluate_fragment_model(hand, test_rows)
+        fitted_eval = evaluate_fragment_model(fitted, test_rows)
+        steps.append({
+            "bdd_train_case_count": train_size,
+            "bdd_test_case_count": len(test_ids),
+            "training_row_count": len(train_rows),
+            "test_row_count": len(test_rows),
+            "hand_top1": hand_eval["top1_oracle_route_rate"],
+            "fitted_top1": fitted_eval["top1_oracle_route_rate"],
+            "fitted_mean_calls_to_best_route": fitted_eval["mean_calls_to_oracle"],
+            "test_top1_delta": round(
+                float(fitted_eval["top1_oracle_route_rate"])
+                - float(hand_eval["top1_oracle_route_rate"]),
+                6,
+            ),
+            "invalid_accept_count": fitted_eval["invalid_accept_count"],
+        })
+    first = steps[0] if steps else {}
+    last = steps[-1] if steps else {}
+    best = max(steps, key=lambda row: float(row["fitted_top1"])) if steps else {}
+    route_counts = Counter(str(row["measured_best_route"]) for row in bdd_rows[::len(FRAGMENT_ROUTES)])
+    failed_count = len(collected["failed_checks"])
+    invalid_count = sum(int(step.get("invalid_accept_count") or 0) for step in steps)
+    status = "passed" if failed_count == 0 and invalid_count == 0 and steps else "failed"
+    return {
+        "schema": ORDERED_BDD_CURRICULUM_REPORT_SCHEMA,
+        "status": status,
+        "authority": {
+            "trained_ranker_can_accept": False,
+            "tau_checked_every_formula": True,
+            "route_certificate_required": True,
+            "measured_route_labels_required": True,
+            "deterministic_fallback_required": True,
+        },
+        "training_status": "ordered_bdd_targeted_measured_curriculum",
+        "seed": seed,
+        "base_examples": len(base_cases),
+        "bdd_pool_examples": len(bdd_case_ids),
+        "bdd_train_sizes": train_sizes,
+        "real_spec_limit": real_spec_limit,
+        "failed_check_count": failed_count,
+        "invalid_accept_count": invalid_count,
+        "base_row_count": len(base_rows),
+        "bdd_row_count": len(bdd_rows),
+        "minisat_available": bool(selected_minisat),
+        "grammar_manifest": grammar_manifest(root_path),
+        "bdd_measured_best_route_counts": dict(sorted(route_counts.items())),
+        "curriculum_steps": steps,
+        "improvement": {
+            "first_fitted_top1": first.get("fitted_top1"),
+            "last_fitted_top1": last.get("fitted_top1"),
+            "best_fitted_top1": best.get("fitted_top1"),
+            "best_bdd_train_case_count": best.get("bdd_train_case_count"),
+            "last_minus_first_top1": round(
+                float(last.get("fitted_top1") or 0.0)
+                - float(first.get("fitted_top1") or 0.0),
+                6,
+            ) if steps else None,
+        },
+        "failed_checks": collected["failed_checks"][:20],
+        "limits": [
+            "This curriculum targets ordered-BDD route selection only.",
+            "It measures how many BDD examples the linear ranker needs, not all Tau optimization learning.",
+            "The ranker remains advisory; route certificates and Tau fallback remain authoritative.",
+        ],
+    }
+
+
+def verify_ordered_bdd_curriculum_report(data: dict[str, Any]) -> bool:
+    if data.get("schema") != ORDERED_BDD_CURRICULUM_REPORT_SCHEMA:
+        return False
+    if data.get("status") != "passed":
+        return False
+    authority = data.get("authority", {})
+    if authority.get("trained_ranker_can_accept") is not False:
+        return False
+    if authority.get("tau_checked_every_formula") is not True:
+        return False
+    if int(data.get("failed_check_count") or 0) != 0:
+        return False
+    if int(data.get("invalid_accept_count") or 0) != 0:
+        return False
+    steps = data.get("curriculum_steps", [])
+    if not isinstance(steps, list) or len(steps) < 3:
+        return False
+    first = steps[0]
+    best = data.get("improvement", {})
+    return bool(
+        int(data.get("grammar_manifest", {}).get("grammar_file_count") or 0) > 0
+        and float(best.get("best_fitted_top1") or 0.0) >= float(first.get("fitted_top1") or 0.0)
+        and int(best.get("best_bdd_train_case_count") or 0) >= 0
+        and int(data.get("bdd_pool_examples") or 0) > int(best.get("best_bdd_train_case_count") or -1)
+    )
+
+
 def fragment_training_summary(data: dict[str, Any]) -> dict[str, Any]:
     return {
         "status": data.get("status"),
@@ -1774,6 +1965,20 @@ def measured_fragment_stress_summary(data: dict[str, Any]) -> dict[str, Any]:
         "cross_seed_test_top1_delta": cross.get("test_top1_delta"),
         "family_holdout_evaluated_family_count": holdout.get("evaluated_family_count"),
         "family_holdout_fitted_top1": holdout.get("fitted_top1"),
+    }
+
+
+def ordered_bdd_curriculum_summary(data: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "status": data.get("status"),
+        "training_status": data.get("training_status"),
+        "base_examples": data.get("base_examples"),
+        "bdd_pool_examples": data.get("bdd_pool_examples"),
+        "bdd_train_sizes": data.get("bdd_train_sizes"),
+        "failed_check_count": data.get("failed_check_count"),
+        "invalid_accept_count": data.get("invalid_accept_count"),
+        "bdd_measured_best_route_counts": data.get("bdd_measured_best_route_counts"),
+        "improvement": data.get("improvement"),
     }
 
 

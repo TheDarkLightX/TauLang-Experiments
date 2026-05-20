@@ -20,9 +20,11 @@ from .fragment import (
     build_fragment_training_report,
     build_measured_fragment_training_report,
     build_measured_fragment_stress_report,
+    build_ordered_bdd_curriculum_report,
     verify_fragment_training_report,
     verify_measured_fragment_training_report,
     verify_measured_fragment_stress_report,
+    verify_ordered_bdd_curriculum_report,
 )
 from .jepa import TauJepaModel, default_jepa_model
 from .optimizer import (
@@ -45,6 +47,7 @@ __all__ = [
     "build_fragment_training_report",
     "build_measured_fragment_training_report",
     "build_measured_fragment_stress_report",
+    "build_ordered_bdd_curriculum_report",
     "build_proposal_packet",
     "build_optimizer_workbench",
     "build_optimizer_training_report",
@@ -58,6 +61,7 @@ __all__ = [
     "verify_fragment_training_report",
     "verify_measured_fragment_training_report",
     "verify_measured_fragment_stress_report",
+    "verify_ordered_bdd_curriculum_report",
     "verify_optimizer_receipt",
     "verify_optimizer_training_report",
 ]
