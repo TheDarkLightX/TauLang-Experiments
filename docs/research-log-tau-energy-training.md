@@ -133,11 +133,41 @@ limit. A larger balanced measured base already transfers much better, and
 targeted BDD examples add a smaller improvement. The next training work should
 track both targeted route-family examples and balanced non-BDD coverage.
 
+## Experiment 6: Reader Replay And Public Site Snapshot
+
+Artifacts:
+
+```bash
+./scripts/run_tau_energy_training_demo.sh --accept-tau-license --quick
+
+python3 scripts/build_tau_energy_site_snapshot.py \
+  --verify docs/assets/tau-energy-demo-summary.json
+```
+
+Purpose: make the TauEnergy training demo replayable for readers while keeping
+the public site license-safe.
+
+Result:
+
+```text
+public snapshot schema: tau-energy-public-site-snapshot-v1
+redistributes Tau source: false
+redistributes Tau binary: false
+contains Tau formula corpus: false
+invalid accepts in snapshot: 0
+```
+
+Interpretation: the website can present the current experiment without carrying
+Tau source, Tau binaries, full formulas, or full route receipts. Readers can
+regenerate local reports under `results/local/tau-energy` after reviewing the
+Tau license.
+
 ## Current Conclusion
 
 The training can go farther. The next useful training is targeted, measured,
 and fragment-specific. Ordered-BDD route selection is the first identified
-curriculum target.
+curriculum target. The current public surface is now a replayable demo plus a
+metrics-only website snapshot.
 
 ## Next Work
 
@@ -145,3 +175,4 @@ curriculum target.
 - Add syntax-drift regeneration tests.
 - Add route-specific certificate depth for BDD order selection.
 - Compare linear ranker with a small tree or MLP only after improving labels.
+- Add a richer site page when new route families have independent receipts.

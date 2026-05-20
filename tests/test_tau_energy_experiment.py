@@ -13,6 +13,7 @@ from tau_energy import (
     build_ordered_bdd_curriculum_report,
     build_optimizer_workbench,
     build_optimizer_training_report,
+    build_public_site_snapshot,
     build_proposal_packet,
     build_syntax_corpus,
     build_training_bundle,
@@ -23,6 +24,7 @@ from tau_energy import (
     verify_ordered_bdd_curriculum_report,
     verify_optimizer_receipt,
     verify_optimizer_training_report,
+    verify_public_site_snapshot,
 )
 from tau_energy.optimizer import (
     build_solve_command,
@@ -93,6 +95,70 @@ def test_training_bundle_has_trainable_energy_and_sft_rows(tmp_path) -> None:
     encoded = json.dumps(bundle)
     assert "/" + "home" + "/" not in encoded
     assert "tau_energy_can_accept" in encoded
+
+
+def test_public_site_snapshot_is_metric_only() -> None:
+    snapshot = build_public_site_snapshot(
+        optimizer={
+            "schema": "tau-energy-optimizer-workbench-v1",
+            "accepted_optimization": {
+                "route": "indexed_impacted_factor_solve",
+                "live_tau_checked": True,
+                "solver_call_reduction": 8.0,
+                "inprocess_solver_speedup": 2.0,
+            },
+            "wes_schedule": {"invalid_accept_count": 0},
+        },
+        measured={
+            "schema": "tau-energy-measured-fragment-training-report-v1",
+            "valid_tau_checked_example_count": 254,
+            "failed_check_count": 0,
+            "fitted_eval_test": {"top1_oracle_route_rate": 0.92, "invalid_accept_count": 0},
+            "hand_eval_test": {"top1_oracle_route_rate": 0.25},
+            "improvement": {"test_top1_delta": 0.67, "test_mean_calls_delta": 1.88},
+        },
+        stress={
+            "schema": "tau-energy-measured-fragment-stress-report-v1",
+            "failed_check_count": 0,
+            "invalid_accept_count": 0,
+            "cross_seed": {"fitted_top1": {"min": 0.8, "mean": 0.88, "max": 0.96}},
+            "family_holdout": {
+                "fitted_top1": {"min": 0.04, "mean": 0.78, "max": 1.0},
+                "families": [
+                    {"status": "evaluated", "family": "ordered_bdd", "fitted_top1": 0.04},
+                    {"status": "evaluated", "family": "read_once", "fitted_top1": 1.0},
+                ],
+            },
+        },
+        bdd={
+            "schema": "tau-energy-ordered-bdd-curriculum-report-v1",
+            "base_examples": 124,
+            "bdd_pool_examples": 96,
+            "failed_check_count": 0,
+            "invalid_accept_count": 0,
+            "improvement": {
+                "first_fitted_top1": 0.90625,
+                "best_fitted_top1": 0.9375,
+                "best_bdd_train_case_count": 32,
+                "last_minus_first_top1": 0.03125,
+            },
+            "curriculum_steps": [
+                {
+                    "bdd_train_case_count": 0,
+                    "bdd_test_case_count": 96,
+                    "fitted_top1": 0.90625,
+                    "fitted_mean_calls_to_best_route": 1.26,
+                    "invalid_accept_count": 0,
+                }
+            ],
+        },
+    )
+    assert verify_public_site_snapshot(snapshot)
+    encoded = json.dumps(snapshot)
+    assert "sample_receipts" not in encoded
+    assert "/" + "home" + "/" not in encoded
+    snapshot["formula"] = "solve --tau x"
+    assert not verify_public_site_snapshot(snapshot)
 
 
 def test_live_tau_syntax_check_is_optional(tmp_path) -> None:

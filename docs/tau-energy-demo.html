@@ -1,0 +1,922 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TauEnergy Workbench</title>
+  <link rel="icon" href="data:,">
+  <style>
+    :root {
+      --paper: #f3eee4;
+      --paper-2: #e4dccd;
+      --ink: #161411;
+      --muted: #625c51;
+      --line: #2b2720;
+      --red: #b4412a;
+      --cyan: #1e7187;
+      --green: #2f7a56;
+      --gold: #bd842a;
+      --white: #fffaf0;
+      --shadow: 0 24px 70px rgba(20, 16, 12, 0.16);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        linear-gradient(90deg, rgba(22, 20, 17, 0.055) 1px, transparent 1px) 0 0 / 42px 42px,
+        linear-gradient(0deg, rgba(22, 20, 17, 0.045) 1px, transparent 1px) 0 0 / 42px 42px,
+        var(--paper);
+      font-family: Georgia, "Times New Roman", serif;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      pointer-events: none;
+      content: "";
+      background:
+        radial-gradient(circle at 12% 18%, rgba(180, 65, 42, 0.18), transparent 27%),
+        radial-gradient(circle at 86% 26%, rgba(30, 113, 135, 0.15), transparent 25%),
+        radial-gradient(circle at 55% 92%, rgba(47, 122, 86, 0.14), transparent 30%);
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px clamp(18px, 4vw, 58px);
+      border-bottom: 1px solid rgba(43, 39, 32, 0.28);
+      background: rgba(243, 238, 228, 0.88);
+      backdrop-filter: blur(12px);
+      font-family: "Courier New", monospace;
+      font-size: 13px;
+      letter-spacing: 0;
+    }
+
+    .topbar nav {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .topbar a {
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+    }
+
+    .topbar a:hover {
+      border-color: currentColor;
+    }
+
+    .hero {
+      min-height: 88vh;
+      display: grid;
+      grid-template-columns: minmax(0, 1.04fr) minmax(320px, 0.96fr);
+      gap: clamp(28px, 5vw, 76px);
+      align-items: center;
+      padding: clamp(54px, 8vw, 112px) clamp(18px, 4vw, 58px) 38px;
+      border-bottom: 2px solid var(--line);
+      overflow: hidden;
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 960px;
+      font-size: clamp(54px, 7vw, 96px);
+      line-height: 0.88;
+      letter-spacing: 0;
+      font-weight: 900;
+      overflow-wrap: normal;
+    }
+
+    h1 span {
+      display: block;
+    }
+
+    .kicker {
+      margin: 0 0 20px;
+      font-family: "Courier New", monospace;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0;
+      color: var(--red);
+    }
+
+    .hero-copy {
+      max-width: 720px;
+      margin: 28px 0 0;
+      font-size: clamp(20px, 2.2vw, 31px);
+      line-height: 1.25;
+      color: #2f2a23;
+      overflow-wrap: break-word;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 30px;
+      font-family: "Courier New", monospace;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      min-height: 46px;
+      padding: 12px 16px;
+      border: 2px solid var(--line);
+      border-radius: 4px;
+      background: var(--ink);
+      color: var(--white);
+      text-decoration: none;
+      box-shadow: 6px 6px 0 var(--gold);
+      transition: transform 140ms ease, box-shadow 140ms ease;
+    }
+
+    .button.secondary {
+      background: var(--white);
+      color: var(--ink);
+      box-shadow: 6px 6px 0 rgba(30, 113, 135, 0.34);
+    }
+
+    .button:hover {
+      transform: translate(2px, 2px);
+      box-shadow: 3px 3px 0 var(--gold);
+    }
+
+    .hero-visual {
+      min-width: 0;
+      min-height: 520px;
+      position: relative;
+      border: 2px solid var(--line);
+      background: rgba(255, 250, 240, 0.72);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    #systemCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .visual-label {
+      position: absolute;
+      left: 18px;
+      bottom: 18px;
+      right: 18px;
+      display: grid;
+      gap: 8px;
+      font-family: "Courier New", monospace;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .visual-label strong {
+      color: var(--ink);
+    }
+
+    section {
+      padding: clamp(44px, 7vw, 92px) clamp(18px, 4vw, 58px);
+      border-bottom: 1px solid rgba(43, 39, 32, 0.25);
+    }
+
+    .section-head {
+      display: grid;
+      grid-template-columns: minmax(0, 0.86fr) minmax(280px, 0.44fr);
+      gap: 28px;
+      align-items: end;
+      margin-bottom: 32px;
+    }
+
+    .hero > *,
+    .section-head > *,
+    .evidence-layout > *,
+    .split > * {
+      min-width: 0;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: clamp(34px, 5vw, 72px);
+      line-height: 0.94;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    .section-head p,
+    .wide-copy {
+      margin: 0;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.45;
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .metric {
+      min-height: 172px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 18px;
+      border: 2px solid var(--line);
+      border-radius: 6px;
+      background: var(--white);
+      box-shadow: 5px 5px 0 rgba(43, 39, 32, 0.12);
+    }
+
+    .metric .label {
+      font-family: "Courier New", monospace;
+      color: var(--muted);
+      font-size: 13px;
+      text-transform: uppercase;
+    }
+
+    .metric .value {
+      font-family: "Courier New", monospace;
+      font-size: clamp(32px, 4vw, 52px);
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .metric .note {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.3;
+    }
+
+    .evidence-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(280px, 390px);
+      gap: 20px;
+      align-items: stretch;
+    }
+
+    .chart-panel,
+    .replay-panel,
+    .boundary-panel {
+      border: 2px solid var(--line);
+      border-radius: 6px;
+      background: rgba(255, 250, 240, 0.82);
+      box-shadow: var(--shadow);
+    }
+
+    .chart-panel {
+      min-height: 430px;
+      padding: 18px;
+    }
+
+    #bddChart,
+    #stressChart {
+      width: 100%;
+      height: 100%;
+      min-height: 360px;
+      display: block;
+    }
+
+    .replay-panel,
+    .boundary-panel {
+      padding: 22px;
+    }
+
+    .replay-panel h3,
+    .boundary-panel h3 {
+      margin: 0 0 16px;
+      font-size: 24px;
+      line-height: 1.05;
+      text-transform: uppercase;
+    }
+
+    pre {
+      margin: 0;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      padding: 16px;
+      border: 1px solid rgba(43, 39, 32, 0.32);
+      background: #171410;
+      color: #f8efdf;
+      font-family: "Courier New", monospace;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .step {
+      padding: 16px;
+      min-height: 150px;
+      border: 2px solid var(--line);
+      border-radius: 6px;
+      background: var(--paper-2);
+    }
+
+    .step strong {
+      display: block;
+      margin-bottom: 12px;
+      font-family: "Courier New", monospace;
+      font-size: 13px;
+      color: var(--red);
+      text-transform: uppercase;
+    }
+
+    .step span {
+      display: block;
+      font-size: 17px;
+      line-height: 1.32;
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: minmax(0, 0.85fr) minmax(280px, 0.55fr);
+      gap: 20px;
+      align-items: start;
+    }
+
+    .boundary-list {
+      display: grid;
+      gap: 12px;
+      margin: 18px 0 0;
+      padding: 0;
+      list-style: none;
+      font-family: "Courier New", monospace;
+      font-size: 14px;
+    }
+
+    .boundary-list li {
+      padding: 12px;
+      border: 1px solid rgba(43, 39, 32, 0.32);
+      background: rgba(255, 250, 240, 0.76);
+    }
+
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+      font-family: "Courier New", monospace;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    @media (max-width: 980px) {
+      .hero,
+      .section-head,
+      .evidence-layout,
+      .split {
+        grid-template-columns: 1fr;
+      }
+
+      .metric-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .flow {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-visual {
+        min-height: 420px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: clamp(42px, 13.5vw, 54px);
+      }
+
+      .hero {
+        padding-left: 20px;
+        padding-right: 20px;
+      }
+
+      .hero-copy,
+      .hero-visual {
+        max-width: 320px;
+      }
+
+      .hero > div:first-child {
+        width: 100%;
+        max-width: 320px;
+      }
+
+      .hero-actions {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .button {
+        width: 100%;
+        max-width: 280px;
+        justify-content: center;
+      }
+
+      .hero-visual {
+        width: 100%;
+        min-height: 360px;
+      }
+
+      .metric-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar" aria-label="TauEnergy demo navigation">
+    <strong>TauEnergy Workbench</strong>
+    <nav>
+      <a href="#evidence">Evidence</a>
+      <a href="#replay">Replay</a>
+      <a href="#boundary">Boundary</a>
+      <a href="tau-energy-training-tutorial.md">Tutorial</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div>
+        <p class="kicker">Replayable neurosymbolic route training for Tau Lang experiments</p>
+        <h1><span>TauEnergy</span><span>Workbench</span></h1>
+        <p class="hero-copy">
+          A public, license-aware demo where an advisory energy ranker learns route order,
+          WES schedules checks, and Tau or deterministic certificates keep authority.
+        </p>
+        <div class="hero-actions">
+          <a class="button" href="#replay">Run the Replay</a>
+          <a class="button secondary" href="#evidence">Read the Metrics</a>
+        </div>
+      </div>
+      <div class="hero-visual" aria-label="Animated TauEnergy system diagram">
+        <canvas id="systemCanvas"></canvas>
+        <div class="visual-label">
+          <strong>Model proposes. Checker decides.</strong>
+          <span>LLM interface, energy ranking, WES schedule, Tau verification, metric snapshot.</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="evidence">
+      <div class="section-head">
+        <h2>Evidence Snapshot</h2>
+        <p>
+          The page loads a public metric summary from <code>docs/assets</code>. It carries
+          the replay command and aggregate numbers, while the full generated reports stay
+          under <code>results/local</code>.
+        </p>
+      </div>
+
+      <div class="metric-grid">
+        <article class="metric">
+          <span class="label">Genuine Tau optimization</span>
+          <span class="value" id="solverReduction">...</span>
+          <span class="note" id="routeName">route pending</span>
+        </article>
+        <article class="metric">
+          <span class="label">Measured training top-1</span>
+          <span class="value" id="learnedTop1">...</span>
+          <span class="note" id="checkedCases">checked cases pending</span>
+        </article>
+        <article class="metric">
+          <span class="label">Ordered-BDD best top-1</span>
+          <span class="value" id="bddTop1">...</span>
+          <span class="note" id="bddCases">curriculum pending</span>
+        </article>
+        <article class="metric">
+          <span class="label">Invalid accepts</span>
+          <span class="value" id="invalidAccepts">...</span>
+          <span class="note">the public snapshot must keep this at zero</span>
+        </article>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <h2>Curriculum Shape</h2>
+        <p>
+          Ordered-BDD training starts with no targeted BDD examples, then adds measured
+          BDD cases while holding the BDD test pool out. The chart shows the learned
+          route top-1 rate by targeted BDD training count.
+        </p>
+      </div>
+      <div class="evidence-layout">
+        <div class="chart-panel">
+          <canvas id="bddChart"></canvas>
+        </div>
+        <div class="replay-panel">
+          <h3>Current Reading</h3>
+          <p class="wide-copy" id="bddReading">
+            Loading ordered-BDD curriculum metrics.
+          </p>
+          <pre id="schemaBlock">snapshot schema pending</pre>
+        </div>
+      </div>
+    </section>
+
+    <section id="replay">
+      <div class="section-head">
+        <h2>Replay Path</h2>
+        <p>
+          The wrapper follows the same license boundary as the other Tau demos. It obtains
+          Tau from the official source after acknowledgement, applies local research
+          patches, builds Tau locally, regenerates reports, verifies them, and writes a
+          public metric snapshot.
+        </p>
+      </div>
+      <div class="split">
+        <div class="replay-panel">
+          <h3>Reader Command</h3>
+          <pre id="replayCommand">./scripts/run_tau_energy_training_demo.sh --accept-tau-license</pre>
+        </div>
+        <div class="boundary-panel">
+          <h3>What Runs</h3>
+          <div class="flow" aria-label="TauEnergy replay flow">
+            <div class="step"><strong>01</strong><span>Build patched local Tau after license acknowledgement.</span></div>
+            <div class="step"><strong>02</strong><span>Run the optimizer workbench and verify the accepted route.</span></div>
+            <div class="step"><strong>03</strong><span>Train on Tau-checked measured route labels.</span></div>
+            <div class="step"><strong>04</strong><span>Stress across seeds and family holdouts.</span></div>
+            <div class="step"><strong>05</strong><span>Emit a public metrics-only site snapshot.</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="boundary">
+      <div class="section-head">
+        <h2>License and Authority Boundary</h2>
+        <p>
+          This website is intentionally small in what it publishes. The public page does
+          not carry Tau source, Tau binaries, or the full formula corpus. The replay path
+          regenerates local evidence after the reader reviews Tau's license.
+        </p>
+      </div>
+      <div class="evidence-layout">
+        <div class="chart-panel">
+          <canvas id="stressChart"></canvas>
+        </div>
+        <div class="boundary-panel">
+          <h3>Hard Rules</h3>
+          <ul class="boundary-list" id="boundaryList">
+            <li>TauEnergy can rank route order, but cannot accept a route result.</li>
+            <li>WES can schedule checks, but cannot accept without a checker.</li>
+            <li>Tau or deterministic route certificates decide validity.</li>
+            <li>Local replay is required before treating a performance claim as current.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span>Independent Tau Lang research demo.</span>
+    <span>Public metrics only. Local replay owns local claims.</span>
+  </footer>
+
+  <script type="application/json" id="snapshotFallback">
+{
+  "authority": {
+    "reader_replay_required_for_local_claims": true,
+    "tau_energy_can_accept": false,
+    "tau_or_certificate_decides": true,
+    "wes_can_accept_without_checker": false
+  },
+  "license_boundary": {
+    "contains_public_metrics_only": true,
+    "contains_tau_formula_corpus": false,
+    "redistributes_tau_binary": false,
+    "redistributes_tau_source": false,
+    "tau_source": "official IDNI repository, obtained by the reader after license review"
+  },
+  "metrics": {
+    "genuine_optimization": {
+      "inprocess_solver_speedup": 6.783,
+      "invalid_accept_count": 0,
+      "live_tau_checked": true,
+      "route": "indexed_impacted_factor_solve",
+      "solver_call_reduction": 8.0
+    },
+    "measured_training": {
+      "checked_cases": 254,
+      "failed_check_count": 0,
+      "hand_top1": 0.254902,
+      "invalid_accept_count": 0,
+      "learned_top1": 0.921569,
+      "mean_calls_delta": 1.882353,
+      "top1_delta": 0.666667
+    },
+    "ordered_bdd_curriculum": {
+      "base_examples": 124,
+      "bdd_pool_examples": 96,
+      "best_bdd_train_case_count": 32,
+      "best_top1": 0.9375,
+      "failed_check_count": 0,
+      "first_top1": 0.90625,
+      "invalid_accept_count": 0,
+      "last_minus_first_top1": 0.03125,
+      "steps": [
+        {"bdd_test_case_count": 96, "bdd_train_case_count": 0, "fitted_top1": 0.90625, "invalid_accept_count": 0, "mean_calls_to_best_route": 1.260417},
+        {"bdd_test_case_count": 94, "bdd_train_case_count": 2, "fitted_top1": 0.904255, "invalid_accept_count": 0, "mean_calls_to_best_route": 1.351064},
+        {"bdd_test_case_count": 92, "bdd_train_case_count": 4, "fitted_top1": 0.913043, "invalid_accept_count": 0, "mean_calls_to_best_route": 1.23913},
+        {"bdd_test_case_count": 88, "bdd_train_case_count": 8, "fitted_top1": 0.920455, "invalid_accept_count": 0, "mean_calls_to_best_route": 1.215909},
+        {"bdd_test_case_count": 80, "bdd_train_case_count": 16, "fitted_top1": 0.925, "invalid_accept_count": 0, "mean_calls_to_best_route": 1.2},
+        {"bdd_test_case_count": 64, "bdd_train_case_count": 32, "fitted_top1": 0.9375, "invalid_accept_count": 0, "mean_calls_to_best_route": 1.1875}
+      ]
+    },
+    "stress": {
+      "cross_seed_top1": {"max": 0.96, "mean": 0.88, "min": 0.8},
+      "failed_check_count": 0,
+      "family_holdout_top1": {"max": 1.0, "mean": 0.777778, "min": 0.041667},
+      "invalid_accept_count": 0,
+      "weakest_family": {"family": "ordered_bdd", "top1": 0.041667}
+    }
+  },
+  "replay": {
+    "default_replay": "./scripts/run_tau_energy_training_demo.sh --accept-tau-license",
+    "full_mode": "./scripts/run_tau_energy_training_demo.sh --accept-tau-license --full",
+    "quick_mode": "./scripts/run_tau_energy_training_demo.sh --accept-tau-license --quick",
+    "result_dir": "results/local/tau-energy",
+    "site_snapshot": "docs/assets/tau-energy-demo-summary.json"
+  },
+  "schema": "tau-energy-public-site-snapshot-v1",
+  "status": "passed",
+  "title": "TauEnergy replayable training demo"
+}
+  </script>
+  <script>
+    const colors = {
+      ink: "#161411",
+      red: "#b4412a",
+      cyan: "#1e7187",
+      green: "#2f7a56",
+      gold: "#bd842a",
+      paper: "#f3eee4",
+      white: "#fffaf0"
+    };
+
+    function pct(value) {
+      if (value === null || value === undefined || Number.isNaN(Number(value))) return "...";
+      return `${Math.round(Number(value) * 1000) / 10}%`;
+    }
+
+    function round(value, digits = 3) {
+      if (value === null || value === undefined || Number.isNaN(Number(value))) return "...";
+      return Number(value).toFixed(digits).replace(/\.?0+$/, "");
+    }
+
+    async function loadSnapshot() {
+      try {
+        const response = await fetch("assets/tau-energy-demo-summary.json", {cache: "no-store"});
+        if (response.ok) return await response.json();
+      } catch (error) {
+        // Local file viewing may block fetch. Use the embedded public snapshot.
+      }
+      return JSON.parse(document.getElementById("snapshotFallback").textContent);
+    }
+
+    function setText(id, value) {
+      const node = document.getElementById(id);
+      if (node) node.textContent = value;
+    }
+
+    function renderMetrics(snapshot) {
+      const metrics = snapshot.metrics;
+      const opt = metrics.genuine_optimization;
+      const measured = metrics.measured_training;
+      const bdd = metrics.ordered_bdd_curriculum;
+      const invalid =
+        Number(opt.invalid_accept_count || 0) +
+        Number(measured.invalid_accept_count || 0) +
+        Number(metrics.stress.invalid_accept_count || 0) +
+        Number(bdd.invalid_accept_count || 0);
+      setText("solverReduction", `${round(opt.solver_call_reduction, 1)}x`);
+      setText("routeName", `${opt.route}, live Tau checked`);
+      setText("learnedTop1", pct(measured.learned_top1));
+      setText("checkedCases", `${measured.checked_cases} Tau-checked formulas`);
+      setText("bddTop1", pct(bdd.best_top1));
+      setText("bddCases", `${bdd.best_bdd_train_case_count} targeted BDD train cases`);
+      setText("invalidAccepts", String(invalid));
+      setText(
+        "bddReading",
+        `The BDD curriculum moved from ${pct(bdd.first_top1)} to ${pct(bdd.best_top1)} best held-out top-1, with zero invalid accepts.`
+      );
+      setText(
+        "schemaBlock",
+        `${snapshot.schema}\nresult dir: ${snapshot.replay.result_dir}\nsite snapshot: ${snapshot.replay.site_snapshot}`
+      );
+      setText("replayCommand", `${snapshot.replay.quick_mode}\n\n# full replay\n${snapshot.replay.full_mode}`);
+    }
+
+    function sizeCanvas(canvas) {
+      const rect = canvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = Math.max(1, Math.floor(rect.width * dpr));
+      canvas.height = Math.max(1, Math.floor(rect.height * dpr));
+      const ctx = canvas.getContext("2d");
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      return {ctx, width: rect.width, height: rect.height};
+    }
+
+    function drawSystemCanvas() {
+      const canvas = document.getElementById("systemCanvas");
+      const {ctx, width, height} = sizeCanvas(canvas);
+      const nodes = [
+        {x: 0.18, y: 0.32, r: 44, label: "LLM", color: colors.red},
+        {x: 0.48, y: 0.22, r: 54, label: "Energy", color: colors.cyan},
+        {x: 0.76, y: 0.38, r: 42, label: "WES", color: colors.gold},
+        {x: 0.58, y: 0.68, r: 58, label: "Tau", color: colors.green},
+        {x: 0.28, y: 0.73, r: 38, label: "JSON", color: colors.ink}
+      ];
+      let tick = 0;
+      function frame() {
+        tick += 0.012;
+        ctx.clearRect(0, 0, width, height);
+        ctx.fillStyle = "rgba(255, 250, 240, 0.88)";
+        ctx.fillRect(0, 0, width, height);
+        for (let i = 0; i < 18; i += 1) {
+          ctx.strokeStyle = `rgba(43, 39, 32, ${0.05 + i * 0.002})`;
+          ctx.beginPath();
+          ctx.moveTo((i * 37 + tick * 180) % width, 0);
+          ctx.lineTo((i * 37 + tick * 180 + 160) % width, height);
+          ctx.stroke();
+        }
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = "rgba(22, 20, 17, 0.48)";
+        [[0, 1], [1, 2], [2, 3], [0, 4], [4, 3], [1, 3]].forEach(([a, b], index) => {
+          const from = nodes[a];
+          const to = nodes[b];
+          const pulse = (Math.sin(tick * 5 + index) + 1) / 2;
+          ctx.strokeStyle = `rgba(22, 20, 17, ${0.24 + pulse * 0.38})`;
+          ctx.beginPath();
+          ctx.moveTo(from.x * width, from.y * height);
+          ctx.bezierCurveTo(
+            (from.x + to.x) * width / 2,
+            (from.y * height) - 80,
+            (from.x + to.x) * width / 2,
+            (to.y * height) + 80,
+            to.x * width,
+            to.y * height
+          );
+          ctx.stroke();
+        });
+        nodes.forEach((node, index) => {
+          const x = node.x * width + Math.sin(tick * 2 + index) * 4;
+          const y = node.y * height + Math.cos(tick * 1.8 + index) * 4;
+          ctx.fillStyle = node.color;
+          ctx.strokeStyle = colors.ink;
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.arc(x, y, node.r, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+          ctx.fillStyle = colors.white;
+          ctx.font = "700 15px Courier New";
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.fillText(node.label, x, y);
+        });
+        requestAnimationFrame(frame);
+      }
+      frame();
+    }
+
+    function drawBddChart(snapshot) {
+      const canvas = document.getElementById("bddChart");
+      const {ctx, width, height} = sizeCanvas(canvas);
+      const steps = snapshot.metrics.ordered_bdd_curriculum.steps;
+      const pad = {left: 54, right: 20, top: 24, bottom: 54};
+      const plotW = width - pad.left - pad.right;
+      const plotH = height - pad.top - pad.bottom;
+      ctx.clearRect(0, 0, width, height);
+      ctx.fillStyle = "rgba(255, 250, 240, 0.92)";
+      ctx.fillRect(0, 0, width, height);
+      ctx.strokeStyle = "rgba(43, 39, 32, 0.28)";
+      ctx.lineWidth = 1;
+      for (let i = 0; i <= 5; i += 1) {
+        const y = pad.top + (plotH * i / 5);
+        ctx.beginPath();
+        ctx.moveTo(pad.left, y);
+        ctx.lineTo(width - pad.right, y);
+        ctx.stroke();
+      }
+      const maxX = Math.max(...steps.map(step => Number(step.bdd_train_case_count)));
+      const yMin = 0.88;
+      const yMax = 0.95;
+      const point = step => ({
+        x: pad.left + (Number(step.bdd_train_case_count) / maxX) * plotW,
+        y: pad.top + ((yMax - Number(step.fitted_top1)) / (yMax - yMin)) * plotH
+      });
+      ctx.strokeStyle = colors.cyan;
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      steps.forEach((step, index) => {
+        const p = point(step);
+        if (index === 0) ctx.moveTo(p.x, p.y);
+        else ctx.lineTo(p.x, p.y);
+      });
+      ctx.stroke();
+      steps.forEach(step => {
+        const p = point(step);
+        ctx.fillStyle = colors.red;
+        ctx.strokeStyle = colors.ink;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 6, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = colors.ink;
+        ctx.font = "12px Courier New";
+        ctx.textAlign = "center";
+        ctx.fillText(String(step.bdd_train_case_count), p.x, height - 24);
+      });
+      ctx.fillStyle = colors.ink;
+      ctx.font = "700 14px Courier New";
+      ctx.textAlign = "left";
+      ctx.fillText("held-out ordered-BDD top-1", pad.left, 20);
+      ctx.save();
+      ctx.translate(18, pad.top + plotH / 2);
+      ctx.rotate(-Math.PI / 2);
+      ctx.fillText("top-1", 0, 0);
+      ctx.restore();
+      ctx.textAlign = "center";
+      ctx.fillText("targeted BDD train cases", pad.left + plotW / 2, height - 8);
+    }
+
+    function drawStressChart(snapshot) {
+      const canvas = document.getElementById("stressChart");
+      const {ctx, width, height} = sizeCanvas(canvas);
+      const stress = snapshot.metrics.stress;
+      const rows = [
+        ["cross-seed min", stress.cross_seed_top1.min, colors.green],
+        ["cross-seed mean", stress.cross_seed_top1.mean, colors.cyan],
+        ["family mean", stress.family_holdout_top1.mean, colors.gold],
+        ["weakest family", stress.weakest_family.top1, colors.red]
+      ];
+      const pad = 32;
+      const barH = Math.min(58, (height - pad * 2) / rows.length - 12);
+      ctx.clearRect(0, 0, width, height);
+      ctx.fillStyle = "rgba(255, 250, 240, 0.92)";
+      ctx.fillRect(0, 0, width, height);
+      ctx.fillStyle = colors.ink;
+      ctx.font = "700 14px Courier New";
+      ctx.fillText("stress and holdout top-1", pad, 24);
+      rows.forEach(([label, value, color], index) => {
+        const y = pad + 30 + index * (barH + 20);
+        const barW = (width - pad * 2) * Number(value);
+        ctx.fillStyle = "rgba(43, 39, 32, 0.12)";
+        ctx.fillRect(pad, y, width - pad * 2, barH);
+        ctx.fillStyle = color;
+        ctx.fillRect(pad, y, barW, barH);
+        ctx.strokeStyle = colors.ink;
+        ctx.lineWidth = 2;
+        ctx.strokeRect(pad, y, width - pad * 2, barH);
+        ctx.fillStyle = colors.ink;
+        ctx.font = "13px Courier New";
+        ctx.fillText(label, pad, y - 6);
+        ctx.textAlign = "right";
+        ctx.fillText(pct(value), width - pad, y + barH / 2 + 5);
+        ctx.textAlign = "left";
+      });
+    }
+
+    loadSnapshot().then(snapshot => {
+      renderMetrics(snapshot);
+      drawSystemCanvas();
+      drawBddChart(snapshot);
+      drawStressChart(snapshot);
+      window.addEventListener("resize", () => {
+        drawBddChart(snapshot);
+        drawStressChart(snapshot);
+      });
+    });
+  </script>
+</body>
+</html>

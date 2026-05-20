@@ -120,3 +120,49 @@ python3 scripts/demo_tau_energy_training_results.py
 
 The demo reports the accepted optimization, measured-training scores, stress
 summary, weakest holdout family, and ordered-BDD curriculum steps.
+
+## License-Aware Reader Replay
+
+Use the public wrapper when replaying the whole training demo from a fresh
+checkout:
+
+```bash
+./scripts/run_tau_energy_training_demo.sh --accept-tau-license --quick
+```
+
+That wrapper follows the same boundary as the other public Tau demos. It obtains
+Tau from the official IDNI repository after license acknowledgement, applies the
+local research patches, builds Tau locally, regenerates the TauEnergy reports,
+verifies the reports, and writes a public metrics-only snapshot under
+`results/local/tau-energy/public_site_snapshot.json`.
+
+For the larger run that matches the current public snapshot more closely:
+
+```bash
+./scripts/run_tau_energy_training_demo.sh --accept-tau-license --full
+```
+
+To refresh the committed website data from a local replay, set:
+
+```bash
+TAU_ENERGY_UPDATE_SITE_ASSET=1 \
+  ./scripts/run_tau_energy_training_demo.sh --accept-tau-license --full
+```
+
+## Public Website
+
+The public demo page is:
+
+```text
+docs/tau-energy-demo.html
+```
+
+It loads:
+
+```text
+docs/assets/tau-energy-demo-summary.json
+```
+
+The JSON snapshot contains public metrics only. It does not contain Tau source,
+Tau binaries, the formula corpus, local filesystem paths, or full route
+receipts.

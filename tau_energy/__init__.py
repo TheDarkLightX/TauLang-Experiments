@@ -34,6 +34,10 @@ from .optimizer import (
     verify_optimizer_receipt,
     verify_optimizer_training_report,
 )
+from .public_snapshot import (
+    build_public_site_snapshot,
+    verify_public_site_snapshot,
+)
 from .syntax import build_syntax_corpus, build_tau_syntax_snapshot
 from .training import build_training_bundle
 
@@ -51,6 +55,7 @@ __all__ = [
     "build_proposal_packet",
     "build_optimizer_workbench",
     "build_optimizer_training_report",
+    "build_public_site_snapshot",
     "build_syntax_corpus",
     "build_tau_syntax_snapshot",
     "build_training_bundle",
@@ -64,4 +69,5 @@ __all__ = [
     "verify_ordered_bdd_curriculum_report",
     "verify_optimizer_receipt",
     "verify_optimizer_training_report",
+    "verify_public_site_snapshot",
 ]
