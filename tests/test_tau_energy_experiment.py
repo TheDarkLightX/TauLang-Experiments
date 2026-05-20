@@ -9,6 +9,7 @@ from tau_energy import (
     TauProposalCandidate,
     build_fragment_training_report,
     build_measured_fragment_training_report,
+    build_measured_fragment_stress_report,
     build_optimizer_workbench,
     build_optimizer_training_report,
     build_proposal_packet,
@@ -17,6 +18,7 @@ from tau_energy import (
     default_energy_model,
     verify_fragment_training_report,
     verify_measured_fragment_training_report,
+    verify_measured_fragment_stress_report,
     verify_optimizer_receipt,
     verify_optimizer_training_report,
 )
@@ -185,3 +187,21 @@ def test_live_measured_fragment_training_report_if_tau_exists() -> None:
         report["fitted_eval_test"]["top1_oracle_route_rate"]
         >= report["hand_eval_test"]["top1_oracle_route_rate"]
     )
+
+
+def test_live_measured_fragment_stress_report_if_tau_exists() -> None:
+    tau_bin = Path("external/tau-lang/build-Release/tau")
+    if not tau_bin.exists():
+        return
+    report = build_measured_fragment_stress_report(
+        tau_bin=tau_bin,
+        examples_per_seed=20,
+        seeds=[20260524, 20260525],
+        real_spec_limit=2,
+        tau_timeout_s=10,
+        route_timeout_s=10,
+    )
+    assert verify_measured_fragment_stress_report(report)
+    assert report["cross_seed"]["seed_count"] == 2
+    assert report["family_holdout"]["evaluated_family_count"] >= 4
+    assert report["invalid_accept_count"] == 0

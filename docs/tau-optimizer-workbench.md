@@ -70,6 +70,19 @@ python3 scripts/train_tau_measured_fragment_energy.py \
   --verify results/local/tau-energy/measured_fragment_training_report.json
 ```
 
+Stress measured training across seeds and family holdouts:
+
+```bash
+python3 scripts/stress_tau_measured_fragment_energy.py \
+  --examples-per-seed 120 \
+  --seeds 20260522 20260523 20260524 \
+  --real-spec-limit 4 \
+  --tau-bin external/tau-lang/build-Release/tau \
+  --out results/local/tau-energy/measured_fragment_stress_report.json
+python3 scripts/stress_tau_measured_fragment_energy.py \
+  --verify results/local/tau-energy/measured_fragment_stress_report.json
+```
+
 ## What Counts As Success
 
 The receipt is accepted only when:
@@ -121,3 +134,8 @@ deterministic certificate or Tau fallback matches Tau's status, and labels the
 lowest-cost valid route as the training target. It also ingests standalone
 solver benchmark commands from `examples/tau/solver_benchmarks` as real
 Tau-native fallback cases.
+
+The stress report runs the measured-label trainer across multiple seeds and
+then evaluates leave-one-family-out route selection. The family-holdout numbers
+are intentionally diagnostic: a low score is evidence that the corpus does not
+yet teach that fragment family well enough.

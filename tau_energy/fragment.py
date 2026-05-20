@@ -24,6 +24,7 @@ from typing import Any
 
 FRAGMENT_TRAINING_REPORT_SCHEMA = "tau-energy-fragment-training-report-v1"
 MEASURED_FRAGMENT_TRAINING_REPORT_SCHEMA = "tau-energy-measured-fragment-training-report-v1"
+MEASURED_FRAGMENT_STRESS_REPORT_SCHEMA = "tau-energy-measured-fragment-stress-report-v1"
 FRAGMENT_ROUTES: tuple[str, ...] = (
     "read_once_structural",
     "small_truth_table_or_certificate",
@@ -1097,6 +1098,45 @@ def measured_rows_for_case(
     return rows, receipt
 
 
+def collect_measured_route_rows(
+    *,
+    tau_bin: Path,
+    split_cases: list[tuple[dict[str, Any], str]],
+    minisat_bin: str,
+    tau_timeout_s: int,
+    route_timeout_s: int,
+) -> dict[str, Any]:
+    train_rows: list[dict[str, Any]] = []
+    test_rows: list[dict[str, Any]] = []
+    receipts: list[dict[str, Any]] = []
+    failed_checks: list[dict[str, Any]] = []
+    for case, split in split_cases:
+        rows, receipt_or_failure = measured_rows_for_case(
+            case=case,
+            tau_bin=tau_bin,
+            minisat_bin=minisat_bin,
+            split=split,
+            tau_timeout_s=tau_timeout_s,
+            route_timeout_s=route_timeout_s,
+        )
+        if not rows:
+            if receipt_or_failure is not None:
+                failed_checks.append(receipt_or_failure)
+            continue
+        if split == "train":
+            train_rows.extend(rows)
+        else:
+            test_rows.extend(rows)
+        if receipt_or_failure is not None:
+            receipts.append(receipt_or_failure)
+    return {
+        "train_rows": train_rows,
+        "test_rows": test_rows,
+        "receipts": receipts,
+        "failed_checks": failed_checks,
+    }
+
+
 def hand_fragment_energy_model() -> FragmentEnergyModel:
     weights = {name: 0.0 for name in FRAGMENT_FEATURE_NAMES}
     weights.update({
@@ -1371,29 +1411,17 @@ def build_measured_fragment_training_report(
         case, _ = split_cases[-1]
         split_cases[-1] = (case, "test")
 
-    train_rows: list[dict[str, Any]] = []
-    test_rows: list[dict[str, Any]] = []
-    receipts: list[dict[str, Any]] = []
-    failed_checks: list[dict[str, Any]] = []
-    for case, split in split_cases:
-        rows, receipt_or_failure = measured_rows_for_case(
-            case=case,
-            tau_bin=path,
-            minisat_bin=selected_minisat,
-            split=split,
-            tau_timeout_s=tau_timeout_s,
-            route_timeout_s=route_timeout_s,
-        )
-        if not rows:
-            if receipt_or_failure is not None:
-                failed_checks.append(receipt_or_failure)
-            continue
-        if split == "train":
-            train_rows.extend(rows)
-        else:
-            test_rows.extend(rows)
-        if receipt_or_failure is not None:
-            receipts.append(receipt_or_failure)
+    collected = collect_measured_route_rows(
+        tau_bin=path,
+        split_cases=split_cases,
+        minisat_bin=selected_minisat,
+        tau_timeout_s=tau_timeout_s,
+        route_timeout_s=route_timeout_s,
+    )
+    train_rows = collected["train_rows"]
+    test_rows = collected["test_rows"]
+    receipts = collected["receipts"]
+    failed_checks = collected["failed_checks"]
 
     hand = hand_fragment_energy_model()
     fitted = fit_fragment_energy_model(train_rows)
@@ -1490,6 +1518,209 @@ def verify_measured_fragment_training_report(data: dict[str, Any]) -> bool:
     )
 
 
+def _mean(values: list[float]) -> float | None:
+    return round(sum(values) / len(values), 6) if values else None
+
+
+def _range(values: list[float]) -> dict[str, float | None]:
+    return {
+        "min": round(min(values), 6) if values else None,
+        "mean": _mean(values),
+        "max": round(max(values), 6) if values else None,
+    }
+
+
+def _measured_report_brief(report: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "seed": report.get("seed"),
+        "status": report.get("status"),
+        "valid_tau_checked_example_count": report.get("valid_tau_checked_example_count"),
+        "failed_check_count": report.get("failed_check_count"),
+        "training_row_count": report.get("training_row_count"),
+        "test_row_count": report.get("test_row_count"),
+        "hand_test_top1": report.get("hand_eval_test", {}).get("top1_oracle_route_rate"),
+        "fitted_test_top1": report.get("fitted_eval_test", {}).get("top1_oracle_route_rate"),
+        "fitted_test_mean_calls_to_best_route": report.get("fitted_eval_test", {}).get("mean_calls_to_oracle"),
+        "test_top1_delta": report.get("improvement", {}).get("test_top1_delta"),
+        "invalid_accept_count": report.get("fitted_eval_test", {}).get("invalid_accept_count"),
+        "measured_best_route_counts": report.get("measured_best_route_counts"),
+        "family_counts": report.get("family_counts"),
+    }
+
+
+def _evaluate_holdout_family(
+    *,
+    family: str,
+    rows: list[dict[str, Any]],
+) -> dict[str, Any]:
+    train_rows = [row for row in rows if row["source_family"] != family]
+    test_rows = [row for row in rows if row["source_family"] == family]
+    if not train_rows or not test_rows:
+        return {
+            "family": family,
+            "status": "skipped",
+            "train_case_count": len({row["case_id"] for row in train_rows}),
+            "test_case_count": len({row["case_id"] for row in test_rows}),
+        }
+    hand = hand_fragment_energy_model()
+    fitted = fit_fragment_energy_model(train_rows)
+    hand_eval = evaluate_fragment_model(hand, test_rows)
+    fitted_eval = evaluate_fragment_model(fitted, test_rows)
+    return {
+        "family": family,
+        "status": "evaluated",
+        "train_case_count": len({row["case_id"] for row in train_rows}),
+        "test_case_count": len({row["case_id"] for row in test_rows}),
+        "hand_top1": hand_eval["top1_oracle_route_rate"],
+        "fitted_top1": fitted_eval["top1_oracle_route_rate"],
+        "fitted_mean_calls_to_best_route": fitted_eval["mean_calls_to_oracle"],
+        "test_top1_delta": round(
+            float(fitted_eval["top1_oracle_route_rate"])
+            - float(hand_eval["top1_oracle_route_rate"]),
+            6,
+        ),
+        "invalid_accept_count": fitted_eval["invalid_accept_count"],
+        "measured_best_route_counts": dict(sorted(Counter(
+            str(row["measured_best_route"]) for row in test_rows[::len(FRAGMENT_ROUTES)]
+        ).items())),
+    }
+
+
+def build_measured_fragment_stress_report(
+    *,
+    tau_bin: Path | str = Path("external/tau-lang/build-Release/tau"),
+    examples_per_seed: int = 120,
+    seeds: list[int] | None = None,
+    real_spec_limit: int = 4,
+    tau_timeout_s: int = 10,
+    route_timeout_s: int = 10,
+    minisat_bin: str | None = None,
+    root: Path | str = Path("."),
+) -> dict[str, Any]:
+    selected_seeds = seeds or [20260522, 20260523, 20260524]
+    path = Path(tau_bin)
+    if not path.exists():
+        raise FileNotFoundError(f"Tau binary not found: {path}")
+    root_path = Path(root)
+    selected_minisat = minisat_bin if minisat_bin is not None else (shutil.which("minisat") or "")
+    seed_reports = [
+        build_measured_fragment_training_report(
+            tau_bin=path,
+            example_count=examples_per_seed,
+            seed=seed,
+            real_spec_limit=real_spec_limit,
+            tau_timeout_s=tau_timeout_s,
+            route_timeout_s=route_timeout_s,
+            minisat_bin=selected_minisat,
+            root=root_path,
+        )
+        for seed in selected_seeds
+    ]
+    seed_summaries = [_measured_report_brief(report) for report in seed_reports]
+
+    holdout_seed = selected_seeds[0] + 1009
+    holdout_cases = [
+        *generate_fragment_cases(example_count=examples_per_seed, seed=holdout_seed),
+        *load_real_tau_command_cases(root_path, limit=real_spec_limit),
+    ]
+    collected = collect_measured_route_rows(
+        tau_bin=path,
+        split_cases=[(case, "test") for case in holdout_cases],
+        minisat_bin=selected_minisat,
+        tau_timeout_s=tau_timeout_s,
+        route_timeout_s=route_timeout_s,
+    )
+    holdout_rows = collected["test_rows"]
+    families = sorted({str(row["source_family"]) for row in holdout_rows})
+    family_holdouts = [
+        _evaluate_holdout_family(family=family, rows=holdout_rows)
+        for family in families
+    ]
+    fitted_top1 = [float(row["fitted_test_top1"]) for row in seed_summaries]
+    hand_top1 = [float(row["hand_test_top1"]) for row in seed_summaries]
+    deltas = [float(row["test_top1_delta"]) for row in seed_summaries]
+    holdout_top1 = [
+        float(row["fitted_top1"])
+        for row in family_holdouts
+        if row.get("status") == "evaluated"
+    ]
+    invalid_counts = [
+        int(row.get("invalid_accept_count") or 0)
+        for row in seed_summaries
+    ] + [
+        int(row.get("invalid_accept_count") or 0)
+        for row in family_holdouts
+        if row.get("status") == "evaluated"
+    ]
+    failed_count = sum(int(report.get("failed_check_count") or 0) for report in seed_reports)
+    failed_count += len(collected["failed_checks"])
+    status = "passed" if failed_count == 0 and sum(invalid_counts) == 0 else "failed"
+    return {
+        "schema": MEASURED_FRAGMENT_STRESS_REPORT_SCHEMA,
+        "status": status,
+        "authority": {
+            "trained_ranker_can_accept": False,
+            "tau_checked_every_formula": True,
+            "route_certificate_required": True,
+            "measured_route_labels_required": True,
+            "deterministic_fallback_required": True,
+        },
+        "training_status": "measured_route_cross_seed_and_family_holdout_stress",
+        "examples_per_seed": examples_per_seed,
+        "seeds": selected_seeds,
+        "real_spec_limit": real_spec_limit,
+        "failed_check_count": failed_count,
+        "invalid_accept_count": sum(invalid_counts),
+        "minisat_available": bool(selected_minisat),
+        "grammar_manifest": grammar_manifest(root_path),
+        "cross_seed": {
+            "seed_count": len(seed_summaries),
+            "summaries": seed_summaries,
+            "hand_top1": _range(hand_top1),
+            "fitted_top1": _range(fitted_top1),
+            "test_top1_delta": _range(deltas),
+        },
+        "family_holdout": {
+            "holdout_seed": holdout_seed,
+            "case_count": len({row["case_id"] for row in holdout_rows}),
+            "row_count": len(holdout_rows),
+            "evaluated_family_count": sum(1 for row in family_holdouts if row.get("status") == "evaluated"),
+            "fitted_top1": _range(holdout_top1),
+            "families": family_holdouts,
+            "failed_checks": collected["failed_checks"][:20],
+        },
+        "limits": [
+            "Family holdout can expose missing route-family coverage; low scores are evidence, not verifier failure.",
+            "The stress report still covers a bounded route family, not all Tau optimizations.",
+            "Production promotion would need real replay corpora and source-manifest evidence.",
+        ],
+    }
+
+
+def verify_measured_fragment_stress_report(data: dict[str, Any]) -> bool:
+    if data.get("schema") != MEASURED_FRAGMENT_STRESS_REPORT_SCHEMA:
+        return False
+    if data.get("status") != "passed":
+        return False
+    authority = data.get("authority", {})
+    if authority.get("trained_ranker_can_accept") is not False:
+        return False
+    if authority.get("tau_checked_every_formula") is not True:
+        return False
+    if int(data.get("failed_check_count") or 0) != 0:
+        return False
+    if int(data.get("invalid_accept_count") or 0) != 0:
+        return False
+    cross_seed = data.get("cross_seed", {})
+    family_holdout = data.get("family_holdout", {})
+    return bool(
+        int(cross_seed.get("seed_count") or 0) >= 2
+        and float(cross_seed.get("test_top1_delta", {}).get("min") or -1.0) >= 0.0
+        and int(family_holdout.get("evaluated_family_count") or 0) >= 4
+        and int(data.get("grammar_manifest", {}).get("grammar_file_count") or 0) > 0
+    )
+
+
 def fragment_training_summary(data: dict[str, Any]) -> dict[str, Any]:
     return {
         "status": data.get("status"),
@@ -1526,6 +1757,23 @@ def measured_fragment_training_summary(data: dict[str, Any]) -> dict[str, Any]:
         "test_top1_delta": data.get("improvement", {}).get("test_top1_delta"),
         "test_mean_calls_delta": data.get("improvement", {}).get("test_mean_calls_delta"),
         "invalid_accept_count": data.get("fitted_eval_test", {}).get("invalid_accept_count"),
+    }
+
+
+def measured_fragment_stress_summary(data: dict[str, Any]) -> dict[str, Any]:
+    cross = data.get("cross_seed", {})
+    holdout = data.get("family_holdout", {})
+    return {
+        "status": data.get("status"),
+        "training_status": data.get("training_status"),
+        "examples_per_seed": data.get("examples_per_seed"),
+        "seeds": data.get("seeds"),
+        "failed_check_count": data.get("failed_check_count"),
+        "invalid_accept_count": data.get("invalid_accept_count"),
+        "cross_seed_fitted_top1": cross.get("fitted_top1"),
+        "cross_seed_test_top1_delta": cross.get("test_top1_delta"),
+        "family_holdout_evaluated_family_count": holdout.get("evaluated_family_count"),
+        "family_holdout_fitted_top1": holdout.get("fitted_top1"),
     }
 
 
