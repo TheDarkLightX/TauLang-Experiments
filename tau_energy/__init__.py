@@ -17,6 +17,11 @@ from .core import (
 )
 from .copilot import build_proposal_packet
 from .jepa import TauJepaModel, default_jepa_model
+from .optimizer import (
+    SparseTauWorkload,
+    build_optimizer_workbench,
+    verify_optimizer_receipt,
+)
 from .syntax import build_syntax_corpus, build_tau_syntax_snapshot
 from .training import build_training_bundle
 
@@ -24,9 +29,11 @@ __all__ = [
     "AUTHORITY_BOUNDARY",
     "FEATURE_NAMES",
     "TauProposalCandidate",
+    "SparseTauWorkload",
     "TauEnergyModel",
     "TauJepaModel",
     "build_proposal_packet",
+    "build_optimizer_workbench",
     "build_syntax_corpus",
     "build_tau_syntax_snapshot",
     "build_training_bundle",
@@ -34,4 +41,5 @@ __all__ = [
     "default_jepa_model",
     "fit_energy_model",
     "label_candidate",
+    "verify_optimizer_receipt",
 ]

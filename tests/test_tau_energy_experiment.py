@@ -1,14 +1,25 @@
 from __future__ import annotations
 
 import json
+from pathlib import Path
 
 from tau_energy import (
     AUTHORITY_BOUNDARY,
+    SparseTauWorkload,
     TauProposalCandidate,
+    build_optimizer_workbench,
     build_proposal_packet,
     build_syntax_corpus,
     build_training_bundle,
     default_energy_model,
+    verify_optimizer_receipt,
+)
+from tau_energy.optimizer import (
+    build_solve_command,
+    expected_impacted,
+    make_supports,
+    optimizer_candidates,
+    rank_optimization_candidates,
 )
 from tau_energy.syntax import live_tau_syntax_check
 
@@ -79,3 +90,31 @@ def test_live_tau_syntax_check_is_optional(tmp_path) -> None:
     result = live_tau_syntax_check(missing, "(a & b != 0)")
     assert result["ok"] is None
     assert result["status"] == "not_run"
+
+
+def test_optimizer_energy_ranks_indexed_route_first() -> None:
+    workload = SparseTauWorkload(factors=24, variables=80, support_size=2, delta_size=1, seed=1701)
+    ranking = rank_optimization_candidates(optimizer_candidates(workload))
+    assert ranking[0]["candidate_id"] == "indexed_factor_solve"
+    assert ranking[-1]["candidate_id"] == "unchecked_cached_answer_negative"
+
+
+def test_optimizer_world_model_marks_impacted_factors() -> None:
+    workload = SparseTauWorkload(factors=8, variables=16, support_size=2, delta_size=1, seed=1701)
+    supports, delta = make_supports(workload)
+    impacted, raw_hits = expected_impacted(supports, delta)
+    assert len(supports) == workload.factors
+    assert raw_hits >= len(impacted)
+    assert build_solve_command(supports).startswith("solve --tau (")
+
+
+def test_live_optimizer_workbench_receipt_if_tau_exists() -> None:
+    tau_bin = Path("external/tau-lang/build-Release/tau")
+    if not tau_bin.exists():
+        return
+    receipt = build_optimizer_workbench(tau_bin=tau_bin, timeout_s=120)
+    assert verify_optimizer_receipt(receipt)
+    accepted = receipt["accepted_optimization"]
+    assert accepted["candidate_id"] == "indexed_factor_solve"
+    assert accepted["solver_call_reduction"] > 1.0
+    assert receipt["wes_schedule"]["invalid_accept_count"] == 0
