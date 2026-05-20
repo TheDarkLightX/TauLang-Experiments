@@ -47,6 +47,17 @@ python3 scripts/train_tau_optimizer_energy.py \
   --verify results/local/tau-energy/optimizer_training_report.json
 ```
 
+Train a larger fragment-route ranker from Tau-checked synthetic formulas:
+
+```bash
+python3 scripts/train_tau_fragment_energy.py \
+  --examples 1000 \
+  --tau-bin external/tau-lang/build-Release/tau \
+  --out results/local/tau-energy/fragment_training_report.json
+python3 scripts/train_tau_fragment_energy.py \
+  --verify results/local/tau-energy/fragment_training_report.json
+```
+
 ## What Counts As Success
 
 The receipt is accepted only when:
@@ -82,3 +93,12 @@ This is still an early EBRM baseline. It is trained enough to learn this narrow
 route family, but not trained enough to generalize across all Tau optimizer
 designs. If Tau syntax changes, regenerate the synthetic formulas and relabel
 them with the current Tau binary instead of treating old rows as stable facts.
+
+The fragment-route trainer scales the same pattern to generated Tau formulas.
+It samples read-once, small truth-table, ordered-BDD, Tseitin-style, and
+quantified formula shapes from grammar-compatible Tau syntax. Every generated
+formula is solved by the local Tau binary before the row is allowed into
+training. The learned model is still only a route-ordering model; route-specific
+certificates or Tau fallback decide semantic correctness. The reported baseline
+is a conservative hand route-prior baseline inside this workbench, not a claim
+about Tau's production optimizer heuristics.
