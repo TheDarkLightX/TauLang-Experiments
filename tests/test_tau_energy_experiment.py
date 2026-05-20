@@ -8,6 +8,7 @@ from tau_energy import (
     SparseTauWorkload,
     TauProposalCandidate,
     build_fragment_training_report,
+    build_measured_fragment_training_report,
     build_optimizer_workbench,
     build_optimizer_training_report,
     build_proposal_packet,
@@ -15,6 +16,7 @@ from tau_energy import (
     build_training_bundle,
     default_energy_model,
     verify_fragment_training_report,
+    verify_measured_fragment_training_report,
     verify_optimizer_receipt,
     verify_optimizer_training_report,
 )
@@ -155,6 +157,28 @@ def test_live_fragment_training_report_if_tau_exists() -> None:
     )
     assert verify_fragment_training_report(report)
     assert report["valid_tau_checked_example_count"] == 25
+    assert report["fitted_model"]["trained"] is True
+    assert report["fitted_eval_test"]["invalid_accept_count"] == 0
+    assert (
+        report["fitted_eval_test"]["top1_oracle_route_rate"]
+        >= report["hand_eval_test"]["top1_oracle_route_rate"]
+    )
+
+
+def test_live_measured_fragment_training_report_if_tau_exists() -> None:
+    tau_bin = Path("external/tau-lang/build-Release/tau")
+    if not tau_bin.exists():
+        return
+    report = build_measured_fragment_training_report(
+        tau_bin=tau_bin,
+        example_count=25,
+        real_spec_limit=2,
+        seed=20260523,
+        tau_timeout_s=10,
+        route_timeout_s=10,
+    )
+    assert verify_measured_fragment_training_report(report)
+    assert report["valid_tau_checked_example_count"] == 27
     assert report["fitted_model"]["trained"] is True
     assert report["fitted_eval_test"]["invalid_accept_count"] == 0
     assert (

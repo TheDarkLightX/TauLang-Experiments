@@ -16,7 +16,12 @@ from .core import (
     label_candidate,
 )
 from .copilot import build_proposal_packet
-from .fragment import build_fragment_training_report, verify_fragment_training_report
+from .fragment import (
+    build_fragment_training_report,
+    build_measured_fragment_training_report,
+    verify_fragment_training_report,
+    verify_measured_fragment_training_report,
+)
 from .jepa import TauJepaModel, default_jepa_model
 from .optimizer import (
     SparseTauWorkload,
@@ -36,6 +41,7 @@ __all__ = [
     "TauEnergyModel",
     "TauJepaModel",
     "build_fragment_training_report",
+    "build_measured_fragment_training_report",
     "build_proposal_packet",
     "build_optimizer_workbench",
     "build_optimizer_training_report",
@@ -47,6 +53,7 @@ __all__ = [
     "fit_energy_model",
     "label_candidate",
     "verify_fragment_training_report",
+    "verify_measured_fragment_training_report",
     "verify_optimizer_receipt",
     "verify_optimizer_training_report",
 ]

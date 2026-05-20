@@ -58,6 +58,18 @@ python3 scripts/train_tau_fragment_energy.py \
   --verify results/local/tau-energy/fragment_training_report.json
 ```
 
+Train from measured route labels instead of the synthetic route oracle:
+
+```bash
+python3 scripts/train_tau_measured_fragment_energy.py \
+  --examples 250 \
+  --real-spec-limit 4 \
+  --tau-bin external/tau-lang/build-Release/tau \
+  --out results/local/tau-energy/measured_fragment_training_report.json
+python3 scripts/train_tau_measured_fragment_energy.py \
+  --verify results/local/tau-energy/measured_fragment_training_report.json
+```
+
 ## What Counts As Success
 
 The receipt is accepted only when:
@@ -102,3 +114,10 @@ training. The learned model is still only a route-ordering model; route-specific
 certificates or Tau fallback decide semantic correctness. The reported baseline
 is a conservative hand route-prior baseline inside this workbench, not a claim
 about Tau's production optimizer heuristics.
+
+The measured-label trainer is the stronger experiment. For each Tau-checked
+formula it runs bounded candidate routes, accepts only route results whose
+deterministic certificate or Tau fallback matches Tau's status, and labels the
+lowest-cost valid route as the training target. It also ingests standalone
+solver benchmark commands from `examples/tau/solver_benchmarks` as real
+Tau-native fallback cases.
