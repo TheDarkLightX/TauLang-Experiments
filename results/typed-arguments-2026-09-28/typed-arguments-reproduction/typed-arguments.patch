@@ -1,0 +1,121 @@
+diff --git a/src/tau_tree_extractors.tmpl.h b/src/tau_tree_extractors.tmpl.h
+index dc62ba58..71d0fb39 100644
+--- a/src/tau_tree_extractors.tmpl.h
++++ b/src/tau_tree_extractors.tmpl.h
+@@ -140,8 +140,10 @@ rewriter::rules get_rec_relations(tref rrs) {
+ // type lives on its argument variable (ref_arg > bf > variable), not on
+ // the ref_arg node itself -- see transform_ref_args_to_captures's
+ // def_transformer, which reads the same t[0][0] for the same reason. A
+-// non-variable argument (a nested ref, a constant) reads whatever
+-// effective type its own subtree carries.
++// non-variable argument reads the type of its immediate bf expression.
++// When construction hooks are disabled, inference types that expression
++// but does not copy its type to the surrounding ref_arg. Do not descend
++// into a nested call's arguments, whose types may differ from its result.
+ template <NodeType node>
+ std::vector<size_t> collect_immediate_ref_arg_types(tref r) {
+ 	using tau = tree<node>;
+@@ -149,11 +151,13 @@ std::vector<size_t> collect_immediate_ref_arg_types(tref r) {
+ 	std::vector<size_t> types;
+ 	for (tref a : (tt(r) | tau::ref_args || tau::ref_arg).values()) {
+ 		const auto& at = tau::get(a);
+-		tref var = (at.children_size() > 0
+-				&& at[0].children_size() > 0
+-				&& at[0][0].is(tau::variable))
+-			? at[0][0].get() : a;
+-		types.push_back(get_effective_ba_type<node>(var));
++		tref value = a;
++		if (at.child_is(tau::bf)) {
++			value = at[0].get();
++			if (at[0].child_is(tau::variable))
++				value = at[0][0].get();
++		}
++		types.push_back(get_effective_ba_type<node>(value));
+ 	}
+ 	return types;
+ }
+@@ -1298,4 +1302,4 @@ tref get_temporally_quantified_formula(tref n) {
+ 	return n;
+ }
+ 
+-} // namespace idni::tau_lang
+\ No newline at end of file
++} // namespace idni::tau_lang
+diff --git a/tests/unit/parser/CMakeLists.txt b/tests/unit/parser/CMakeLists.txt
+index 2d9a057a..83fdca91 100644
+--- a/tests/unit/parser/CMakeLists.txt
++++ b/tests/unit/parser/CMakeLists.txt
+@@ -1,6 +1,9 @@
++set(TAU_TEST_REQUIRES_test_ref_arg_types sbf tau)
++
+ set(TESTS
+ 	by_grammar
+ 	tau_spec
++	ref_arg_types
+ )
+ 
+ foreach(X IN LISTS TESTS)
+diff --git a/tests/unit/parser/test_ref_arg_types.cpp b/tests/unit/parser/test_ref_arg_types.cpp
+new file mode 100644
+index 00000000..75eb240a
+--- /dev/null
++++ b/tests/unit/parser/test_ref_arg_types.cpp
+@@ -0,0 +1,58 @@
++// To view the license please visit https://github.com/IDNI/tau-lang/blob/main/LICENSE.md
++
++#include "test_init.h"
++#include "test_tau_helpers.h"
++
++namespace {
++struct reset_definition_state {
++	reset_definition_state() {
++		definitions<node_t>::instance().clear();
++		api<node_t>::set_charvar(false);
++	}
++	~reset_definition_state() {
++		definitions<node_t>::instance().clear();
++		api<node_t>::set_charvar(true);
++	}
++};
++
++void check_definition(const char* source, bool expected) {
++	for (bool as_written : { false, true }) {
++		reset_definition_state state;
++		CAPTURE(std::string(source));
++		CAPTURE(as_written);
++		tau_spec<node_t> spec;
++		if (as_written) spec.keep_as_written();
++		REQUIRE(spec.parse(source));
++		CHECK(spec.get_nso_rr().has_value() == expected);
++	}
++}
++}
++
++TEST_CASE("typed expression arguments match their definition") {
++	for (const char* source : {
++		"g(x:sbf) := x:sbf = 0. g(0:sbf).",
++		"g(x:sbf) := x:sbf = 0. g(z:sbf).",
++		"g(x:sbf) := x:sbf = 0. g(z:sbf & 0:sbf).",
++		"g(x:sbf) := x:sbf = 0. g((sbf) z:sbf).",
++		"h(u:sbf) := u:sbf. g(x:sbf, y:tau) := (x:sbf = 0 && y:tau = 0). g(h(0:sbf), 0:tau).",
++		"g(x:tau) := x:tau = 0. g(0:tau)."
++	}) check_definition(source, true);
++#ifdef TAU_PACK_HAS_BA_BV
++	for (const char* source : {
++		"g(x:bv[2]) := x:bv[2]. g({1}:bv[2]) = {1}:bv[2].",
++		"g(x:bv[2]) := x:bv[2]. g(z:bv[2]) = {1}:bv[2].",
++		"g(x:bv[2]) := x:bv[2]. g(z:bv[2] & {3}:bv[2]) = {1}:bv[2].",
++		"g(x:bv[2]) := x:bv[2]. g((bv[2]) z:bv[2]) = {1}:bv[2].",
++		"h(u:bv[2]) := u:bv[2]. g(x:bv[2], y:sbf) := (x:bv[2] = {1}:bv[2] && y:sbf = 0). g(h({1}:bv[2]), 0:sbf).",
++		"g[0](x:bv[2]) := x:bv[2]. g[1]({1}:bv[2]) = {1}:bv[2]."
++	}) check_definition(source, true);
++#endif
++}
++
++TEST_CASE("incompatible argument types remain rejected") {
++	check_definition("g(x) := x:sbf = 0. g(z:tau).", false);
++	check_definition("g[0](x) := x:sbf = 0. g[1](x) := x:tau = 0. g[1](z:tau).", false);
++#ifdef TAU_PACK_HAS_BA_BV
++	check_definition("g(x:bv[2]) := x:bv[2] = 0. g({1}:bv[3]).", false);
++#endif
++}

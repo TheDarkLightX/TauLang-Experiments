@@ -11,3 +11,5 @@ Do not commit:
 - huge raw logs unless they are intentionally archived
 
 Prefer compact, reproducible summaries with commands and commit hashes.
+
+- [Typed argument correction and finite-limit test correction (2026-09-28)](typed-arguments-2026-09-28/README.md)

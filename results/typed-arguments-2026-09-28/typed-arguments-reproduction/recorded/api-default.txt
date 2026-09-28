@@ -1,0 +1,16 @@
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+[bench 150.455 ms]  / typed expression arguments match their definition
+([31;1mError[0m) the call `[97;1mg(z)[0m` disagrees with the argument types of its definition `[97;1mg(x)[0m` and can never match; type the arguments and the definition's parameters the same way
+([31;1mError[0m) the call `[97;1mg(z)[0m` disagrees with the argument types of its definition `[97;1mg(x)[0m` and can never match; type the arguments and the definition's parameters the same way
+([31;1mError[0m) the cases of recurrence `[97;1mg[1](x)[0m` disagree on their argument types (`[97;1mg[0](x)[0m` vs `[97;1mg[1](x)[0m`); annotate the argument the same way in every case
+([31;1mError[0m) the cases of recurrence `[97;1mg[1](x)[0m` disagree on their argument types (`[97;1mg[0](x)[0m` vs `[97;1mg[1](x)[0m`); annotate the argument the same way in every case
+([31;1mError[0m) the call `[97;1mg({ 1 }:bv[3])[0m` disagrees with the argument types of its definition `[97;1mg(x)[0m` and can never match; type the arguments and the definition's parameters the same way
+([31;1mError[0m) the call `[97;1mg({ 1 }:bv[3])[0m` disagrees with the argument types of its definition `[97;1mg(x)[0m` and can never match; type the arguments and the definition's parameters the same way
+[bench 34.2019 ms]  / incompatible argument types remain rejected
+
+[benchmark] 2 tests, total 184.657 ms -> benchmark_timing.json
+===============================================================================
+[doctest] test cases:  2 |  2 passed | 0 failed | 0 skipped
+[doctest] assertions: 60 | 60 passed | 0 failed |
+[doctest] Status: SUCCESS!

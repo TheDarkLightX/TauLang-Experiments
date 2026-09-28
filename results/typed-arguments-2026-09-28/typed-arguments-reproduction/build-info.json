@@ -1,0 +1,52 @@
+{
+  "tau_commit": "8b5a61ca98a72f0a2cbece9b1338c7295482bbd3",
+  "parser_commit": "5b14b6fde86f16dc52c4c0a953a8a1e53c88f95a",
+  "platform": "macOS 26.6.2 arm64",
+  "compiler": "Homebrew Clang 22.1.2",
+  "cvc5": "1.3.1",
+  "boost": "1.89.0",
+  "build_type": "Release",
+  "effective_TAU_CACHE": true,
+  "TAU_LTO": false,
+  "TAU_ARTIFACT_PREINST": false,
+  "reference_binary_sha256": "68f9ba8d8140abcbc2ef2d951874e68451de1e3e11795522ba4258e7de100d31",
+  "corrected_default_binary_sha256": "76e88d2bd2beeea5748a221582a0fc1dea30b4548887f21e82ce24a1a8634329",
+  "patches": {
+    "typed-arguments.patch": "243030b194c60ca338cb2c714cd4957cfeb54d04e273290e000dca49e79cfacb",
+    "macos-enum-names.patch": "275197fec08c28ded6ce1e4abfd3e385657c8d99f64a23f37662363424231b81",
+    "minmax-grammar.patch": "832fd902fccb35d230549e4633d88b0d885bd96c6d30cb44fd2ed72e34a42d7e"
+  },
+  "patch_application_checked": true,
+  "timing_claims": false,
+  "generated_code_tests": {
+    "g++_version_available": "GCC 15.2.0",
+    "TAU_CXX": "Clang 22.1.2",
+    "note": "Generated-code tests used GCC 15.2.0 and Clang 22.1.2. These details apply to the full Release run."
+  },
+  "corrected_binary_sha256": {
+    "tau-default": "76e88d2bd2beeea5748a221582a0fc1dea30b4548887f21e82ce24a1a8634329",
+    "api-default": "1138d388aee97d668856367d5add43d459a9d408c6512d77c09599e4a59afbd6",
+    "tau-bvonly": "3b90a084d52a97c51ce46d9df90189739e52988a6e540d846402bf9bc3edc98c",
+    "api-bvonly": "5437a63146323b5d2617ca889d6544607a44f46357aa8b115b79008c04525fb0",
+    "tau-nobv": "1963c37441b5b005f22feafa596c01e09d206ec7165fe5a2057cac47150eb9fa",
+    "api-nobv": "b7e8fd9f117a22655bb71f2049f91dc2ecee1e34502007521836e830393f6304"
+  },
+  "with_minmax_binary_sha256": "4e2542a94aa8c513ab8ea4ec67450ffdf307090a699d6e1362c5eee7c94f455c",
+  "source_variants": {
+    "reference": [
+      "macos-enum-names.patch"
+    ],
+    "corrected-default,bvonly,nobv": [
+      "macos-enum-names.patch",
+      "typed-arguments.patch"
+    ],
+    "with-minmax": [
+      "macos-enum-names.patch",
+      "typed-arguments.patch",
+      "minmax-grammar.patch"
+    ]
+  },
+  "test_only_change": "The #194 budget test correction was applied after the full Release run and checked with four targeted tests. It does not change an executable.",
+  "test_registration": "The sbf/tau test requirement was added after compilation. The C++ source was unchanged; all three configurations were reconfigured and the API test rerun.",
+  "coverage": "One full default Release run; focused checks only for the reduced packs and min/max combination. No Linux run."
+}

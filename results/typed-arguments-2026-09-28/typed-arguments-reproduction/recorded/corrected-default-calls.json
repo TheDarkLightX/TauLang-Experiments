@@ -1,0 +1,1607 @@
+{
+  "binary_sha256": "76e88d2bd2beeea5748a221582a0fc1dea30b4548887f21e82ce24a1a8634329",
+  "cases": [
+    {
+      "id": "sbf-constant-True-normalize",
+      "source": "g(x:sbf) := x:sbf. normalize g(1:sbf) = 1:sbf.",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: T\n\n",
+      "stderr": "",
+      "answers": [
+        "T"
+      ],
+      "passed": true
+    },
+    {
+      "id": "sbf-constant-True-sat",
+      "source": "g(x:sbf) := x:sbf. sat g(1:sbf) = 1:sbf.",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: T\n\n",
+      "stderr": "",
+      "answers": [
+        "T"
+      ],
+      "passed": true
+    },
+    {
+      "id": "sbf-constant-True-valid",
+      "source": "g(x:sbf) := x:sbf. valid g(1:sbf) = 1:sbf.",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: T\n\n",
+      "stderr": "",
+      "answers": [
+        "T"
+      ],
+      "passed": true
+    },
+    {
+      "id": "sbf-constant-True-unsat",
+      "source": "g(x:sbf) := x:sbf. unsat g(1:sbf) = 1:sbf.",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: F\n\n",
+      "stderr": "",
+      "answers": [
+        "F"
+      ],
+      "passed": true
+    },
+    {
+      "id": "sbf-constant-False-normalize",
+      "source": "g(x:sbf) := x:sbf. normalize g(1:sbf) = 0:sbf.",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: F\n\n",
+      "stderr": "",
+      "answers": [
+        "F"
+      ],
+      "passed": true
+    },
+    {
+      "id": "sbf-constant-False-sat",
+      "source": "g(x:sbf) := x:sbf. sat g(1:sbf) = 0:sbf.",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: F\n\n",
+      "stderr": "",
+      "answers": [
+        "F"
+      ],
+      "passed": true
+    },
+    {
+      "id": "sbf-constant-False-valid",
+      "source": "g(x:sbf) := x:sbf. valid g(1:sbf) = 0:sbf.",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: F\n\n",
+      "stderr": "",
+      "answers": [
+        "F"
+      ],
+      "passed": true
+    },
+    {
+      "id": "sbf-constant-False-unsat",
+      "source": "g(x:sbf) := x:sbf. unsat g(1:sbf) = 0:sbf.",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: T\n\n",
+      "stderr": "",
+      "answers": [
+        "T"
+      ],
+      "passed": true
+    },
+    {
+      "id": "sbf-expression-True-normalize",
+      "source": "g(x:sbf) := x:sbf. normalize g((1:sbf & 1:sbf)) = 1:sbf.",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: T\n\n",
+      "stderr": "",
+      "answers": [
+        "T"
+      ],
+      "passed": true
+    },
+    {
+      "id": "sbf-expression-True-sat",
+      "source": "g(x:sbf) := x:sbf. sat g((1:sbf & 1:sbf)) = 1:sbf.",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: T\n\n",
+      "stderr": "",
+      "answers": [
+        "T"
+      ],
+      "passed": true
+    },
+    {
+      "id": "sbf-expression-True-valid",
+      "source": "g(x:sbf) := x:sbf. valid g((1:sbf & 1:sbf)) = 1:sbf.",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: T\n\n",
+      "stderr": "",
+      "answers": [
+        "T"
+      ],
+      "passed": true
+    },
+    {
+      "id": "sbf-expression-True-unsat",
+      "source": "g(x:sbf) := x:sbf. unsat g((1:sbf & 1:sbf)) = 1:sbf.",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: F\n\n",
+      "stderr": "",
+      "answers": [
+        "F"
+      ],
+      "passed": true
+    },
+    {
+      "id": "sbf-expression-False-normalize",
+      "source": "g(x:sbf) := x:sbf. normalize g((1:sbf & 1:sbf)) = 0:sbf.",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: F\n\n",
+      "stderr": "",
+      "answers": [
+        "F"
+      ],
+      "passed": true
+    },
+    {
+      "id": "sbf-expression-False-sat",
+      "source": "g(x:sbf) := x:sbf. sat g((1:sbf & 1:sbf)) = 0:sbf.",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: F\n\n",
+      "stderr": "",
+      "answers": [
+        "F"
+      ],
+      "passed": true
+    },
+    {
+      "id": "sbf-expression-False-valid",
+      "source": "g(x:sbf) := x:sbf. valid g((1:sbf & 1:sbf)) = 0:sbf.",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: F\n\n",
+      "stderr": "",
+      "answers": [
+        "F"
+      ],
+      "passed": true
+    },
+    {
+      "id": "sbf-expression-False-unsat",
+      "source": "g(x:sbf) := x:sbf. unsat g((1:sbf & 1:sbf)) = 0:sbf.",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: T\n\n",
+      "stderr": "",
+      "answers": [
+        "T"
+      ],
+      "passed": true
+    },
+    {
+      "id": "sbf-cast-True-normalize",
+      "source": "g(x:sbf) := x:sbf. normalize g((sbf) (1:sbf)) = 1:sbf.",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: (sbf) 1' = 0\n\n",
+      "stderr": "",
+      "answers": [],
+      "passed": false
+    },
+    {
+      "id": "sbf-cast-True-sat",
+      "source": "g(x:sbf) := x:sbf. sat g((sbf) (1:sbf)) = 1:sbf.",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n\n",
+      "stderr": "\u001b[39mcalculate_fixed_points:\u001b[0m                                    \u001b[39m1\u001b[0m \u001b[39m\u00b5s\u001b[0m\n\u001b[2mapply_rec_relations:\u001b[0m\n\u001b[39mnormalize:\u001b[0m                                                \u001b[39m91\u001b[0m \u001b[39m\u00b5s\u001b[0m\n\t\u001b[2meliminate_arithmetic_and_quantifiers:\u001b[0m             \u001b[2m25\u001b[0m \u001b[2m\u00b5s\u001b[0m\n\t\u001b[39mnormalize_temporal_quantifiers:\u001b[0m                   \u001b[39m59\u001b[0m \u001b[39m\u00b5s\u001b[0m\n\u001b[2mexpand_definitions:\u001b[0m\n\u001b[39mnormalize:\u001b[0m                                                \u001b[39m26\u001b[0m \u001b[39m\u00b5s\u001b[0m\n\t\u001b[2mnormalize:\u001b[0m                                        \u001b[2m17\u001b[0m \u001b[2m\u00b5s\u001b[0m\n\t\t\u001b[39meliminate_arithmetic_and_quantifiers:\u001b[0m     \u001b[39m10\u001b[0m \u001b[39m\u00b5s\u001b[0m\n\t\t\u001b[2mnormalize_temporal_quantifiers:\u001b[0m            \u001b[2m3\u001b[0m \u001b[2m\u00b5s\u001b[0m\n\t\u001b[39mexpand_definitions:\u001b[0m                                \u001b[39m0\u001b[0m  \u001b[39mms\u001b[0m\n\u001b[2mexpression_paths:\u001b[0m\n\t\u001b[39malways_continuation:\u001b[0m                               \u001b[39m0\u001b[0m  \u001b[39mms\u001b[0m\n\t\t\u001b[2meliminate_arithmetic_and_quantifiers:\u001b[0m      \u001b[2m8\u001b[0m \u001b[2m\u00b5s\u001b[0m\n\t\t\u001b[39mterm_boole_normal_form:\u001b[0m                    \u001b[39m0\u001b[0m  \u001b[39mms\u001b[0m\n\u001b[31mUNKNOWN: normalization could not decide (sbf) 1' = 0; satisfiability could not be decided\u001b[0m\n",
+      "answers": [],
+      "passed": false
+    },
+    {
+      "id": "sbf-cast-True-valid",
+      "source": "g(x:sbf) := x:sbf. valid g((sbf) (1:sbf)) = 1:sbf.",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n\n",
+      "stderr": "\u001b[39mcalculate_fixed_points:\u001b[0m                                    \u001b[39m1\u001b[0m \u001b[39m\u00b5s\u001b[0m\n\u001b[2mapply_rec_relations:\u001b[0m\n\u001b[39mnormalize:\u001b[0m                                                \u001b[39m79\u001b[0m \u001b[39m\u00b5s\u001b[0m\n\t\u001b[2meliminate_arithmetic_and_quantifiers:\u001b[0m             \u001b[2m21\u001b[0m \u001b[2m\u00b5s\u001b[0m\n\t\u001b[39mnormalize_temporal_quantifiers:\u001b[0m                   \u001b[39m52\u001b[0m \u001b[39m\u00b5s\u001b[0m\n\u001b[2mexpand_definitions:\u001b[0m                                        \u001b[2m1\u001b[0m \u001b[2m\u00b5s\u001b[0m\n\u001b[39meliminate_arithmetic_and_quantifiers:\u001b[0m                      \u001b[39m4\u001b[0m \u001b[39m\u00b5s\u001b[0m\n\u001b[2mnormalize_temporal_quantifiers:\u001b[0m                            \u001b[2m1\u001b[0m \u001b[2m\u00b5s\u001b[0m\n\u001b[39meliminate_arithmetic_and_quantifiers:\u001b[0m                     \u001b[39m10\u001b[0m \u001b[39m\u00b5s\u001b[0m\n\u001b[2mnormalize_temporal_quantifiers:\u001b[0m                            \u001b[2m3\u001b[0m \u001b[2m\u00b5s\u001b[0m\n\u001b[39mnormalize:\u001b[0m                                                \u001b[39m49\u001b[0m \u001b[39m\u00b5s\u001b[0m\n\t\u001b[2meliminate_arithmetic_and_quantifiers:\u001b[0m             \u001b[2m13\u001b[0m \u001b[2m\u00b5s\u001b[0m\n\t\u001b[39mnormalize_temporal_quantifiers:\u001b[0m                   \u001b[39m14\u001b[0m \u001b[39m\u00b5s\u001b[0m\n\u001b[2mexpand_definitions:\u001b[0m\n\u001b[39mexpression_paths:\u001b[0m\n\t\u001b[2malways_continuation:\u001b[0m                               \u001b[2m0\u001b[0m  \u001b[2mms\u001b[0m\n\t\t\u001b[39meliminate_arithmetic_and_quantifiers:\u001b[0m     \u001b[39m10\u001b[0m \u001b[39m\u00b5s\u001b[0m\n\t\t\u001b[2mterm_boole_normal_form:\u001b[0m                    \u001b[2m0\u001b[0m  \u001b[2mms\u001b[0m\n\u001b[31mUNKNOWN: normalization could not decide (sbf) 1' != 0; satisfiability could not be decided\u001b[0m\n",
+      "answers": [],
+      "passed": false
+    },
+    {
+      "id": "sbf-cast-True-unsat",
+      "source": "g(x:sbf) := x:sbf. unsat g((sbf) (1:sbf)) = 1:sbf.",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n\n",
+      "stderr": "\u001b[39mcalculate_fixed_points:\u001b[0m                                    \u001b[39m1\u001b[0m \u001b[39m\u00b5s\u001b[0m\n\u001b[2mapply_rec_relations:\u001b[0m\n\u001b[39mnormalize:\u001b[0m                                                \u001b[39m80\u001b[0m \u001b[39m\u00b5s\u001b[0m\n\t\u001b[2meliminate_arithmetic_and_quantifiers:\u001b[0m             \u001b[2m20\u001b[0m \u001b[2m\u00b5s\u001b[0m\n\t\u001b[39mnormalize_temporal_quantifiers:\u001b[0m                   \u001b[39m54\u001b[0m \u001b[39m\u00b5s\u001b[0m\n\u001b[2mexpand_definitions:\u001b[0m\n\u001b[39mnormalize:\u001b[0m                                                \u001b[39m26\u001b[0m \u001b[39m\u00b5s\u001b[0m\n\t\u001b[2mnormalize:\u001b[0m                                        \u001b[2m18\u001b[0m \u001b[2m\u00b5s\u001b[0m\n\t\t\u001b[39meliminate_arithmetic_and_quantifiers:\u001b[0m     \u001b[39m11\u001b[0m \u001b[39m\u00b5s\u001b[0m\n\t\t\u001b[2mnormalize_temporal_quantifiers:\u001b[0m            \u001b[2m3\u001b[0m \u001b[2m\u00b5s\u001b[0m\n\t\u001b[39mexpand_definitions:\u001b[0m                                \u001b[39m0\u001b[0m  \u001b[39mms\u001b[0m\n\u001b[2mexpression_paths:\u001b[0m\n\t\u001b[39malways_continuation:\u001b[0m                               \u001b[39m0\u001b[0m  \u001b[39mms\u001b[0m\n\t\t\u001b[2meliminate_arithmetic_and_quantifiers:\u001b[0m      \u001b[2m8\u001b[0m \u001b[2m\u00b5s\u001b[0m\n\t\t\u001b[39mterm_boole_normal_form:\u001b[0m                    \u001b[39m0\u001b[0m  \u001b[39mms\u001b[0m\n\u001b[31mUNKNOWN: normalization could not decide (sbf) 1' = 0; satisfiability could not be decided\u001b[0m\n",
+      "answers": [],
+      "passed": false
+    },
+    {
+      "id": "sbf-cast-False-normalize",
+      "source": "g(x:sbf) := x:sbf. normalize g((sbf) (1:sbf)) = 0:sbf.",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: (sbf) 1 = 0\n\n",
+      "stderr": "",
+      "answers": [],
+      "passed": false
+    },
+    {
+      "id": "sbf-cast-False-sat",
+      "source": "g(x:sbf) := x:sbf. sat g((sbf) (1:sbf)) = 0:sbf.",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n\n",
+      "stderr": "\u001b[39mcalculate_fixed_points:\u001b[0m                                    \u001b[39m1\u001b[0m \u001b[39m\u00b5s\u001b[0m\n\u001b[2mapply_rec_relations:\u001b[0m\n\u001b[39mnormalize:\u001b[0m                                                \u001b[39m76\u001b[0m \u001b[39m\u00b5s\u001b[0m\n\t\u001b[2meliminate_arithmetic_and_quantifiers:\u001b[0m             \u001b[2m23\u001b[0m \u001b[2m\u00b5s\u001b[0m\n\t\u001b[39mnormalize_temporal_quantifiers:\u001b[0m                   \u001b[39m48\u001b[0m \u001b[39m\u00b5s\u001b[0m\n\u001b[2mexpand_definitions:\u001b[0m\n\u001b[39mnormalize:\u001b[0m                                                 \u001b[39m7\u001b[0m \u001b[39m\u00b5s\u001b[0m\n\t\u001b[2mnormalize:\u001b[0m                                         \u001b[2m0\u001b[0m  \u001b[2mms\u001b[0m\n\t\u001b[39mexpand_definitions:\u001b[0m                                \u001b[39m0\u001b[0m  \u001b[39mms\u001b[0m\n\u001b[2mexpression_paths:\u001b[0m\n\t\u001b[39malways_continuation:\u001b[0m                               \u001b[39m0\u001b[0m  \u001b[39mms\u001b[0m\n\t\t\u001b[2meliminate_arithmetic_and_quantifiers:\u001b[0m      \u001b[2m8\u001b[0m \u001b[2m\u00b5s\u001b[0m\n\t\t\u001b[39mterm_boole_normal_form:\u001b[0m                    \u001b[39m0\u001b[0m  \u001b[39mms\u001b[0m\n\u001b[31mUNKNOWN: normalization could not decide (sbf) 1 = 0; satisfiability could not be decided\u001b[0m\n",
+      "answers": [],
+      "passed": false
+    },
+    {
+      "id": "sbf-cast-False-valid",
+      "source": "g(x:sbf) := x:sbf. valid g((sbf) (1:sbf)) = 0:sbf.",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n\n",
+      "stderr": "\u001b[39mcalculate_fixed_points:\u001b[0m                                    \u001b[39m1\u001b[0m \u001b[39m\u00b5s\u001b[0m\n\u001b[2mapply_rec_relations:\u001b[0m\n\u001b[39mnormalize:\u001b[0m                                                \u001b[39m81\u001b[0m \u001b[39m\u00b5s\u001b[0m\n\t\u001b[2meliminate_arithmetic_and_quantifiers:\u001b[0m             \u001b[2m24\u001b[0m \u001b[2m\u00b5s\u001b[0m\n\t\u001b[39mnormalize_temporal_quantifiers:\u001b[0m                   \u001b[39m50\u001b[0m \u001b[39m\u00b5s\u001b[0m\n\u001b[2mexpand_definitions:\u001b[0m\n\u001b[39meliminate_arithmetic_and_quantifiers:\u001b[0m                      \u001b[39m4\u001b[0m \u001b[39m\u00b5s\u001b[0m\n\u001b[2mnormalize_temporal_quantifiers:\u001b[0m                            \u001b[2m1\u001b[0m \u001b[2m\u00b5s\u001b[0m\n\u001b[39mnormalize:\u001b[0m                                                \u001b[39m30\u001b[0m \u001b[39m\u00b5s\u001b[0m\n\t\u001b[2meliminate_arithmetic_and_quantifiers:\u001b[0m             \u001b[2m13\u001b[0m \u001b[2m\u00b5s\u001b[0m\n\t\u001b[39mnormalize_temporal_quantifiers:\u001b[0m                   \u001b[39m13\u001b[0m \u001b[39m\u00b5s\u001b[0m\n\u001b[2mexpand_definitions:\u001b[0m\n\u001b[39mexpression_paths:\u001b[0m\n\t\u001b[2malways_continuation:\u001b[0m                               \u001b[2m0\u001b[0m  \u001b[2mms\u001b[0m\n\t\t\u001b[39meliminate_arithmetic_and_quantifiers:\u001b[0m      \u001b[39m9\u001b[0m \u001b[39m\u00b5s\u001b[0m\n\t\t\u001b[2mterm_boole_normal_form:\u001b[0m                    \u001b[2m0\u001b[0m  \u001b[2mms\u001b[0m\n\u001b[31mUNKNOWN: normalization could not decide (sbf) 1 != 0; satisfiability could not be decided\u001b[0m\n",
+      "answers": [],
+      "passed": false
+    },
+    {
+      "id": "sbf-cast-False-unsat",
+      "source": "g(x:sbf) := x:sbf. unsat g((sbf) (1:sbf)) = 0:sbf.",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n\n",
+      "stderr": "\u001b[39mcalculate_fixed_points:\u001b[0m                                    \u001b[39m1\u001b[0m \u001b[39m\u00b5s\u001b[0m\n\u001b[2mapply_rec_relations:\u001b[0m\n\u001b[39mnormalize:\u001b[0m                                                \u001b[39m78\u001b[0m \u001b[39m\u00b5s\u001b[0m\n\t\u001b[2meliminate_arithmetic_and_quantifiers:\u001b[0m             \u001b[2m21\u001b[0m \u001b[2m\u00b5s\u001b[0m\n\t\u001b[39mnormalize_temporal_quantifiers:\u001b[0m                   \u001b[39m51\u001b[0m \u001b[39m\u00b5s\u001b[0m\n\u001b[2mexpand_definitions:\u001b[0m\n\u001b[39mnormalize:\u001b[0m                                                 \u001b[39m7\u001b[0m \u001b[39m\u00b5s\u001b[0m\n\t\u001b[2mnormalize:\u001b[0m                                         \u001b[2m0\u001b[0m  \u001b[2mms\u001b[0m\n\t\u001b[39mexpand_definitions:\u001b[0m                                \u001b[39m0\u001b[0m  \u001b[39mms\u001b[0m\n\u001b[2mexpression_paths:\u001b[0m\n\t\u001b[39malways_continuation:\u001b[0m                               \u001b[39m0\u001b[0m  \u001b[39mms\u001b[0m\n\t\t\u001b[2meliminate_arithmetic_and_quantifiers:\u001b[0m      \u001b[2m9\u001b[0m \u001b[2m\u00b5s\u001b[0m\n\t\t\u001b[39mterm_boole_normal_form:\u001b[0m                    \u001b[39m0\u001b[0m  \u001b[39mms\u001b[0m\n\u001b[31mUNKNOWN: normalization could not decide (sbf) 1 = 0; satisfiability could not be decided\u001b[0m\n",
+      "answers": [],
+      "passed": false
+    },
+    {
+      "id": "sbf-nested-True-normalize",
+      "source": "h(u:sbf) := u:sbf. g(x:sbf) := x:sbf. normalize g(h(1:sbf)) = 1:sbf.",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] h(u) := u.\n[2] g(x) := x.\n%1: T\n\n",
+      "stderr": "",
+      "answers": [
+        "T"
+      ],
+      "passed": true
+    },
+    {
+      "id": "sbf-nested-True-sat",
+      "source": "h(u:sbf) := u:sbf. g(x:sbf) := x:sbf. sat g(h(1:sbf)) = 1:sbf.",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] h(u) := u.\n[2] g(x) := x.\n%1: T\n\n",
+      "stderr": "",
+      "answers": [
+        "T"
+      ],
+      "passed": true
+    },
+    {
+      "id": "sbf-nested-True-valid",
+      "source": "h(u:sbf) := u:sbf. g(x:sbf) := x:sbf. valid g(h(1:sbf)) = 1:sbf.",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] h(u) := u.\n[2] g(x) := x.\n%1: T\n\n",
+      "stderr": "",
+      "answers": [
+        "T"
+      ],
+      "passed": true
+    },
+    {
+      "id": "sbf-nested-True-unsat",
+      "source": "h(u:sbf) := u:sbf. g(x:sbf) := x:sbf. unsat g(h(1:sbf)) = 1:sbf.",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] h(u) := u.\n[2] g(x) := x.\n%1: F\n\n",
+      "stderr": "",
+      "answers": [
+        "F"
+      ],
+      "passed": true
+    },
+    {
+      "id": "sbf-nested-False-normalize",
+      "source": "h(u:sbf) := u:sbf. g(x:sbf) := x:sbf. normalize g(h(1:sbf)) = 0:sbf.",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] h(u) := u.\n[2] g(x) := x.\n%1: F\n\n",
+      "stderr": "",
+      "answers": [
+        "F"
+      ],
+      "passed": true
+    },
+    {
+      "id": "sbf-nested-False-sat",
+      "source": "h(u:sbf) := u:sbf. g(x:sbf) := x:sbf. sat g(h(1:sbf)) = 0:sbf.",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] h(u) := u.\n[2] g(x) := x.\n%1: F\n\n",
+      "stderr": "",
+      "answers": [
+        "F"
+      ],
+      "passed": true
+    },
+    {
+      "id": "sbf-nested-False-valid",
+      "source": "h(u:sbf) := u:sbf. g(x:sbf) := x:sbf. valid g(h(1:sbf)) = 0:sbf.",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] h(u) := u.\n[2] g(x) := x.\n%1: F\n\n",
+      "stderr": "",
+      "answers": [
+        "F"
+      ],
+      "passed": true
+    },
+    {
+      "id": "sbf-nested-False-unsat",
+      "source": "h(u:sbf) := u:sbf. g(x:sbf) := x:sbf. unsat g(h(1:sbf)) = 0:sbf.",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] h(u) := u.\n[2] g(x) := x.\n%1: T\n\n",
+      "stderr": "",
+      "answers": [
+        "T"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[1]-constant-True-normalize",
+      "source": "g(x:bv[1]) := x:bv[1]. normalize g({1}:bv[1]) = {1}:bv[1].",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: T\n\n",
+      "stderr": "",
+      "answers": [
+        "T"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[1]-constant-True-sat",
+      "source": "g(x:bv[1]) := x:bv[1]. sat g({1}:bv[1]) = {1}:bv[1].",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: T\n\n",
+      "stderr": "",
+      "answers": [
+        "T"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[1]-constant-True-valid",
+      "source": "g(x:bv[1]) := x:bv[1]. valid g({1}:bv[1]) = {1}:bv[1].",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: T\n\n",
+      "stderr": "",
+      "answers": [
+        "T"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[1]-constant-True-unsat",
+      "source": "g(x:bv[1]) := x:bv[1]. unsat g({1}:bv[1]) = {1}:bv[1].",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: F\n\n",
+      "stderr": "",
+      "answers": [
+        "F"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[1]-constant-False-normalize",
+      "source": "g(x:bv[1]) := x:bv[1]. normalize g({1}:bv[1]) = {0}:bv[1].",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: F\n\n",
+      "stderr": "",
+      "answers": [
+        "F"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[1]-constant-False-sat",
+      "source": "g(x:bv[1]) := x:bv[1]. sat g({1}:bv[1]) = {0}:bv[1].",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: F\n\n",
+      "stderr": "",
+      "answers": [
+        "F"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[1]-constant-False-valid",
+      "source": "g(x:bv[1]) := x:bv[1]. valid g({1}:bv[1]) = {0}:bv[1].",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: F\n\n",
+      "stderr": "",
+      "answers": [
+        "F"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[1]-constant-False-unsat",
+      "source": "g(x:bv[1]) := x:bv[1]. unsat g({1}:bv[1]) = {0}:bv[1].",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: T\n\n",
+      "stderr": "",
+      "answers": [
+        "T"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[1]-expression-True-normalize",
+      "source": "g(x:bv[1]) := x:bv[1]. normalize g(({1}:bv[1] & {1}:bv[1])) = {1}:bv[1].",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: T\n\n",
+      "stderr": "",
+      "answers": [
+        "T"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[1]-expression-True-sat",
+      "source": "g(x:bv[1]) := x:bv[1]. sat g(({1}:bv[1] & {1}:bv[1])) = {1}:bv[1].",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: T\n\n",
+      "stderr": "",
+      "answers": [
+        "T"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[1]-expression-True-valid",
+      "source": "g(x:bv[1]) := x:bv[1]. valid g(({1}:bv[1] & {1}:bv[1])) = {1}:bv[1].",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: T\n\n",
+      "stderr": "",
+      "answers": [
+        "T"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[1]-expression-True-unsat",
+      "source": "g(x:bv[1]) := x:bv[1]. unsat g(({1}:bv[1] & {1}:bv[1])) = {1}:bv[1].",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: F\n\n",
+      "stderr": "",
+      "answers": [
+        "F"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[1]-expression-False-normalize",
+      "source": "g(x:bv[1]) := x:bv[1]. normalize g(({1}:bv[1] & {1}:bv[1])) = {0}:bv[1].",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: F\n\n",
+      "stderr": "",
+      "answers": [
+        "F"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[1]-expression-False-sat",
+      "source": "g(x:bv[1]) := x:bv[1]. sat g(({1}:bv[1] & {1}:bv[1])) = {0}:bv[1].",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: F\n\n",
+      "stderr": "",
+      "answers": [
+        "F"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[1]-expression-False-valid",
+      "source": "g(x:bv[1]) := x:bv[1]. valid g(({1}:bv[1] & {1}:bv[1])) = {0}:bv[1].",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: F\n\n",
+      "stderr": "",
+      "answers": [
+        "F"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[1]-expression-False-unsat",
+      "source": "g(x:bv[1]) := x:bv[1]. unsat g(({1}:bv[1] & {1}:bv[1])) = {0}:bv[1].",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: T\n\n",
+      "stderr": "",
+      "answers": [
+        "T"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[1]-cast-True-normalize",
+      "source": "g(x:bv[1]) := x:bv[1]. normalize g((bv[1]) ({1}:bv[1])) = {1}:bv[1].",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: T\n\n",
+      "stderr": "",
+      "answers": [
+        "T"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[1]-cast-True-sat",
+      "source": "g(x:bv[1]) := x:bv[1]. sat g((bv[1]) ({1}:bv[1])) = {1}:bv[1].",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: T\n\n",
+      "stderr": "",
+      "answers": [
+        "T"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[1]-cast-True-valid",
+      "source": "g(x:bv[1]) := x:bv[1]. valid g((bv[1]) ({1}:bv[1])) = {1}:bv[1].",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: T\n\n",
+      "stderr": "",
+      "answers": [
+        "T"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[1]-cast-True-unsat",
+      "source": "g(x:bv[1]) := x:bv[1]. unsat g((bv[1]) ({1}:bv[1])) = {1}:bv[1].",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: F\n\n",
+      "stderr": "",
+      "answers": [
+        "F"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[1]-cast-False-normalize",
+      "source": "g(x:bv[1]) := x:bv[1]. normalize g((bv[1]) ({1}:bv[1])) = {0}:bv[1].",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: F\n\n",
+      "stderr": "",
+      "answers": [
+        "F"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[1]-cast-False-sat",
+      "source": "g(x:bv[1]) := x:bv[1]. sat g((bv[1]) ({1}:bv[1])) = {0}:bv[1].",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: F\n\n",
+      "stderr": "",
+      "answers": [
+        "F"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[1]-cast-False-valid",
+      "source": "g(x:bv[1]) := x:bv[1]. valid g((bv[1]) ({1}:bv[1])) = {0}:bv[1].",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: F\n\n",
+      "stderr": "",
+      "answers": [
+        "F"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[1]-cast-False-unsat",
+      "source": "g(x:bv[1]) := x:bv[1]. unsat g((bv[1]) ({1}:bv[1])) = {0}:bv[1].",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: T\n\n",
+      "stderr": "",
+      "answers": [
+        "T"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[1]-nested-True-normalize",
+      "source": "h(u:bv[1]) := u:bv[1]. g(x:bv[1]) := x:bv[1]. normalize g(h({1}:bv[1])) = {1}:bv[1].",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] h(u) := u.\n[2] g(x) := x.\n%1: T\n\n",
+      "stderr": "",
+      "answers": [
+        "T"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[1]-nested-True-sat",
+      "source": "h(u:bv[1]) := u:bv[1]. g(x:bv[1]) := x:bv[1]. sat g(h({1}:bv[1])) = {1}:bv[1].",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] h(u) := u.\n[2] g(x) := x.\n%1: T\n\n",
+      "stderr": "",
+      "answers": [
+        "T"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[1]-nested-True-valid",
+      "source": "h(u:bv[1]) := u:bv[1]. g(x:bv[1]) := x:bv[1]. valid g(h({1}:bv[1])) = {1}:bv[1].",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] h(u) := u.\n[2] g(x) := x.\n%1: T\n\n",
+      "stderr": "",
+      "answers": [
+        "T"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[1]-nested-True-unsat",
+      "source": "h(u:bv[1]) := u:bv[1]. g(x:bv[1]) := x:bv[1]. unsat g(h({1}:bv[1])) = {1}:bv[1].",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] h(u) := u.\n[2] g(x) := x.\n%1: F\n\n",
+      "stderr": "",
+      "answers": [
+        "F"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[1]-nested-False-normalize",
+      "source": "h(u:bv[1]) := u:bv[1]. g(x:bv[1]) := x:bv[1]. normalize g(h({1}:bv[1])) = {0}:bv[1].",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] h(u) := u.\n[2] g(x) := x.\n%1: F\n\n",
+      "stderr": "",
+      "answers": [
+        "F"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[1]-nested-False-sat",
+      "source": "h(u:bv[1]) := u:bv[1]. g(x:bv[1]) := x:bv[1]. sat g(h({1}:bv[1])) = {0}:bv[1].",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] h(u) := u.\n[2] g(x) := x.\n%1: F\n\n",
+      "stderr": "",
+      "answers": [
+        "F"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[1]-nested-False-valid",
+      "source": "h(u:bv[1]) := u:bv[1]. g(x:bv[1]) := x:bv[1]. valid g(h({1}:bv[1])) = {0}:bv[1].",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] h(u) := u.\n[2] g(x) := x.\n%1: F\n\n",
+      "stderr": "",
+      "answers": [
+        "F"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[1]-nested-False-unsat",
+      "source": "h(u:bv[1]) := u:bv[1]. g(x:bv[1]) := x:bv[1]. unsat g(h({1}:bv[1])) = {0}:bv[1].",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] h(u) := u.\n[2] g(x) := x.\n%1: T\n\n",
+      "stderr": "",
+      "answers": [
+        "T"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[2]-constant-True-normalize",
+      "source": "g(x:bv[2]) := x:bv[2]. normalize g({1}:bv[2]) = {1}:bv[2].",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: T\n\n",
+      "stderr": "",
+      "answers": [
+        "T"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[2]-constant-True-sat",
+      "source": "g(x:bv[2]) := x:bv[2]. sat g({1}:bv[2]) = {1}:bv[2].",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: T\n\n",
+      "stderr": "",
+      "answers": [
+        "T"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[2]-constant-True-valid",
+      "source": "g(x:bv[2]) := x:bv[2]. valid g({1}:bv[2]) = {1}:bv[2].",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: T\n\n",
+      "stderr": "",
+      "answers": [
+        "T"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[2]-constant-True-unsat",
+      "source": "g(x:bv[2]) := x:bv[2]. unsat g({1}:bv[2]) = {1}:bv[2].",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: F\n\n",
+      "stderr": "",
+      "answers": [
+        "F"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[2]-constant-False-normalize",
+      "source": "g(x:bv[2]) := x:bv[2]. normalize g({1}:bv[2]) = {0}:bv[2].",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: F\n\n",
+      "stderr": "",
+      "answers": [
+        "F"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[2]-constant-False-sat",
+      "source": "g(x:bv[2]) := x:bv[2]. sat g({1}:bv[2]) = {0}:bv[2].",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: F\n\n",
+      "stderr": "",
+      "answers": [
+        "F"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[2]-constant-False-valid",
+      "source": "g(x:bv[2]) := x:bv[2]. valid g({1}:bv[2]) = {0}:bv[2].",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: F\n\n",
+      "stderr": "",
+      "answers": [
+        "F"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[2]-constant-False-unsat",
+      "source": "g(x:bv[2]) := x:bv[2]. unsat g({1}:bv[2]) = {0}:bv[2].",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: T\n\n",
+      "stderr": "",
+      "answers": [
+        "T"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[2]-expression-True-normalize",
+      "source": "g(x:bv[2]) := x:bv[2]. normalize g(({1}:bv[2] & {1}:bv[2])) = {1}:bv[2].",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: T\n\n",
+      "stderr": "",
+      "answers": [
+        "T"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[2]-expression-True-sat",
+      "source": "g(x:bv[2]) := x:bv[2]. sat g(({1}:bv[2] & {1}:bv[2])) = {1}:bv[2].",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: T\n\n",
+      "stderr": "",
+      "answers": [
+        "T"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[2]-expression-True-valid",
+      "source": "g(x:bv[2]) := x:bv[2]. valid g(({1}:bv[2] & {1}:bv[2])) = {1}:bv[2].",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: T\n\n",
+      "stderr": "",
+      "answers": [
+        "T"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[2]-expression-True-unsat",
+      "source": "g(x:bv[2]) := x:bv[2]. unsat g(({1}:bv[2] & {1}:bv[2])) = {1}:bv[2].",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: F\n\n",
+      "stderr": "",
+      "answers": [
+        "F"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[2]-expression-False-normalize",
+      "source": "g(x:bv[2]) := x:bv[2]. normalize g(({1}:bv[2] & {1}:bv[2])) = {0}:bv[2].",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: F\n\n",
+      "stderr": "",
+      "answers": [
+        "F"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[2]-expression-False-sat",
+      "source": "g(x:bv[2]) := x:bv[2]. sat g(({1}:bv[2] & {1}:bv[2])) = {0}:bv[2].",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: F\n\n",
+      "stderr": "",
+      "answers": [
+        "F"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[2]-expression-False-valid",
+      "source": "g(x:bv[2]) := x:bv[2]. valid g(({1}:bv[2] & {1}:bv[2])) = {0}:bv[2].",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: F\n\n",
+      "stderr": "",
+      "answers": [
+        "F"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[2]-expression-False-unsat",
+      "source": "g(x:bv[2]) := x:bv[2]. unsat g(({1}:bv[2] & {1}:bv[2])) = {0}:bv[2].",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: T\n\n",
+      "stderr": "",
+      "answers": [
+        "T"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[2]-cast-True-normalize",
+      "source": "g(x:bv[2]) := x:bv[2]. normalize g((bv[2]) ({1}:bv[2])) = {1}:bv[2].",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: T\n\n",
+      "stderr": "",
+      "answers": [
+        "T"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[2]-cast-True-sat",
+      "source": "g(x:bv[2]) := x:bv[2]. sat g((bv[2]) ({1}:bv[2])) = {1}:bv[2].",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: T\n\n",
+      "stderr": "",
+      "answers": [
+        "T"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[2]-cast-True-valid",
+      "source": "g(x:bv[2]) := x:bv[2]. valid g((bv[2]) ({1}:bv[2])) = {1}:bv[2].",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: T\n\n",
+      "stderr": "",
+      "answers": [
+        "T"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[2]-cast-True-unsat",
+      "source": "g(x:bv[2]) := x:bv[2]. unsat g((bv[2]) ({1}:bv[2])) = {1}:bv[2].",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: F\n\n",
+      "stderr": "",
+      "answers": [
+        "F"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[2]-cast-False-normalize",
+      "source": "g(x:bv[2]) := x:bv[2]. normalize g((bv[2]) ({1}:bv[2])) = {0}:bv[2].",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: F\n\n",
+      "stderr": "",
+      "answers": [
+        "F"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[2]-cast-False-sat",
+      "source": "g(x:bv[2]) := x:bv[2]. sat g((bv[2]) ({1}:bv[2])) = {0}:bv[2].",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: F\n\n",
+      "stderr": "",
+      "answers": [
+        "F"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[2]-cast-False-valid",
+      "source": "g(x:bv[2]) := x:bv[2]. valid g((bv[2]) ({1}:bv[2])) = {0}:bv[2].",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: F\n\n",
+      "stderr": "",
+      "answers": [
+        "F"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[2]-cast-False-unsat",
+      "source": "g(x:bv[2]) := x:bv[2]. unsat g((bv[2]) ({1}:bv[2])) = {0}:bv[2].",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: T\n\n",
+      "stderr": "",
+      "answers": [
+        "T"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[2]-nested-True-normalize",
+      "source": "h(u:bv[2]) := u:bv[2]. g(x:bv[2]) := x:bv[2]. normalize g(h({1}:bv[2])) = {1}:bv[2].",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] h(u) := u.\n[2] g(x) := x.\n%1: T\n\n",
+      "stderr": "",
+      "answers": [
+        "T"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[2]-nested-True-sat",
+      "source": "h(u:bv[2]) := u:bv[2]. g(x:bv[2]) := x:bv[2]. sat g(h({1}:bv[2])) = {1}:bv[2].",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] h(u) := u.\n[2] g(x) := x.\n%1: T\n\n",
+      "stderr": "",
+      "answers": [
+        "T"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[2]-nested-True-valid",
+      "source": "h(u:bv[2]) := u:bv[2]. g(x:bv[2]) := x:bv[2]. valid g(h({1}:bv[2])) = {1}:bv[2].",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] h(u) := u.\n[2] g(x) := x.\n%1: T\n\n",
+      "stderr": "",
+      "answers": [
+        "T"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[2]-nested-True-unsat",
+      "source": "h(u:bv[2]) := u:bv[2]. g(x:bv[2]) := x:bv[2]. unsat g(h({1}:bv[2])) = {1}:bv[2].",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] h(u) := u.\n[2] g(x) := x.\n%1: F\n\n",
+      "stderr": "",
+      "answers": [
+        "F"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[2]-nested-False-normalize",
+      "source": "h(u:bv[2]) := u:bv[2]. g(x:bv[2]) := x:bv[2]. normalize g(h({1}:bv[2])) = {0}:bv[2].",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] h(u) := u.\n[2] g(x) := x.\n%1: F\n\n",
+      "stderr": "",
+      "answers": [
+        "F"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[2]-nested-False-sat",
+      "source": "h(u:bv[2]) := u:bv[2]. g(x:bv[2]) := x:bv[2]. sat g(h({1}:bv[2])) = {0}:bv[2].",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] h(u) := u.\n[2] g(x) := x.\n%1: F\n\n",
+      "stderr": "",
+      "answers": [
+        "F"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[2]-nested-False-valid",
+      "source": "h(u:bv[2]) := u:bv[2]. g(x:bv[2]) := x:bv[2]. valid g(h({1}:bv[2])) = {0}:bv[2].",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] h(u) := u.\n[2] g(x) := x.\n%1: F\n\n",
+      "stderr": "",
+      "answers": [
+        "F"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[2]-nested-False-unsat",
+      "source": "h(u:bv[2]) := u:bv[2]. g(x:bv[2]) := x:bv[2]. unsat g(h({1}:bv[2])) = {0}:bv[2].",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] h(u) := u.\n[2] g(x) := x.\n%1: T\n\n",
+      "stderr": "",
+      "answers": [
+        "T"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[8]-constant-True-normalize",
+      "source": "g(x:bv[8]) := x:bv[8]. normalize g({1}:bv[8]) = {1}:bv[8].",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: T\n\n",
+      "stderr": "",
+      "answers": [
+        "T"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[8]-constant-True-sat",
+      "source": "g(x:bv[8]) := x:bv[8]. sat g({1}:bv[8]) = {1}:bv[8].",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: T\n\n",
+      "stderr": "",
+      "answers": [
+        "T"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[8]-constant-True-valid",
+      "source": "g(x:bv[8]) := x:bv[8]. valid g({1}:bv[8]) = {1}:bv[8].",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: T\n\n",
+      "stderr": "",
+      "answers": [
+        "T"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[8]-constant-True-unsat",
+      "source": "g(x:bv[8]) := x:bv[8]. unsat g({1}:bv[8]) = {1}:bv[8].",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: F\n\n",
+      "stderr": "",
+      "answers": [
+        "F"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[8]-constant-False-normalize",
+      "source": "g(x:bv[8]) := x:bv[8]. normalize g({1}:bv[8]) = {0}:bv[8].",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: F\n\n",
+      "stderr": "",
+      "answers": [
+        "F"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[8]-constant-False-sat",
+      "source": "g(x:bv[8]) := x:bv[8]. sat g({1}:bv[8]) = {0}:bv[8].",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: F\n\n",
+      "stderr": "",
+      "answers": [
+        "F"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[8]-constant-False-valid",
+      "source": "g(x:bv[8]) := x:bv[8]. valid g({1}:bv[8]) = {0}:bv[8].",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: F\n\n",
+      "stderr": "",
+      "answers": [
+        "F"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[8]-constant-False-unsat",
+      "source": "g(x:bv[8]) := x:bv[8]. unsat g({1}:bv[8]) = {0}:bv[8].",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: T\n\n",
+      "stderr": "",
+      "answers": [
+        "T"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[8]-expression-True-normalize",
+      "source": "g(x:bv[8]) := x:bv[8]. normalize g(({1}:bv[8] & {1}:bv[8])) = {1}:bv[8].",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: T\n\n",
+      "stderr": "",
+      "answers": [
+        "T"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[8]-expression-True-sat",
+      "source": "g(x:bv[8]) := x:bv[8]. sat g(({1}:bv[8] & {1}:bv[8])) = {1}:bv[8].",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: T\n\n",
+      "stderr": "",
+      "answers": [
+        "T"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[8]-expression-True-valid",
+      "source": "g(x:bv[8]) := x:bv[8]. valid g(({1}:bv[8] & {1}:bv[8])) = {1}:bv[8].",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: T\n\n",
+      "stderr": "",
+      "answers": [
+        "T"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[8]-expression-True-unsat",
+      "source": "g(x:bv[8]) := x:bv[8]. unsat g(({1}:bv[8] & {1}:bv[8])) = {1}:bv[8].",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: F\n\n",
+      "stderr": "",
+      "answers": [
+        "F"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[8]-expression-False-normalize",
+      "source": "g(x:bv[8]) := x:bv[8]. normalize g(({1}:bv[8] & {1}:bv[8])) = {0}:bv[8].",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: F\n\n",
+      "stderr": "",
+      "answers": [
+        "F"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[8]-expression-False-sat",
+      "source": "g(x:bv[8]) := x:bv[8]. sat g(({1}:bv[8] & {1}:bv[8])) = {0}:bv[8].",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: F\n\n",
+      "stderr": "",
+      "answers": [
+        "F"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[8]-expression-False-valid",
+      "source": "g(x:bv[8]) := x:bv[8]. valid g(({1}:bv[8] & {1}:bv[8])) = {0}:bv[8].",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: F\n\n",
+      "stderr": "",
+      "answers": [
+        "F"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[8]-expression-False-unsat",
+      "source": "g(x:bv[8]) := x:bv[8]. unsat g(({1}:bv[8] & {1}:bv[8])) = {0}:bv[8].",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: T\n\n",
+      "stderr": "",
+      "answers": [
+        "T"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[8]-cast-True-normalize",
+      "source": "g(x:bv[8]) := x:bv[8]. normalize g((bv[8]) ({1}:bv[8])) = {1}:bv[8].",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: T\n\n",
+      "stderr": "",
+      "answers": [
+        "T"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[8]-cast-True-sat",
+      "source": "g(x:bv[8]) := x:bv[8]. sat g((bv[8]) ({1}:bv[8])) = {1}:bv[8].",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: T\n\n",
+      "stderr": "",
+      "answers": [
+        "T"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[8]-cast-True-valid",
+      "source": "g(x:bv[8]) := x:bv[8]. valid g((bv[8]) ({1}:bv[8])) = {1}:bv[8].",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: T\n\n",
+      "stderr": "",
+      "answers": [
+        "T"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[8]-cast-True-unsat",
+      "source": "g(x:bv[8]) := x:bv[8]. unsat g((bv[8]) ({1}:bv[8])) = {1}:bv[8].",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: F\n\n",
+      "stderr": "",
+      "answers": [
+        "F"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[8]-cast-False-normalize",
+      "source": "g(x:bv[8]) := x:bv[8]. normalize g((bv[8]) ({1}:bv[8])) = {0}:bv[8].",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: F\n\n",
+      "stderr": "",
+      "answers": [
+        "F"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[8]-cast-False-sat",
+      "source": "g(x:bv[8]) := x:bv[8]. sat g((bv[8]) ({1}:bv[8])) = {0}:bv[8].",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: F\n\n",
+      "stderr": "",
+      "answers": [
+        "F"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[8]-cast-False-valid",
+      "source": "g(x:bv[8]) := x:bv[8]. valid g((bv[8]) ({1}:bv[8])) = {0}:bv[8].",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: F\n\n",
+      "stderr": "",
+      "answers": [
+        "F"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[8]-cast-False-unsat",
+      "source": "g(x:bv[8]) := x:bv[8]. unsat g((bv[8]) ({1}:bv[8])) = {0}:bv[8].",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] g(x) := x.\n%1: T\n\n",
+      "stderr": "",
+      "answers": [
+        "T"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[8]-nested-True-normalize",
+      "source": "h(u:bv[8]) := u:bv[8]. g(x:bv[8]) := x:bv[8]. normalize g(h({1}:bv[8])) = {1}:bv[8].",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] h(u) := u.\n[2] g(x) := x.\n%1: T\n\n",
+      "stderr": "",
+      "answers": [
+        "T"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[8]-nested-True-sat",
+      "source": "h(u:bv[8]) := u:bv[8]. g(x:bv[8]) := x:bv[8]. sat g(h({1}:bv[8])) = {1}:bv[8].",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] h(u) := u.\n[2] g(x) := x.\n%1: T\n\n",
+      "stderr": "",
+      "answers": [
+        "T"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[8]-nested-True-valid",
+      "source": "h(u:bv[8]) := u:bv[8]. g(x:bv[8]) := x:bv[8]. valid g(h({1}:bv[8])) = {1}:bv[8].",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] h(u) := u.\n[2] g(x) := x.\n%1: T\n\n",
+      "stderr": "",
+      "answers": [
+        "T"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[8]-nested-True-unsat",
+      "source": "h(u:bv[8]) := u:bv[8]. g(x:bv[8]) := x:bv[8]. unsat g(h({1}:bv[8])) = {1}:bv[8].",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] h(u) := u.\n[2] g(x) := x.\n%1: F\n\n",
+      "stderr": "",
+      "answers": [
+        "F"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[8]-nested-False-normalize",
+      "source": "h(u:bv[8]) := u:bv[8]. g(x:bv[8]) := x:bv[8]. normalize g(h({1}:bv[8])) = {0}:bv[8].",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] h(u) := u.\n[2] g(x) := x.\n%1: F\n\n",
+      "stderr": "",
+      "answers": [
+        "F"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[8]-nested-False-sat",
+      "source": "h(u:bv[8]) := u:bv[8]. g(x:bv[8]) := x:bv[8]. sat g(h({1}:bv[8])) = {0}:bv[8].",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] h(u) := u.\n[2] g(x) := x.\n%1: F\n\n",
+      "stderr": "",
+      "answers": [
+        "F"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[8]-nested-False-valid",
+      "source": "h(u:bv[8]) := u:bv[8]. g(x:bv[8]) := x:bv[8]. valid g(h({1}:bv[8])) = {0}:bv[8].",
+      "answer": "F",
+      "returncode": 0,
+      "stdout": "[1] h(u) := u.\n[2] g(x) := x.\n%1: F\n\n",
+      "stderr": "",
+      "answers": [
+        "F"
+      ],
+      "passed": true
+    },
+    {
+      "id": "bv[8]-nested-False-unsat",
+      "source": "h(u:bv[8]) := u:bv[8]. g(x:bv[8]) := x:bv[8]. unsat g(h({1}:bv[8])) = {0}:bv[8].",
+      "answer": "T",
+      "returncode": 0,
+      "stdout": "[1] h(u) := u.\n[2] g(x) := x.\n%1: T\n\n",
+      "stderr": "",
+      "answers": [
+        "T"
+      ],
+      "passed": true
+    },
+    {
+      "id": "algebra-mismatch-normalize",
+      "source": "g(x) := x:sbf = 0. normalize g(z:tau).",
+      "error": "disagrees with",
+      "returncode": 0,
+      "stdout": "[1] g(x) := (x = 0).\n\n",
+      "stderr": "(\u001b[31;1mError\u001b[0m) the call `\u001b[97;1mg(z)\u001b[0m` disagrees with the argument types of its definition `\u001b[97;1mg(x)\u001b[0m` and can never match; type the arguments and the definition's parameters the same way\n",
+      "answers": [],
+      "passed": true
+    },
+    {
+      "id": "width-mismatch-normalize",
+      "source": "g(x:bv[2]) := x:bv[2] = 0. normalize g({1}:bv[3]).",
+      "error": "disagrees with",
+      "returncode": 0,
+      "stdout": "[1] g(x) := (x = 0).\n\n",
+      "stderr": "(\u001b[31;1mError\u001b[0m) the call `\u001b[97;1mg({ 1 }:bv[3])\u001b[0m` disagrees with the argument types of its definition `\u001b[97;1mg(x)\u001b[0m` and can never match; type the arguments and the definition's parameters the same way\n",
+      "answers": [],
+      "passed": true
+    },
+    {
+      "id": "algebra-mismatch-sat",
+      "source": "g(x) := x:sbf = 0. sat g(z:tau).",
+      "error": "disagrees with",
+      "returncode": 0,
+      "stdout": "[1] g(x) := (x = 0).\n\n",
+      "stderr": "(\u001b[31;1mError\u001b[0m) the call `\u001b[97;1mg(z)\u001b[0m` disagrees with the argument types of its definition `\u001b[97;1mg(x)\u001b[0m` and can never match; type the arguments and the definition's parameters the same way\n(\u001b[31;1mError\u001b[0m) the call `\u001b[97;1mg(z)\u001b[0m` disagrees with the argument types of its definition `\u001b[97;1mg(x)\u001b[0m` and can never match; type the arguments and the definition's parameters the same way\n",
+      "answers": [],
+      "passed": true
+    },
+    {
+      "id": "width-mismatch-sat",
+      "source": "g(x:bv[2]) := x:bv[2] = 0. sat g({1}:bv[3]).",
+      "error": "disagrees with",
+      "returncode": 0,
+      "stdout": "[1] g(x) := (x = 0).\n\n",
+      "stderr": "(\u001b[31;1mError\u001b[0m) the call `\u001b[97;1mg({ 1 }:bv[3])\u001b[0m` disagrees with the argument types of its definition `\u001b[97;1mg(x)\u001b[0m` and can never match; type the arguments and the definition's parameters the same way\n(\u001b[31;1mError\u001b[0m) the call `\u001b[97;1mg({ 1 }:bv[3])\u001b[0m` disagrees with the argument types of its definition `\u001b[97;1mg(x)\u001b[0m` and can never match; type the arguments and the definition's parameters the same way\n",
+      "answers": [],
+      "passed": true
+    },
+    {
+      "id": "algebra-mismatch-valid",
+      "source": "g(x) := x:sbf = 0. valid g(z:tau).",
+      "error": "disagrees with",
+      "returncode": 0,
+      "stdout": "[1] g(x) := (x = 0).\n\n",
+      "stderr": "(\u001b[31;1mError\u001b[0m) the call `\u001b[97;1mg(z)\u001b[0m` disagrees with the argument types of its definition `\u001b[97;1mg(x)\u001b[0m` and can never match; type the arguments and the definition's parameters the same way\n(\u001b[31;1mError\u001b[0m) the call `\u001b[97;1mg(z)\u001b[0m` disagrees with the argument types of its definition `\u001b[97;1mg(x)\u001b[0m` and can never match; type the arguments and the definition's parameters the same way\n",
+      "answers": [],
+      "passed": true
+    },
+    {
+      "id": "width-mismatch-valid",
+      "source": "g(x:bv[2]) := x:bv[2] = 0. valid g({1}:bv[3]).",
+      "error": "disagrees with",
+      "returncode": 0,
+      "stdout": "[1] g(x) := (x = 0).\n\n",
+      "stderr": "(\u001b[31;1mError\u001b[0m) the call `\u001b[97;1mg({ 1 }:bv[3])\u001b[0m` disagrees with the argument types of its definition `\u001b[97;1mg(x)\u001b[0m` and can never match; type the arguments and the definition's parameters the same way\n(\u001b[31;1mError\u001b[0m) the call `\u001b[97;1mg({ 1 }:bv[3])\u001b[0m` disagrees with the argument types of its definition `\u001b[97;1mg(x)\u001b[0m` and can never match; type the arguments and the definition's parameters the same way\n",
+      "answers": [],
+      "passed": true
+    },
+    {
+      "id": "algebra-mismatch-unsat",
+      "source": "g(x) := x:sbf = 0. unsat g(z:tau).",
+      "error": "disagrees with",
+      "returncode": 0,
+      "stdout": "[1] g(x) := (x = 0).\n\n",
+      "stderr": "(\u001b[31;1mError\u001b[0m) the call `\u001b[97;1mg(z)\u001b[0m` disagrees with the argument types of its definition `\u001b[97;1mg(x)\u001b[0m` and can never match; type the arguments and the definition's parameters the same way\n(\u001b[31;1mError\u001b[0m) the call `\u001b[97;1mg(z)\u001b[0m` disagrees with the argument types of its definition `\u001b[97;1mg(x)\u001b[0m` and can never match; type the arguments and the definition's parameters the same way\n",
+      "answers": [],
+      "passed": true
+    },
+    {
+      "id": "width-mismatch-unsat",
+      "source": "g(x:bv[2]) := x:bv[2] = 0. unsat g({1}:bv[3]).",
+      "error": "disagrees with",
+      "returncode": 0,
+      "stdout": "[1] g(x) := (x = 0).\n\n",
+      "stderr": "(\u001b[31;1mError\u001b[0m) the call `\u001b[97;1mg({ 1 }:bv[3])\u001b[0m` disagrees with the argument types of its definition `\u001b[97;1mg(x)\u001b[0m` and can never match; type the arguments and the definition's parameters the same way\n(\u001b[31;1mError\u001b[0m) the call `\u001b[97;1mg({ 1 }:bv[3])\u001b[0m` disagrees with the argument types of its definition `\u001b[97;1mg(x)\u001b[0m` and can never match; type the arguments and the definition's parameters the same way\n",
+      "answers": [],
+      "passed": true
+    }
+  ],
+  "passed": 128,
+  "total": 136
+}

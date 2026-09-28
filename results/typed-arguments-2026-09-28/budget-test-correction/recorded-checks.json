@@ -1,0 +1,17 @@
+{
+  "variant": "rename-only",
+  "tests": [
+    {
+      "name": "test_repl-get_cmd-maxconstantsize_default_finite",
+      "passed": true
+    },
+    {
+      "name": "test_repl-run_cmd-value_past_constant_size_budget",
+      "passed": true
+    },
+    {
+      "name": "test_repl-run_cmd-values_stay_within_constant_size_budget",
+      "passed": true
+    }
+  ]
+}
