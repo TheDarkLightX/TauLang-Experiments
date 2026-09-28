@@ -1,0 +1,9 @@
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+[bench 32.8524 ms] Tau API - settings / set_charvar
+
+[benchmark] 1 tests, total 32.8524 ms -> benchmark_timing.json
+===============================================================================
+[doctest] test cases:  1 |  1 passed | 0 failed | 63 skipped
+[doctest] assertions: 30 | 30 passed | 0 failed |
+[doctest] Status: SUCCESS!

@@ -1,0 +1,197 @@
+diff --git a/src/api.h b/src/api.h
+index a33a9a73..d28fec69 100644
+--- a/src/api.h
++++ b/src/api.h
+@@ -226,18 +226,16 @@ struct api {
+ 	static void set_block_squeeze_cap(size_t n);
+ 	/**
+ 	 * @brief Cap the temporal-normalization fixpoint searches
+-	 * (`find_fixpoint_phi`/`find_fixpoint_chi`); 0 = unlimited (default).
++	 * (`find_fixpoint_phi`/`find_fixpoint_chi`); default 500; 0 = unlimited.
+ 	 *
+-	 * On overrun the search gives up with a log line and returns the
+-	 * current (non-fixpoint) iterate.
++	 * On overrun the search reports a limit error and returns no verdict.
+ 	 */
+ 	static void set_max_fixpoint_steps(size_t n);
+ 	/**
+ 	 * @brief Cap the eventual-flag search past the flag boundary in
+-	 * `to_unbounded_continuation`; 0 = unlimited (default).
++	 * `to_unbounded_continuation`; default 500; 0 = unlimited.
+ 	 *
+-	 * A bounded give-up reports unsatisfiable — wrong but bounded and
+-	 * loud (SO-1).
++	 * Reaching the cap reports a limit error, without a T/F verdict.
+ 	 */
+ 	static void set_max_flag_search_steps(size_t n);
+ 	/**
+diff --git a/src/api.tmpl.h b/src/api.tmpl.h
+index 7b1ac081..555b93cc 100644
+--- a/src/api.tmpl.h
++++ b/src/api.tmpl.h
+@@ -112,6 +112,7 @@ void api<node>::set_charvar(bool charvar) {
+ 	std::set<std::string> guards{ charvar ? "charvar" : "var" };
+ 	tau_parser::instance().get_grammar().set_enabled_productions(guards);
+ 	pack_set_charvar<node>(charvar);
++	pretty_printer_charvar = charvar;
+ }
+ 
+ template <NodeType node>
+diff --git a/src/main.cpp b/src/main.cpp
+index 92bbeb70..24640128 100644
+--- a/src/main.cpp
++++ b/src/main.cpp
+@@ -122,7 +122,7 @@ cli::options tau_options() {
+ 	opts["max-flag-search-steps"] =
+ 		cli::option("max-flag-search-steps", 'F', "500")
+ 		.set_description("cap the eventual-flag search past the flag "
+-			"boundary; give-up reports unsatisfiable "
++			"boundary; reaching the cap reports no verdict "
+ 			"(default 500; 0 = unlimited)");
+ 	opts["block-squeeze-cap"] = cli::option("block-squeeze-cap", 'z', "0")
+ 		.set_description("skip block squeezing above this operand-set "
+diff --git a/src/satisfiability.tmpl.h b/src/satisfiability.tmpl.h
+index b60add37..8328dae4 100644
+--- a/src/satisfiability.tmpl.h
++++ b/src/satisfiability.tmpl.h
+@@ -27,15 +27,15 @@ inline static bool use_debug_output_in_sat = false;
+ /// `api::set_max_fixpoint_steps`. SO-1 caveat: these searches have no
+ /// convergence guarantee, so an unlimited run on a non-converging spec does
+ /// not terminate. The shipped default is therefore FINITE (500, the value the
+-/// pre-parameter constant had): a give-up is wrong-but-loud where an
+-/// unlimited run hangs `sat`/`run`/pointwise revision. Pass 0 to opt into
++/// pre-parameter constant had): reaching it reports a limit error without
++/// a verdict. An unlimited search may not terminate. Pass 0 to opt into
+ /// unlimited. The CLI default in main.cpp must agree with this value.
+ inline size_t max_fixpoint_steps = 500;
+ 
+ /// Cap on `to_unbounded_continuation`'s eventual-flag search past the flag
+ /// boundary; 0 = unlimited. Same SO-1 caveat as `max_fixpoint_steps` — and a
+-/// bounded give-up here reports unsatisfiable, which is wrong but bounded and
+-/// loud. Shipped default 500 (finite, see above); set via
++/// bounded search reports a limit error without a verdict.
++/// Shipped default 500 (finite, see above); set via
+ /// `--max-flag-search-steps`, REPL `flagsteps`, or
+ /// `api::set_max_flag_search_steps`.
+ inline size_t max_flag_search_steps = 500;
+@@ -2375,7 +2375,7 @@ bool for_each_static_path(tref fm, const auto& f) {
+ 		return eq_neq(x, y) || eq_neq(y, x);
+ 	};
+ 	// The and/or skeleton of fm, with its leaves numbered by literal
+-	enum kind_t { AND, OR, LIT, TRUE, FALSE };
++	enum kind_t { AND, OR, LIT, CONSTANT_TRUE, CONSTANT_FALSE };
+ 	struct part { kind_t kind; std::vector<size_t> sub; size_t lit = 0; };
+ 	std::vector<part> parts;
+ 	trefs lits;
+@@ -2389,8 +2389,8 @@ bool for_each_static_path(tref fm, const auto& f) {
+ 					? get_cnf_wff_clauses<node>(g)
+ 					: get_dnf_wff_clauses<node>(g))
+ 				p.sub.push_back(build(c));
+-		} else if (t.equals_T()) p.kind = TRUE;
+-		else if (t.equals_F()) p.kind = FALSE;
++		} else if (t.equals_T()) p.kind = CONSTANT_TRUE;
++		else if (t.equals_F()) p.kind = CONSTANT_FALSE;
+ 		else {
+ 			p.kind = LIT;
+ 			auto [it, fresh] = lit_ids.emplace(g, lits.size());
+@@ -2429,7 +2429,7 @@ bool for_each_static_path(tref fm, const auto& f) {
+ 			break;
+ 		case OR:
+ 			if (std::ranges::any_of(p.sub, [&](size_t c) {
+-				return parts[c].kind == TRUE
++				return parts[c].kind == CONSTANT_TRUE
+ 					|| (parts[c].kind == LIT
+ 						&& held[parts[c].lit]);
+ 			})) cont = go();
+@@ -2450,8 +2450,8 @@ bool for_each_static_path(tref fm, const auto& f) {
+ 				--held[p.lit], path.pop_back();
+ 			}
+ 			break;
+-		case TRUE: cont = go(); break;
+-		case FALSE: break;
++		case CONSTANT_TRUE: cont = go(); break;
++		case CONSTANT_FALSE: break;
+ 		}
+ 		todo.push_back(g);
+ 		return cont;
+diff --git a/src/tau_tree_printers.tmpl.h b/src/tau_tree_printers.tmpl.h
+index 36d8c762..e3fd380e 100644
+--- a/src/tau_tree_printers.tmpl.h
++++ b/src/tau_tree_printers.tmpl.h
+@@ -387,7 +387,8 @@ int_t get_max_var_name_b_id(tref fm) {
+ 
+ // pretty printer settings
+ // NOTE: These globals are NOT thread-safe. The tau library assumes single-threaded access.
+-// Do not call set_highlighting(), set_indenting(), or set_json() concurrently from multiple threads.
++// Do not change printer settings concurrently from multiple threads.
++inline bool pretty_printer_charvar      = true;
+ inline bool pretty_printer_highlighting = false;
+ inline bool pretty_printer_indenting    = false;
+ inline bool print_json                  = false;
+@@ -845,7 +846,10 @@ std::ostream& tree<node>::print(std::ostream& os) const {
+ 
+ 		switch (pnt) {
+ 			case bf_and:
+-				if (type_printed || isdigit(static_cast<unsigned char>(last_written_char))
++				if (!pretty_printer_charvar) {
++					out("&");
++				}
++				else if (type_printed || isdigit(static_cast<unsigned char>(last_written_char))
+ 					|| t.child_is(tau::ba_constant)) {
+ 					out(" ");
+ 				}
+diff --git a/tests/api/test_api-tref_api.cpp b/tests/api/test_api-tref_api.cpp
+index 0683f26a..f252e466 100644
+--- a/tests/api/test_api-tref_api.cpp
++++ b/tests/api/test_api-tref_api.cpp
+@@ -12,6 +12,9 @@ using tau_api = api<node_t>;
+ TEST_SUITE("Tau API - settings") {
+ 
+ 	TEST_CASE("set_charvar") {
++		struct restore_charvar {
++			~restore_charvar() { tau_api::set_charvar(true); }
++		} restore;
+ 		tau_api::set_charvar(false);
+ 		auto r = tau_api::get_term("xyz");
+ 		CHECK(r.has_value());
+@@ -19,12 +22,40 @@ TEST_SUITE("Tau API - settings") {
+ 		CHECK(xyz); // term must be variable, because charvar is false
+ 		CHECK(tau::get(xyz)[0].is(tau::variable));
+ 
++		for (const auto& source : {
++			"left & right", "left & right'", "left1 & right2",
++			"(left | right) & third", "left & (right | third)",
++			"left & right & third"
++		}) {
++			CAPTURE(source);
++			auto conjunction = tau_api::get_term(source, false);
++			REQUIRE(conjunction.has_value());
++			auto printed = tau_api::to_str(conjunction.value());
++			CAPTURE(printed);
++			auto reparsed = tau_api::get_term(printed, false);
++			REQUIRE(reparsed.has_value());
++			CHECK(matches_bf_mod_and_or(reparsed.value(), source));
++		}
++
+ 		tau_api::set_charvar(true);
+ 		r = tau_api::get_term("xyz");
+ 		CHECK(r.has_value());
+ 		xyz = r.value();
+ 		CHECK(xyz); // term must be bf_and, because charvar is true
+ 		CHECK(tau::get(xyz)[0].is(tau::bf_and));
++
++		auto original = tau_api::get_term("x & y", false);
++		REQUIRE(original.has_value());
++		auto compact = tau_api::to_str(original.value());
++		CHECK(compact.find('&') == std::string::npos);
++		tau_api::set_charvar(false);
++		auto explicit_and = tau_api::to_str(original.value());
++		CHECK(explicit_and.find('&') != std::string::npos);
++		auto restored = tau_api::get_term(explicit_and, false);
++		REQUIRE(restored.has_value());
++		CHECK(matches_bf_mod_and_or(restored.value(), "x & y"));
++		tau_api::set_charvar(true);
++		CHECK(tau_api::to_str(original.value()) == compact);
+ 	}
+ 
+ 	TEST_CASE("set_indenting") {

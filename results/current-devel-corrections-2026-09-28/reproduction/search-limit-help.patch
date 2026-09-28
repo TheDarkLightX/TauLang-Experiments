@@ -1,0 +1,60 @@
+--- a/src/main.cpp
++++ b/src/main.cpp
+@@ -122,7 +122,7 @@
+ 	opts["max-flag-search-steps"] =
+ 		cli::option("max-flag-search-steps", 'F', "500")
+ 		.set_description("cap the eventual-flag search past the flag "
+-			"boundary; give-up reports unsatisfiable "
++			"boundary; reaching the cap reports no verdict "
+ 			"(default 500; 0 = unlimited)");
+ 	opts["block-squeeze-cap"] = cli::option("block-squeeze-cap", 'z', "0")
+ 		.set_description("skip block squeezing above this operand-set "
+--- a/src/api.h
++++ b/src/api.h
+@@ -226,18 +226,16 @@
+ 	static void set_block_squeeze_cap(size_t n);
+ 	/**
+ 	 * @brief Cap the temporal-normalization fixpoint searches
+-	 * (`find_fixpoint_phi`/`find_fixpoint_chi`); 0 = unlimited (default).
+-	 *
+-	 * On overrun the search gives up with a log line and returns the
+-	 * current (non-fixpoint) iterate.
++	 * (`find_fixpoint_phi`/`find_fixpoint_chi`); default 500; 0 = unlimited.
++	 *
++	 * On overrun the search reports a limit error and returns no verdict.
+ 	 */
+ 	static void set_max_fixpoint_steps(size_t n);
+ 	/**
+ 	 * @brief Cap the eventual-flag search past the flag boundary in
+-	 * `to_unbounded_continuation`; 0 = unlimited (default).
+-	 *
+-	 * A bounded give-up reports unsatisfiable — wrong but bounded and
+-	 * loud (SO-1).
++	 * `to_unbounded_continuation`; default 500; 0 = unlimited.
++	 *
++	 * Reaching the cap reports a limit error, without a T/F verdict.
+ 	 */
+ 	static void set_max_flag_search_steps(size_t n);
+ 	/**
+--- a/src/satisfiability.tmpl.h
++++ b/src/satisfiability.tmpl.h
+@@ -27,15 +27,15 @@
+ /// `api::set_max_fixpoint_steps`. SO-1 caveat: these searches have no
+ /// convergence guarantee, so an unlimited run on a non-converging spec does
+ /// not terminate. The shipped default is therefore FINITE (500, the value the
+-/// pre-parameter constant had): a give-up is wrong-but-loud where an
+-/// unlimited run hangs `sat`/`run`/pointwise revision. Pass 0 to opt into
++/// pre-parameter constant had): reaching it reports a limit error without
++/// a verdict. An unlimited search may not terminate. Pass 0 to opt into
+ /// unlimited. The CLI default in main.cpp must agree with this value.
+ inline size_t max_fixpoint_steps = 500;
+ 
+ /// Cap on `to_unbounded_continuation`'s eventual-flag search past the flag
+ /// boundary; 0 = unlimited. Same SO-1 caveat as `max_fixpoint_steps` — and a
+-/// bounded give-up here reports unsatisfiable, which is wrong but bounded and
+-/// loud. Shipped default 500 (finite, see above); set via
++/// bounded search reports a limit error without a verdict.
++/// Shipped default 500 (finite, see above); set via
+ /// `--max-flag-search-steps`, REPL `flagsteps`, or
+ /// `api::set_max_flag_search_steps`.
+ inline size_t max_flag_search_steps = 500;

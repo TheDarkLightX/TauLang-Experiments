@@ -1,0 +1,1 @@
+o1:sbf := out console. o2:sbf := out console. i1:sbf := in file("input.sbf"). run 4 steps (always (o1[t]:sbf = i1[t]:sbf) && (o2[t]:sbf = i1[t-1]:sbf)).

@@ -1,0 +1,37 @@
+{
+  "tau_commit": "8b5a61ca98a72f0a2cbece9b1338c7295482bbd3",
+  "parser_commit": "5b14b6fde86f16dc52c4c0a953a8a1e53c88f95a",
+  "test_date": "2026-09-28",
+  "operating_system": "macOS 26.6.2 arm64",
+  "compiler": "Homebrew Clang 22.1.2",
+  "configuration": {
+    "CMAKE_BUILD_TYPE": "Release",
+    "TAU_BAS": "tau,qint,qlt,nlang,bv,sbf,hsb",
+    "TAU_CACHE": "ON",
+    "TAU_LTO": "OFF",
+    "TAU_ARTIFACT_PREINST": "OFF",
+    "TAU_PARSER_MEASURE": "ON",
+    "TAU_SKIP_TESTS": "test_integration-satisfiability-bool;test_integration-satisfiability-sbf;test_integration-satisfiability-qint;test_integration-satisfiability-qlt;test_integration-satisfiability-tau_ba;test_integration-satisfiability-mixed;test_integration-satisfiability-bv;test_ltl_benchmarks;test_by_grammar;test_integration-solver-qint;test_integration-solver-mixed;test_integration-solver-sbf;test_integration-quantifiers;test_integration-blasting_correctness_check1;test_integration-blasting_correctness_check2;test_integration-blasting_correctness_check3;test_integration-blasting_correctness_check4;test_integration-blasting_correctness_check5",
+    "TAU_DONT_USE_FTXUI": "ON"
+  },
+  "original_binary_sha256": "68f9ba8d8140abcbc2ef2d951874e68451de1e3e11795522ba4258e7de100d31",
+  "corrected_binary_sha256": "17012b72fb56072000f1905a1aa10f1dcdae721c48c3f1f11f505507ced5f1ca",
+  "cvc5": "1.3.1",
+  "boost": "1.89.0",
+  "configuration_note": "The Release configuration sets TAU_CACHE on after reading its cache entry. Configure logs and generated compiler definitions confirm TAU_CACHE and TAU_PARSER_MEASURE are enabled.",
+  "reference_changes": [
+    "macos-enum-portability.patch"
+  ],
+  "corrected_changes": [
+    "macos-enum-portability.patch",
+    "charvar-printer.patch",
+    "search-limit-help.patch"
+  ],
+  "registered_tests": 2533,
+  "patch_sha256": {
+    "combined.patch": "9b7544b31622daf674eb0313d952023fb3d91add8f796f6307d381bd3114e62e",
+    "charvar-printer.patch": "1400d39f5218dd54dbe0a453f4f81bc373bf4b0830045c501392b21b7b7de8f5",
+    "search-limit-help.patch": "11bf579ea2a076d05e6a8070ad673307d401dbc08b573abc5a2f0846fc3ee2d4",
+    "macos-enum-portability.patch": "275197fec08c28ded6ce1e4abfd3e385657c8d99f64a23f37662363424231b81"
+  }
+}

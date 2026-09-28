@@ -1,0 +1,1145 @@
+{
+  "binary_sha256": "17012b72fb56072000f1905a1aa10f1dcdae721c48c3f1f11f505507ced5f1ca",
+  "cases": [
+    {
+      "name": "short-names",
+      "command": "normalize (x:sbf & y:sbf) = 0:sbf.",
+      "expected_expression": [
+        "and",
+        "x",
+        "y"
+      ],
+      "printed": "x&y = 0",
+      "repeat_matches": true,
+      "no_new_variables": true,
+      "assignments": [
+        {
+          "values": {
+            "x": false,
+            "y": false
+          },
+          "expected": "T",
+          "actual": "T",
+          "passed": true
+        },
+        {
+          "values": {
+            "x": false,
+            "y": true
+          },
+          "expected": "T",
+          "actual": "T",
+          "passed": true
+        },
+        {
+          "values": {
+            "x": true,
+            "y": false
+          },
+          "expected": "T",
+          "actual": "T",
+          "passed": true
+        },
+        {
+          "values": {
+            "x": true,
+            "y": true
+          },
+          "expected": "F",
+          "actual": "F",
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "name": "long-names",
+      "command": "normalize (alpha:sbf & beta:sbf) = 0:sbf.",
+      "expected_expression": [
+        "and",
+        "alpha",
+        "beta"
+      ],
+      "printed": "alpha&beta = 0",
+      "repeat_matches": true,
+      "no_new_variables": true,
+      "assignments": [
+        {
+          "values": {
+            "alpha": false,
+            "beta": false
+          },
+          "expected": "T",
+          "actual": "T",
+          "passed": true
+        },
+        {
+          "values": {
+            "alpha": false,
+            "beta": true
+          },
+          "expected": "T",
+          "actual": "T",
+          "passed": true
+        },
+        {
+          "values": {
+            "alpha": true,
+            "beta": false
+          },
+          "expected": "T",
+          "actual": "T",
+          "passed": true
+        },
+        {
+          "values": {
+            "alpha": true,
+            "beta": true
+          },
+          "expected": "F",
+          "actual": "F",
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "name": "underscore-suffix",
+      "command": "normalize (left_:sbf & right_:sbf) = 0:sbf.",
+      "expected_expression": [
+        "and",
+        "left_",
+        "right_"
+      ],
+      "printed": "left_&right_ = 0",
+      "repeat_matches": true,
+      "no_new_variables": true,
+      "assignments": [
+        {
+          "values": {
+            "left_": false,
+            "right_": false
+          },
+          "expected": "T",
+          "actual": "T",
+          "passed": true
+        },
+        {
+          "values": {
+            "left_": false,
+            "right_": true
+          },
+          "expected": "T",
+          "actual": "T",
+          "passed": true
+        },
+        {
+          "values": {
+            "left_": true,
+            "right_": false
+          },
+          "expected": "T",
+          "actual": "T",
+          "passed": true
+        },
+        {
+          "values": {
+            "left_": true,
+            "right_": true
+          },
+          "expected": "F",
+          "actual": "F",
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "name": "complement",
+      "command": "normalize (left:sbf & right:sbf') = 0:sbf.",
+      "expected_expression": [
+        "and",
+        "left",
+        [
+          "not",
+          "right"
+        ]
+      ],
+      "printed": "right'&left = 0",
+      "repeat_matches": true,
+      "no_new_variables": true,
+      "assignments": [
+        {
+          "values": {
+            "left": false,
+            "right": false
+          },
+          "expected": "T",
+          "actual": "T",
+          "passed": true
+        },
+        {
+          "values": {
+            "left": false,
+            "right": true
+          },
+          "expected": "T",
+          "actual": "T",
+          "passed": true
+        },
+        {
+          "values": {
+            "left": true,
+            "right": false
+          },
+          "expected": "F",
+          "actual": "F",
+          "passed": true
+        },
+        {
+          "values": {
+            "left": true,
+            "right": true
+          },
+          "expected": "T",
+          "actual": "T",
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "name": "numeric-suffix",
+      "command": "normalize (left1:sbf & right2:sbf) = 0:sbf.",
+      "expected_expression": [
+        "and",
+        "left1",
+        "right2"
+      ],
+      "printed": "left1&right2 = 0",
+      "repeat_matches": true,
+      "no_new_variables": true,
+      "assignments": [
+        {
+          "values": {
+            "left1": false,
+            "right2": false
+          },
+          "expected": "T",
+          "actual": "T",
+          "passed": true
+        },
+        {
+          "values": {
+            "left1": false,
+            "right2": true
+          },
+          "expected": "T",
+          "actual": "T",
+          "passed": true
+        },
+        {
+          "values": {
+            "left1": true,
+            "right2": false
+          },
+          "expected": "T",
+          "actual": "T",
+          "passed": true
+        },
+        {
+          "values": {
+            "left1": true,
+            "right2": true
+          },
+          "expected": "F",
+          "actual": "F",
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "name": "nested-left",
+      "command": "normalize ((left:sbf | right:sbf) & third:sbf) = 0:sbf.",
+      "expected_expression": [
+        "and",
+        [
+          "or",
+          "left",
+          "right"
+        ],
+        "third"
+      ],
+      "printed": "third&(right|left) = 0",
+      "repeat_matches": true,
+      "no_new_variables": true,
+      "assignments": [
+        {
+          "values": {
+            "left": false,
+            "right": false,
+            "third": false
+          },
+          "expected": "T",
+          "actual": "T",
+          "passed": true
+        },
+        {
+          "values": {
+            "left": false,
+            "right": false,
+            "third": true
+          },
+          "expected": "T",
+          "actual": "T",
+          "passed": true
+        },
+        {
+          "values": {
+            "left": false,
+            "right": true,
+            "third": false
+          },
+          "expected": "T",
+          "actual": "T",
+          "passed": true
+        },
+        {
+          "values": {
+            "left": false,
+            "right": true,
+            "third": true
+          },
+          "expected": "F",
+          "actual": "F",
+          "passed": true
+        },
+        {
+          "values": {
+            "left": true,
+            "right": false,
+            "third": false
+          },
+          "expected": "T",
+          "actual": "T",
+          "passed": true
+        },
+        {
+          "values": {
+            "left": true,
+            "right": false,
+            "third": true
+          },
+          "expected": "F",
+          "actual": "F",
+          "passed": true
+        },
+        {
+          "values": {
+            "left": true,
+            "right": true,
+            "third": false
+          },
+          "expected": "T",
+          "actual": "T",
+          "passed": true
+        },
+        {
+          "values": {
+            "left": true,
+            "right": true,
+            "third": true
+          },
+          "expected": "F",
+          "actual": "F",
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "name": "nested-right",
+      "command": "normalize (left:sbf & (right:sbf | third:sbf)) = 0:sbf.",
+      "expected_expression": [
+        "and",
+        "left",
+        [
+          "or",
+          "right",
+          "third"
+        ]
+      ],
+      "printed": "left&(right|third) = 0",
+      "repeat_matches": true,
+      "no_new_variables": true,
+      "assignments": [
+        {
+          "values": {
+            "left": false,
+            "right": false,
+            "third": false
+          },
+          "expected": "T",
+          "actual": "T",
+          "passed": true
+        },
+        {
+          "values": {
+            "left": false,
+            "right": false,
+            "third": true
+          },
+          "expected": "T",
+          "actual": "T",
+          "passed": true
+        },
+        {
+          "values": {
+            "left": false,
+            "right": true,
+            "third": false
+          },
+          "expected": "T",
+          "actual": "T",
+          "passed": true
+        },
+        {
+          "values": {
+            "left": false,
+            "right": true,
+            "third": true
+          },
+          "expected": "T",
+          "actual": "T",
+          "passed": true
+        },
+        {
+          "values": {
+            "left": true,
+            "right": false,
+            "third": false
+          },
+          "expected": "T",
+          "actual": "T",
+          "passed": true
+        },
+        {
+          "values": {
+            "left": true,
+            "right": false,
+            "third": true
+          },
+          "expected": "F",
+          "actual": "F",
+          "passed": true
+        },
+        {
+          "values": {
+            "left": true,
+            "right": true,
+            "third": false
+          },
+          "expected": "F",
+          "actual": "F",
+          "passed": true
+        },
+        {
+          "values": {
+            "left": true,
+            "right": true,
+            "third": true
+          },
+          "expected": "F",
+          "actual": "F",
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "name": "three-operands",
+      "command": "normalize (left:sbf & right:sbf & third:sbf) = 0:sbf.",
+      "expected_expression": [
+        "and",
+        [
+          "and",
+          "left",
+          "right"
+        ],
+        "third"
+      ],
+      "printed": "right&left&third = 0",
+      "repeat_matches": true,
+      "no_new_variables": true,
+      "assignments": [
+        {
+          "values": {
+            "left": false,
+            "right": false,
+            "third": false
+          },
+          "expected": "T",
+          "actual": "T",
+          "passed": true
+        },
+        {
+          "values": {
+            "left": false,
+            "right": false,
+            "third": true
+          },
+          "expected": "T",
+          "actual": "T",
+          "passed": true
+        },
+        {
+          "values": {
+            "left": false,
+            "right": true,
+            "third": false
+          },
+          "expected": "T",
+          "actual": "T",
+          "passed": true
+        },
+        {
+          "values": {
+            "left": false,
+            "right": true,
+            "third": true
+          },
+          "expected": "T",
+          "actual": "T",
+          "passed": true
+        },
+        {
+          "values": {
+            "left": true,
+            "right": false,
+            "third": false
+          },
+          "expected": "T",
+          "actual": "T",
+          "passed": true
+        },
+        {
+          "values": {
+            "left": true,
+            "right": false,
+            "third": true
+          },
+          "expected": "T",
+          "actual": "T",
+          "passed": true
+        },
+        {
+          "values": {
+            "left": true,
+            "right": true,
+            "third": false
+          },
+          "expected": "T",
+          "actual": "T",
+          "passed": true
+        },
+        {
+          "values": {
+            "left": true,
+            "right": true,
+            "third": true
+          },
+          "expected": "F",
+          "actual": "F",
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "name": "eliminated-variable",
+      "command": "qelim ex x0:sbf (((x0:sbf & y0:sbf) ^ z:sbf) = 0:sbf).",
+      "expected_expression": [
+        "and",
+        "z",
+        [
+          "not",
+          "y0"
+        ]
+      ],
+      "printed": "z&y0' = 0",
+      "repeat_matches": true,
+      "no_new_variables": true,
+      "assignments": [
+        {
+          "values": {
+            "y0": false,
+            "z": false
+          },
+          "expected": "T",
+          "actual": "T",
+          "passed": true
+        },
+        {
+          "values": {
+            "y0": false,
+            "z": true
+          },
+          "expected": "F",
+          "actual": "F",
+          "passed": true
+        },
+        {
+          "values": {
+            "y0": true,
+            "z": false
+          },
+          "expected": "T",
+          "actual": "T",
+          "passed": true
+        },
+        {
+          "values": {
+            "y0": true,
+            "z": true
+          },
+          "expected": "T",
+          "actual": "T",
+          "passed": true
+        }
+      ],
+      "passed": true
+    }
+  ],
+  "controls": [
+    {
+      "charvar": false,
+      "command": "normalize T.",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "charvar": false,
+      "command": "normalize F.",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    },
+    {
+      "charvar": true,
+      "command": "normalize T.",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "charvar": true,
+      "command": "normalize F.",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    }
+  ],
+  "default_charvar_output": "xy = 0",
+  "calls": [
+    {
+      "command": "normalize (x:sbf & y:sbf) = 0:sbf.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: x&y = 0\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize (x:sbf & y:sbf) = 0:sbf.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: x&y = 0\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize {0}:sbf&{0}:sbf = 0.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: T\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize {0}:sbf&{1}:sbf = 0.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: T\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize {1}:sbf&{0}:sbf = 0.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: T\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize {1}:sbf&{1}:sbf = 0.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: F\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize (alpha:sbf & beta:sbf) = 0:sbf.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: alpha&beta = 0\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize (alpha:sbf & beta:sbf) = 0:sbf.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: alpha&beta = 0\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize {0}:sbf&{0}:sbf = 0.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: T\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize {0}:sbf&{1}:sbf = 0.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: T\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize {1}:sbf&{0}:sbf = 0.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: T\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize {1}:sbf&{1}:sbf = 0.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: F\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize (left_:sbf & right_:sbf) = 0:sbf.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: left_&right_ = 0\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize (left_:sbf & right_:sbf) = 0:sbf.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: left_&right_ = 0\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize {0}:sbf&{0}:sbf = 0.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: T\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize {0}:sbf&{1}:sbf = 0.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: T\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize {1}:sbf&{0}:sbf = 0.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: T\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize {1}:sbf&{1}:sbf = 0.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: F\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize (left:sbf & right:sbf') = 0:sbf.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: right'&left = 0\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize (left:sbf & right:sbf') = 0:sbf.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: right'&left = 0\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize {0}:sbf'&{0}:sbf = 0.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: T\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize {1}:sbf'&{0}:sbf = 0.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: T\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize {0}:sbf'&{1}:sbf = 0.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: F\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize {1}:sbf'&{1}:sbf = 0.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: T\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize (left1:sbf & right2:sbf) = 0:sbf.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: left1&right2 = 0\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize (left1:sbf & right2:sbf) = 0:sbf.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: left1&right2 = 0\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize {0}:sbf&{0}:sbf = 0.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: T\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize {0}:sbf&{1}:sbf = 0.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: T\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize {1}:sbf&{0}:sbf = 0.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: T\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize {1}:sbf&{1}:sbf = 0.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: F\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize ((left:sbf | right:sbf) & third:sbf) = 0:sbf.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: third&(right|left) = 0\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize ((left:sbf | right:sbf) & third:sbf) = 0:sbf.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: third&(right|left) = 0\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize {0}:sbf&({0}:sbf|{0}:sbf) = 0.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: T\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize {1}:sbf&({0}:sbf|{0}:sbf) = 0.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: T\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize {0}:sbf&({1}:sbf|{0}:sbf) = 0.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: T\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize {1}:sbf&({1}:sbf|{0}:sbf) = 0.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: F\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize {0}:sbf&({0}:sbf|{1}:sbf) = 0.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: T\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize {1}:sbf&({0}:sbf|{1}:sbf) = 0.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: F\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize {0}:sbf&({1}:sbf|{1}:sbf) = 0.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: T\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize {1}:sbf&({1}:sbf|{1}:sbf) = 0.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: F\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize (left:sbf & (right:sbf | third:sbf)) = 0:sbf.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: left&(right|third) = 0\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize (left:sbf & (right:sbf | third:sbf)) = 0:sbf.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: left&(right|third) = 0\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize {0}:sbf&({0}:sbf|{0}:sbf) = 0.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: T\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize {0}:sbf&({0}:sbf|{1}:sbf) = 0.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: T\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize {0}:sbf&({1}:sbf|{0}:sbf) = 0.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: T\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize {0}:sbf&({1}:sbf|{1}:sbf) = 0.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: T\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize {1}:sbf&({0}:sbf|{0}:sbf) = 0.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: T\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize {1}:sbf&({0}:sbf|{1}:sbf) = 0.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: F\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize {1}:sbf&({1}:sbf|{0}:sbf) = 0.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: F\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize {1}:sbf&({1}:sbf|{1}:sbf) = 0.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: F\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize (left:sbf & right:sbf & third:sbf) = 0:sbf.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: right&left&third = 0\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize (left:sbf & right:sbf & third:sbf) = 0:sbf.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: right&left&third = 0\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize {0}:sbf&{0}:sbf&{0}:sbf = 0.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: T\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize {0}:sbf&{0}:sbf&{1}:sbf = 0.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: T\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize {1}:sbf&{0}:sbf&{0}:sbf = 0.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: T\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize {1}:sbf&{0}:sbf&{1}:sbf = 0.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: T\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize {0}:sbf&{1}:sbf&{0}:sbf = 0.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: T\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize {0}:sbf&{1}:sbf&{1}:sbf = 0.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: T\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize {1}:sbf&{1}:sbf&{0}:sbf = 0.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: T\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize {1}:sbf&{1}:sbf&{1}:sbf = 0.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: F\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "qelim ex x0:sbf (((x0:sbf & y0:sbf) ^ z:sbf) = 0:sbf).",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: z&y0' = 0\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "qelim ex x0:sbf (((x0:sbf & y0:sbf) ^ z:sbf) = 0:sbf).",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: z&y0' = 0\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize {0}:sbf&{0}:sbf' = 0.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: T\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize {1}:sbf&{0}:sbf' = 0.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: F\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize {0}:sbf&{1}:sbf' = 0.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: T\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize {1}:sbf&{1}:sbf' = 0.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: T\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize T.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: T\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize F.",
+      "charvar": false,
+      "returncode": 0,
+      "stdout": "%1: F\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize T.",
+      "charvar": true,
+      "returncode": 0,
+      "stdout": "%1: T\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize F.",
+      "charvar": true,
+      "returncode": 0,
+      "stdout": "%1: F\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "normalize (x:sbf & y:sbf) = 0:sbf.",
+      "charvar": true,
+      "returncode": 0,
+      "stdout": "%1: xy = 0\n\n",
+      "stderr": ""
+    }
+  ],
+  "passed": true
+}

@@ -1,0 +1,16 @@
+src/satisfiability.tmpl.h:2378:30: error: expected identifier
+ 2378 |         enum kind_t { AND, OR, LIT, TRUE, FALSE };
+      |                                     ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/mach/boolean.h:81:17: note: expanded from macro 'TRUE'
+   81 | #define TRUE    1
+      |                 ^
+In file included from src/instantiate_pack.cpp:29:
+In file included from src/tau.h:10796:
+src/satisfiability.tmpl.h:2378:36: error: expected identifier
+ 2378 |         enum kind_t { AND, OR, LIT, TRUE, FALSE };
+      |                                           ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/mach/boolean.h:85:17: note: expanded from macro 'FALSE'
+   85 | #define FALSE   0
+      |                 ^
+In file included from src/instantiate_pack.cpp:29:
+In file included from src/tau.h:10796:

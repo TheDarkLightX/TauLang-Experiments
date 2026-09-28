@@ -1,0 +1,93 @@
+diff --git a/src/api.tmpl.h b/src/api.tmpl.h
+index 866cbcda..59388408 100644
+--- a/src/api.tmpl.h
++++ b/src/api.tmpl.h
+@@ -68,6 +68,7 @@ void api<node>::set_charvar(bool charvar) {
+ 	std::set<std::string> guards{ charvar ? "charvar" : "var" };
+ 	tau_parser::instance().get_grammar().set_enabled_productions(guards);
+ 	pack_set_charvar<node>(charvar);
++	pretty_printer_charvar = charvar;
+ }
+ 
+ template <NodeType node>
+diff --git a/src/tau_tree_printers.tmpl.h b/src/tau_tree_printers.tmpl.h
+index 36d8c762..e3fd380e 100644
+--- a/src/tau_tree_printers.tmpl.h
++++ b/src/tau_tree_printers.tmpl.h
+@@ -387,7 +387,8 @@ int_t get_max_var_name_b_id(tref fm) {
+ 
+ // pretty printer settings
+ // NOTE: These globals are NOT thread-safe. The tau library assumes single-threaded access.
+-// Do not call set_highlighting(), set_indenting(), or set_json() concurrently from multiple threads.
++// Do not change printer settings concurrently from multiple threads.
++inline bool pretty_printer_charvar      = true;
+ inline bool pretty_printer_highlighting = false;
+ inline bool pretty_printer_indenting    = false;
+ inline bool print_json                  = false;
+@@ -845,7 +846,10 @@ std::ostream& tree<node>::print(std::ostream& os) const {
+ 
+ 		switch (pnt) {
+ 			case bf_and:
+-				if (type_printed || isdigit(static_cast<unsigned char>(last_written_char))
++				if (!pretty_printer_charvar) {
++					out("&");
++				}
++				else if (type_printed || isdigit(static_cast<unsigned char>(last_written_char))
+ 					|| t.child_is(tau::ba_constant)) {
+ 					out(" ");
+ 				}
+diff --git a/tests/api/test_api-tref_api.cpp b/tests/api/test_api-tref_api.cpp
+index e66de5c9..0e343b3c 100644
+--- a/tests/api/test_api-tref_api.cpp
++++ b/tests/api/test_api-tref_api.cpp
+@@ -12,6 +12,9 @@ using tau_api = api<node_t>;
+ TEST_SUITE("Tau API - settings") {
+ 
+ 	TEST_CASE("set_charvar") {
++		struct restore_charvar {
++			~restore_charvar() { tau_api::set_charvar(true); }
++		} restore;
+ 		tau_api::set_charvar(false);
+ 		auto r = tau_api::get_term("xyz");
+ 		CHECK(r.has_value());
+@@ -19,12 +22,40 @@ TEST_SUITE("Tau API - settings") {
+ 		CHECK(xyz); // term must be variable, because charvar is false
+ 		CHECK(tau::get(xyz)[0].is(tau::variable));
+ 
++		for (const auto& source : {
++			"left & right", "left & right'", "left1 & right2",
++			"(left | right) & third", "left & (right | third)",
++			"left & right & third"
++		}) {
++			CAPTURE(source);
++			auto conjunction = tau_api::get_term(source, false);
++			REQUIRE(conjunction.has_value());
++			auto printed = tau_api::to_str(conjunction.value());
++			CAPTURE(printed);
++			auto reparsed = tau_api::get_term(printed, false);
++			REQUIRE(reparsed.has_value());
++			CHECK(matches_bf_mod_and_or(reparsed.value(), source));
++		}
++
+ 		tau_api::set_charvar(true);
+ 		r = tau_api::get_term("xyz");
+ 		CHECK(r.has_value());
+ 		xyz = r.value();
+ 		CHECK(xyz); // term must be bf_and, because charvar is true
+ 		CHECK(tau::get(xyz)[0].is(tau::bf_and));
++
++		auto original = tau_api::get_term("x & y", false);
++		REQUIRE(original.has_value());
++		auto compact = tau_api::to_str(original.value());
++		CHECK(compact.find('&') == std::string::npos);
++		tau_api::set_charvar(false);
++		auto explicit_and = tau_api::to_str(original.value());
++		CHECK(explicit_and.find('&') != std::string::npos);
++		auto restored = tau_api::get_term(explicit_and, false);
++		REQUIRE(restored.has_value());
++		CHECK(matches_bf_mod_and_or(restored.value(), "x & y"));
++		tau_api::set_charvar(true);
++		CHECK(tau_api::to_str(original.value()) == compact);
+ 	}
+ 
+ 	TEST_CASE("set_indenting") {
