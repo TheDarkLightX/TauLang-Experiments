@@ -1,0 +1,102 @@
+test_repl-run_cmd-values_stay_within_constant_size_budget
+[1] i1:tau := in tests/integration/test_files/tau-named_a_to_j-length_10.in.
+[2] o1:tau := out console.
+
+Temporal normalization of G specification reached fixpoint after 0 steps, yielding the result: 
+o1[t]:tau != i1[t]:tau && o1[t]:tau != 0 && o1[t-1]:tau != o1[t]:tau && o1[t]:tau' != 0
+
+Execution step: 0
+o1[0] := <:split3> != 0
+[NON-XML-CHAR-0x1B][39mread_step_inputs:[NON-XML-CHAR-0x1B][0m
+[NON-XML-CHAR-0x1B][2mselect_alternatives:[NON-XML-CHAR-0x1B][0m        [NON-XML-CHAR-0x1B][2m426[NON-XML-CHAR-0x1B][0m [NON-XML-CHAR-0x1B][2mµs[NON-XML-CHAR-0x1B][0m
+[NON-XML-CHAR-0x1B][39mproduce_step_solution:[NON-XML-CHAR-0x1B][0m      [NON-XML-CHAR-0x1B][39m172[NON-XML-CHAR-0x1B][0m [NON-XML-CHAR-0x1B][39mµs[NON-XML-CHAR-0x1B][0m
+[NON-XML-CHAR-0x1B][2mdirect_decode_fast_path:[NON-XML-CHAR-0x1B][0m    [NON-XML-CHAR-0x1B][2m715[NON-XML-CHAR-0x1B][0m [NON-XML-CHAR-0x1B][2mµs[NON-XML-CHAR-0x1B][0m
+[NON-XML-CHAR-0x1B][39mzero_default_outputs:[NON-XML-CHAR-0x1B][0m         [NON-XML-CHAR-0x1B][39m1[NON-XML-CHAR-0x1B][0m [NON-XML-CHAR-0x1B][39mµs[NON-XML-CHAR-0x1B][0m
+
+Execution step: 1
+o1[1] := <:split9> = 0 && <:split3> = 0 && <:a> != 0 || <:split9> != 0 && <:a> != 0 || <:split3> = 0 && <:a> = 0
+[NON-XML-CHAR-0x1B][39mread_step_inputs:[NON-XML-CHAR-0x1B][0m                 [NON-XML-CHAR-0x1B][39m1.16[NON-XML-CHAR-0x1B][0m  [NON-XML-CHAR-0x1B][39mms[NON-XML-CHAR-0x1B][0m
+	[NON-XML-CHAR-0x1B][2mcalculate_fixed_points:[NON-XML-CHAR-0x1B][0m      [NON-XML-CHAR-0x1B][2m1[NON-XML-CHAR-0x1B][0m [NON-XML-CHAR-0x1B][2mµs[NON-XML-CHAR-0x1B][0m
+	[NON-XML-CHAR-0x1B][39mapply_rec_relations:[NON-XML-CHAR-0x1B][0m         [NON-XML-CHAR-0x1B][39m0[NON-XML-CHAR-0x1B][0m  [NON-XML-CHAR-0x1B][39mms[NON-XML-CHAR-0x1B][0m
+[NON-XML-CHAR-0x1B][2mselect_alternatives:[NON-XML-CHAR-0x1B][0m             [NON-XML-CHAR-0x1B][2m14.16[NON-XML-CHAR-0x1B][0m  [NON-XML-CHAR-0x1B][2mms[NON-XML-CHAR-0x1B][0m
+[NON-XML-CHAR-0x1B][39mproduce_step_solution:[NON-XML-CHAR-0x1B][0m           [NON-XML-CHAR-0x1B][39m13.71[NON-XML-CHAR-0x1B][0m  [NON-XML-CHAR-0x1B][39mms[NON-XML-CHAR-0x1B][0m
+[NON-XML-CHAR-0x1B][2mzero_default_outputs:[NON-XML-CHAR-0x1B][0m                [NON-XML-CHAR-0x1B][2m1[NON-XML-CHAR-0x1B][0m [NON-XML-CHAR-0x1B][2mµs[NON-XML-CHAR-0x1B][0m
+
+Execution step: 2
+o1[2] := <:b> = 0 && <:split15> != 0 && <:split3> = 0 && <:a> = 0 || <:b> != 0 && <:split15> != 0 || <:split15> = 0 && <:split9> = 0 && <:split3> != 0 || <:b> = 0 && <:split3> != 0 && <:a> = 0 || <:split15> = 0 && <:split3> != 0 && <:a> = 0
+[NON-XML-CHAR-0x1B][39mread_step_inputs:[NON-XML-CHAR-0x1B][0m                  [NON-XML-CHAR-0x1B][39m896[NON-XML-CHAR-0x1B][0m [NON-XML-CHAR-0x1B][39mµs[NON-XML-CHAR-0x1B][0m
+	[NON-XML-CHAR-0x1B][2mcalculate_fixed_points:[NON-XML-CHAR-0x1B][0m      [NON-XML-CHAR-0x1B][2m1[NON-XML-CHAR-0x1B][0m [NON-XML-CHAR-0x1B][2mµs[NON-XML-CHAR-0x1B][0m
+	[NON-XML-CHAR-0x1B][39mapply_rec_relations:[NON-XML-CHAR-0x1B][0m         [NON-XML-CHAR-0x1B][39m0[NON-XML-CHAR-0x1B][0m  [NON-XML-CHAR-0x1B][39mms[NON-XML-CHAR-0x1B][0m
+[NON-XML-CHAR-0x1B][2mselect_alternatives:[NON-XML-CHAR-0x1B][0m             [NON-XML-CHAR-0x1B][2m30.26[NON-XML-CHAR-0x1B][0m  [NON-XML-CHAR-0x1B][2mms[NON-XML-CHAR-0x1B][0m
+[NON-XML-CHAR-0x1B][39mproduce_step_solution:[NON-XML-CHAR-0x1B][0m           [NON-XML-CHAR-0x1B][39m28.50[NON-XML-CHAR-0x1B][0m  [NON-XML-CHAR-0x1B][39mms[NON-XML-CHAR-0x1B][0m
+[NON-XML-CHAR-0x1B][2mzero_default_outputs:[NON-XML-CHAR-0x1B][0m                [NON-XML-CHAR-0x1B][2m1[NON-XML-CHAR-0x1B][0m [NON-XML-CHAR-0x1B][2mµs[NON-XML-CHAR-0x1B][0m
+
+Execution step: 3
+o1[3] := <:b> != 0 && <:c> != 0 && <:split15> != 0 && <:split3> = 0 && <:a> != 0 || <:split15> = 0 && <:split3> = 0 || <:b> = 0 && <:split15> != 0 && <:a> != 0 || <:b> = 0 && <:split9> != 0 && <:a> != 0 || <:b> = 0 && <:split3> = 0 && <:a> != 0 || <:c> != 0 && <:split15> != 0 && <:a> = 0 || <:b> != 0 && <:c> != 0 && <:split3> != 0 || <:c> != 0 && <:split15> = 0 && <:split9> = 0 && <:split3> != 0 || <:c> != 0 && <:split3> != 0 && <:a> = 0
+[NON-XML-CHAR-0x1B][39mread_step_inputs:[NON-XML-CHAR-0x1B][0m                  [NON-XML-CHAR-0x1B][39m871[NON-XML-CHAR-0x1B][0m [NON-XML-CHAR-0x1B][39mµs[NON-XML-CHAR-0x1B][0m
+	[NON-XML-CHAR-0x1B][2mcalculate_fixed_points:[NON-XML-CHAR-0x1B][0m      [NON-XML-CHAR-0x1B][2m1[NON-XML-CHAR-0x1B][0m [NON-XML-CHAR-0x1B][2mµs[NON-XML-CHAR-0x1B][0m
+	[NON-XML-CHAR-0x1B][39mapply_rec_relations:[NON-XML-CHAR-0x1B][0m         [NON-XML-CHAR-0x1B][39m0[NON-XML-CHAR-0x1B][0m  [NON-XML-CHAR-0x1B][39mms[NON-XML-CHAR-0x1B][0m
+[NON-XML-CHAR-0x1B][2mselect_alternatives:[NON-XML-CHAR-0x1B][0m             [NON-XML-CHAR-0x1B][2m58.28[NON-XML-CHAR-0x1B][0m  [NON-XML-CHAR-0x1B][2mms[NON-XML-CHAR-0x1B][0m
+[NON-XML-CHAR-0x1B][39mproduce_step_solution:[NON-XML-CHAR-0x1B][0m            [NON-XML-CHAR-0x1B][39m1.85[NON-XML-CHAR-0x1B][0m  [NON-XML-CHAR-0x1B][39mms[NON-XML-CHAR-0x1B][0m
+[NON-XML-CHAR-0x1B][2mzero_default_outputs:[NON-XML-CHAR-0x1B][0m                [NON-XML-CHAR-0x1B][2m1[NON-XML-CHAR-0x1B][0m [NON-XML-CHAR-0x1B][2mµs[NON-XML-CHAR-0x1B][0m
+
+Execution step: 4
+o1[4] := <:c> != 0 && <:split15> != 0 && <:split3> = 0 && <:d> != 0 && <:a> = 0 || <:c> = 0 && <:split15> != 0 && <:a> = 0 || <:b> != 0 && <:c> = 0 && <:split3> != 0 || <:c> = 0 && <:split15> = 0 && <:split9> = 0 && <:split3> != 0 || <:c> = 0 && <:split3> != 0 && <:a> = 0 || <:split15> = 0 && <:split3> = 0 && <:d> != 0 || <:b> = 0 && <:split15> != 0 && <:d> != 0 && <:a> != 0 || <:b> = 0 && <:split9> != 0 && <:d> != 0 && <:a> != 0 || <:split3> = 0 && <:d> != 0 && <:a> != 0
+[NON-XML-CHAR-0x1B][39mread_step_inputs:[NON-XML-CHAR-0x1B][0m                 [NON-XML-CHAR-0x1B][39m1.72[NON-XML-CHAR-0x1B][0m  [NON-XML-CHAR-0x1B][39mms[NON-XML-CHAR-0x1B][0m
+	[NON-XML-CHAR-0x1B][2mcalculate_fixed_points:[NON-XML-CHAR-0x1B][0m      [NON-XML-CHAR-0x1B][2m1[NON-XML-CHAR-0x1B][0m [NON-XML-CHAR-0x1B][2mµs[NON-XML-CHAR-0x1B][0m
+	[NON-XML-CHAR-0x1B][39mapply_rec_relations:[NON-XML-CHAR-0x1B][0m         [NON-XML-CHAR-0x1B][39m0[NON-XML-CHAR-0x1B][0m  [NON-XML-CHAR-0x1B][39mms[NON-XML-CHAR-0x1B][0m
+[NON-XML-CHAR-0x1B][2mselect_alternatives:[NON-XML-CHAR-0x1B][0m             [NON-XML-CHAR-0x1B][2m77.89[NON-XML-CHAR-0x1B][0m  [NON-XML-CHAR-0x1B][2mms[NON-XML-CHAR-0x1B][0m
+[NON-XML-CHAR-0x1B][39mproduce_step_solution:[NON-XML-CHAR-0x1B][0m            [NON-XML-CHAR-0x1B][39m2.05[NON-XML-CHAR-0x1B][0m  [NON-XML-CHAR-0x1B][39mms[NON-XML-CHAR-0x1B][0m
+[NON-XML-CHAR-0x1B][2mzero_default_outputs:[NON-XML-CHAR-0x1B][0m                [NON-XML-CHAR-0x1B][2m1[NON-XML-CHAR-0x1B][0m [NON-XML-CHAR-0x1B][2mµs[NON-XML-CHAR-0x1B][0m
+
+Execution step: 5
+o1[5] := <:c> = 0 && <:split15> != 0 && <:e> != 0 && <:split3> = 0 && <:d> = 0 && <:a> = 0 || <:split15> = 0 && <:split3> = 0 && <:d> = 0 || <:b> != 0 && <:c> != 0 && <:split3> != 0 || <:c> != 0 && <:split3> != 0 && <:a> = 0 || <:c> != 0 && <:d> = 0 || <:b> = 0 && <:split15> != 0 && <:d> = 0 && <:a> != 0 || <:b> = 0 && <:split9> != 0 && <:d> = 0 && <:a> != 0 || <:split3> = 0 && <:d> = 0 && <:a> != 0 || <:b> != 0 && <:c> = 0 && <:e> != 0 && <:split3> != 0 || <:c> = 0 && <:split15> = 0 && <:e> != 0 && <:split9> = 0 && <:split3> != 0 || <:c> = 0 && <:e> != 0 && <:split3> != 0 && <:a> = 0 || <:b> = 0 && <:e> != 0 && <:d> != 0 && <:a> != 0 || <:c> = 0 && <:e> != 0 && <:d> != 0 || <:e> != 0 && <:split3> = 0 && <:d> != 0
+[NON-XML-CHAR-0x1B][39mread_step_inputs:[NON-XML-CHAR-0x1B][0m                  [NON-XML-CHAR-0x1B][39m871[NON-XML-CHAR-0x1B][0m [NON-XML-CHAR-0x1B][39mµs[NON-XML-CHAR-0x1B][0m
+	[NON-XML-CHAR-0x1B][2mcalculate_fixed_points:[NON-XML-CHAR-0x1B][0m      [NON-XML-CHAR-0x1B][2m1[NON-XML-CHAR-0x1B][0m [NON-XML-CHAR-0x1B][2mµs[NON-XML-CHAR-0x1B][0m
+	[NON-XML-CHAR-0x1B][39mapply_rec_relations:[NON-XML-CHAR-0x1B][0m         [NON-XML-CHAR-0x1B][39m0[NON-XML-CHAR-0x1B][0m  [NON-XML-CHAR-0x1B][39mms[NON-XML-CHAR-0x1B][0m
+[NON-XML-CHAR-0x1B][2mselect_alternatives:[NON-XML-CHAR-0x1B][0m            [NON-XML-CHAR-0x1B][2m116.95[NON-XML-CHAR-0x1B][0m  [NON-XML-CHAR-0x1B][2mms[NON-XML-CHAR-0x1B][0m
+[NON-XML-CHAR-0x1B][39mproduce_step_solution:[NON-XML-CHAR-0x1B][0m            [NON-XML-CHAR-0x1B][39m2.30[NON-XML-CHAR-0x1B][0m  [NON-XML-CHAR-0x1B][39mms[NON-XML-CHAR-0x1B][0m
+[NON-XML-CHAR-0x1B][2mzero_default_outputs:[NON-XML-CHAR-0x1B][0m                [NON-XML-CHAR-0x1B][2m1[NON-XML-CHAR-0x1B][0m [NON-XML-CHAR-0x1B][2mµs[NON-XML-CHAR-0x1B][0m
+
+Execution step: 6
+o1[6] := <:b> = 0 && <:c> != 0 && <:e> != 0 && <:split3> != 0 && <:d> != 0 && <:a> != 0 && <:f> != 0 || <:c> = 0 && <:split15> != 0 && <:e> = 0 && <:a> = 0 || <:b> != 0 && <:c> = 0 && <:e> = 0 && <:split3> != 0 || <:c> = 0 && <:e> = 0 && <:split3> != 0 && <:a> = 0 || <:b> = 0 && <:e> = 0 && <:d> != 0 && <:a> != 0 || <:c> = 0 && <:e> = 0 && <:d> != 0 || <:e> = 0 && <:split3> = 0 && <:d> != 0 || <:b> != 0 && <:c> != 0 && <:split3> != 0 && <:f> != 0 || <:c> != 0 && <:d> = 0 && <:f> != 0 || <:c> != 0 && <:split3> != 0 && <:a> = 0 && <:f> != 0 || <:split15> = 0 && <:split3> = 0 && <:d> = 0 && <:f> != 0 || <:b> = 0 && <:d> = 0 && <:a> != 0 && <:f> != 0 || <:split3> = 0 && <:d> = 0 && <:a> != 0 && <:f> != 0
+[NON-XML-CHAR-0x1B][39mread_step_inputs:[NON-XML-CHAR-0x1B][0m                  [NON-XML-CHAR-0x1B][39m892[NON-XML-CHAR-0x1B][0m [NON-XML-CHAR-0x1B][39mµs[NON-XML-CHAR-0x1B][0m
+	[NON-XML-CHAR-0x1B][2mcalculate_fixed_points:[NON-XML-CHAR-0x1B][0m      [NON-XML-CHAR-0x1B][2m1[NON-XML-CHAR-0x1B][0m [NON-XML-CHAR-0x1B][2mµs[NON-XML-CHAR-0x1B][0m
+	[NON-XML-CHAR-0x1B][39mapply_rec_relations:[NON-XML-CHAR-0x1B][0m         [NON-XML-CHAR-0x1B][39m0[NON-XML-CHAR-0x1B][0m  [NON-XML-CHAR-0x1B][39mms[NON-XML-CHAR-0x1B][0m
+[NON-XML-CHAR-0x1B][2mselect_alternatives:[NON-XML-CHAR-0x1B][0m            [NON-XML-CHAR-0x1B][2m142.70[NON-XML-CHAR-0x1B][0m  [NON-XML-CHAR-0x1B][2mms[NON-XML-CHAR-0x1B][0m
+[NON-XML-CHAR-0x1B][39mproduce_step_solution:[NON-XML-CHAR-0x1B][0m            [NON-XML-CHAR-0x1B][39m2.61[NON-XML-CHAR-0x1B][0m  [NON-XML-CHAR-0x1B][39mms[NON-XML-CHAR-0x1B][0m
+[NON-XML-CHAR-0x1B][2mzero_default_outputs:[NON-XML-CHAR-0x1B][0m                [NON-XML-CHAR-0x1B][2m1[NON-XML-CHAR-0x1B][0m [NON-XML-CHAR-0x1B][2mµs[NON-XML-CHAR-0x1B][0m
+
+Execution step: 7
+o1[7] := <:b> = 0 && <:g> != 0 && <:c> = 0 && <:e> != 0 && <:split3> != 0 && <:d> = 0 && <:a> != 0 && <:f> != 0 || <:b> != 0 && <:c> = 0 && <:e> != 0 && <:split3> != 0 || <:c> = 0 && <:split15> != 0 && <:e> != 0 && <:a> = 0 || <:c> = 0 && <:e> != 0 && <:split3> != 0 && <:a> = 0 || <:c> = 0 && <:e> != 0 && <:d> != 0 || <:split15> = 0 && <:split3> = 0 && <:d> = 0 && <:f> = 0 || <:e> != 0 && <:split3> = 0 && <:d> != 0 || <:split3> = 0 && <:d> = 0 && <:a> != 0 && <:f> = 0 || <:c> != 0 && <:d> = 0 && <:f> = 0 || <:b> = 0 && <:d> = 0 && <:a> != 0 && <:f> = 0 || <:c> != 0 && <:split3> != 0 && <:a> = 0 && <:f> = 0 || <:e> != 0 && <:f> = 0 || <:g> != 0 && <:c> != 0 && <:split3> != 0 && <:f> != 0 || <:g> != 0 && <:c> != 0 && <:d> = 0 && <:f> != 0 || <:g> != 0 && <:c> = 0 && <:split15> != 0 && <:e> = 0 && <:a> = 0 || <:b> != 0 && <:g> != 0 && <:c> = 0 && <:e> = 0 && <:split3> != 0 || <:g> != 0 && <:c> = 0 && <:e> = 0 && <:split3> != 0 && <:a> = 0 || <:g> != 0 && <:c> = 0 && <:e> = 0 && <:d> != 0 || <:g> != 0 && <:e> = 0 && <:split3> = 0 && <:d> != 0 || <:g> != 0 && <:e> = 0 && <:d> != 0 && <:a> != 0 || <:g> != 0 && <:e> = 0 && <:f> != 0 || <:g> != 0 && <:split15> = 0 && <:split3> = 0 && <:d> = 0 && <:f> != 0 || <:g> != 0 && <:split3> = 0 && <:d> = 0 && <:a> != 0 && <:f> != 0
+[NON-XML-CHAR-0x1B][39mread_step_inputs:[NON-XML-CHAR-0x1B][0m                  [NON-XML-CHAR-0x1B][39m968[NON-XML-CHAR-0x1B][0m [NON-XML-CHAR-0x1B][39mµs[NON-XML-CHAR-0x1B][0m
+	[NON-XML-CHAR-0x1B][2mcalculate_fixed_points:[NON-XML-CHAR-0x1B][0m      [NON-XML-CHAR-0x1B][2m1[NON-XML-CHAR-0x1B][0m [NON-XML-CHAR-0x1B][2mµs[NON-XML-CHAR-0x1B][0m
+	[NON-XML-CHAR-0x1B][39mapply_rec_relations:[NON-XML-CHAR-0x1B][0m         [NON-XML-CHAR-0x1B][39m0[NON-XML-CHAR-0x1B][0m  [NON-XML-CHAR-0x1B][39mms[NON-XML-CHAR-0x1B][0m
+[NON-XML-CHAR-0x1B][2mselect_alternatives:[NON-XML-CHAR-0x1B][0m            [NON-XML-CHAR-0x1B][2m265.56[NON-XML-CHAR-0x1B][0m  [NON-XML-CHAR-0x1B][2mms[NON-XML-CHAR-0x1B][0m
+[NON-XML-CHAR-0x1B][39mproduce_step_solution:[NON-XML-CHAR-0x1B][0m            [NON-XML-CHAR-0x1B][39m3.43[NON-XML-CHAR-0x1B][0m  [NON-XML-CHAR-0x1B][39mms[NON-XML-CHAR-0x1B][0m
+[NON-XML-CHAR-0x1B][2mzero_default_outputs:[NON-XML-CHAR-0x1B][0m                [NON-XML-CHAR-0x1B][2m1[NON-XML-CHAR-0x1B][0m [NON-XML-CHAR-0x1B][2mµs[NON-XML-CHAR-0x1B][0m
+
+Execution step: 8
+o1[8] := <:b> = 0 && <:g> != 0 && <:c> = 0 && <:e> != 0 && <:split3> != 0 && <:d> = 0 && <:a> != 0 && <:f> != 0 && <:h> != 0 || <:b> = 0 && <:g> = 0 && <:d> = 0 && <:a> != 0 && <:f> != 0 || <:g> = 0 && <:c> != 0 && <:split3> != 0 && <:f> != 0 || <:g> = 0 && <:c> != 0 && <:d> = 0 && <:f> != 0 || <:g> = 0 && <:c> = 0 && <:split15> != 0 && <:e> = 0 && <:a> = 0 || <:g> = 0 && <:c> = 0 && <:e> = 0 && <:split3> != 0 && <:a> = 0 || <:g> = 0 && <:c> = 0 && <:e> = 0 && <:d> != 0 || <:g> = 0 && <:e> = 0 && <:split3> = 0 && <:d> != 0 || <:g> = 0 && <:e> = 0 && <:d> != 0 && <:a> != 0 || <:g> = 0 && <:e> = 0 && <:f> != 0 || <:g> = 0 && <:split15> = 0 && <:split3> = 0 && <:d> = 0 && <:f> != 0 || <:g> = 0 && <:split3> = 0 && <:d> = 0 && <:a> != 0 && <:f> != 0 || <:b> != 0 && <:c> = 0 && <:e> != 0 && <:split3> != 0 && <:h> != 0 || <:c> = 0 && <:e> != 0 && <:d> != 0 && <:h> != 0 || <:e> != 0 && <:split3> = 0 && <:d> != 0 && <:h> != 0 || <:c> = 0 && <:split15> != 0 && <:e> != 0 && <:a> = 0 && <:h> != 0 || <:c> = 0 && <:e> != 0 && <:split3> != 0 && <:a> = 0 && <:h> != 0 || <:c> != 0 && <:split3> != 0 && <:a> = 0 && <:f> = 0 && <:h> != 0 || <:c> != 0 && <:d> = 0 && <:f> = 0 && <:h> != 0 || <:split15> = 0 && <:split3> = 0 && <:d> = 0 && <:f> = 0 && <:h> != 0 || <:e> != 0 && <:f> = 0 && <:h> != 0 || <:d> = 0 && <:a> != 0 && <:f> = 0 && <:h> != 0
+[NON-XML-CHAR-0x1B][39mread_step_inputs:[NON-XML-CHAR-0x1B][0m                  [NON-XML-CHAR-0x1B][39m943[NON-XML-CHAR-0x1B][0m [NON-XML-CHAR-0x1B][39mµs[NON-XML-CHAR-0x1B][0m
+	[NON-XML-CHAR-0x1B][2mcalculate_fixed_points:[NON-XML-CHAR-0x1B][0m      [NON-XML-CHAR-0x1B][2m1[NON-XML-CHAR-0x1B][0m [NON-XML-CHAR-0x1B][2mµs[NON-XML-CHAR-0x1B][0m
+	[NON-XML-CHAR-0x1B][39mapply_rec_relations:[NON-XML-CHAR-0x1B][0m         [NON-XML-CHAR-0x1B][39m0[NON-XML-CHAR-0x1B][0m  [NON-XML-CHAR-0x1B][39mms[NON-XML-CHAR-0x1B][0m
+[NON-XML-CHAR-0x1B][2mselect_alternatives:[NON-XML-CHAR-0x1B][0m            [NON-XML-CHAR-0x1B][2m431.24[NON-XML-CHAR-0x1B][0m  [NON-XML-CHAR-0x1B][2mms[NON-XML-CHAR-0x1B][0m
+[NON-XML-CHAR-0x1B][39mproduce_step_solution:[NON-XML-CHAR-0x1B][0m            [NON-XML-CHAR-0x1B][39m4.00[NON-XML-CHAR-0x1B][0m  [NON-XML-CHAR-0x1B][39mms[NON-XML-CHAR-0x1B][0m
+[NON-XML-CHAR-0x1B][2mzero_default_outputs:[NON-XML-CHAR-0x1B][0m                [NON-XML-CHAR-0x1B][2m1[NON-XML-CHAR-0x1B][0m [NON-XML-CHAR-0x1B][2mµs[NON-XML-CHAR-0x1B][0m
+
+Execution step: 9
+[NON-XML-CHAR-0x1B][39mread_step_inputs:[NON-XML-CHAR-0x1B][0m                                              [NON-XML-CHAR-0x1B][39m939[NON-XML-CHAR-0x1B][0m [NON-XML-CHAR-0x1B][39mµs[NON-XML-CHAR-0x1B][0m
+	[NON-XML-CHAR-0x1B][2mcalculate_fixed_points:[NON-XML-CHAR-0x1B][0m                                  [NON-XML-CHAR-0x1B][2m1[NON-XML-CHAR-0x1B][0m [NON-XML-CHAR-0x1B][2mµs[NON-XML-CHAR-0x1B][0m
+	[NON-XML-CHAR-0x1B][39mapply_rec_relations:[NON-XML-CHAR-0x1B][0m                                     [NON-XML-CHAR-0x1B][39m0[NON-XML-CHAR-0x1B][0m  [NON-XML-CHAR-0x1B][39mms[NON-XML-CHAR-0x1B][0m
+[NON-XML-CHAR-0x1B][2mselect_alternatives:[NON-XML-CHAR-0x1B][0m
+	[NON-XML-CHAR-0x1B][39mrejected candidate:[NON-XML-CHAR-0x1B][0m                                    [NON-XML-CHAR-0x1B][39m124[NON-XML-CHAR-0x1B][0m [NON-XML-CHAR-0x1B][39mµs[NON-XML-CHAR-0x1B][0m
+		[NON-XML-CHAR-0x1B][2mthe alternative's probe path did not solve:[NON-XML-CHAR-0x1B][0m      [NON-XML-CHAR-0x1B][2m0[NON-XML-CHAR-0x1B][0m [NON-XML-CHAR-0x1B][2m(value=o1[9]:tau != { <:i> = 0 }:tau && o1[9]:tau != 0 && o1[9]:tau != { <:b> = 0 && <:g> != 0 && <:c> = 0 && <:e> != 0 && <:sp...)[NON-XML-CHAR-0x1B][0m
+		[NON-XML-CHAR-0x1B][39msolution_with_max_update:[NON-XML-CHAR-0x1B][0m                        [NON-XML-CHAR-0x1B][39m0[NON-XML-CHAR-0x1B][0m  [NON-XML-CHAR-0x1B][39mms[NON-XML-CHAR-0x1B][0m
+			[NON-XML-CHAR-0x1B][2mexpression_paths:[NON-XML-CHAR-0x1B][0m                        [NON-XML-CHAR-0x1B][2m0[NON-XML-CHAR-0x1B][0m  [NON-XML-CHAR-0x1B][2mms[NON-XML-CHAR-0x1B][0m
+[NON-XML-CHAR-0x1B][31mNo solution found[NON-XML-CHAR-0x1B][0m
+[NON-XML-CHAR-0x1B][31mA value the solver built passed the constant size budget (maxconstantsize, --max-constant-size; 0 = unlimited), so no solution was found within it[NON-XML-CHAR-0x1B][0m
+[NON-XML-CHAR-0x1B][31mno alternative of the specification part solves under the current memory[NON-XML-CHAR-0x1B][0m
+[NON-XML-CHAR-0x1B][31mSpecification part has no solvable alternative under the current memory[NON-XML-CHAR-0x1B][0m
+
+

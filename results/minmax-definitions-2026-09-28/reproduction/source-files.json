@@ -1,0 +1,14 @@
+{
+  "complete_patch_sha256": "28f3f9f3771da47cbcda9c2261308389e3508822ef846355b6e1afae30e4f825",
+  "source_files": {
+    "parser/tau.tgf": "9540dd10119d89271cd05f0d67c647886e889fa255a0422a82fd44d0ebbc0028",
+    "src/api.h": "67bbe604db86f23a3ba088e9514cc036a0922888dfcf91f18e8e12dfb55ba45d",
+    "src/api.tmpl.h": "f8fe46649fd833583e345a4478d9e37b37c4bf4dcc8ffdb3380d692eecfb2ab8",
+    "src/main.cpp": "d11c33f54725cde72628c3a1246ee5a5c9fda2d8f5520f05cc37118244d2c143",
+    "src/satisfiability.tmpl.h": "ade001d2672a93ce2f8e0e9c0e72e1c3e73305349d9bc7c019ebd696b8c1f08e",
+    "src/tau_tree_printers.tmpl.h": "4d4a791e320ad9ac64b1cbff03260d506a96112881b65f6648c84dbaf5620e66",
+    "tests/api/test_api-tref_api.cpp": "5b2e17b3e6319a7483efe39d3d7331dd5a3117008a29a413fe20e708e3f73eaf",
+    "tests/repl/commands/CMakeLists.txt": "ec4d7e5248e7bf515847593eb2439d647b4a7d0f95f45142c47b9a08b6364f06",
+    "tests/repl/commands/test_repl-minmax_operands.cmake": "fa43e405a7c93bb648ab0b02c388d8d267d4037be4a0761967a55a520569bcb8"
+  }
+}

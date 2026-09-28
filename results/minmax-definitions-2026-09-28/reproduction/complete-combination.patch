@@ -1,0 +1,404 @@
+diff --git a/parser/tau.tgf b/parser/tau.tgf
+index 28d3784d..36d03ae4 100644
+--- a/parser/tau.tgf
++++ b/parser/tau.tgf
+@@ -16,7 +16,7 @@ definitions            => (_ (rec_relation | input_def | output_def | type_def)
+ spec_multiline         => (_ spec_part _ '.')* _ spec_part [ _ '.' ] _ | _.
+ spec_part              => rec_relation | input_def | output_def | type_def | main.
+ 
+-rec_relation           => ref _ ":=" _ (capture | ref | wff | bf).
++rec_relation           => ref _ ":=" _ (capture | (ref & ~bf_min & ~bf_max) | wff | bf).
+ input_def              => io_var_name [ member_path ] [ typed ] _ ":=" _ "in"    __ stream.
+ output_def             => io_var_name [ member_path ] [ typed ] _ ":=" _ "out"   __ stream.
+ stream                 => "file" _ '(' _ q_file_name  _ ')'
+@@ -36,7 +36,7 @@ member_path            => '.' member_name ('.' member_name)*.
+ 
+ ref                    => sym [offsets] ref_args [typed] [_ "fallback" __ fp_fallback].
+ fp_fallback            => "first":first_sym | "last":last_sym
+-                        | capture | ref | wff | bf.
++                        | capture | (ref & ~bf_min & ~bf_max) | wff | bf.
+ ref_args               => '(' [ (_ bf:ref_arg) (_ ',' _ ref_arg)* ] _ ')'.
+ 
+ # wff and bf expressions
+@@ -98,7 +98,8 @@ bf                     => ('(' _ (bf & ~type) _ ')')          :bf_parenthesis
+                         | ("max" _ '(' _ bf _ ',' _ bf _ ')') :bf_max
+                         | ref                                :bf_ref
+                         | ('(' _ type _ ')' _
+-                           (bf_parenthesis | ba_constant | variable | bf_ref
++                           (bf_parenthesis | ba_constant | variable
++                           | bf_min | bf_max | bf_ref
+                            | bf_t | bf_f | bf_neg | bf_cast | capture
+                            | bf_fall | bf_fex)
+                                 :bf_cast_oprnd)              :bf_cast
+@@ -117,18 +118,18 @@ bf                     => ('(' _ (bf & ~type) _ ')')          :bf_parenthesis
+                         | ('1' [ typed ])                    :bf_t
+                         | ('0' [ typed ])                    :bf_f
+                         | (bf (_ '&' _ | __) bf)             :bf_and
+-                          # bf_neg_oprnd can contain only unary operations
++                          # Complement takes a self-delimiting or unary operand.
+                         | ((bf_parenthesis | ba_constant
+-                          | variable | bf_ref
++                          | variable | bf_min | bf_max | bf_ref
+                           | bf_t | bf_f | bf_neg | capture)
+                                 :bf_neg_oprnd _ "'")         :bf_neg
+                           # bf_and alternation without a separator between operands
+                         | ((bf_parenthesis | variable
+-                           | bf_ref | bf_neg
++                           | bf_min | bf_max | bf_ref | bf_neg
+                            | bf_and_nosep | capture)
+                                 :bf_and_nosep_1st_oprnd
+                            (bf_parenthesis | ba_constant
+-                           | variable | bf_ref
++                           | variable | bf_min | bf_max | bf_ref
+                            | bf_neg | capture)
+                                 :bf_and_nosep_2nd_oprnd)     :bf_and_nosep
+                         |                                     capture.
+diff --git a/src/api.h b/src/api.h
+index a33a9a73..d28fec69 100644
+--- a/src/api.h
++++ b/src/api.h
+@@ -226,18 +226,16 @@ struct api {
+ 	static void set_block_squeeze_cap(size_t n);
+ 	/**
+ 	 * @brief Cap the temporal-normalization fixpoint searches
+-	 * (`find_fixpoint_phi`/`find_fixpoint_chi`); 0 = unlimited (default).
++	 * (`find_fixpoint_phi`/`find_fixpoint_chi`); default 500; 0 = unlimited.
+ 	 *
+-	 * On overrun the search gives up with a log line and returns the
+-	 * current (non-fixpoint) iterate.
++	 * On overrun the search reports a limit error and returns no verdict.
+ 	 */
+ 	static void set_max_fixpoint_steps(size_t n);
+ 	/**
+ 	 * @brief Cap the eventual-flag search past the flag boundary in
+-	 * `to_unbounded_continuation`; 0 = unlimited (default).
++	 * `to_unbounded_continuation`; default 500; 0 = unlimited.
+ 	 *
+-	 * A bounded give-up reports unsatisfiable — wrong but bounded and
+-	 * loud (SO-1).
++	 * Reaching the cap reports a limit error, without a T/F verdict.
+ 	 */
+ 	static void set_max_flag_search_steps(size_t n);
+ 	/**
+diff --git a/src/api.tmpl.h b/src/api.tmpl.h
+index 7b1ac081..555b93cc 100644
+--- a/src/api.tmpl.h
++++ b/src/api.tmpl.h
+@@ -112,6 +112,7 @@ void api<node>::set_charvar(bool charvar) {
+ 	std::set<std::string> guards{ charvar ? "charvar" : "var" };
+ 	tau_parser::instance().get_grammar().set_enabled_productions(guards);
+ 	pack_set_charvar<node>(charvar);
++	pretty_printer_charvar = charvar;
+ }
+ 
+ template <NodeType node>
+diff --git a/src/main.cpp b/src/main.cpp
+index 92bbeb70..24640128 100644
+--- a/src/main.cpp
++++ b/src/main.cpp
+@@ -122,7 +122,7 @@ cli::options tau_options() {
+ 	opts["max-flag-search-steps"] =
+ 		cli::option("max-flag-search-steps", 'F', "500")
+ 		.set_description("cap the eventual-flag search past the flag "
+-			"boundary; give-up reports unsatisfiable "
++			"boundary; reaching the cap reports no verdict "
+ 			"(default 500; 0 = unlimited)");
+ 	opts["block-squeeze-cap"] = cli::option("block-squeeze-cap", 'z', "0")
+ 		.set_description("skip block squeezing above this operand-set "
+diff --git a/src/satisfiability.tmpl.h b/src/satisfiability.tmpl.h
+index b60add37..8328dae4 100644
+--- a/src/satisfiability.tmpl.h
++++ b/src/satisfiability.tmpl.h
+@@ -27,15 +27,15 @@ inline static bool use_debug_output_in_sat = false;
+ /// `api::set_max_fixpoint_steps`. SO-1 caveat: these searches have no
+ /// convergence guarantee, so an unlimited run on a non-converging spec does
+ /// not terminate. The shipped default is therefore FINITE (500, the value the
+-/// pre-parameter constant had): a give-up is wrong-but-loud where an
+-/// unlimited run hangs `sat`/`run`/pointwise revision. Pass 0 to opt into
++/// pre-parameter constant had): reaching it reports a limit error without
++/// a verdict. An unlimited search may not terminate. Pass 0 to opt into
+ /// unlimited. The CLI default in main.cpp must agree with this value.
+ inline size_t max_fixpoint_steps = 500;
+ 
+ /// Cap on `to_unbounded_continuation`'s eventual-flag search past the flag
+ /// boundary; 0 = unlimited. Same SO-1 caveat as `max_fixpoint_steps` — and a
+-/// bounded give-up here reports unsatisfiable, which is wrong but bounded and
+-/// loud. Shipped default 500 (finite, see above); set via
++/// bounded search reports a limit error without a verdict.
++/// Shipped default 500 (finite, see above); set via
+ /// `--max-flag-search-steps`, REPL `flagsteps`, or
+ /// `api::set_max_flag_search_steps`.
+ inline size_t max_flag_search_steps = 500;
+@@ -2375,7 +2375,7 @@ bool for_each_static_path(tref fm, const auto& f) {
+ 		return eq_neq(x, y) || eq_neq(y, x);
+ 	};
+ 	// The and/or skeleton of fm, with its leaves numbered by literal
+-	enum kind_t { AND, OR, LIT, TRUE, FALSE };
++	enum kind_t { AND, OR, LIT, CONSTANT_TRUE, CONSTANT_FALSE };
+ 	struct part { kind_t kind; std::vector<size_t> sub; size_t lit = 0; };
+ 	std::vector<part> parts;
+ 	trefs lits;
+@@ -2389,8 +2389,8 @@ bool for_each_static_path(tref fm, const auto& f) {
+ 					? get_cnf_wff_clauses<node>(g)
+ 					: get_dnf_wff_clauses<node>(g))
+ 				p.sub.push_back(build(c));
+-		} else if (t.equals_T()) p.kind = TRUE;
+-		else if (t.equals_F()) p.kind = FALSE;
++		} else if (t.equals_T()) p.kind = CONSTANT_TRUE;
++		else if (t.equals_F()) p.kind = CONSTANT_FALSE;
+ 		else {
+ 			p.kind = LIT;
+ 			auto [it, fresh] = lit_ids.emplace(g, lits.size());
+@@ -2429,7 +2429,7 @@ bool for_each_static_path(tref fm, const auto& f) {
+ 			break;
+ 		case OR:
+ 			if (std::ranges::any_of(p.sub, [&](size_t c) {
+-				return parts[c].kind == TRUE
++				return parts[c].kind == CONSTANT_TRUE
+ 					|| (parts[c].kind == LIT
+ 						&& held[parts[c].lit]);
+ 			})) cont = go();
+@@ -2450,8 +2450,8 @@ bool for_each_static_path(tref fm, const auto& f) {
+ 				--held[p.lit], path.pop_back();
+ 			}
+ 			break;
+-		case TRUE: cont = go(); break;
+-		case FALSE: break;
++		case CONSTANT_TRUE: cont = go(); break;
++		case CONSTANT_FALSE: break;
+ 		}
+ 		todo.push_back(g);
+ 		return cont;
+diff --git a/src/tau_tree_printers.tmpl.h b/src/tau_tree_printers.tmpl.h
+index 36d8c762..e3fd380e 100644
+--- a/src/tau_tree_printers.tmpl.h
++++ b/src/tau_tree_printers.tmpl.h
+@@ -387,7 +387,8 @@ int_t get_max_var_name_b_id(tref fm) {
+ 
+ // pretty printer settings
+ // NOTE: These globals are NOT thread-safe. The tau library assumes single-threaded access.
+-// Do not call set_highlighting(), set_indenting(), or set_json() concurrently from multiple threads.
++// Do not change printer settings concurrently from multiple threads.
++inline bool pretty_printer_charvar      = true;
+ inline bool pretty_printer_highlighting = false;
+ inline bool pretty_printer_indenting    = false;
+ inline bool print_json                  = false;
+@@ -845,7 +846,10 @@ std::ostream& tree<node>::print(std::ostream& os) const {
+ 
+ 		switch (pnt) {
+ 			case bf_and:
+-				if (type_printed || isdigit(static_cast<unsigned char>(last_written_char))
++				if (!pretty_printer_charvar) {
++					out("&");
++				}
++				else if (type_printed || isdigit(static_cast<unsigned char>(last_written_char))
+ 					|| t.child_is(tau::ba_constant)) {
+ 					out(" ");
+ 				}
+diff --git a/tests/api/test_api-tref_api.cpp b/tests/api/test_api-tref_api.cpp
+index 0683f26a..6408cf27 100644
+--- a/tests/api/test_api-tref_api.cpp
++++ b/tests/api/test_api-tref_api.cpp
+@@ -12,6 +12,9 @@ using tau_api = api<node_t>;
+ TEST_SUITE("Tau API - settings") {
+ 
+ 	TEST_CASE("set_charvar") {
++		struct restore_charvar {
++			~restore_charvar() { tau_api::set_charvar(true); }
++		} restore;
+ 		tau_api::set_charvar(false);
+ 		auto r = tau_api::get_term("xyz");
+ 		CHECK(r.has_value());
+@@ -19,12 +22,40 @@ TEST_SUITE("Tau API - settings") {
+ 		CHECK(xyz); // term must be variable, because charvar is false
+ 		CHECK(tau::get(xyz)[0].is(tau::variable));
+ 
++		for (const auto& source : {
++			"left & right", "left & right'", "left1 & right2",
++			"(left | right) & third", "left & (right | third)",
++			"left & right & third"
++		}) {
++			CAPTURE(source);
++			auto conjunction = tau_api::get_term(source, false);
++			REQUIRE(conjunction.has_value());
++			auto printed = tau_api::to_str(conjunction.value());
++			CAPTURE(printed);
++			auto reparsed = tau_api::get_term(printed, false);
++			REQUIRE(reparsed.has_value());
++			CHECK(matches_bf_mod_and_or(reparsed.value(), source));
++		}
++
+ 		tau_api::set_charvar(true);
+ 		r = tau_api::get_term("xyz");
+ 		CHECK(r.has_value());
+ 		xyz = r.value();
+ 		CHECK(xyz); // term must be bf_and, because charvar is true
+ 		CHECK(tau::get(xyz)[0].is(tau::bf_and));
++
++		auto original = tau_api::get_term("x & y", false);
++		REQUIRE(original.has_value());
++		auto compact = tau_api::to_str(original.value());
++		CHECK(compact.find('&') == std::string::npos);
++		tau_api::set_charvar(false);
++		auto explicit_and = tau_api::to_str(original.value());
++		CHECK(explicit_and.find('&') != std::string::npos);
++		auto restored = tau_api::get_term(explicit_and, false);
++		REQUIRE(restored.has_value());
++		CHECK(matches_bf_mod_and_or(restored.value(), "x & y"));
++		tau_api::set_charvar(true);
++		CHECK(tau_api::to_str(original.value()) == compact);
+ 	}
+ 
+ 	TEST_CASE("set_indenting") {
+@@ -818,3 +849,104 @@ TEST_SUITE("Tau API - tref - definition/stream edges") {
+ 		CHECK( !tau_api::get_stream_def("").has_value() );
+ 	}
+ }
++
++#ifdef TAU_PACK_HAS_BA_BV
++TEST_SUITE("Min/max definition and fallback grammar") {
++	TEST_CASE("builtin calls retain their operation in definitions and fallbacks") {
++		struct restore_charvar {
++			~restore_charvar() { tau_api::set_charvar(true); }
++		} restore;
++		for (bool charvar : {false, true}) {
++			tau_api::set_charvar(charvar);
++			CAPTURE(charvar);
++			for (const std::string op : {"min", "max"}) {
++				CAPTURE(op);
++				const auto kind = op == "min" ? tau::bf_min : tau::bf_max;
++				const std::string call = op + "(x:bv[3], y:bv[3])";
++				auto definition = tau::get("f(x:bv[3], y:bv[3]) := " + call,
++					get_options<node_t>(tau::rec_relation, false));
++				REQUIRE(definition.has_value());
++				tref rhs = tau::get(definition.value()).second();
++				CHECK(tau_api::contains(rhs, kind));
++				CHECK_FALSE(tau_api::contains(rhs, tau::ref));
++
++				auto reference = tau_api::get_term(
++					"r[0](x:bv[3]) fallback " + call, false);
++				REQUIRE(reference.has_value());
++				auto fallback = tau::get(reference.value()).select_all(
++					is<node_t, tau::fp_fallback>);
++				REQUIRE(fallback.size() == 1);
++				CHECK(tau_api::contains(fallback[0], kind));
++				CHECK_FALSE(tau_api::contains(fallback[0], tau::ref));
++			}
++		}
++	}
++
++	TEST_CASE("other reference spellings and definition heads stay available") {
++		struct restore_charvar {
++			~restore_charvar() { tau_api::set_charvar(true); }
++		} restore;
++		for (bool charvar : {false, true}) {
++			tau_api::set_charvar(charvar);
++			CAPTURE(charvar);
++			for (const std::string op : {"min", "max"}) {
++				for (const std::string suffix : {
++					"()", "(x:bv[3])", "(x:bv[3], y:bv[3], z:bv[3])",
++					"[0](x:bv[3], y:bv[3])",
++					"(x:bv[3], y:bv[3]):bv[3]",
++					"_extra(x:bv[3], y:bv[3])"
++				}) {
++					const std::string call = op + suffix;
++					CAPTURE(call);
++					auto definition = tau::get("f(x:bv[3], y:bv[3]) := " + call,
++						get_options<node_t>(tau::rec_relation, false));
++					REQUIRE(definition.has_value());
++					tref rhs = tau::get(definition.value()).second();
++					CHECK(tau_api::contains(rhs, tau::ref));
++					CHECK_FALSE(tau_api::contains(rhs, tau::bf_min));
++					CHECK_FALSE(tau_api::contains(rhs, tau::bf_max));
++
++					auto reference = tau_api::get_term(
++						"r[0](x:bv[3]) fallback " + call, false);
++					REQUIRE(reference.has_value());
++					auto fallback = tau::get(reference.value()).select_all(
++						is<node_t, tau::fp_fallback>);
++					REQUIRE(fallback.size() == 1);
++					CHECK(tau_api::contains(fallback[0], tau::ref));
++					CHECK_FALSE(tau_api::contains(fallback[0], tau::bf_min));
++					CHECK_FALSE(tau_api::contains(fallback[0], tau::bf_max));
++				}
++				auto definition = tau::get(op + "(x:bv[3], y:bv[3]) := x:bv[3]",
++					get_options<node_t>(tau::rec_relation, false));
++				REQUIRE(definition.has_value());
++				tref lhs = tau::get(definition.value()).first();
++				CHECK(tau::get(lhs).is(tau::ref));
++				CHECK_FALSE(tau_api::contains(lhs, tau::bf_min));
++				CHECK_FALSE(tau_api::contains(lhs, tau::bf_max));
++			}
++		}
++	}
++	TEST_CASE("min/max conjunctions preserve multi-character names") {
++		struct restore_charvar {
++			~restore_charvar() { tau_api::set_charvar(true); }
++		} restore;
++		tau_api::set_charvar(false);
++		for (const auto& source : {
++			"left_:bv[3] & max(right_:bv[3], {6}:bv[3])",
++			"left_:bv[3] & min(right_:bv[3], {6}:bv[3])",
++			"max(right_:bv[3], {6}:bv[3]) & left_:bv[3]",
++			"min(right_:bv[3], {6}:bv[3]) & left_:bv[3]"
++		}) {
++			CAPTURE(source);
++			auto term = tau_api::get_term(source);
++			REQUIRE(term.has_value());
++			const std::string printed = tau_api::to_str(term.value());
++			CAPTURE(printed);
++			auto reparsed = tau_api::get_term(printed);
++			REQUIRE(reparsed.has_value());
++			CHECK(matches_tree_mod_and_or(reparsed.value(), term.value()));
++		}
++	}
++
++}
++#endif
+diff --git a/tests/repl/commands/CMakeLists.txt b/tests/repl/commands/CMakeLists.txt
+index 5b13419a..42525e39 100644
+--- a/tests/repl/commands/CMakeLists.txt
++++ b/tests/repl/commands/CMakeLists.txt
+@@ -56,6 +56,7 @@ include(test_repl-solver_cmd.cmake)
+ # tests/api/test_api-tref_api.cpp for the API-level view.
+ include(test_repl-lgrs_cmd.cmake)
+ include(test_repl-normalize_cmd.cmake)
++include(test_repl-minmax_operands.cmake)
+ include(test_repl-qelim_cmd.cmake)
+ include(test_repl-run_cmd.cmake)
+ include(test_repl-run_cmd-crash_regression.cmake)
+@@ -113,4 +114,4 @@ include(test_repl-compile_verb.cmake)
+ # TODO (VERY_HIGH) add tests for outputs command
+ 
+ # sample for comparing output with a file
+-#add_test(NAME test_name COMMAND bash -c "$<TARGET_FILE:${TAU_EXECUTABLE_NAME}> | diff - test_name.dump")
+\ No newline at end of file
++#add_test(NAME test_name COMMAND bash -c "$<TARGET_FILE:${TAU_EXECUTABLE_NAME}> | diff - test_name.dump")
+diff --git a/tests/repl/commands/test_repl-minmax_operands.cmake b/tests/repl/commands/test_repl-minmax_operands.cmake
+new file mode 100644
+index 00000000..430e2592
+--- /dev/null
++++ b/tests/repl/commands/test_repl-minmax_operands.cmake
+@@ -0,0 +1,22 @@
++include(add_repl_test)
++
++add_repl_test(minmax_operands-widen_max
++    "sat ((bv[4]) max(y:bv[3], {1}:bv[3])) = {2}:bv[4]." ": T")
++add_repl_test(minmax_operands-widen_min
++    "sat ((bv[4]) min(y:bv[3], {3}:bv[3])) = {2}:bv[4]." ": T")
++add_repl_test(minmax_operands-narrow_max
++    "sat ((bv[2]) max(y:bv[3], {1}:bv[3])) = {2}:bv[2]." ": T")
++add_repl_test(minmax_operands-ground_cast
++    "normalize ((bv[4]) max({2}:bv[3], {1}:bv[3])) = {2}:bv[4]." ": T")
++add_repl_test(minmax_operands-invalid_disequality
++    "valid ((bv[4]) max(y:bv[3], {1}:bv[3])) != {2}:bv[4]." ": F")
++add_repl_test(minmax_operands-complement_min
++    "sat min(x:bv[2], {2}:bv[2])' = {2}:bv[2]." ": T")
++add_repl_test(minmax_operands-complement_max
++    "sat max(x:bv[2], {1}:bv[2])' = {1}:bv[2]." ": T")
++add_repl_test(minmax_operands-quantified_complement
++    "sat all x:bv[3] ex b:bv[3] (min(x, b)' = x')." ": T")
++add_repl_test(minmax_operands-adjacent_functions
++    "normalize min({3}:bv[3], {5}:bv[3])max({2}:bv[3], {4}:bv[3]) = {0}:bv[3]." ": T")
++add_repl_test(minmax_operands-adjacent_constant
++    "normalize min({3}:bv[3], {5}:bv[3]){4}:bv[3] = {0}:bv[3]." ": T")

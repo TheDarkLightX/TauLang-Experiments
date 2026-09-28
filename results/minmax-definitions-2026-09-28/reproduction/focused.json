@@ -1,0 +1,188 @@
+{
+  "binary_sha256": "5da42a0a685d22fc2b3debb90f118b0dcfe4065ecadfad9936b18cf44f263ec2",
+  "flags": [
+    "--charvar=false",
+    "--color=false",
+    "--highlighting=false",
+    "--benchmarks=false",
+    "--status=false",
+    "-S",
+    "error",
+    "--preprocessing=false",
+    "--block-max-splits=0",
+    "--bv-widening=false",
+    "--bv-quantifier-free-decision=false"
+  ],
+  "checks": 10,
+  "passed": 10,
+  "failed": 0,
+  "results": [
+    {
+      "case": {
+        "id": "minmax-cast-1",
+        "group": "minmax-cast",
+        "command": "valid ((bv[4]) max(y:bv[3], {1}:bv[3])) != {2}:bv[4].",
+        "expected": "F"
+      },
+      "observation": {
+        "command": "valid ((bv[4]) max(y:bv[3], {1}:bv[3])) != {2}:bv[4].",
+        "returncode": 0,
+        "stdout": "%1: F\n\n",
+        "stderr": "",
+        "timeout": false
+      },
+      "passed": true
+    },
+    {
+      "case": {
+        "id": "minmax-cast-2",
+        "group": "minmax-cast",
+        "command": "sat ((bv[4]) max(y:bv[3],{1}:bv[3])) = {2}:bv[4].",
+        "expected": "T"
+      },
+      "observation": {
+        "command": "sat ((bv[4]) max(y:bv[3],{1}:bv[3])) = {2}:bv[4].",
+        "returncode": 0,
+        "stdout": "%1: T\n\n",
+        "stderr": "",
+        "timeout": false
+      },
+      "passed": true
+    },
+    {
+      "case": {
+        "id": "minmax-cast-3",
+        "group": "minmax-cast",
+        "command": "solve ((bv[4]) max(y:bv[3],{1}:bv[3])) = {2}:bv[4].",
+        "expected": "model-cast"
+      },
+      "observation": {
+        "command": "solve ((bv[4]) max(y:bv[3],{1}:bv[3])) = {2}:bv[4].",
+        "returncode": 0,
+        "stdout": "solution: {\n\ty := { 2 }:bv[3]\n}\n\n",
+        "stderr": "",
+        "timeout": false
+      },
+      "passed": true
+    },
+    {
+      "case": {
+        "id": "minmax-cast-4",
+        "group": "minmax-cast",
+        "command": "sat ((bv[4]) (max(y:bv[3],{1}:bv[3]))) = {2}:bv[4].",
+        "expected": "T"
+      },
+      "observation": {
+        "command": "sat ((bv[4]) (max(y:bv[3],{1}:bv[3]))) = {2}:bv[4].",
+        "returncode": 0,
+        "stdout": "%1: T\n\n",
+        "stderr": "",
+        "timeout": false
+      },
+      "passed": true
+    },
+    {
+      "case": {
+        "id": "minmax-cast-5",
+        "group": "minmax-cast",
+        "command": "solve ((bv[4]) (max(y:bv[3],{1}:bv[3]))) = {2}:bv[4].",
+        "expected": "model-cast"
+      },
+      "observation": {
+        "command": "solve ((bv[4]) (max(y:bv[3],{1}:bv[3]))) = {2}:bv[4].",
+        "returncode": 0,
+        "stdout": "solution: {\n\ty := { 2 }:bv[3]\n}\n\n",
+        "stderr": "",
+        "timeout": false
+      },
+      "passed": true
+    },
+    {
+      "case": {
+        "id": "minmax-complement-1",
+        "group": "minmax-complement",
+        "command": "sat min(x:bv[2], {2}:bv[2])' = {2}:bv[2].",
+        "expected": "T"
+      },
+      "observation": {
+        "command": "sat min(x:bv[2], {2}:bv[2])' = {2}:bv[2].",
+        "returncode": 0,
+        "stdout": "%1: T\n\n",
+        "stderr": "",
+        "timeout": false
+      },
+      "passed": true
+    },
+    {
+      "case": {
+        "id": "minmax-complement-2",
+        "group": "minmax-complement",
+        "command": "sat (min(x:bv[2], {2}:bv[2]))' = {2}:bv[2].",
+        "expected": "T"
+      },
+      "observation": {
+        "command": "sat (min(x:bv[2], {2}:bv[2]))' = {2}:bv[2].",
+        "returncode": 0,
+        "stdout": "%1: T\n\n",
+        "stderr": "",
+        "timeout": false
+      },
+      "passed": true
+    },
+    {
+      "case": {
+        "id": "minmax-complement-3",
+        "group": "minmax-complement",
+        "command": "normalize (min(x:bv[2], {2}:bv[2]))' = {2}:bv[2].",
+        "expected": "roundtrip"
+      },
+      "observation": {
+        "command": "normalize (min(x:bv[2], {2}:bv[2]))' = {2}:bv[2].",
+        "returncode": 0,
+        "stdout": "%1: min(x, { 2 }:bv[2])' = { 2 }:bv[2]\n\n",
+        "stderr": "",
+        "timeout": false,
+        "reparsed": {
+          "command": "sat min(x, { 2 }:bv[2])' = { 2 }:bv[2].",
+          "returncode": 0,
+          "stdout": "%1: T\n\n",
+          "stderr": "",
+          "timeout": false
+        }
+      },
+      "passed": true
+    },
+    {
+      "case": {
+        "id": "minmax-complement-4",
+        "group": "minmax-complement",
+        "command": "sat all x:bv[3] ex b:bv[3] (min(x, b)' = x').",
+        "expected": "T"
+      },
+      "observation": {
+        "command": "sat all x:bv[3] ex b:bv[3] (min(x, b)' = x').",
+        "returncode": 0,
+        "stdout": "%1: T\n\n",
+        "stderr": "",
+        "timeout": false
+      },
+      "passed": true
+    },
+    {
+      "case": {
+        "id": "minmax-complement-5",
+        "group": "minmax-complement",
+        "command": "sat all x:bv[3] ex b:bv[3] ((min(x, b))' = x').",
+        "expected": "T"
+      },
+      "observation": {
+        "command": "sat all x:bv[3] ex b:bv[3] ((min(x, b))' = x').",
+        "returncode": 0,
+        "stdout": "%1: T\n\n",
+        "stderr": "",
+        "timeout": false
+      },
+      "passed": true
+    }
+  ]
+}

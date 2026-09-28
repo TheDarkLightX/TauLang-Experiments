@@ -1,0 +1,84 @@
+diff --git a/parser/tau.tgf b/parser/tau.tgf
+index 28d3784d..6b9aa289 100644
+--- a/parser/tau.tgf
++++ b/parser/tau.tgf
+@@ -98,7 +98,8 @@ bf                     => ('(' _ (bf & ~type) _ ')')          :bf_parenthesis
+                         | ("max" _ '(' _ bf _ ',' _ bf _ ')') :bf_max
+                         | ref                                :bf_ref
+                         | ('(' _ type _ ')' _
+-                           (bf_parenthesis | ba_constant | variable | bf_ref
++                           (bf_parenthesis | ba_constant | variable
++                           | bf_min | bf_max | bf_ref
+                            | bf_t | bf_f | bf_neg | bf_cast | capture
+                            | bf_fall | bf_fex)
+                                 :bf_cast_oprnd)              :bf_cast
+@@ -117,18 +118,18 @@ bf                     => ('(' _ (bf & ~type) _ ')')          :bf_parenthesis
+                         | ('1' [ typed ])                    :bf_t
+                         | ('0' [ typed ])                    :bf_f
+                         | (bf (_ '&' _ | __) bf)             :bf_and
+-                          # bf_neg_oprnd can contain only unary operations
++                          # Complement takes a self-delimiting or unary operand.
+                         | ((bf_parenthesis | ba_constant
+-                          | variable | bf_ref
++                          | variable | bf_min | bf_max | bf_ref
+                           | bf_t | bf_f | bf_neg | capture)
+                                 :bf_neg_oprnd _ "'")         :bf_neg
+                           # bf_and alternation without a separator between operands
+                         | ((bf_parenthesis | variable
+-                           | bf_ref | bf_neg
++                           | bf_min | bf_max | bf_ref | bf_neg
+                            | bf_and_nosep | capture)
+                                 :bf_and_nosep_1st_oprnd
+                            (bf_parenthesis | ba_constant
+-                           | variable | bf_ref
++                           | variable | bf_min | bf_max | bf_ref
+                            | bf_neg | capture)
+                                 :bf_and_nosep_2nd_oprnd)     :bf_and_nosep
+                         |                                     capture.
+diff --git a/tests/repl/commands/CMakeLists.txt b/tests/repl/commands/CMakeLists.txt
+index 5b13419a..42525e39 100644
+--- a/tests/repl/commands/CMakeLists.txt
++++ b/tests/repl/commands/CMakeLists.txt
+@@ -56,6 +56,7 @@ include(test_repl-solver_cmd.cmake)
+ # tests/api/test_api-tref_api.cpp for the API-level view.
+ include(test_repl-lgrs_cmd.cmake)
+ include(test_repl-normalize_cmd.cmake)
++include(test_repl-minmax_operands.cmake)
+ include(test_repl-qelim_cmd.cmake)
+ include(test_repl-run_cmd.cmake)
+ include(test_repl-run_cmd-crash_regression.cmake)
+@@ -113,4 +114,4 @@ include(test_repl-compile_verb.cmake)
+ # TODO (VERY_HIGH) add tests for outputs command
+ 
+ # sample for comparing output with a file
+-#add_test(NAME test_name COMMAND bash -c "$<TARGET_FILE:${TAU_EXECUTABLE_NAME}> | diff - test_name.dump")
+\ No newline at end of file
++#add_test(NAME test_name COMMAND bash -c "$<TARGET_FILE:${TAU_EXECUTABLE_NAME}> | diff - test_name.dump")
+diff --git a/tests/repl/commands/test_repl-minmax_operands.cmake b/tests/repl/commands/test_repl-minmax_operands.cmake
+new file mode 100644
+index 00000000..430e2592
+--- /dev/null
++++ b/tests/repl/commands/test_repl-minmax_operands.cmake
+@@ -0,0 +1,22 @@
++include(add_repl_test)
++
++add_repl_test(minmax_operands-widen_max
++    "sat ((bv[4]) max(y:bv[3], {1}:bv[3])) = {2}:bv[4]." ": T")
++add_repl_test(minmax_operands-widen_min
++    "sat ((bv[4]) min(y:bv[3], {3}:bv[3])) = {2}:bv[4]." ": T")
++add_repl_test(minmax_operands-narrow_max
++    "sat ((bv[2]) max(y:bv[3], {1}:bv[3])) = {2}:bv[2]." ": T")
++add_repl_test(minmax_operands-ground_cast
++    "normalize ((bv[4]) max({2}:bv[3], {1}:bv[3])) = {2}:bv[4]." ": T")
++add_repl_test(minmax_operands-invalid_disequality
++    "valid ((bv[4]) max(y:bv[3], {1}:bv[3])) != {2}:bv[4]." ": F")
++add_repl_test(minmax_operands-complement_min
++    "sat min(x:bv[2], {2}:bv[2])' = {2}:bv[2]." ": T")
++add_repl_test(minmax_operands-complement_max
++    "sat max(x:bv[2], {1}:bv[2])' = {1}:bv[2]." ": T")
++add_repl_test(minmax_operands-quantified_complement
++    "sat all x:bv[3] ex b:bv[3] (min(x, b)' = x')." ": T")
++add_repl_test(minmax_operands-adjacent_functions
++    "normalize min({3}:bv[3], {5}:bv[3])max({2}:bv[3], {4}:bv[3]) = {0}:bv[3]." ": T")
++add_repl_test(minmax_operands-adjacent_constant
++    "normalize min({3}:bv[3], {5}:bv[3]){4}:bv[3] = {0}:bv[3]." ": T")

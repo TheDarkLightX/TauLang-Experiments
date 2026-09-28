@@ -1,0 +1,11 @@
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+[bench 28.4393 ms] Min/max definition and fallback grammar / builtin calls retain their operation in definitions and fallbacks
+[bench 155.172 ms] Min/max definition and fallback grammar / other reference spellings and definition heads stay available
+[bench 21.4625 ms] Min/max definition and fallback grammar / min/max conjunctions preserve multi-character names
+
+[benchmark] 3 tests, total 205.073 ms -> benchmark_timing.json
+===============================================================================
+[doctest] test cases:   3 |   3 passed | 0 failed | 64 skipped
+[doctest] assertions: 272 | 272 passed | 0 failed |
+[doctest] Status: SUCCESS!

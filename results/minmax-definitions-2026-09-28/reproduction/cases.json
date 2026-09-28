@@ -1,0 +1,62 @@
+[
+  {
+    "id": "minmax-cast-1",
+    "group": "minmax-cast",
+    "command": "valid ((bv[4]) max(y:bv[3], {1}:bv[3])) != {2}:bv[4].",
+    "expected": "F"
+  },
+  {
+    "id": "minmax-cast-2",
+    "group": "minmax-cast",
+    "command": "sat ((bv[4]) max(y:bv[3],{1}:bv[3])) = {2}:bv[4].",
+    "expected": "T"
+  },
+  {
+    "id": "minmax-cast-3",
+    "group": "minmax-cast",
+    "command": "solve ((bv[4]) max(y:bv[3],{1}:bv[3])) = {2}:bv[4].",
+    "expected": "model-cast"
+  },
+  {
+    "id": "minmax-cast-4",
+    "group": "minmax-cast",
+    "command": "sat ((bv[4]) (max(y:bv[3],{1}:bv[3]))) = {2}:bv[4].",
+    "expected": "T"
+  },
+  {
+    "id": "minmax-cast-5",
+    "group": "minmax-cast",
+    "command": "solve ((bv[4]) (max(y:bv[3],{1}:bv[3]))) = {2}:bv[4].",
+    "expected": "model-cast"
+  },
+  {
+    "id": "minmax-complement-1",
+    "group": "minmax-complement",
+    "command": "sat min(x:bv[2], {2}:bv[2])' = {2}:bv[2].",
+    "expected": "T"
+  },
+  {
+    "id": "minmax-complement-2",
+    "group": "minmax-complement",
+    "command": "sat (min(x:bv[2], {2}:bv[2]))' = {2}:bv[2].",
+    "expected": "T"
+  },
+  {
+    "id": "minmax-complement-3",
+    "group": "minmax-complement",
+    "command": "normalize (min(x:bv[2], {2}:bv[2]))' = {2}:bv[2].",
+    "expected": "roundtrip"
+  },
+  {
+    "id": "minmax-complement-4",
+    "group": "minmax-complement",
+    "command": "sat all x:bv[3] ex b:bv[3] (min(x, b)' = x').",
+    "expected": "T"
+  },
+  {
+    "id": "minmax-complement-5",
+    "group": "minmax-complement",
+    "command": "sat all x:bv[3] ex b:bv[3] ((min(x, b))' = x').",
+    "expected": "T"
+  }
+]

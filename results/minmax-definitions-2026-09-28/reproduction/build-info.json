@@ -1,0 +1,34 @@
+{
+  "tau_commit": "8b5a61ca98a72f0a2cbece9b1338c7295482bbd3",
+  "parser_commit": "5b14b6fde86f16dc52c4c0a953a8a1e53c88f95a",
+  "test_date": "2026-09-28",
+  "operating_system": "macOS 26.6.2 arm64",
+  "compiler": "Homebrew Clang 22.1.2",
+  "configuration": {
+    "CMAKE_BUILD_TYPE": "Release",
+    "TAU_BAS": "tau,qint,qlt,nlang,bv,sbf,hsb",
+    "TAU_CACHE": "ON",
+    "TAU_LTO": "OFF",
+    "TAU_ARTIFACT_PREINST": "OFF",
+    "TAU_PARSER_MEASURE": "ON",
+    "TAU_SKIP_TESTS": "test_integration-satisfiability-bool;test_integration-satisfiability-sbf;test_integration-satisfiability-qint;test_integration-satisfiability-qlt;test_integration-satisfiability-tau_ba;test_integration-satisfiability-mixed;test_integration-satisfiability-bv;test_ltl_benchmarks;test_by_grammar;test_integration-solver-qint;test_integration-solver-mixed;test_integration-solver-sbf;test_integration-quantifiers;test_integration-blasting_correctness_check1;test_integration-blasting_correctness_check2;test_integration-blasting_correctness_check3;test_integration-blasting_correctness_check4;test_integration-blasting_correctness_check5",
+    "TAU_DONT_USE_FTXUI": "ON"
+  },
+  "cvc5": "1.3.1",
+  "boost": "1.89.0",
+  "configuration_note": "The Release configuration sets TAU_CACHE on after reading its cache entry. Configure logs and generated compiler definitions confirm TAU_CACHE and TAU_PARSER_MEASURE are enabled.",
+  "corrected_binary_sha256": "5da42a0a685d22fc2b3debb90f118b0dcfe4065ecadfad9936b18cf44f263ec2",
+  "corrected_api_sha256": "48a0ab0b8c81f99d51bcccdad1d7eea7d52ac78f5ce4fd259647560a6acf9384",
+  "operand_reference_binary_sha256": "c01979a585434f20588f61a53b1a35ff1afeb341f95e091423a47d833bbc5d26",
+  "operand_reference_api_sha256": "6528fdec0fc03598ec07f4df9d9c141c53d42cd303011de315d2bf1d3bb40026",
+  "operand_reference_grammar_sha256": "e292bc4f501e4909583d9f77db6bdd0fcf1d8f7fb57aea9d9510f26a4ebf2e74",
+  "pre_operand_reference_binary_sha256": "17012b72fb56072000f1905a1aa10f1dcdae721c48c3f1f11f505507ced5f1ca",
+  "patch_sha256": {
+    "additional-printer-check.patch": "c0d84283f35f1c6e9d27c17e8cb9dbb674958fb2231c8712807ad545392903c2",
+    "minmax-operands.patch": "20c079a108c49c4a89d08f2323125c8c66e14a7883857df9635b93f342c2e5f8",
+    "complete-combination.patch": "28f3f9f3771da47cbcda9c2261308389e3508822ef846355b6e1afae30e4f825",
+    "minmax-definition-followup.patch": "174631ed0a34f2914d673d947f8655dbac7b33560ccd88a76ba7fdbeb1c1b7fd",
+    "printing-documentation-and-build.patch": "9b7544b31622daf674eb0313d952023fb3d91add8f796f6307d381bd3114e62e"
+  },
+  "registered_tests": 2543
+}

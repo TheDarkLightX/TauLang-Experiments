@@ -1,0 +1,95 @@
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+tests/api/test_api-tref_api.cpp:855:
+TEST SUITE: Min/max definition and fallback grammar
+TEST CASE:  builtin calls retain their operation in definitions and fallbacks
+
+tests/api/test_api-tref_api.cpp:870: ERROR: CHECK( tau_api::contains(rhs, kind) ) is NOT correct!
+  values: CHECK( false )
+  logged: 0x104a7f072false
+          0x104a7f07emin
+
+tests/api/test_api-tref_api.cpp:871: ERROR: CHECK_FALSE( tau_api::contains(rhs, tau::ref) ) is NOT correct!
+  values: CHECK_FALSE( true )
+  logged: 0x104a7f072false
+          0x104a7f07emin
+
+tests/api/test_api-tref_api.cpp:879: ERROR: CHECK( tau_api::contains(fallback[0], kind) ) is NOT correct!
+  values: CHECK( false )
+  logged: 0x104a7f072false
+          0x104a7f07emin
+
+tests/api/test_api-tref_api.cpp:880: ERROR: CHECK_FALSE( tau_api::contains(fallback[0], tau::ref) ) is NOT correct!
+  values: CHECK_FALSE( true )
+  logged: 0x104a7f072false
+          0x104a7f07emin
+
+tests/api/test_api-tref_api.cpp:870: ERROR: CHECK( tau_api::contains(rhs, kind) ) is NOT correct!
+  values: CHECK( false )
+  logged: 0x104a7f072false
+          0x104a7f07emax
+
+tests/api/test_api-tref_api.cpp:871: ERROR: CHECK_FALSE( tau_api::contains(rhs, tau::ref) ) is NOT correct!
+  values: CHECK_FALSE( true )
+  logged: 0x104a7f072false
+          0x104a7f07emax
+
+tests/api/test_api-tref_api.cpp:879: ERROR: CHECK( tau_api::contains(fallback[0], kind) ) is NOT correct!
+  values: CHECK( false )
+  logged: 0x104a7f072false
+          0x104a7f07emax
+
+tests/api/test_api-tref_api.cpp:880: ERROR: CHECK_FALSE( tau_api::contains(fallback[0], tau::ref) ) is NOT correct!
+  values: CHECK_FALSE( true )
+  logged: 0x104a7f072false
+          0x104a7f07emax
+
+tests/api/test_api-tref_api.cpp:870: ERROR: CHECK( tau_api::contains(rhs, kind) ) is NOT correct!
+  values: CHECK( false )
+  logged: 0x104a7f072true
+          0x104a7f07emin
+
+tests/api/test_api-tref_api.cpp:871: ERROR: CHECK_FALSE( tau_api::contains(rhs, tau::ref) ) is NOT correct!
+  values: CHECK_FALSE( true )
+  logged: 0x104a7f072true
+          0x104a7f07emin
+
+tests/api/test_api-tref_api.cpp:879: ERROR: CHECK( tau_api::contains(fallback[0], kind) ) is NOT correct!
+  values: CHECK( false )
+  logged: 0x104a7f072true
+          0x104a7f07emin
+
+tests/api/test_api-tref_api.cpp:880: ERROR: CHECK_FALSE( tau_api::contains(fallback[0], tau::ref) ) is NOT correct!
+  values: CHECK_FALSE( true )
+  logged: 0x104a7f072true
+          0x104a7f07emin
+
+tests/api/test_api-tref_api.cpp:870: ERROR: CHECK( tau_api::contains(rhs, kind) ) is NOT correct!
+  values: CHECK( false )
+  logged: 0x104a7f072true
+          0x104a7f07emax
+
+tests/api/test_api-tref_api.cpp:871: ERROR: CHECK_FALSE( tau_api::contains(rhs, tau::ref) ) is NOT correct!
+  values: CHECK_FALSE( true )
+  logged: 0x104a7f072true
+          0x104a7f07emax
+
+tests/api/test_api-tref_api.cpp:879: ERROR: CHECK( tau_api::contains(fallback[0], kind) ) is NOT correct!
+  values: CHECK( false )
+  logged: 0x104a7f072true
+          0x104a7f07emax
+
+tests/api/test_api-tref_api.cpp:880: ERROR: CHECK_FALSE( tau_api::contains(fallback[0], tau::ref) ) is NOT correct!
+  values: CHECK_FALSE( true )
+  logged: 0x104a7f072true
+          0x104a7f07emax
+
+[bench 32.5204 ms] Min/max definition and fallback grammar / builtin calls retain their operation in definitions and fallbacks
+[bench 154.861 ms] Min/max definition and fallback grammar / other reference spellings and definition heads stay available
+
+[benchmark] 2 tests, total 187.381 ms -> benchmark_timing.json
+===============================================================================
+[doctest] test cases:   2 |   1 passed |  1 failed | 65 skipped
+[doctest] assertions: 260 | 244 passed | 16 failed |
+[doctest] Status: FAILURE!

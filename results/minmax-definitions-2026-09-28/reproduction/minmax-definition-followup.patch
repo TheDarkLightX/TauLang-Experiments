@@ -1,0 +1,105 @@
+--- a/parser/tau.tgf
++++ b/parser/tau.tgf
+@@ -16,7 +16,7 @@
+ spec_multiline         => (_ spec_part _ '.')* _ spec_part [ _ '.' ] _ | _.
+ spec_part              => rec_relation | input_def | output_def | type_def | main.
+ 
+-rec_relation           => ref _ ":=" _ (capture | ref | wff | bf).
++rec_relation           => ref _ ":=" _ (capture | (ref & ~bf_min & ~bf_max) | wff | bf).
+ input_def              => io_var_name [ member_path ] [ typed ] _ ":=" _ "in"    __ stream.
+ output_def             => io_var_name [ member_path ] [ typed ] _ ":=" _ "out"   __ stream.
+ stream                 => "file" _ '(' _ q_file_name  _ ')'
+@@ -36,7 +36,7 @@
+ 
+ ref                    => sym [offsets] ref_args [typed] [_ "fallback" __ fp_fallback].
+ fp_fallback            => "first":first_sym | "last":last_sym
+-                        | capture | ref | wff | bf.
++                        | capture | (ref & ~bf_min & ~bf_max) | wff | bf.
+ ref_args               => '(' [ (_ bf:ref_arg) (_ ',' _ ref_arg)* ] _ ')'.
+ 
+ # wff and bf expressions
+--- a/tests/api/test_api-tref_api.cpp
++++ b/tests/api/test_api-tref_api.cpp
+@@ -849,3 +849,82 @@
+ 		CHECK( !tau_api::get_stream_def("").has_value() );
+ 	}
+ }
++
++#ifdef TAU_PACK_HAS_BA_BV
++TEST_SUITE("Min/max definition and fallback grammar") {
++	TEST_CASE("builtin calls retain their operation in definitions and fallbacks") {
++		struct restore_charvar {
++			~restore_charvar() { tau_api::set_charvar(true); }
++		} restore;
++		for (bool charvar : {false, true}) {
++			tau_api::set_charvar(charvar);
++			CAPTURE(charvar);
++			for (const std::string op : {"min", "max"}) {
++				CAPTURE(op);
++				const auto kind = op == "min" ? tau::bf_min : tau::bf_max;
++				const std::string call = op + "(x:bv[3], y:bv[3])";
++				auto definition = tau::get("f(x:bv[3], y:bv[3]) := " + call,
++					get_options<node_t>(tau::rec_relation, false));
++				REQUIRE(definition.has_value());
++				tref rhs = tau::get(definition.value()).second();
++				CHECK(tau_api::contains(rhs, kind));
++				CHECK_FALSE(tau_api::contains(rhs, tau::ref));
++
++				auto reference = tau_api::get_term(
++					"r[0](x:bv[3]) fallback " + call, false);
++				REQUIRE(reference.has_value());
++				auto fallback = tau::get(reference.value()).select_all(
++					is<node_t, tau::fp_fallback>);
++				REQUIRE(fallback.size() == 1);
++				CHECK(tau_api::contains(fallback[0], kind));
++				CHECK_FALSE(tau_api::contains(fallback[0], tau::ref));
++			}
++		}
++	}
++
++	TEST_CASE("other reference spellings and definition heads stay available") {
++		struct restore_charvar {
++			~restore_charvar() { tau_api::set_charvar(true); }
++		} restore;
++		for (bool charvar : {false, true}) {
++			tau_api::set_charvar(charvar);
++			CAPTURE(charvar);
++			for (const std::string op : {"min", "max"}) {
++				for (const std::string suffix : {
++					"()", "(x:bv[3])", "(x:bv[3], y:bv[3], z:bv[3])",
++					"[0](x:bv[3], y:bv[3])",
++					"(x:bv[3], y:bv[3]):bv[3]",
++					"_extra(x:bv[3], y:bv[3])"
++				}) {
++					const std::string call = op + suffix;
++					CAPTURE(call);
++					auto definition = tau::get("f(x:bv[3], y:bv[3]) := " + call,
++						get_options<node_t>(tau::rec_relation, false));
++					REQUIRE(definition.has_value());
++					tref rhs = tau::get(definition.value()).second();
++					CHECK(tau_api::contains(rhs, tau::ref));
++					CHECK_FALSE(tau_api::contains(rhs, tau::bf_min));
++					CHECK_FALSE(tau_api::contains(rhs, tau::bf_max));
++
++					auto reference = tau_api::get_term(
++						"r[0](x:bv[3]) fallback " + call, false);
++					REQUIRE(reference.has_value());
++					auto fallback = tau::get(reference.value()).select_all(
++						is<node_t, tau::fp_fallback>);
++					REQUIRE(fallback.size() == 1);
++					CHECK(tau_api::contains(fallback[0], tau::ref));
++					CHECK_FALSE(tau_api::contains(fallback[0], tau::bf_min));
++					CHECK_FALSE(tau_api::contains(fallback[0], tau::bf_max));
++				}
++				auto definition = tau::get(op + "(x:bv[3], y:bv[3]) := x:bv[3]",
++					get_options<node_t>(tau::rec_relation, false));
++				REQUIRE(definition.has_value());
++				tref lhs = tau::get(definition.value()).first();
++				CHECK(tau::get(lhs).is(tau::ref));
++				CHECK_FALSE(tau_api::contains(lhs, tau::bf_min));
++				CHECK_FALSE(tau_api::contains(lhs, tau::bf_max));
++			}
++		}
++	}
++}
++#endif

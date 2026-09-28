@@ -1,0 +1,30 @@
+--- a/tests/api/test_api-tref_api.cpp
++++ b/tests/api/test_api-tref_api.cpp
+@@ -926,5 +926,27 @@
+ 			}
+ 		}
+ 	}
++	TEST_CASE("min/max conjunctions preserve multi-character names") {
++		struct restore_charvar {
++			~restore_charvar() { tau_api::set_charvar(true); }
++		} restore;
++		tau_api::set_charvar(false);
++		for (const auto& source : {
++			"left_:bv[3] & max(right_:bv[3], {6}:bv[3])",
++			"left_:bv[3] & min(right_:bv[3], {6}:bv[3])",
++			"max(right_:bv[3], {6}:bv[3]) & left_:bv[3]",
++			"min(right_:bv[3], {6}:bv[3]) & left_:bv[3]"
++		}) {
++			CAPTURE(source);
++			auto term = tau_api::get_term(source);
++			REQUIRE(term.has_value());
++			const std::string printed = tau_api::to_str(term.value());
++			CAPTURE(printed);
++			auto reparsed = tau_api::get_term(printed);
++			REQUIRE(reparsed.has_value());
++			CHECK(matches_tree_mod_and_or(reparsed.value(), term.value()));
++		}
++	}
++
+ }
+ #endif
