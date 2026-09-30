@@ -1,0 +1,51 @@
+[  5%] Building CXX object external/parser/src/CMakeFiles/tauparser_static.dir/parser.cpp.o
+[  5%] Building CXX object external/parser/src/CMakeFiles/tauparser_static.dir/format/tgf/tgf_parser.generated.cpp.o
+[  8%] Building CXX object external/parser/src/CMakeFiles/tauparser_static.dir/format/json/json_parser.generated.cpp.o
+[ 11%] Linking CXX static library ../../../libtauparser.a
+[ 11%] Built target tauparser_static
+[ 17%] Building CXX object external/parser/src/tgf/CMakeFiles/tgf_cli_core.dir/tgf_repl_parser.generated.cpp.o
+[ 17%] Building CXX object external/parser/src/tgf/CMakeFiles/tgf_cli_core.dir/tgf_cli.cpp.o
+[ 20%] Building CXX object external/parser/src/tgf/CMakeFiles/tgf_cli_core.dir/__/format/treemr/treemr_parser.generated.cpp.o
+[ 23%] Building CXX object external/parser/src/tgf/CMakeFiles/tgf_cli_core.dir/__/format/tgf.test/tgf_test_parser.generated.cpp.o
+[ 26%] Linking CXX static library ../../../../libtgf_cli_core.a
+[ 26%] Built target tgf_cli_core
+[ 29%] Building CXX object external/parser/src/tgf/CMakeFiles/tgf.dir/main.cpp.o
+[ 32%] Linking CXX executable ../../../../tgf
+Round-trip self-check, then archiving the passing binary
+roundtrip: checked 5, skipped 0
+Archived to <tau-source>/external/parser/build/archive/tgf
+[ 32%] Built target tgf
+[ 38%] Generating parser from hoa.tgf
+[ 38%] Generating parser from adt.tgf
+[ 41%] Generating parser from tau.tgf
+[ 44%] Generating parser from sbf.tgf
+[33mUnproductive nonterminal (name=alnum)[0m
+[ 47%] Generating parser from qint.tgf
+[ 50%] Generating parser from qlt.tgf
+[ 52%] Generating parser from bitvector.tgf
+[33mUnproductive nonterminal (name=q_string)[0m
+[33mUnproductive nonterminal (name=selection_sym)[0m
+[33mUnproductive nonterminal (name=execute_sym)[0m
+[33mUnproductive nonterminal (name=snf_sym)[0m
+[33mUnproductive nonterminal (name=BDD_ID)[0m
+[ 52%] Built target tau_parsers
+[ 55%] Building tau.h file
+-- Building tau.h file <tau-source>/src/tau.h.in
+[ 55%] Built target tau_header
+[ 61%] Building CXX object src/CMakeFiles/TAU_static.dir/__/generated/parser/adt_parser.generated.cpp.o
+[ 61%] Building CXX object src/CMakeFiles/TAU_static.dir/__/generated/parser/hoa_parser.generated.cpp.o
+[ 64%] Building CXX object src/CMakeFiles/TAU_static.dir/__/generated/parser/tau_parser.generated.cpp.o
+[ 67%] Building CXX object src/CMakeFiles/TAU_static.dir/__/generated/include/boolean_algebras/sbf/parser/sbf_parser.generated.cpp.o
+[ 70%] Building CXX object src/CMakeFiles/TAU_static.dir/__/generated/include/boolean_algebras/qint/parser/qint_parser.generated.cpp.o
+[ 73%] Building CXX object src/CMakeFiles/TAU_static.dir/__/generated/include/boolean_algebras/qlt/parser/qlt_parser.generated.cpp.o
+[ 76%] Building CXX object src/CMakeFiles/TAU_static.dir/__/generated/include/boolean_algebras/bv/parser/bitvector_parser.generated.cpp.o
+[ 79%] Building CXX object src/CMakeFiles/TAU_static.dir/boolean_algebras/qint/qint.cpp.o
+[ 82%] Building CXX object src/CMakeFiles/TAU_static.dir/boolean_algebras/qlt/qlt.cpp.o
+[ 85%] Building CXX object src/CMakeFiles/TAU_static.dir/boolean_algebras/bool_ba.cpp.o
+[ 88%] Building CXX object src/CMakeFiles/TAU_static.dir/backends/bdds/var_dict.cpp.o
+[ 91%] Building CXX object src/CMakeFiles/TAU_static.dir/instantiate_pack.cpp.o
+[ 94%] Linking CXX static library ../libTAU.a
+[ 94%] Built target TAU_static
+[ 97%] Building CXX object src/CMakeFiles/tau.dir/main.cpp.o
+[100%] Linking CXX executable ../tau
+[100%] Built target tau

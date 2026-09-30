@@ -1,0 +1,147 @@
+-- Tau version: 0.7.0 / 0.7.0-alpha
+CMake Warning at external/parser/cmake/use-ccache.cmake:9 (message):
+  ccache not found
+Call Stack (most recent call first):
+  CMakeLists.txt:25 (include)
+
+
+-- The C compiler identification is Clang 22.1.2
+-- The CXX compiler identification is Clang 22.1.2
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /opt/homebrew/opt/llvm/bin/clang - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /opt/homebrew/opt/llvm/bin/clang++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- TAU_CACHE: ON
+-- TAU_LOG_LINES: OFF
+-- TAU_LOG_LINE_PATHS: OFF
+-- TAU_LOG_CHANNELS: OFF
+-- TAU_LOG_TRACE_TESTS: OFF
+-- TAU_BUILD_STATIC_LIBRARY: OFF
+-- TAU_BUILD_SHARED_LIBRARY: OFF
+-- TAU_BUILD_EXECUTABLE: ON
+-- TAU_ARTIFACT_PREINST: OFF
+-- TAU_BUILD_SHARED_EXECUTABLE: OFF
+-- TAU_BUILD_TESTS: OFF
+-- TAU_BUILD_UNIT_TESTS: OFF
+-- TAU_BUILD_INTEGRATION: OFF
+-- TAU_BUILD_API_TESTS: OFF
+-- TAU_BUILD_REPL_TESTS: OFF
+-- TAU_BUILD_BENCHMARK: OFF
+-- TAU_BUILD_JOBS: 8 (half of 16 cores)
+-- TAU_ADDRESS_SANITIZER: OFF
+-- TAU_RPM_PACKAGE: OFF
+-- TAU_DEB_PACKAGE: OFF
+-- TAU_WINDOWS_ZIP_PACKAGE: OFF
+-- TAU_WINDOWS_PACKAGE: OFF
+-- TAU_MACOS_PACKAGE: OFF
+-- TAU_BUILD_BINDING_PYTHON_NANOBIND: OFF
+-- TAU_BUILD_BINDING_PYTHON_CTYPE: OFF
+-- TAU_BUILD_BINDING_JS: OFF
+-- TAU_BUILD_BROWSER_TESTS: OFF
+-- TAU_BUILD_REPL_WASM: OFF
+-- TAU_SHARED_PREFIX: <dependency-prefix>
+-- TAU_USE_CCACHE: ON
+-- TAU_DONT_USE_FTXUI: ON
+-- CMAKE_CXX_COMPILER_LAUNCHER: 
+-- CMAKE_CXX_COMPILER_ID: Clang
+-- CMAKE_CXX_COMPILER: /opt/homebrew/opt/llvm/bin/clang++
+-- CMAKE_CXX_COMPILER_VERSION: 22.1.2
+-- CMAKE_CXX_STANDARD: 
+-- CMAKE_INSTALL_PREFIX: <dependency-prefix>
+-- CMAKE_INSTALL_BINDIR: bin
+-- CMAKE_INSTALL_LIBDIR: lib
+-- CMAKE_INSTALL_INCLUDEDIR: include
+-- BA pack (TAU_BAS=sbf,tau,qint,qlt,bv): node<tau_ba<sbf_ba, qint, qlt, bv>, sbf_ba, qint, qlt, bv>
+-- DEP_CVC5_ARGS: -DTAU_BUILD_JOBS=8;-DTAU_SHARED_PREFIX=<dependency-prefix>;--darwin
+-- CVC5_LIBDIR: <cvc5-prefix>/lib
+-- Using caller-provided CVC5_DIR: <cvc5-prefix>/lib/cmake/cvc5
+-- cvc5 found: 1
+-- cvc5 version: 1.3.1
+-- curl not required by TAU_BAS=sbf,tau,qint,qlt,bv; skipping
+-- DEP_BOOST_ARGS: -DTAU_BUILD_JOBS=8;-DTAU_SHARED_PREFIX=<dependency-prefix>;-DTAU_BUILD_PIC=OFF;--darwin
+-- BOOST_LIBDIR: <dependency-prefix>/boost/dist/lib
+CMake Warning (dev) at CMakeLists.txt:456 (find_package):
+  Policy CMP0167 is not set: The FindBoost module is removed.  Run "cmake
+  --help-policy CMP0167" for policy details.  Use the cmake_policy command to
+  set the policy and suppress this warning.
+
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+-- Found Boost: /opt/homebrew/lib/cmake/Boost-1.89.0/BoostConfig.cmake (found version "1.89.0") found components: log
+-- Boost_DIR: /opt/homebrew/lib/cmake/Boost-1.89.0
+-- Boost version: 1.89.0
+-- Boost include dirs: /opt/homebrew/include
+-- Boost libraries: Boost::log
+-- CMAKE_BUILD_RPATH: @loader_path
+-- CMAKE_INSTALL_RPATH: @loader_path:@loader_path/../lib/tau:@loader_path/../lib64/tau:@executable_path
+-- CMAKE_INSTALL_RPATH_USE_LINK_PATH: TRUE
+-- CMAKE_SKIP_BUILD_RPATH: FALSE
+-- CMAKE_BUILD_WITH_RPATH: FALSE
+Building parser
+-- Adding <tau-source>/external/parser/cmake to CMAKE_MODULE_PATH
+-- Parser version: 1.0.0 / 1.0.0-alpha
+-- tauparser as a subproject of [tau]
+-- TAU_BUILD_JOBS: 8 (half of 16 cores)
+-- TAU_SHARED_PREFIX: <dependency-prefix>
+-- Parallel processing enabled (8 cores)
+-- TAU_PARSER_INSTALL:              OFF
+-- TAU_PARSER_BUILD_ALL:            OFF
+-- TAU_PARSER_BUILD_DOC:            OFF
+-- TAU_PARSER_BUILD_HEADER_ONLY:    OFF
+-- TAU_PARSER_BUILD_STATIC_LIBRARY: ON
+-- TAU_PARSER_BUILD_SHARED_LIBRARY: OFF
+-- TAU_PARSER_BUILD_EMSCRIPTEN:     OFF
+-- TAU_PARSER_BUILD_TESTS:          OFF
+-- TAU_PARSER_BUILD_EXAMPLES:       OFF
+-- TAU_PARSER_BUILD_TGF:            ON
+-- TAU_RUN_GRAMMAR_TESTS:           OFF
+-- TAU_PARSER_BUILD_BROWSER_TESTS:  OFF
+-- TAU_PARSER_DONT_USE_FTXUI:       ON
+-- TAU_PARSER_SPECIALIZE:           
+-- TAU_PARSER_BUILD_PIC:            OFF
+-- TAU_PARSER_ADDRESS_SANITIZER:    OFF
+-- TAU_PARSER_WINDOWS_PACKAGE:      OFF
+-- TAU_PARSER_WINDOWS_ZIP_PACKAGE:  OFF
+-- TAU_PARSER_MACOS_PACKAGE:        OFF
+-- TAU_PARSER_LTO:                  OFF
+-- TAU_PARSER_BIN_DESTINATION:      bin
+-- TAU_PARSER_DOC_DESTINATION:      share/doc/tauparser
+-- TAU_PARSER_DEFINITIONS:          TAU_PARSER_MEASURE;TAU_PARSER_MEASURE_SCOPES;TAU_PARSER_MEASURE_COUNTERS
+-- TAU_PARSER_COMPILE_OPTIONS:      -O3;-DNDEBUG;-Wno-gnu-line-marker
+-- TAU_PARSER_LINK_OPTIONS:         
+-- TAU_PARSER_MEASURE:              ON
+-- TAU_PARSER_MEASURE_SCOPES:       ON
+-- TAU_PARSER_MEASURE_COUNTERS:     ON
+-- CMAKE_BUILD_TYPE:                Release
+-- CMAKE_C_COMPILER_LAUNCHER:       
+-- CMAKE_CXX_COMPILER_LAUNCHER:     
+-- CMAKE_CXX_COMPILER_ID:           Clang
+-- CMAKE_CXX_COMPILER:              /opt/homebrew/opt/llvm/bin/clang++
+-- CMAKE_GENERATOR:                 Unix Makefiles
+-- CMAKE_BUILD_PARALLEL_LEVEL:      8
+-- CMAKE_MODULE_PATH:               <tau-source>/cmake;<tau-source>/external/parser/cmake;<tau-source>/external/parser/cmake
+-- FTXUI: disabled (TAU_PARSER_DONT_USE_FTXUI=ON)
+-- installing tgf to bin
+-- tau as a top project
+-- CMAKE_BUILD_TYPE Release
+-- Performing Test TAU_HAVE_FAT_LTO_OBJECTS
+-- Performing Test TAU_HAVE_FAT_LTO_OBJECTS - Failed
+-- LTO off
+-- COMPILE_OPTIONS -O3;-DNDEBUG
+-- TAU_LINK_OPTIONS 
+-- Performing Test TAU_HAVE_GOLD
+-- Performing Test TAU_HAVE_GOLD - Failed
+-- gold not available, linking with the default linker
+-- Building src
+-- TAU_HEADER_TEMPLATE: <tau-source>/src/tau.h.in
+-- TAU_HEADER: <tau-source>/src/tau.h
+-- TAU_SOURCE_DIR: <tau-source>/src
+-- Configuring done (3.5s)
+-- Generating done (0.1s)
+-- Build files have been written to: <tau-source>/build/release
