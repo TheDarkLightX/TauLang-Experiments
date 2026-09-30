@@ -1,0 +1,8 @@
+always o1[t]:bv[2] = (i1[t]:bv[2] + i2[t]:bv[2]).
+evalspec %1
+evalspec %1 3 2
+evalspec %1 0 0
+evalspec %1 1 2
+evalspec %1 4 0
+evalspec %1 03 0
+q

@@ -1,0 +1,40 @@
+Welcome to the Tau Language Framework version 0.7.0-alpha (15d09172) by IDNI AG.
+This product is protected by patents and copyright. By using this product, you agree to the license terms. To view the license run "tau --license".
+
+For documentation, open issues and reporting issues please visit https://github.com/IDNI/tau-lang/
+
+For built-in help, type "help" or "help command".
+
+tau> always o1[t]:bv[2] = (i1[t]:bv[2] + i2[t]:bv[2]).
+%1: always o1[t]:bv[2] = i1[t]:bv[2]+i2[t]:bv[2]
+
+[ %1 ] tau> evalspec %1
+inputs: i1[t] i2[t]
+outputs: o1[t]
+decisions: 0 leaves: 1 expressions: 4
+evalspec-result: status=admitted inputs=2 outputs=1 decisions=0 leaves=1 expressions=4 retained_terms=1 budget=1048576
+evalspec-end
+
+[ %1 ] tau> evalspec %1 3 2
+evalspec-result: status=ok leaf=0 outputs=1 o1[t]=1
+evalspec-end
+
+[ %1 ] tau> evalspec %1 0 0
+evalspec-result: status=ok leaf=0 outputs=1 o1[t]=0
+evalspec-end
+
+[ %1 ] tau> evalspec %1 1 2
+evalspec-result: status=ok leaf=0 outputs=1 o1[t]=3
+evalspec-end
+
+[ %1 ] tau> evalspec %1 4 0
+evalspec-result: status=error reason=bad_value
+evalspec-end
+
+[ %1 ] tau> evalspec %1 03 0
+evalspec-result: status=error reason=bad_value
+evalspec-end
+
+[ %1 ] tau> q
+Quit.
+

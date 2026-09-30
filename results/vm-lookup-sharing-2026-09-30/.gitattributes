@@ -1,0 +1,3 @@
+# Preserve patch context and raw output bytes.
+shared-lookup-replay/*.patch -text -whitespace
+shared-lookup-replay/recorded/small-example/*.txt -text -whitespace

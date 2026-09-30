@@ -1,0 +1,258 @@
+# TauFold VM v1. Instruction semantics are authoritative in this file.
+# Tables are fixed ADTs. select16/select32 are total unsigned lookup terms.
+# A lookup mask is all ones exactly when n=j: min(n xor j,1)-1.
+# Out-of-range indices are rejected by the instruction guards.
+type Instruction = {opcode: bv[32], operand: bv[32]}.
+type Code = {r0: Instruction, r1: Instruction, r2: Instruction, r3: Instruction, r4: Instruction, r5: Instruction, r6: Instruction, r7: Instruction, r8: Instruction, r9: Instruction, r10: Instruction, r11: Instruction, r12: Instruction, r13: Instruction, r14: Instruction, r15: Instruction, r16: Instruction, r17: Instruction, r18: Instruction, r19: Instruction, r20: Instruction, r21: Instruction, r22: Instruction, r23: Instruction, r24: Instruction, r25: Instruction, r26: Instruction, r27: Instruction, r28: Instruction, r29: Instruction, r30: Instruction, r31: Instruction}.
+type Words = {r0: bv[32], r1: bv[32], r2: bv[32], r3: bv[32], r4: bv[32], r5: bv[32], r6: bv[32], r7: bv[32], r8: bv[32], r9: bv[32], r10: bv[32], r11: bv[32], r12: bv[32], r13: bv[32], r14: bv[32], r15: bv[32]}.
+type Program = {code: Code, length: bv[32]}.
+type Tape = {words: Words, length: bv[32]}.
+type State = {accumulator: bv[32], pc: bv[32], memory: Words, input_cursor: bv[32], halted: bv[32]}.
+
+select16(v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, n):bv[32] :=
+    (v0 & (min((n ^ {0}:bv[32]), {1}:bv[32]) - {1}:bv[32])) |
+    (v1 & (min((n ^ {1}:bv[32]), {1}:bv[32]) - {1}:bv[32])) |
+    (v2 & (min((n ^ {2}:bv[32]), {1}:bv[32]) - {1}:bv[32])) |
+    (v3 & (min((n ^ {3}:bv[32]), {1}:bv[32]) - {1}:bv[32])) |
+    (v4 & (min((n ^ {4}:bv[32]), {1}:bv[32]) - {1}:bv[32])) |
+    (v5 & (min((n ^ {5}:bv[32]), {1}:bv[32]) - {1}:bv[32])) |
+    (v6 & (min((n ^ {6}:bv[32]), {1}:bv[32]) - {1}:bv[32])) |
+    (v7 & (min((n ^ {7}:bv[32]), {1}:bv[32]) - {1}:bv[32])) |
+    (v8 & (min((n ^ {8}:bv[32]), {1}:bv[32]) - {1}:bv[32])) |
+    (v9 & (min((n ^ {9}:bv[32]), {1}:bv[32]) - {1}:bv[32])) |
+    (v10 & (min((n ^ {10}:bv[32]), {1}:bv[32]) - {1}:bv[32])) |
+    (v11 & (min((n ^ {11}:bv[32]), {1}:bv[32]) - {1}:bv[32])) |
+    (v12 & (min((n ^ {12}:bv[32]), {1}:bv[32]) - {1}:bv[32])) |
+    (v13 & (min((n ^ {13}:bv[32]), {1}:bv[32]) - {1}:bv[32])) |
+    (v14 & (min((n ^ {14}:bv[32]), {1}:bv[32]) - {1}:bv[32])) |
+    (v15 & (min((n ^ {15}:bv[32]), {1}:bv[32]) - {1}:bv[32])).
+
+select32(v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22, v23, v24, v25, v26, v27, v28, v29, v30, v31, n):bv[32] :=
+    (v0 & (min((n ^ {0}:bv[32]), {1}:bv[32]) - {1}:bv[32])) |
+    (v1 & (min((n ^ {1}:bv[32]), {1}:bv[32]) - {1}:bv[32])) |
+    (v2 & (min((n ^ {2}:bv[32]), {1}:bv[32]) - {1}:bv[32])) |
+    (v3 & (min((n ^ {3}:bv[32]), {1}:bv[32]) - {1}:bv[32])) |
+    (v4 & (min((n ^ {4}:bv[32]), {1}:bv[32]) - {1}:bv[32])) |
+    (v5 & (min((n ^ {5}:bv[32]), {1}:bv[32]) - {1}:bv[32])) |
+    (v6 & (min((n ^ {6}:bv[32]), {1}:bv[32]) - {1}:bv[32])) |
+    (v7 & (min((n ^ {7}:bv[32]), {1}:bv[32]) - {1}:bv[32])) |
+    (v8 & (min((n ^ {8}:bv[32]), {1}:bv[32]) - {1}:bv[32])) |
+    (v9 & (min((n ^ {9}:bv[32]), {1}:bv[32]) - {1}:bv[32])) |
+    (v10 & (min((n ^ {10}:bv[32]), {1}:bv[32]) - {1}:bv[32])) |
+    (v11 & (min((n ^ {11}:bv[32]), {1}:bv[32]) - {1}:bv[32])) |
+    (v12 & (min((n ^ {12}:bv[32]), {1}:bv[32]) - {1}:bv[32])) |
+    (v13 & (min((n ^ {13}:bv[32]), {1}:bv[32]) - {1}:bv[32])) |
+    (v14 & (min((n ^ {14}:bv[32]), {1}:bv[32]) - {1}:bv[32])) |
+    (v15 & (min((n ^ {15}:bv[32]), {1}:bv[32]) - {1}:bv[32])) |
+    (v16 & (min((n ^ {16}:bv[32]), {1}:bv[32]) - {1}:bv[32])) |
+    (v17 & (min((n ^ {17}:bv[32]), {1}:bv[32]) - {1}:bv[32])) |
+    (v18 & (min((n ^ {18}:bv[32]), {1}:bv[32]) - {1}:bv[32])) |
+    (v19 & (min((n ^ {19}:bv[32]), {1}:bv[32]) - {1}:bv[32])) |
+    (v20 & (min((n ^ {20}:bv[32]), {1}:bv[32]) - {1}:bv[32])) |
+    (v21 & (min((n ^ {21}:bv[32]), {1}:bv[32]) - {1}:bv[32])) |
+    (v22 & (min((n ^ {22}:bv[32]), {1}:bv[32]) - {1}:bv[32])) |
+    (v23 & (min((n ^ {23}:bv[32]), {1}:bv[32]) - {1}:bv[32])) |
+    (v24 & (min((n ^ {24}:bv[32]), {1}:bv[32]) - {1}:bv[32])) |
+    (v25 & (min((n ^ {25}:bv[32]), {1}:bv[32]) - {1}:bv[32])) |
+    (v26 & (min((n ^ {26}:bv[32]), {1}:bv[32]) - {1}:bv[32])) |
+    (v27 & (min((n ^ {27}:bv[32]), {1}:bv[32]) - {1}:bv[32])) |
+    (v28 & (min((n ^ {28}:bv[32]), {1}:bv[32]) - {1}:bv[32])) |
+    (v29 & (min((n ^ {29}:bv[32]), {1}:bv[32]) - {1}:bv[32])) |
+    (v30 & (min((n ^ {30}:bv[32]), {1}:bv[32]) - {1}:bv[32])) |
+    (v31 & (min((n ^ {31}:bv[32]), {1}:bv[32]) - {1}:bv[32])).
+
+replace(old, value, n, j):bv[32] := (old & (min((n ^ j), {1}:bv[32]) - {1}:bv[32])') | (value & (min((n ^ j), {1}:bv[32]) - {1}:bv[32])).
+
+i1:Program := in console.
+i2:Tape := in console.
+i3:State := in console.
+o1:State := out console.
+o2:bv[32] := out console.
+
+vmsharedlookup0(unusedvalue):bv[32] := select32(i1[t].code.r0.opcode, i1[t].code.r1.opcode, i1[t].code.r2.opcode, i1[t].code.r3.opcode, i1[t].code.r4.opcode, i1[t].code.r5.opcode, i1[t].code.r6.opcode, i1[t].code.r7.opcode, i1[t].code.r8.opcode, i1[t].code.r9.opcode, i1[t].code.r10.opcode, i1[t].code.r11.opcode, i1[t].code.r12.opcode, i1[t].code.r13.opcode, i1[t].code.r14.opcode, i1[t].code.r15.opcode, i1[t].code.r16.opcode, i1[t].code.r17.opcode, i1[t].code.r18.opcode, i1[t].code.r19.opcode, i1[t].code.r20.opcode, i1[t].code.r21.opcode, i1[t].code.r22.opcode, i1[t].code.r23.opcode, i1[t].code.r24.opcode, i1[t].code.r25.opcode, i1[t].code.r26.opcode, i1[t].code.r27.opcode, i1[t].code.r28.opcode, i1[t].code.r29.opcode, i1[t].code.r30.opcode, i1[t].code.r31.opcode, i3[t].pc).
+vmsharedlookup1(unusedvalue):bv[32] := select32(i1[t].code.r0.operand, i1[t].code.r1.operand, i1[t].code.r2.operand, i1[t].code.r3.operand, i1[t].code.r4.operand, i1[t].code.r5.operand, i1[t].code.r6.operand, i1[t].code.r7.operand, i1[t].code.r8.operand, i1[t].code.r9.operand, i1[t].code.r10.operand, i1[t].code.r11.operand, i1[t].code.r12.operand, i1[t].code.r13.operand, i1[t].code.r14.operand, i1[t].code.r15.operand, i1[t].code.r16.operand, i1[t].code.r17.operand, i1[t].code.r18.operand, i1[t].code.r19.operand, i1[t].code.r20.operand, i1[t].code.r21.operand, i1[t].code.r22.operand, i1[t].code.r23.operand, i1[t].code.r24.operand, i1[t].code.r25.operand, i1[t].code.r26.operand, i1[t].code.r27.operand, i1[t].code.r28.operand, i1[t].code.r29.operand, i1[t].code.r30.operand, i1[t].code.r31.operand, i3[t].pc).
+vmsharedlookup2(unusedvalue):bv[32] := select16(i3[t].memory.r0, i3[t].memory.r1, i3[t].memory.r2, i3[t].memory.r3, i3[t].memory.r4, i3[t].memory.r5, i3[t].memory.r6, i3[t].memory.r7, i3[t].memory.r8, i3[t].memory.r9, i3[t].memory.r10, i3[t].memory.r11, i3[t].memory.r12, i3[t].memory.r13, i3[t].memory.r14, i3[t].memory.r15, vmsharedlookup1({0}:bv[32])).
+always ((i1[t].length > {0}:bv[32] && i1[t].length <= {32}:bv[32] && i2[t].length <= {16}:bv[32] && i3[t].input_cursor <= i2[t].length && i3[t].pc < i1[t].length && i3[t].halted = {0}:bv[32]) ?
+    ((vmsharedlookup0({0}:bv[32]) = {0}:bv[32] && vmsharedlookup1({0}:bv[32]) = {0}:bv[32] && i3[t].input_cursor = i2[t].length) ? (
+        o1[t].accumulator = i3[t].accumulator &&
+        o1[t].pc = i3[t].pc &&
+        (o1[t].memory.r0 = i3[t].memory.r0 && o1[t].memory.r1 = i3[t].memory.r1 && o1[t].memory.r2 = i3[t].memory.r2 && o1[t].memory.r3 = i3[t].memory.r3 && o1[t].memory.r4 = i3[t].memory.r4 && o1[t].memory.r5 = i3[t].memory.r5 && o1[t].memory.r6 = i3[t].memory.r6 && o1[t].memory.r7 = i3[t].memory.r7 && o1[t].memory.r8 = i3[t].memory.r8 && o1[t].memory.r9 = i3[t].memory.r9 && o1[t].memory.r10 = i3[t].memory.r10 && o1[t].memory.r11 = i3[t].memory.r11 && o1[t].memory.r12 = i3[t].memory.r12 && o1[t].memory.r13 = i3[t].memory.r13 && o1[t].memory.r14 = i3[t].memory.r14 && o1[t].memory.r15 = i3[t].memory.r15) &&
+        o1[t].input_cursor = i3[t].input_cursor &&
+        o1[t].halted = {1}:bv[32] &&
+        o2[t] = {0}:bv[32]
+    ) :
+    ((vmsharedlookup0({0}:bv[32]) = {1}:bv[32]) ? (
+        o1[t].accumulator = vmsharedlookup1({0}:bv[32]) &&
+        o1[t].pc = (i3[t].pc + {1}:bv[32]) &&
+        (o1[t].memory.r0 = i3[t].memory.r0 && o1[t].memory.r1 = i3[t].memory.r1 && o1[t].memory.r2 = i3[t].memory.r2 && o1[t].memory.r3 = i3[t].memory.r3 && o1[t].memory.r4 = i3[t].memory.r4 && o1[t].memory.r5 = i3[t].memory.r5 && o1[t].memory.r6 = i3[t].memory.r6 && o1[t].memory.r7 = i3[t].memory.r7 && o1[t].memory.r8 = i3[t].memory.r8 && o1[t].memory.r9 = i3[t].memory.r9 && o1[t].memory.r10 = i3[t].memory.r10 && o1[t].memory.r11 = i3[t].memory.r11 && o1[t].memory.r12 = i3[t].memory.r12 && o1[t].memory.r13 = i3[t].memory.r13 && o1[t].memory.r14 = i3[t].memory.r14 && o1[t].memory.r15 = i3[t].memory.r15) &&
+        o1[t].input_cursor = i3[t].input_cursor &&
+        o1[t].halted = {0}:bv[32] &&
+        o2[t] = {0}:bv[32]
+    ) :
+    ((vmsharedlookup0({0}:bv[32]) = {2}:bv[32]) ? (
+        o1[t].accumulator = (i3[t].accumulator + vmsharedlookup1({0}:bv[32])) &&
+        o1[t].pc = (i3[t].pc + {1}:bv[32]) &&
+        (o1[t].memory.r0 = i3[t].memory.r0 && o1[t].memory.r1 = i3[t].memory.r1 && o1[t].memory.r2 = i3[t].memory.r2 && o1[t].memory.r3 = i3[t].memory.r3 && o1[t].memory.r4 = i3[t].memory.r4 && o1[t].memory.r5 = i3[t].memory.r5 && o1[t].memory.r6 = i3[t].memory.r6 && o1[t].memory.r7 = i3[t].memory.r7 && o1[t].memory.r8 = i3[t].memory.r8 && o1[t].memory.r9 = i3[t].memory.r9 && o1[t].memory.r10 = i3[t].memory.r10 && o1[t].memory.r11 = i3[t].memory.r11 && o1[t].memory.r12 = i3[t].memory.r12 && o1[t].memory.r13 = i3[t].memory.r13 && o1[t].memory.r14 = i3[t].memory.r14 && o1[t].memory.r15 = i3[t].memory.r15) &&
+        o1[t].input_cursor = i3[t].input_cursor &&
+        o1[t].halted = {0}:bv[32] &&
+        o2[t] = {0}:bv[32]
+    ) :
+    ((vmsharedlookup0({0}:bv[32]) = {3}:bv[32]) ? (
+        o1[t].accumulator = (i3[t].accumulator - vmsharedlookup1({0}:bv[32])) &&
+        o1[t].pc = (i3[t].pc + {1}:bv[32]) &&
+        (o1[t].memory.r0 = i3[t].memory.r0 && o1[t].memory.r1 = i3[t].memory.r1 && o1[t].memory.r2 = i3[t].memory.r2 && o1[t].memory.r3 = i3[t].memory.r3 && o1[t].memory.r4 = i3[t].memory.r4 && o1[t].memory.r5 = i3[t].memory.r5 && o1[t].memory.r6 = i3[t].memory.r6 && o1[t].memory.r7 = i3[t].memory.r7 && o1[t].memory.r8 = i3[t].memory.r8 && o1[t].memory.r9 = i3[t].memory.r9 && o1[t].memory.r10 = i3[t].memory.r10 && o1[t].memory.r11 = i3[t].memory.r11 && o1[t].memory.r12 = i3[t].memory.r12 && o1[t].memory.r13 = i3[t].memory.r13 && o1[t].memory.r14 = i3[t].memory.r14 && o1[t].memory.r15 = i3[t].memory.r15) &&
+        o1[t].input_cursor = i3[t].input_cursor &&
+        o1[t].halted = {0}:bv[32] &&
+        o2[t] = {0}:bv[32]
+    ) :
+    ((vmsharedlookup0({0}:bv[32]) = {4}:bv[32]) ? (
+        o1[t].accumulator = (i3[t].accumulator ^ vmsharedlookup1({0}:bv[32])) &&
+        o1[t].pc = (i3[t].pc + {1}:bv[32]) &&
+        (o1[t].memory.r0 = i3[t].memory.r0 && o1[t].memory.r1 = i3[t].memory.r1 && o1[t].memory.r2 = i3[t].memory.r2 && o1[t].memory.r3 = i3[t].memory.r3 && o1[t].memory.r4 = i3[t].memory.r4 && o1[t].memory.r5 = i3[t].memory.r5 && o1[t].memory.r6 = i3[t].memory.r6 && o1[t].memory.r7 = i3[t].memory.r7 && o1[t].memory.r8 = i3[t].memory.r8 && o1[t].memory.r9 = i3[t].memory.r9 && o1[t].memory.r10 = i3[t].memory.r10 && o1[t].memory.r11 = i3[t].memory.r11 && o1[t].memory.r12 = i3[t].memory.r12 && o1[t].memory.r13 = i3[t].memory.r13 && o1[t].memory.r14 = i3[t].memory.r14 && o1[t].memory.r15 = i3[t].memory.r15) &&
+        o1[t].input_cursor = i3[t].input_cursor &&
+        o1[t].halted = {0}:bv[32] &&
+        o2[t] = {0}:bv[32]
+    ) :
+    ((vmsharedlookup0({0}:bv[32]) = {5}:bv[32] && vmsharedlookup1({0}:bv[32]) < {16}:bv[32]) ? (
+        o1[t].accumulator = vmsharedlookup2({0}:bv[32]) &&
+        o1[t].pc = (i3[t].pc + {1}:bv[32]) &&
+        (o1[t].memory.r0 = i3[t].memory.r0 && o1[t].memory.r1 = i3[t].memory.r1 && o1[t].memory.r2 = i3[t].memory.r2 && o1[t].memory.r3 = i3[t].memory.r3 && o1[t].memory.r4 = i3[t].memory.r4 && o1[t].memory.r5 = i3[t].memory.r5 && o1[t].memory.r6 = i3[t].memory.r6 && o1[t].memory.r7 = i3[t].memory.r7 && o1[t].memory.r8 = i3[t].memory.r8 && o1[t].memory.r9 = i3[t].memory.r9 && o1[t].memory.r10 = i3[t].memory.r10 && o1[t].memory.r11 = i3[t].memory.r11 && o1[t].memory.r12 = i3[t].memory.r12 && o1[t].memory.r13 = i3[t].memory.r13 && o1[t].memory.r14 = i3[t].memory.r14 && o1[t].memory.r15 = i3[t].memory.r15) &&
+        o1[t].input_cursor = i3[t].input_cursor &&
+        o1[t].halted = {0}:bv[32] &&
+        o2[t] = {0}:bv[32]
+    ) :
+    ((vmsharedlookup0({0}:bv[32]) = {6}:bv[32] && vmsharedlookup1({0}:bv[32]) < {16}:bv[32]) ? (
+        o1[t].accumulator = i3[t].accumulator &&
+        o1[t].pc = (i3[t].pc + {1}:bv[32]) &&
+        o1[t].memory.r0 = replace(i3[t].memory.r0, i3[t].accumulator, vmsharedlookup1({0}:bv[32]), {0}:bv[32]) &&
+        o1[t].memory.r1 = replace(i3[t].memory.r1, i3[t].accumulator, vmsharedlookup1({0}:bv[32]), {1}:bv[32]) &&
+        o1[t].memory.r2 = replace(i3[t].memory.r2, i3[t].accumulator, vmsharedlookup1({0}:bv[32]), {2}:bv[32]) &&
+        o1[t].memory.r3 = replace(i3[t].memory.r3, i3[t].accumulator, vmsharedlookup1({0}:bv[32]), {3}:bv[32]) &&
+        o1[t].memory.r4 = replace(i3[t].memory.r4, i3[t].accumulator, vmsharedlookup1({0}:bv[32]), {4}:bv[32]) &&
+        o1[t].memory.r5 = replace(i3[t].memory.r5, i3[t].accumulator, vmsharedlookup1({0}:bv[32]), {5}:bv[32]) &&
+        o1[t].memory.r6 = replace(i3[t].memory.r6, i3[t].accumulator, vmsharedlookup1({0}:bv[32]), {6}:bv[32]) &&
+        o1[t].memory.r7 = replace(i3[t].memory.r7, i3[t].accumulator, vmsharedlookup1({0}:bv[32]), {7}:bv[32]) &&
+        o1[t].memory.r8 = replace(i3[t].memory.r8, i3[t].accumulator, vmsharedlookup1({0}:bv[32]), {8}:bv[32]) &&
+        o1[t].memory.r9 = replace(i3[t].memory.r9, i3[t].accumulator, vmsharedlookup1({0}:bv[32]), {9}:bv[32]) &&
+        o1[t].memory.r10 = replace(i3[t].memory.r10, i3[t].accumulator, vmsharedlookup1({0}:bv[32]), {10}:bv[32]) &&
+        o1[t].memory.r11 = replace(i3[t].memory.r11, i3[t].accumulator, vmsharedlookup1({0}:bv[32]), {11}:bv[32]) &&
+        o1[t].memory.r12 = replace(i3[t].memory.r12, i3[t].accumulator, vmsharedlookup1({0}:bv[32]), {12}:bv[32]) &&
+        o1[t].memory.r13 = replace(i3[t].memory.r13, i3[t].accumulator, vmsharedlookup1({0}:bv[32]), {13}:bv[32]) &&
+        o1[t].memory.r14 = replace(i3[t].memory.r14, i3[t].accumulator, vmsharedlookup1({0}:bv[32]), {14}:bv[32]) &&
+        o1[t].memory.r15 = replace(i3[t].memory.r15, i3[t].accumulator, vmsharedlookup1({0}:bv[32]), {15}:bv[32]) &&
+        o1[t].input_cursor = i3[t].input_cursor &&
+        o1[t].halted = {0}:bv[32] &&
+        o2[t] = {0}:bv[32]
+    ) :
+    ((vmsharedlookup0({0}:bv[32]) = {7}:bv[32] && vmsharedlookup1({0}:bv[32]) < i1[t].length) ? (
+        o1[t].accumulator = i3[t].accumulator &&
+        o1[t].pc = vmsharedlookup1({0}:bv[32]) &&
+        (o1[t].memory.r0 = i3[t].memory.r0 && o1[t].memory.r1 = i3[t].memory.r1 && o1[t].memory.r2 = i3[t].memory.r2 && o1[t].memory.r3 = i3[t].memory.r3 && o1[t].memory.r4 = i3[t].memory.r4 && o1[t].memory.r5 = i3[t].memory.r5 && o1[t].memory.r6 = i3[t].memory.r6 && o1[t].memory.r7 = i3[t].memory.r7 && o1[t].memory.r8 = i3[t].memory.r8 && o1[t].memory.r9 = i3[t].memory.r9 && o1[t].memory.r10 = i3[t].memory.r10 && o1[t].memory.r11 = i3[t].memory.r11 && o1[t].memory.r12 = i3[t].memory.r12 && o1[t].memory.r13 = i3[t].memory.r13 && o1[t].memory.r14 = i3[t].memory.r14 && o1[t].memory.r15 = i3[t].memory.r15) &&
+        o1[t].input_cursor = i3[t].input_cursor &&
+        o1[t].halted = {0}:bv[32] &&
+        o2[t] = {0}:bv[32]
+    ) :
+    ((vmsharedlookup0({0}:bv[32]) = {8}:bv[32] && vmsharedlookup1({0}:bv[32]) < i1[t].length && i3[t].accumulator = {0}:bv[32]) ? (
+        o1[t].accumulator = i3[t].accumulator &&
+        o1[t].pc = vmsharedlookup1({0}:bv[32]) &&
+        (o1[t].memory.r0 = i3[t].memory.r0 && o1[t].memory.r1 = i3[t].memory.r1 && o1[t].memory.r2 = i3[t].memory.r2 && o1[t].memory.r3 = i3[t].memory.r3 && o1[t].memory.r4 = i3[t].memory.r4 && o1[t].memory.r5 = i3[t].memory.r5 && o1[t].memory.r6 = i3[t].memory.r6 && o1[t].memory.r7 = i3[t].memory.r7 && o1[t].memory.r8 = i3[t].memory.r8 && o1[t].memory.r9 = i3[t].memory.r9 && o1[t].memory.r10 = i3[t].memory.r10 && o1[t].memory.r11 = i3[t].memory.r11 && o1[t].memory.r12 = i3[t].memory.r12 && o1[t].memory.r13 = i3[t].memory.r13 && o1[t].memory.r14 = i3[t].memory.r14 && o1[t].memory.r15 = i3[t].memory.r15) &&
+        o1[t].input_cursor = i3[t].input_cursor &&
+        o1[t].halted = {0}:bv[32] &&
+        o2[t] = {0}:bv[32]
+    ) :
+    ((vmsharedlookup0({0}:bv[32]) = {8}:bv[32] && vmsharedlookup1({0}:bv[32]) < i1[t].length && i3[t].accumulator != {0}:bv[32]) ? (
+        o1[t].accumulator = i3[t].accumulator &&
+        o1[t].pc = (i3[t].pc + {1}:bv[32]) &&
+        (o1[t].memory.r0 = i3[t].memory.r0 && o1[t].memory.r1 = i3[t].memory.r1 && o1[t].memory.r2 = i3[t].memory.r2 && o1[t].memory.r3 = i3[t].memory.r3 && o1[t].memory.r4 = i3[t].memory.r4 && o1[t].memory.r5 = i3[t].memory.r5 && o1[t].memory.r6 = i3[t].memory.r6 && o1[t].memory.r7 = i3[t].memory.r7 && o1[t].memory.r8 = i3[t].memory.r8 && o1[t].memory.r9 = i3[t].memory.r9 && o1[t].memory.r10 = i3[t].memory.r10 && o1[t].memory.r11 = i3[t].memory.r11 && o1[t].memory.r12 = i3[t].memory.r12 && o1[t].memory.r13 = i3[t].memory.r13 && o1[t].memory.r14 = i3[t].memory.r14 && o1[t].memory.r15 = i3[t].memory.r15) &&
+        o1[t].input_cursor = i3[t].input_cursor &&
+        o1[t].halted = {0}:bv[32] &&
+        o2[t] = {0}:bv[32]
+    ) :
+    ((vmsharedlookup0({0}:bv[32]) = {9}:bv[32] && vmsharedlookup1({0}:bv[32]) = {0}:bv[32] && i3[t].input_cursor < i2[t].length) ? (
+        o1[t].accumulator = select16(i2[t].words.r0, i2[t].words.r1, i2[t].words.r2, i2[t].words.r3, i2[t].words.r4, i2[t].words.r5, i2[t].words.r6, i2[t].words.r7, i2[t].words.r8, i2[t].words.r9, i2[t].words.r10, i2[t].words.r11, i2[t].words.r12, i2[t].words.r13, i2[t].words.r14, i2[t].words.r15, i3[t].input_cursor) &&
+        o1[t].pc = (i3[t].pc + {1}:bv[32]) &&
+        (o1[t].memory.r0 = i3[t].memory.r0 && o1[t].memory.r1 = i3[t].memory.r1 && o1[t].memory.r2 = i3[t].memory.r2 && o1[t].memory.r3 = i3[t].memory.r3 && o1[t].memory.r4 = i3[t].memory.r4 && o1[t].memory.r5 = i3[t].memory.r5 && o1[t].memory.r6 = i3[t].memory.r6 && o1[t].memory.r7 = i3[t].memory.r7 && o1[t].memory.r8 = i3[t].memory.r8 && o1[t].memory.r9 = i3[t].memory.r9 && o1[t].memory.r10 = i3[t].memory.r10 && o1[t].memory.r11 = i3[t].memory.r11 && o1[t].memory.r12 = i3[t].memory.r12 && o1[t].memory.r13 = i3[t].memory.r13 && o1[t].memory.r14 = i3[t].memory.r14 && o1[t].memory.r15 = i3[t].memory.r15) &&
+        o1[t].input_cursor = (i3[t].input_cursor + {1}:bv[32]) &&
+        o1[t].halted = {0}:bv[32] &&
+        o2[t] = {0}:bv[32]
+    ) :
+    ((vmsharedlookup0({0}:bv[32]) = {10}:bv[32] && vmsharedlookup1({0}:bv[32]) < {16}:bv[32]) ? (
+        o1[t].accumulator = (i3[t].accumulator + vmsharedlookup2({0}:bv[32])) &&
+        o1[t].pc = (i3[t].pc + {1}:bv[32]) &&
+        (o1[t].memory.r0 = i3[t].memory.r0 && o1[t].memory.r1 = i3[t].memory.r1 && o1[t].memory.r2 = i3[t].memory.r2 && o1[t].memory.r3 = i3[t].memory.r3 && o1[t].memory.r4 = i3[t].memory.r4 && o1[t].memory.r5 = i3[t].memory.r5 && o1[t].memory.r6 = i3[t].memory.r6 && o1[t].memory.r7 = i3[t].memory.r7 && o1[t].memory.r8 = i3[t].memory.r8 && o1[t].memory.r9 = i3[t].memory.r9 && o1[t].memory.r10 = i3[t].memory.r10 && o1[t].memory.r11 = i3[t].memory.r11 && o1[t].memory.r12 = i3[t].memory.r12 && o1[t].memory.r13 = i3[t].memory.r13 && o1[t].memory.r14 = i3[t].memory.r14 && o1[t].memory.r15 = i3[t].memory.r15) &&
+        o1[t].input_cursor = i3[t].input_cursor &&
+        o1[t].halted = {0}:bv[32] &&
+        o2[t] = {0}:bv[32]
+    ) :
+    ((vmsharedlookup0({0}:bv[32]) = {11}:bv[32] && vmsharedlookup1({0}:bv[32]) < {16}:bv[32]) ? (
+        o1[t].accumulator = (i3[t].accumulator * vmsharedlookup2({0}:bv[32])) &&
+        o1[t].pc = (i3[t].pc + {1}:bv[32]) &&
+        (o1[t].memory.r0 = i3[t].memory.r0 && o1[t].memory.r1 = i3[t].memory.r1 && o1[t].memory.r2 = i3[t].memory.r2 && o1[t].memory.r3 = i3[t].memory.r3 && o1[t].memory.r4 = i3[t].memory.r4 && o1[t].memory.r5 = i3[t].memory.r5 && o1[t].memory.r6 = i3[t].memory.r6 && o1[t].memory.r7 = i3[t].memory.r7 && o1[t].memory.r8 = i3[t].memory.r8 && o1[t].memory.r9 = i3[t].memory.r9 && o1[t].memory.r10 = i3[t].memory.r10 && o1[t].memory.r11 = i3[t].memory.r11 && o1[t].memory.r12 = i3[t].memory.r12 && o1[t].memory.r13 = i3[t].memory.r13 && o1[t].memory.r14 = i3[t].memory.r14 && o1[t].memory.r15 = i3[t].memory.r15) &&
+        o1[t].input_cursor = i3[t].input_cursor &&
+        o1[t].halted = {0}:bv[32] &&
+        o2[t] = {0}:bv[32]
+    ) :
+    ((vmsharedlookup0({0}:bv[32]) = {12}:bv[32] && vmsharedlookup1({0}:bv[32]) < {16}:bv[32] && i3[t].accumulator < vmsharedlookup2({0}:bv[32])) ? (
+        o1[t].accumulator = {1}:bv[32] &&
+        o1[t].pc = (i3[t].pc + {1}:bv[32]) &&
+        (o1[t].memory.r0 = i3[t].memory.r0 && o1[t].memory.r1 = i3[t].memory.r1 && o1[t].memory.r2 = i3[t].memory.r2 && o1[t].memory.r3 = i3[t].memory.r3 && o1[t].memory.r4 = i3[t].memory.r4 && o1[t].memory.r5 = i3[t].memory.r5 && o1[t].memory.r6 = i3[t].memory.r6 && o1[t].memory.r7 = i3[t].memory.r7 && o1[t].memory.r8 = i3[t].memory.r8 && o1[t].memory.r9 = i3[t].memory.r9 && o1[t].memory.r10 = i3[t].memory.r10 && o1[t].memory.r11 = i3[t].memory.r11 && o1[t].memory.r12 = i3[t].memory.r12 && o1[t].memory.r13 = i3[t].memory.r13 && o1[t].memory.r14 = i3[t].memory.r14 && o1[t].memory.r15 = i3[t].memory.r15) &&
+        o1[t].input_cursor = i3[t].input_cursor &&
+        o1[t].halted = {0}:bv[32] &&
+        o2[t] = {0}:bv[32]
+    ) :
+    ((vmsharedlookup0({0}:bv[32]) = {12}:bv[32] && vmsharedlookup1({0}:bv[32]) < {16}:bv[32] && i3[t].accumulator >= vmsharedlookup2({0}:bv[32])) ? (
+        o1[t].accumulator = {0}:bv[32] &&
+        o1[t].pc = (i3[t].pc + {1}:bv[32]) &&
+        (o1[t].memory.r0 = i3[t].memory.r0 && o1[t].memory.r1 = i3[t].memory.r1 && o1[t].memory.r2 = i3[t].memory.r2 && o1[t].memory.r3 = i3[t].memory.r3 && o1[t].memory.r4 = i3[t].memory.r4 && o1[t].memory.r5 = i3[t].memory.r5 && o1[t].memory.r6 = i3[t].memory.r6 && o1[t].memory.r7 = i3[t].memory.r7 && o1[t].memory.r8 = i3[t].memory.r8 && o1[t].memory.r9 = i3[t].memory.r9 && o1[t].memory.r10 = i3[t].memory.r10 && o1[t].memory.r11 = i3[t].memory.r11 && o1[t].memory.r12 = i3[t].memory.r12 && o1[t].memory.r13 = i3[t].memory.r13 && o1[t].memory.r14 = i3[t].memory.r14 && o1[t].memory.r15 = i3[t].memory.r15) &&
+        o1[t].input_cursor = i3[t].input_cursor &&
+        o1[t].halted = {0}:bv[32] &&
+        o2[t] = {0}:bv[32]
+    ) :
+    ((vmsharedlookup0({0}:bv[32]) = {13}:bv[32] && vmsharedlookup1({0}:bv[32]) < {16}:bv[32]) ? (
+        o1[t].accumulator = max(i3[t].accumulator, vmsharedlookup2({0}:bv[32])) &&
+        o1[t].pc = (i3[t].pc + {1}:bv[32]) &&
+        (o1[t].memory.r0 = i3[t].memory.r0 && o1[t].memory.r1 = i3[t].memory.r1 && o1[t].memory.r2 = i3[t].memory.r2 && o1[t].memory.r3 = i3[t].memory.r3 && o1[t].memory.r4 = i3[t].memory.r4 && o1[t].memory.r5 = i3[t].memory.r5 && o1[t].memory.r6 = i3[t].memory.r6 && o1[t].memory.r7 = i3[t].memory.r7 && o1[t].memory.r8 = i3[t].memory.r8 && o1[t].memory.r9 = i3[t].memory.r9 && o1[t].memory.r10 = i3[t].memory.r10 && o1[t].memory.r11 = i3[t].memory.r11 && o1[t].memory.r12 = i3[t].memory.r12 && o1[t].memory.r13 = i3[t].memory.r13 && o1[t].memory.r14 = i3[t].memory.r14 && o1[t].memory.r15 = i3[t].memory.r15) &&
+        o1[t].input_cursor = i3[t].input_cursor &&
+        o1[t].halted = {0}:bv[32] &&
+        o2[t] = {0}:bv[32]
+    ) :
+    ((vmsharedlookup0({0}:bv[32]) = {14}:bv[32] && vmsharedlookup1({0}:bv[32]) < {16}:bv[32]) ? (
+        o1[t].accumulator = min(i3[t].accumulator, vmsharedlookup2({0}:bv[32])) &&
+        o1[t].pc = (i3[t].pc + {1}:bv[32]) &&
+        (o1[t].memory.r0 = i3[t].memory.r0 && o1[t].memory.r1 = i3[t].memory.r1 && o1[t].memory.r2 = i3[t].memory.r2 && o1[t].memory.r3 = i3[t].memory.r3 && o1[t].memory.r4 = i3[t].memory.r4 && o1[t].memory.r5 = i3[t].memory.r5 && o1[t].memory.r6 = i3[t].memory.r6 && o1[t].memory.r7 = i3[t].memory.r7 && o1[t].memory.r8 = i3[t].memory.r8 && o1[t].memory.r9 = i3[t].memory.r9 && o1[t].memory.r10 = i3[t].memory.r10 && o1[t].memory.r11 = i3[t].memory.r11 && o1[t].memory.r12 = i3[t].memory.r12 && o1[t].memory.r13 = i3[t].memory.r13 && o1[t].memory.r14 = i3[t].memory.r14 && o1[t].memory.r15 = i3[t].memory.r15) &&
+        o1[t].input_cursor = i3[t].input_cursor &&
+        o1[t].halted = {0}:bv[32] &&
+        o2[t] = {0}:bv[32]
+    ) :
+    ((vmsharedlookup0({0}:bv[32]) = {15}:bv[32] && vmsharedlookup1({0}:bv[32]) = {0}:bv[32] && i3[t].accumulator != {0}:bv[32]) ? (
+        o1[t].accumulator = i3[t].accumulator &&
+        o1[t].pc = (i3[t].pc + {1}:bv[32]) &&
+        (o1[t].memory.r0 = i3[t].memory.r0 && o1[t].memory.r1 = i3[t].memory.r1 && o1[t].memory.r2 = i3[t].memory.r2 && o1[t].memory.r3 = i3[t].memory.r3 && o1[t].memory.r4 = i3[t].memory.r4 && o1[t].memory.r5 = i3[t].memory.r5 && o1[t].memory.r6 = i3[t].memory.r6 && o1[t].memory.r7 = i3[t].memory.r7 && o1[t].memory.r8 = i3[t].memory.r8 && o1[t].memory.r9 = i3[t].memory.r9 && o1[t].memory.r10 = i3[t].memory.r10 && o1[t].memory.r11 = i3[t].memory.r11 && o1[t].memory.r12 = i3[t].memory.r12 && o1[t].memory.r13 = i3[t].memory.r13 && o1[t].memory.r14 = i3[t].memory.r14 && o1[t].memory.r15 = i3[t].memory.r15) &&
+        o1[t].input_cursor = i3[t].input_cursor &&
+        o1[t].halted = {0}:bv[32] &&
+        o2[t] = {0}:bv[32]
+    ) :
+    ((vmsharedlookup0({0}:bv[32]) = {16}:bv[32] && vmsharedlookup1({0}:bv[32]) = {0}:bv[32]) ? (
+        o1[t].accumulator = i3[t].accumulator &&
+        o1[t].pc = (i3[t].pc + {1}:bv[32]) &&
+        (o1[t].memory.r0 = i3[t].memory.r0 && o1[t].memory.r1 = i3[t].memory.r1 && o1[t].memory.r2 = i3[t].memory.r2 && o1[t].memory.r3 = i3[t].memory.r3 && o1[t].memory.r4 = i3[t].memory.r4 && o1[t].memory.r5 = i3[t].memory.r5 && o1[t].memory.r6 = i3[t].memory.r6 && o1[t].memory.r7 = i3[t].memory.r7 && o1[t].memory.r8 = i3[t].memory.r8 && o1[t].memory.r9 = i3[t].memory.r9 && o1[t].memory.r10 = i3[t].memory.r10 && o1[t].memory.r11 = i3[t].memory.r11 && o1[t].memory.r12 = i3[t].memory.r12 && o1[t].memory.r13 = i3[t].memory.r13 && o1[t].memory.r14 = i3[t].memory.r14 && o1[t].memory.r15 = i3[t].memory.r15) &&
+        o1[t].input_cursor = i3[t].input_cursor &&
+        o1[t].halted = {0}:bv[32] &&
+        o2[t] = {0}:bv[32]
+    ) :
+    ((vmsharedlookup0({0}:bv[32]) = {17}:bv[32]) ? ((i3[t].accumulator < vmsharedlookup1({0}:bv[32])) ? (o1[t].accumulator = {1}:bv[32] && o1[t].pc = i3[t].pc + {1}:bv[32] && (o1[t].memory.r0 = i3[t].memory.r0 && o1[t].memory.r1 = i3[t].memory.r1 && o1[t].memory.r2 = i3[t].memory.r2 && o1[t].memory.r3 = i3[t].memory.r3 && o1[t].memory.r4 = i3[t].memory.r4 && o1[t].memory.r5 = i3[t].memory.r5 && o1[t].memory.r6 = i3[t].memory.r6 && o1[t].memory.r7 = i3[t].memory.r7 && o1[t].memory.r8 = i3[t].memory.r8 && o1[t].memory.r9 = i3[t].memory.r9 && o1[t].memory.r10 = i3[t].memory.r10 && o1[t].memory.r11 = i3[t].memory.r11 && o1[t].memory.r12 = i3[t].memory.r12 && o1[t].memory.r13 = i3[t].memory.r13 && o1[t].memory.r14 = i3[t].memory.r14 && o1[t].memory.r15 = i3[t].memory.r15) && o1[t].input_cursor = i3[t].input_cursor && o1[t].halted = {0}:bv[32] && o2[t] = {0}:bv[32]) : (o1[t].accumulator = {0}:bv[32] && o1[t].pc = i3[t].pc + {1}:bv[32] && (o1[t].memory.r0 = i3[t].memory.r0 && o1[t].memory.r1 = i3[t].memory.r1 && o1[t].memory.r2 = i3[t].memory.r2 && o1[t].memory.r3 = i3[t].memory.r3 && o1[t].memory.r4 = i3[t].memory.r4 && o1[t].memory.r5 = i3[t].memory.r5 && o1[t].memory.r6 = i3[t].memory.r6 && o1[t].memory.r7 = i3[t].memory.r7 && o1[t].memory.r8 = i3[t].memory.r8 && o1[t].memory.r9 = i3[t].memory.r9 && o1[t].memory.r10 = i3[t].memory.r10 && o1[t].memory.r11 = i3[t].memory.r11 && o1[t].memory.r12 = i3[t].memory.r12 && o1[t].memory.r13 = i3[t].memory.r13 && o1[t].memory.r14 = i3[t].memory.r14 && o1[t].memory.r15 = i3[t].memory.r15) && o1[t].input_cursor = i3[t].input_cursor && o1[t].halted = {0}:bv[32] && o2[t] = {0}:bv[32])) : (
+        o1[t].accumulator = i3[t].accumulator &&
+        o1[t].pc = i3[t].pc &&
+        (o1[t].memory.r0 = i3[t].memory.r0 && o1[t].memory.r1 = i3[t].memory.r1 && o1[t].memory.r2 = i3[t].memory.r2 && o1[t].memory.r3 = i3[t].memory.r3 && o1[t].memory.r4 = i3[t].memory.r4 && o1[t].memory.r5 = i3[t].memory.r5 && o1[t].memory.r6 = i3[t].memory.r6 && o1[t].memory.r7 = i3[t].memory.r7 && o1[t].memory.r8 = i3[t].memory.r8 && o1[t].memory.r9 = i3[t].memory.r9 && o1[t].memory.r10 = i3[t].memory.r10 && o1[t].memory.r11 = i3[t].memory.r11 && o1[t].memory.r12 = i3[t].memory.r12 && o1[t].memory.r13 = i3[t].memory.r13 && o1[t].memory.r14 = i3[t].memory.r14 && o1[t].memory.r15 = i3[t].memory.r15) &&
+        o1[t].input_cursor = i3[t].input_cursor &&
+        o1[t].halted = i3[t].halted &&
+        o2[t] = {1}:bv[32]
+    ))))))))))))))))))))) :
+    (
+        o1[t].accumulator = i3[t].accumulator &&
+        o1[t].pc = i3[t].pc &&
+        (o1[t].memory.r0 = i3[t].memory.r0 && o1[t].memory.r1 = i3[t].memory.r1 && o1[t].memory.r2 = i3[t].memory.r2 && o1[t].memory.r3 = i3[t].memory.r3 && o1[t].memory.r4 = i3[t].memory.r4 && o1[t].memory.r5 = i3[t].memory.r5 && o1[t].memory.r6 = i3[t].memory.r6 && o1[t].memory.r7 = i3[t].memory.r7 && o1[t].memory.r8 = i3[t].memory.r8 && o1[t].memory.r9 = i3[t].memory.r9 && o1[t].memory.r10 = i3[t].memory.r10 && o1[t].memory.r11 = i3[t].memory.r11 && o1[t].memory.r12 = i3[t].memory.r12 && o1[t].memory.r13 = i3[t].memory.r13 && o1[t].memory.r14 = i3[t].memory.r14 && o1[t].memory.r15 = i3[t].memory.r15) &&
+        o1[t].input_cursor = i3[t].input_cursor &&
+        o1[t].halted = i3[t].halted &&
+        o2[t] = {1}:bv[32]
+    )).

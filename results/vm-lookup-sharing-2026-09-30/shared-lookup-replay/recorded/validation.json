@@ -1,0 +1,404 @@
+{
+  "scope": "Release build of the evaluator-only patch; one full five-algebra suite in each ambient switch mode, plus separate build and focused checks for three algebra selections.",
+  "full_suites": [
+    {
+      "mode": "disabled",
+      "switch": "0",
+      "exit_code": 8,
+      "elapsed_seconds": 401.8127222061157,
+      "tests": 2398,
+      "failed": [
+        "test_repl-normalize_cmd-issue185_juxtaposed_min_printed",
+        "test_repl-normalize_cmd-qlt_pinned_neq_residual",
+        "test_repl-normalize_cmd-qlt_density_residual"
+      ],
+      "skipped": [],
+      "binary_sha256": "6539b872083f3258bad4e72bf8a6214479d7ec5ccf82cc0b895a943ec9c61973",
+      "passed": 2395,
+      "internal_skipped_cases": 12,
+      "test_records": "suite-disabled.json"
+    },
+    {
+      "mode": "enabled",
+      "switch": "1",
+      "exit_code": 8,
+      "elapsed_seconds": 395.0724971294403,
+      "tests": 2398,
+      "failed": [
+        "test_repl-normalize_cmd-issue185_juxtaposed_min_printed",
+        "test_repl-normalize_cmd-qlt_pinned_neq_residual",
+        "test_repl-normalize_cmd-qlt_density_residual"
+      ],
+      "skipped": [],
+      "binary_sha256": "6539b872083f3258bad4e72bf8a6214479d7ec5ccf82cc0b895a943ec9c61973",
+      "passed": 2395,
+      "internal_skipped_cases": 12,
+      "test_records": "suite-enabled.json"
+    }
+  ],
+  "stock_printing_comparison": {
+    "scope": "Only the three failed tests were run against stock with the same macOS portability correction; not a full stock suite.",
+    "binary_sha256": "269e19f4937af91c11aa42137e93569d0e09d508e16b1416879cbde4fe465e7c",
+    "tests": [
+      {
+        "name": "test_repl-normalize_cmd-issue185_juxtaposed_min_printed",
+        "status": "failed",
+        "seconds": 0.305781,
+        "printed_formulas": [
+          "min(x, { 2 }:bv[2])x = { 2 }:bv[2]"
+        ]
+      },
+      {
+        "name": "test_repl-normalize_cmd-qlt_pinned_neq_residual",
+        "status": "failed",
+        "seconds": 0.0376596,
+        "printed_formulas": [
+          "b != a"
+        ]
+      },
+      {
+        "name": "test_repl-normalize_cmd-qlt_density_residual",
+        "status": "failed",
+        "seconds": 0.0373765,
+        "printed_formulas": [
+          "a < b || a != c && b = a"
+        ]
+      }
+    ]
+  },
+  "qualification_notes": [
+    "The first full run was interrupted after generated-code compiler setup failures. Local compiler wrappers and ICU search paths corrected the environment without modifying the source or main executable.",
+    "No failed expectation was edited or excluded. The same three print-order expectations fail with identical printed formulas in stock and both candidate modes.",
+    "The three additional algebra selections have build and focused-test evidence only.",
+    "Upstream excludes 19 C++ test executables by default. Successful executables contain 12 internal skipped cases per full run.",
+    "No sanitizer qualification or general correctness proof is claimed."
+  ],
+  "algebra_build_checks": [
+    {
+      "configuration": "default",
+      "exit_codes": [
+        0,
+        0,
+        0
+      ],
+      "elapsed_seconds": 398.28979301452637,
+      "scope": "Build and focused checks only; not a full suite",
+      "binary_sha256": "abe8bc7945f73c14136291acb2f2d93304917bd328f3a9a59a1000ef0b947acb",
+      "version": "Tau Language Framework version 0.7.0-alpha (15d09172)\nalgebras: tau, qint, qlt, nlang, bv, sbf, hsb",
+      "tests": 19,
+      "failed": [],
+      "skipped": [],
+      "test_records": [
+        {
+          "name": "test_ba_conformance",
+          "status": "passed",
+          "seconds": 0.354914,
+          "internal_cases": {
+            "run": 3,
+            "passed": 3,
+            "failed": 0,
+            "skipped": 0
+          }
+        },
+        {
+          "name": "test_ba_descriptor_pack",
+          "status": "passed",
+          "seconds": 0.240926,
+          "internal_cases": {
+            "run": 3,
+            "passed": 3,
+            "failed": 0,
+            "skipped": 0
+          }
+        },
+        {
+          "name": "test_ba_descriptor_pack_full",
+          "status": "passed",
+          "seconds": 0.345341,
+          "internal_cases": {
+            "run": 19,
+            "passed": 19,
+            "failed": 0,
+            "skipped": 0
+          }
+        },
+        {
+          "name": "test_api-concrete_eval",
+          "status": "passed",
+          "seconds": 41.1044,
+          "internal_cases": {
+            "run": 9,
+            "passed": 9,
+            "failed": 0,
+            "skipped": 0
+          }
+        },
+        {
+          "name": "test_repl-evalspec-admitted",
+          "status": "passed",
+          "seconds": 0.310018
+        },
+        {
+          "name": "test_repl-evalspec-ok",
+          "status": "passed",
+          "seconds": 0.0413232
+        },
+        {
+          "name": "test_repl-evalspec-arity",
+          "status": "passed",
+          "seconds": 0.0397225
+        },
+        {
+          "name": "test_repl-evalspec-overflow",
+          "status": "passed",
+          "seconds": 0.041093
+        },
+        {
+          "name": "test_repl-evalspec-leading_zero",
+          "status": "passed",
+          "seconds": 0.0427324
+        },
+        {
+          "name": "test_repl-evalspec-junk",
+          "status": "passed",
+          "seconds": 0.0421388
+        },
+        {
+          "name": "test_repl-evalspec-huge_value",
+          "status": "passed",
+          "seconds": 0.0421683
+        },
+        {
+          "name": "test_repl-evalspec-over_budget",
+          "status": "passed",
+          "seconds": 0.0407348
+        },
+        {
+          "name": "test_repl-evalspec-shadowed_def",
+          "status": "passed",
+          "seconds": 0.045539
+        },
+        {
+          "name": "test_repl-evalspec-def_after_admission",
+          "status": "passed",
+          "seconds": 0.0464878
+        },
+        {
+          "name": "test_repl-evalspec-declined",
+          "status": "passed",
+          "seconds": 0.0434945
+        },
+        {
+          "name": "test_repl-evalspec-usage",
+          "status": "passed",
+          "seconds": 0.0379819
+        },
+        {
+          "name": "test_repl-evalspec-no_history",
+          "status": "passed",
+          "seconds": 0.0368621
+        },
+        {
+          "name": "test_repl-evalspec-huge_history",
+          "status": "passed",
+          "seconds": 0.0373619
+        },
+        {
+          "name": "test_repl-evalspec-zero_history",
+          "status": "passed",
+          "seconds": 0.0365928
+        }
+      ]
+    },
+    {
+      "configuration": "bvonly",
+      "exit_codes": {
+        "build-tests": 0,
+        "test": 0
+      },
+      "elapsed_seconds": 101.69666504859924,
+      "scope": "Build and focused checks only; not a full suite",
+      "full_descriptor_test": "Not configured by upstream for this reduced pack",
+      "binary_sha256": "802a95218c30d366b5b7f742efd9493dc719c324ceda9f3044179e4adeaeb3b5",
+      "version": "Tau Language Framework version 0.7.0-alpha (15d09172)\nalgebras: tau, sbf, bv",
+      "tests": 18,
+      "failed": [],
+      "skipped": [],
+      "test_records": [
+        {
+          "name": "test_ba_conformance",
+          "status": "passed",
+          "seconds": 0.328227,
+          "internal_cases": {
+            "run": 3,
+            "passed": 3,
+            "failed": 0,
+            "skipped": 0
+          }
+        },
+        {
+          "name": "test_ba_descriptor_pack",
+          "status": "passed",
+          "seconds": 0.232309,
+          "internal_cases": {
+            "run": 3,
+            "passed": 3,
+            "failed": 0,
+            "skipped": 0
+          }
+        },
+        {
+          "name": "test_api-concrete_eval",
+          "status": "passed",
+          "seconds": 40.4142,
+          "internal_cases": {
+            "run": 9,
+            "passed": 9,
+            "failed": 0,
+            "skipped": 0
+          }
+        },
+        {
+          "name": "test_repl-evalspec-admitted",
+          "status": "passed",
+          "seconds": 0.0395743
+        },
+        {
+          "name": "test_repl-evalspec-ok",
+          "status": "passed",
+          "seconds": 0.0389829
+        },
+        {
+          "name": "test_repl-evalspec-arity",
+          "status": "passed",
+          "seconds": 0.0380426
+        },
+        {
+          "name": "test_repl-evalspec-overflow",
+          "status": "passed",
+          "seconds": 0.0382848
+        },
+        {
+          "name": "test_repl-evalspec-leading_zero",
+          "status": "passed",
+          "seconds": 0.0385969
+        },
+        {
+          "name": "test_repl-evalspec-junk",
+          "status": "passed",
+          "seconds": 0.037708
+        },
+        {
+          "name": "test_repl-evalspec-huge_value",
+          "status": "passed",
+          "seconds": 0.0375568
+        },
+        {
+          "name": "test_repl-evalspec-over_budget",
+          "status": "passed",
+          "seconds": 0.0379874
+        },
+        {
+          "name": "test_repl-evalspec-shadowed_def",
+          "status": "passed",
+          "seconds": 0.0439437
+        },
+        {
+          "name": "test_repl-evalspec-def_after_admission",
+          "status": "passed",
+          "seconds": 0.0437633
+        },
+        {
+          "name": "test_repl-evalspec-declined",
+          "status": "passed",
+          "seconds": 0.0390887
+        },
+        {
+          "name": "test_repl-evalspec-usage",
+          "status": "passed",
+          "seconds": 0.0330314
+        },
+        {
+          "name": "test_repl-evalspec-no_history",
+          "status": "passed",
+          "seconds": 0.0339175
+        },
+        {
+          "name": "test_repl-evalspec-huge_history",
+          "status": "passed",
+          "seconds": 0.0335317
+        },
+        {
+          "name": "test_repl-evalspec-zero_history",
+          "status": "passed",
+          "seconds": 0.0333495
+        }
+      ]
+    },
+    {
+      "configuration": "nobv",
+      "exit_codes": {
+        "build-tau": 0,
+        "build-tests": 0,
+        "test": 0
+      },
+      "elapsed_seconds": 232.1955783367157,
+      "scope": "Build and focused checks only; not a full suite",
+      "full_descriptor_test": "Not configured by upstream for this reduced pack",
+      "binary_sha256": "e92ebf93e5909eeb397a80d60d363989f6e34b43012c787a76d16e3135cd6189",
+      "version": "Tau Language Framework version 0.7.0-alpha (15d09172)\nalgebras: tau, sbf, qint",
+      "tests": 7,
+      "failed": [],
+      "skipped": [],
+      "test_records": [
+        {
+          "name": "test_ba_conformance",
+          "status": "passed",
+          "seconds": 0.295045,
+          "internal_cases": {
+            "run": 4,
+            "passed": 4,
+            "failed": 0,
+            "skipped": 0
+          }
+        },
+        {
+          "name": "test_ba_descriptor_pack",
+          "status": "passed",
+          "seconds": 0.274739,
+          "internal_cases": {
+            "run": 3,
+            "passed": 3,
+            "failed": 0,
+            "skipped": 0
+          }
+        },
+        {
+          "name": "test_repl-evalspec-no_backend",
+          "status": "passed",
+          "seconds": 0.263788
+        },
+        {
+          "name": "test_repl-evalspec-usage",
+          "status": "passed",
+          "seconds": 0.0315247
+        },
+        {
+          "name": "test_repl-evalspec-no_history",
+          "status": "passed",
+          "seconds": 0.0318643
+        },
+        {
+          "name": "test_repl-evalspec-huge_history",
+          "status": "passed",
+          "seconds": 0.0321154
+        },
+        {
+          "name": "test_repl-evalspec-zero_history",
+          "status": "passed",
+          "seconds": 0.0322826
+        }
+      ]
+    }
+  ]
+}
