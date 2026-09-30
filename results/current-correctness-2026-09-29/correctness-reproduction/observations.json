@@ -1,0 +1,188 @@
+{
+  "recorded_at": "2026-09-29T23:23:16.116000-04:00",
+  "platform": "macOS-26.6.2-arm64-arm-64bit",
+  "binary_sha256": "20814fbd6b4a64be925e76c8f670ceff484e5ad60b3a78c92599149afa55cecf",
+  "binary_version": "Tau Language Framework version 0.7.0-alpha (8c1f5ecd)\nalgebras: tau, sbf, qint, qlt, bv",
+  "tau_commit": "8c1f5ecd0e1391e8264d9d006a74e0586592f47f",
+  "parser_commit": "5b14b6fde86f16dc52c4c0a953a8a1e53c88f95a",
+  "command_arguments": [
+    "--charvar",
+    "false",
+    "-c",
+    "false",
+    "-S",
+    "error"
+  ],
+  "scope": "14 fresh-process correctness checks; no patch qualification or performance measurement",
+  "results": [
+    {
+      "name": "constant-equality",
+      "group": "definitions",
+      "input": "k() := {7}:bv[8].\nsat k() = {7}:bv[8].\n",
+      "expected": "T",
+      "observed_verdicts": [
+        "F"
+      ],
+      "returncode": 0,
+      "stdout": "[ error ] tau> k() := {7}:bv[8].\n[1] k() := { 7 }:bv[8].\n\n[ error ] tau> sat k() = {7}:bv[8].\n%1: F\n\n[ %1 error ] tau> ",
+      "stderr": "(Error) transform_to_execution: unresolved function or predicate symbol k() found; treating the formula as unsatisfiable\ncalculate_fixed_points:                            1 \u00b5s\napply_rec_relations:\nnormalize:                                       918 \u00b5s\n\teliminate_arithmetic_and_quantifiers:     50 \u00b5s\n\tnormalize_temporal_quantifiers:          863 \u00b5s\nexpand_definitions:                                9 \u00b5s\nk() := { 7 }:bv[8]. applications:                  1\nnormalize:                                        17 \u00b5s\n\tnormalize:                                 0  ms\n\texpand_definitions:                        8 \u00b5s\nexpression_paths:                                647 \u00b5s\n"
+    },
+    {
+      "name": "constant-validity",
+      "group": "definitions",
+      "input": "k() := {7}:bv[8].\nvalid k() != {7}:bv[8].\n",
+      "expected": "F",
+      "observed_verdicts": [
+        "T"
+      ],
+      "returncode": 0,
+      "stdout": "[ error ] tau> k() := {7}:bv[8].\n[1] k() := { 7 }:bv[8].\n\n[ error ] tau> valid k() != {7}:bv[8].\n%1: T\n\n[ %1 error ] tau> ",
+      "stderr": "(Error) transform_to_execution: unresolved function or predicate symbol k() found; treating the formula as unsatisfiable\ncalculate_fixed_points:                            1 \u00b5s\napply_rec_relations:\nnormalize:                                       811 \u00b5s\n\teliminate_arithmetic_and_quantifiers:     21 \u00b5s\n\tnormalize_temporal_quantifiers:          783 \u00b5s\nexpand_definitions:                               12 \u00b5s\nk() := { 7 }:bv[8]. applications:                  1\neliminate_arithmetic_and_quantifiers:              6 \u00b5s\nnormalize_temporal_quantifiers:                    1 \u00b5s\nnormalize:                                        78 \u00b5s\n\teliminate_arithmetic_and_quantifiers:     13 \u00b5s\n\tnormalize_temporal_quantifiers:           60 \u00b5s\nexpand_definitions:                               19 \u00b5s\nexpression_paths:\n"
+    },
+    {
+      "name": "constant-assignment",
+      "group": "definitions",
+      "input": "k() := {7}:bv[8].\nsat x:bv[8] = k().\n",
+      "expected": "T",
+      "observed_verdicts": [
+        "F"
+      ],
+      "returncode": 0,
+      "stdout": "[ error ] tau> k() := {7}:bv[8].\n[1] k() := { 7 }:bv[8].\n\n[ error ] tau> sat x:bv[8] = k().\n%1: F\n\n[ %1 error ] tau> ",
+      "stderr": "(Error) transform_to_execution: unresolved function or predicate symbol k() found; treating the formula as unsatisfiable\ncalculate_fixed_points:                                    1 \u00b5s\napply_rec_relations:\nnormalize:                                               203 \u00b5s\n\teliminate_arithmetic_and_quantifiers:             28 \u00b5s\n\tnormalize_temporal_quantifiers:                  170 \u00b5s\nexpand_definitions:                                       19 \u00b5s\nk() := { 7 }:bv[8]. applications:                          2\nnormalize:                                               150 \u00b5s\n\tnormalize:                                       103 \u00b5s\n\t\teliminate_arithmetic_and_quantifiers:     54 \u00b5s\n\t\tnormalize_temporal_quantifiers:           21 \u00b5s\n\texpand_definitions:                               20 \u00b5s\nexpression_paths:                                        622 \u00b5s\n"
+    },
+    {
+      "name": "parameter-equality",
+      "group": "definitions",
+      "input": "k1(z) := {7}:bv[8].\nsat k1({0}:bv[8]) = {7}:bv[8].\n",
+      "expected": "T",
+      "observed_verdicts": [
+        "T"
+      ],
+      "returncode": 0,
+      "stdout": "[ error ] tau> k1(z) := {7}:bv[8].\n[1] k1(z) := { 7 }:bv[8].\n\n[ error ] tau> sat k1({0}:bv[8]) = {7}:bv[8].\n%1: T\n\n[ %1 error ] tau> ",
+      "stderr": "calculate_fixed_points:\napply_rec_relations:\nnormalize:                                        34 \u00b5s\n\teliminate_arithmetic_and_quantifiers:     17 \u00b5s\n\tnormalize_temporal_quantifiers:           11 \u00b5s\nexpand_definitions:\nk1(z) := { 7 }:bv[8]. applications:                3\nk1(z) := { 7 }:bv[8]. hits:                        2\nnormalize:                                         4 \u00b5s\n\tnormalize:                                 0  ms\n\texpand_definitions:                        0  ms\nexpression_paths:\n"
+    },
+    {
+      "name": "parameter-validity",
+      "group": "definitions",
+      "input": "k1(z) := {7}:bv[8].\nvalid k1({0}:bv[8]) != {7}:bv[8].\n",
+      "expected": "F",
+      "observed_verdicts": [
+        "F"
+      ],
+      "returncode": 0,
+      "stdout": "[ error ] tau> k1(z) := {7}:bv[8].\n[1] k1(z) := { 7 }:bv[8].\n\n[ error ] tau> valid k1({0}:bv[8]) != {7}:bv[8].\n%1: F\n\n[ %1 error ] tau> ",
+      "stderr": "calculate_fixed_points:\napply_rec_relations:\nnormalize:                                        19 \u00b5s\n\teliminate_arithmetic_and_quantifiers:     11 \u00b5s\n\tnormalize_temporal_quantifiers:            3 \u00b5s\nexpand_definitions:\nk1(z) := { 7 }:bv[8]. applications:                3\nk1(z) := { 7 }:bv[8]. hits:                        2\neliminate_arithmetic_and_quantifiers:              3 \u00b5s\nnormalize_temporal_quantifiers:\nnormalize:\nexpand_definitions:\nexpression_paths:\n"
+    },
+    {
+      "name": "literal-equality",
+      "group": "definitions",
+      "input": "sat {7}:bv[8] = {7}:bv[8].\n",
+      "expected": "T",
+      "observed_verdicts": [
+        "T"
+      ],
+      "returncode": 0,
+      "stdout": "[ error ] tau> sat {7}:bv[8] = {7}:bv[8].\n%1: T\n\n[ %1 error ] tau> ",
+      "stderr": "calculate_fixed_points:\napply_rec_relations:\nnormalize:                                        18 \u00b5s\n\teliminate_arithmetic_and_quantifiers:     10 \u00b5s\n\tnormalize_temporal_quantifiers:            3 \u00b5s\nexpand_definitions:\nnormalize:                                         3 \u00b5s\n\tnormalize:                                 0  ms\n\texpand_definitions:                        0  ms\nexpression_paths:\n"
+    },
+    {
+      "name": "literal-validity",
+      "group": "definitions",
+      "input": "valid {7}:bv[8] != {7}:bv[8].\n",
+      "expected": "F",
+      "observed_verdicts": [
+        "F"
+      ],
+      "returncode": 0,
+      "stdout": "[ error ] tau> valid {7}:bv[8] != {7}:bv[8].\n%1: F\n\n[ %1 error ] tau> ",
+      "stderr": "calculate_fixed_points:\napply_rec_relations:\nnormalize:                                        29 \u00b5s\n\teliminate_arithmetic_and_quantifiers:     16 \u00b5s\n\tnormalize_temporal_quantifiers:            4 \u00b5s\nexpand_definitions:\neliminate_arithmetic_and_quantifiers:              3 \u00b5s\nnormalize_temporal_quantifiers:\nnormalize:\nexpand_definitions:\nexpression_paths:\n"
+    },
+    {
+      "name": "parameter-arithmetic",
+      "group": "definitions",
+      "input": "k2(z) := z + {1}:bv[8].\nsat k2({6}:bv[8]) = {7}:bv[8].\n",
+      "expected": "T",
+      "observed_verdicts": [
+        "T"
+      ],
+      "returncode": 0,
+      "stdout": "[ error ] tau> k2(z) := z + {1}:bv[8].\n[1] k2(z) := (z+{ 1 }:bv[8]).\n\n[ error ] tau> sat k2({6}:bv[8]) = {7}:bv[8].\n%1: T\n\n[ %1 error ] tau> ",
+      "stderr": "calculate_fixed_points:\napply_rec_relations:\nnormalize:                                        20 \u00b5s\n\teliminate_arithmetic_and_quantifiers:     12 \u00b5s\n\tnormalize_temporal_quantifiers:            4 \u00b5s\nexpand_definitions:\nk2(z) := z+{ 1 }:bv[8]. applications:              2\nk2(z) := z+{ 1 }:bv[8]. hits:                      1\nnormalize:                                         3 \u00b5s\n\tnormalize:                                 0  ms\n\texpand_definitions:                        0  ms\nexpression_paths:\n"
+    },
+    {
+      "name": "point-existential",
+      "group": "qlt",
+      "input": "normalize ex y:qlt ((({3}:qlt & y) != 0) && (({3}:qlt & y') != 0)).\n",
+      "expected": "F",
+      "observed_verdicts": [
+        "T"
+      ],
+      "returncode": 0,
+      "stdout": "[ error ] tau> normalize ex y:qlt ((({3}:qlt & y) != 0) && (({3}:qlt & y') != 0)).\n%1: T\n\n[ %1 error ] tau> ",
+      "stderr": "calculate_fixed_points:                            2 \u00b5s\napply_rec_relations:\nnormalize:                                       195 \u00b5s\n\teliminate_arithmetic_and_quantifiers:    176 \u00b5s\n\tnormalize_temporal_quantifiers:            4 \u00b5s\nexpand_definitions:\n"
+    },
+    {
+      "name": "point-universal",
+      "group": "qlt",
+      "input": "valid all y:qlt ((({3}:qlt & y) = 0) || (({3}:qlt & y') = 0)).\n",
+      "expected": "T",
+      "observed_verdicts": [
+        "F"
+      ],
+      "returncode": 0,
+      "stdout": "[ error ] tau> valid all y:qlt ((({3}:qlt & y) = 0) || (({3}:qlt & y') = 0)).\n%1: F\n\n[ %1 error ] tau> ",
+      "stderr": "calculate_fixed_points:                            3 \u00b5s\napply_rec_relations:\nnormalize:                                       166 \u00b5s\n\teliminate_arithmetic_and_quantifiers:    153 \u00b5s\n\tnormalize_temporal_quantifiers:            3 \u00b5s\nexpand_definitions:\neliminate_arithmetic_and_quantifiers:              4 \u00b5s\nnormalize_temporal_quantifiers:\nnormalize:\nexpand_definitions:\nexpression_paths:\n"
+    },
+    {
+      "name": "ground-same-point",
+      "group": "qlt",
+      "input": "normalize (({3}:qlt & {3}:qlt) != 0) && (({3}:qlt & {3}:qlt') != 0).\n",
+      "expected": "F",
+      "observed_verdicts": [
+        "F"
+      ],
+      "returncode": 0,
+      "stdout": "[ error ] tau> normalize (({3}:qlt & {3}:qlt) != 0) && (({3}:qlt & {3}:qlt') != 0).\n%1: F\n\n[ %1 error ] tau> ",
+      "stderr": "calculate_fixed_points:\napply_rec_relations:\nnormalize:                                        22 \u00b5s\n\teliminate_arithmetic_and_quantifiers:     13 \u00b5s\n\tnormalize_temporal_quantifiers:            4 \u00b5s\nexpand_definitions:                                1 \u00b5s\n"
+    },
+    {
+      "name": "ground-other-point",
+      "group": "qlt",
+      "input": "normalize (({3}:qlt & {5}:qlt) != 0) && (({3}:qlt & {5}:qlt') != 0).\n",
+      "expected": "F",
+      "observed_verdicts": [
+        "F"
+      ],
+      "returncode": 0,
+      "stdout": "[ error ] tau> normalize (({3}:qlt & {5}:qlt) != 0) && (({3}:qlt & {5}:qlt') != 0).\n%1: F\n\n[ %1 error ] tau> ",
+      "stderr": "calculate_fixed_points:\napply_rec_relations:\nnormalize:                                        24 \u00b5s\n\teliminate_arithmetic_and_quantifiers:     14 \u00b5s\n\tnormalize_temporal_quantifiers:            4 \u00b5s\nexpand_definitions:                                1 \u00b5s\n"
+    },
+    {
+      "name": "interval-existential",
+      "group": "qlt",
+      "input": "normalize ex y:qlt ((({[0,1]}:qlt & y) != 0) && (({[0,1]}:qlt & y') != 0)).\n",
+      "expected": "T",
+      "observed_verdicts": [
+        "T"
+      ],
+      "returncode": 0,
+      "stdout": "[ error ] tau> normalize ex y:qlt ((({[0,1]}:qlt & y) != 0) && (({[0,1]}:qlt & y') != 0)).\n%1: T\n\n[ %1 error ] tau> ",
+      "stderr": "calculate_fixed_points:                            2 \u00b5s\napply_rec_relations:\nnormalize:                                       181 \u00b5s\n\teliminate_arithmetic_and_quantifiers:    167 \u00b5s\n\tnormalize_temporal_quantifiers:            5 \u00b5s\nexpand_definitions:\n"
+    },
+    {
+      "name": "interval-witness",
+      "group": "qlt",
+      "input": "normalize (({[0,1]}:qlt & {0}:qlt) != 0) && (({[0,1]}:qlt & {0}:qlt') != 0).\n",
+      "expected": "T",
+      "observed_verdicts": [
+        "T"
+      ],
+      "returncode": 0,
+      "stdout": "[ error ] tau> normalize (({[0,1]}:qlt & {0}:qlt) != 0) && (({[0,1]}:qlt & {0}:qlt') != 0).\n%1: T\n\n[ %1 error ] tau> ",
+      "stderr": "calculate_fixed_points:\napply_rec_relations:\nnormalize:                                        17 \u00b5s\n\teliminate_arithmetic_and_quantifiers:      9 \u00b5s\n\tnormalize_temporal_quantifiers:            3 \u00b5s\nexpand_definitions:\n"
+    }
+  ],
+  "output_note": "ANSI color escapes removed; stdout and stderr otherwise retained, including diagnostic timings."
+}

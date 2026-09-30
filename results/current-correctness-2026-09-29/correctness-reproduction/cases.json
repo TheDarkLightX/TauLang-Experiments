@@ -1,0 +1,86 @@
+[
+  {
+    "name": "constant-equality",
+    "group": "definitions",
+    "input": "k() := {7}:bv[8].\nsat k() = {7}:bv[8].\n",
+    "expected": "T"
+  },
+  {
+    "name": "constant-validity",
+    "group": "definitions",
+    "input": "k() := {7}:bv[8].\nvalid k() != {7}:bv[8].\n",
+    "expected": "F"
+  },
+  {
+    "name": "constant-assignment",
+    "group": "definitions",
+    "input": "k() := {7}:bv[8].\nsat x:bv[8] = k().\n",
+    "expected": "T"
+  },
+  {
+    "name": "parameter-equality",
+    "group": "definitions",
+    "input": "k1(z) := {7}:bv[8].\nsat k1({0}:bv[8]) = {7}:bv[8].\n",
+    "expected": "T"
+  },
+  {
+    "name": "parameter-validity",
+    "group": "definitions",
+    "input": "k1(z) := {7}:bv[8].\nvalid k1({0}:bv[8]) != {7}:bv[8].\n",
+    "expected": "F"
+  },
+  {
+    "name": "literal-equality",
+    "group": "definitions",
+    "input": "sat {7}:bv[8] = {7}:bv[8].\n",
+    "expected": "T"
+  },
+  {
+    "name": "literal-validity",
+    "group": "definitions",
+    "input": "valid {7}:bv[8] != {7}:bv[8].\n",
+    "expected": "F"
+  },
+  {
+    "name": "parameter-arithmetic",
+    "group": "definitions",
+    "input": "k2(z) := z + {1}:bv[8].\nsat k2({6}:bv[8]) = {7}:bv[8].\n",
+    "expected": "T"
+  },
+  {
+    "name": "point-existential",
+    "group": "qlt",
+    "input": "normalize ex y:qlt ((({3}:qlt & y) != 0) && (({3}:qlt & y') != 0)).\n",
+    "expected": "F"
+  },
+  {
+    "name": "point-universal",
+    "group": "qlt",
+    "input": "valid all y:qlt ((({3}:qlt & y) = 0) || (({3}:qlt & y') = 0)).\n",
+    "expected": "T"
+  },
+  {
+    "name": "ground-same-point",
+    "group": "qlt",
+    "input": "normalize (({3}:qlt & {3}:qlt) != 0) && (({3}:qlt & {3}:qlt') != 0).\n",
+    "expected": "F"
+  },
+  {
+    "name": "ground-other-point",
+    "group": "qlt",
+    "input": "normalize (({3}:qlt & {5}:qlt) != 0) && (({3}:qlt & {5}:qlt') != 0).\n",
+    "expected": "F"
+  },
+  {
+    "name": "interval-existential",
+    "group": "qlt",
+    "input": "normalize ex y:qlt ((({[0,1]}:qlt & y) != 0) && (({[0,1]}:qlt & y') != 0)).\n",
+    "expected": "T"
+  },
+  {
+    "name": "interval-witness",
+    "group": "qlt",
+    "input": "normalize (({[0,1]}:qlt & {0}:qlt) != 0) && (({[0,1]}:qlt & {0}:qlt') != 0).\n",
+    "expected": "T"
+  }
+]

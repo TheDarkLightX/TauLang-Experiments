@@ -1,0 +1,26 @@
+[
+  {
+    "file": "zero-argument.tau",
+    "returncode": 0,
+    "stdout": "[ error ] tau> k() := {7}:bv[8].\n[1] k() := { 7 }:bv[8].\n\n[ error ] tau> sat k() = {7}:bv[8].\n%1: F\n\n[ %1 error ] tau> valid k() != {7}:bv[8].\n%2: T\n\n[ %2 error ] tau> k1(z) := {7}:bv[8].\n[2] k1(z) := { 7 }:bv[8].\n\n[ %2 error ] tau> sat k1({0}:bv[8]) = {7}:bv[8].\n%2: T\n\n[ %2 error ] tau> valid k1({0}:bv[8]) != {7}:bv[8].\n%3: F\n\n[ %3 error ] tau> sat {7}:bv[8] = {7}:bv[8].\n%4: T\n\n[ %4 error ] tau> valid {7}:bv[8] != {7}:bv[8].\n%5: F\n\n[ %5 error ] tau> ",
+    "stderr": "(Error) transform_to_execution: unresolved function or predicate symbol k() found; treating the formula as unsatisfiable\ncalculate_fixed_points:                            1 \u00b5s\napply_rec_relations:\nnormalize:                                       616 \u00b5s\n\teliminate_arithmetic_and_quantifiers:     19 \u00b5s\n\tnormalize_temporal_quantifiers:          591 \u00b5s\nexpand_definitions:                                8 \u00b5s\nk() := { 7 }:bv[8]. applications:                  1\nnormalize:                                        14 \u00b5s\n\tnormalize:                                 0  ms\n\texpand_definitions:                        6 \u00b5s\nexpression_paths:                                403 \u00b5s\n(Error) transform_to_execution: unresolved function or predicate symbol k() found; treating the formula as unsatisfiable\ncalculate_fixed_points:                            1 \u00b5s\napply_rec_relations:\nnormalize:                                        31 \u00b5s\n\teliminate_arithmetic_and_quantifiers:     12 \u00b5s\n\tnormalize_temporal_quantifiers:           14 \u00b5s\nexpand_definitions:                               10 \u00b5s\nk() := { 7 }:bv[8]. applications:                  1\neliminate_arithmetic_and_quantifiers:              4 \u00b5s\nnormalize_temporal_quantifiers:                    1 \u00b5s\nnormalize:                                        35 \u00b5s\n\teliminate_arithmetic_and_quantifiers:     12 \u00b5s\n\tnormalize_temporal_quantifiers:           18 \u00b5s\nexpand_definitions:                                8 \u00b5s\nexpression_paths:\ncalculate_fixed_points:\napply_rec_relations:\nnormalize:\nexpand_definitions:\nk1(z) := { 7 }:bv[8]. applications:      3\nk1(z) := { 7 }:bv[8]. hits:              2\nnormalize:                               3 \u00b5s\n\tnormalize:                       0  ms\n\texpand_definitions:              0  ms\nexpression_paths:\ncalculate_fixed_points:\napply_rec_relations:\nnormalize:                                        10 \u00b5s\n\teliminate_arithmetic_and_quantifiers:      5 \u00b5s\n\tnormalize_temporal_quantifiers:            1 \u00b5s\nexpand_definitions:\nk1(z) := { 7 }:bv[8]. applications:                3\nk1(z) := { 7 }:bv[8]. hits:                        2\nnormalize:\nexpand_definitions:\nexpression_paths:\ncalculate_fixed_points:\napply_rec_relations:\nnormalize:\nexpand_definitions:\nnormalize:                       3 \u00b5s\n\tnormalize:               0  ms\n\texpand_definitions:      0  ms\nexpression_paths:\ncalculate_fixed_points:\napply_rec_relations:\nnormalize:\nexpand_definitions:\nnormalize:\nexpand_definitions:\nexpression_paths:\n",
+    "observed_verdicts": [
+      "F",
+      "T",
+      "T",
+      "F",
+      "T",
+      "F"
+    ]
+  },
+  {
+    "file": "qlt-point.tau",
+    "returncode": 0,
+    "stdout": "[ error ] tau> normalize ex y:qlt ((({3}:qlt & y) != 0) && (({3}:qlt & y') != 0)).\n%1: T\n\n[ %1 error ] tau> valid all y:qlt ((({3}:qlt & y) = 0) || (({3}:qlt & y') = 0)).\n%2: F\n\n[ %2 error ] tau> ",
+    "stderr": "calculate_fixed_points:                            2 \u00b5s\napply_rec_relations:\nnormalize:                                       162 \u00b5s\n\teliminate_arithmetic_and_quantifiers:    152 \u00b5s\n\tnormalize_temporal_quantifiers:            3 \u00b5s\nexpand_definitions:\ncalculate_fixed_points:                            3 \u00b5s\napply_rec_relations:\nnormalize:                                        78 \u00b5s\n\teliminate_arithmetic_and_quantifiers:     69 \u00b5s\n\tnormalize_temporal_quantifiers:            1 \u00b5s\nexpand_definitions:\nnormalize:\nexpand_definitions:\nexpression_paths:\n",
+    "observed_verdicts": [
+      "T",
+      "F"
+    ]
+  }
+]

@@ -1,0 +1,2 @@
+normalize ex y:qlt ((({3}:qlt & y) != 0) && (({3}:qlt & y') != 0)).
+valid all y:qlt ((({3}:qlt & y) = 0) || (({3}:qlt & y') = 0)).
