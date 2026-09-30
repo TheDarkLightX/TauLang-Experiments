@@ -1,0 +1,147 @@
+{
+  "status": "ready for review; four pre-existing test failures documented",
+  "tau_commit": "577b635af244d8a1b6e71ef7b2b92ed756187c7e",
+  "parser_commit": "5b14b6fde86f16dc52c4c0a953a8a1e53c88f95a",
+  "patch_sha256": "88464eef924276bd12b9d7cbd4d739ca672d6abfaf5233f3615640f65eac64b2",
+  "binary_sha256": "61ad9df8584f7bf87f0ffe5dfd3da9f49695791c1d0ec85da6aeda39f375bdba",
+  "build": {
+    "type": "Release",
+    "algebras": [
+      "tau",
+      "qint",
+      "qlt",
+      "nlang",
+      "bv",
+      "sbf",
+      "hsb"
+    ],
+    "compiler": "Clang 22.1.2",
+    "cvc5": "1.3.1",
+    "boost": "1.89.0",
+    "os": "macOS 26.6.2 arm64",
+    "lto": false,
+    "artifact_preinstantiation": true,
+    "platform_patch_separate": true,
+    "upstream_default_exclusions_retained": true
+  },
+  "focused": {
+    "cases": 57,
+    "passed": 57,
+    "assertions": 7236,
+    "assertions_passed": 7236,
+    "independent_membership_comparisons": 6000
+  },
+  "reported_commands": {
+    "total": 6,
+    "passed": 6
+  },
+  "independent_quantifier_model": {
+    "total": 128,
+    "passed": 128
+  },
+  "decision_and_temporal_controls": {
+    "total": 10,
+    "passed": 10,
+    "zero_point_boundary_controls": 4
+  },
+  "limits": [
+    "Finite tests supplement the two-case argument; they are not a proof over every Tau input.",
+    "Only variable occurrences restricted to the same exact finite singleton are split.",
+    "Approximation metadata and the broader point-versus-set domain contract are unchanged.",
+    "No throughput or memory improvement is claimed."
+  ],
+  "full_default": {
+    "total": 2626,
+    "passed": 2622,
+    "failed": [
+      "test_ltl_aba_open_points",
+      "test_repl-normalize_cmd-issue185_juxtaposed_min_printed",
+      "test_repl-normalize_cmd-qlt_pinned_neq_residual",
+      "test_repl-normalize_cmd-qlt_density_residual"
+    ],
+    "elapsed_seconds": 453.12,
+    "exit_code": 8,
+    "source_patch_sha256": "88464eef924276bd12b9d7cbd4d739ca672d6abfaf5233f3615640f65eac64b2",
+    "binary_sha256": "61ad9df8584f7bf87f0ffe5dfd3da9f49695791c1d0ec85da6aeda39f375bdba"
+  },
+  "reduced_configurations": [
+    {
+      "algebras": [
+        "sbf",
+        "tau",
+        "bv"
+      ],
+      "focused_ctest_entries": 4,
+      "passed": 4,
+      "full_suite_run": false
+    },
+    {
+      "algebras": [
+        "sbf",
+        "tau",
+        "qint"
+      ],
+      "focused_ctest_entries": 3,
+      "passed": 3,
+      "full_suite_run": false
+    }
+  ],
+  "stock_regression_comparison": {
+    "stock_binary_sha256": "5876dc00eb432939d3d67aef9b8235f7cf97e7041b6cf51d38d2cb8ddab1645a",
+    "patched_binary_sha256": "61ad9df8584f7bf87f0ffe5dfd3da9f49695791c1d0ec85da6aeda39f375bdba",
+    "stock_replayed_ctest_entries": 4,
+    "stock_full_suite_run": false,
+    "same_failed_ctest_entries": true,
+    "failed_ctest_entries": [
+      "test_ltl_aba_open_points",
+      "test_repl-normalize_cmd-issue185_juxtaposed_min_printed",
+      "test_repl-normalize_cmd-qlt_pinned_neq_residual",
+      "test_repl-normalize_cmd-qlt_density_residual"
+    ],
+    "same_unexpected_pass_case": [
+      "tautology check takes a formula beyond the argument limit"
+    ],
+    "printed_answers": [
+      {
+        "test": "test_repl-normalize_cmd-issue185_juxtaposed_min_printed",
+        "stock": [
+          "min(x, { 2 }:bv[2])x = { 2 }:bv[2]"
+        ],
+        "patched": [
+          "min(x, { 2 }:bv[2])x = { 2 }:bv[2]"
+        ],
+        "identical": true
+      },
+      {
+        "test": "test_repl-normalize_cmd-qlt_pinned_neq_residual",
+        "stock": [
+          "b != a"
+        ],
+        "patched": [
+          "b != a"
+        ],
+        "identical": true
+      },
+      {
+        "test": "test_repl-normalize_cmd-qlt_density_residual",
+        "stock": [
+          "a < b || a != c && b = a"
+        ],
+        "patched": [
+          "a < b || a != c && b = a"
+        ],
+        "identical": true
+      }
+    ]
+  },
+  "stock_independent_quantifier_model": {
+    "total": 128,
+    "passed": 126
+  },
+  "current_devel_application": {
+    "current_devel": "b5445d315071d2eb6d0c20728feab3f09d94fe57",
+    "logical_patch_applies_cleanly": true,
+    "changed_patch_files_identical_to_tested_base": true,
+    "runtime_tests_on_current_devel": false
+  }
+}

@@ -1,0 +1,83 @@
+Start testing: Sep 30 15:25 EDT
+----------------------------------------------------------
+4/2626 Testing: test_integration-solver-qlt
+4/2626 Test: test_integration-solver-qlt
+Command: "tau-lang/build/release/test_integration-solver-qlt"
+Directory: tau-lang/tests
+"test_integration-solver-qlt" start time: Sep 30 15:25 EDT
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+[bench 0.003084 ms] configuration / bdd init
+[bench 3.00646 ms] find_solution / one var: {(0, 1)}:qlt x = 0.
+[bench 2.99238 ms] find_solution / two vars: {(0, 1)}:qlt x | {[1, 2)}:qlt y = 0.
+[bench 2.87342 ms] find_solution / complement: {(0, 1)}:qlt x | {(0, 1)}:qlt' y = 0.
+[bench 3.02017 ms] solve_inequality_system / {(0, 1)}:qlt x != 0 && {(0, 1)}:qlt' x != 0.
+[bench 2.70458 ms] solve_inequality_system / {(0, 1)}:qlt x != 0 && {[1, 2)}:qlt y != 0.
+[bench 2.7445 ms] solve_inequality_system / x : qlt != {0}:qlt && x : qlt != {1}:qlt.
+[bench 2.67354 ms] solve_system / {(0, 1)}:qlt x = 0 && {(0, 1)}:qlt' x != 0.
+[bench 3.66458 ms] solve_system / {(0, 1)}:qlt x | {(0, 1)}:qlt y = 0 && {[1, 2)}:qlt y != 0.
+[bench 5.19125 ms] solve_system / x : qlt < y : qlt
+[bench 2.51954 ms] solve / x : qlt != 0
+[bench 5.01213 ms] solve / x : qlt != 0 && x : qlt != 1
+[bench 2.72604 ms] solve / {(0, 1)}:qlt x != 0 && {[1, 2)}:qlt y != 0
+[bench 1.71154 ms] solve / unsatisfiable: x : qlt = 0 && x : qlt != 0
+[bench 2.54746 ms] solve / interval via <=: {0}:qlt <= x:qlt && x:qlt <= {1}:qlt
+[bench 2.6455 ms] SO-1 mixed ordering systems / unsat equality/ordering mix is declined, not mis-solved
+[bench 4.95617 ms] SO-1 mixed ordering systems / sat disequality/ordering mix yields a verified solution
+[bench 2.53608 ms] SO-14 qlt ordering systems / bounded interval yields a witness inside it
+[bench 1.20754 ms] SO-14 qlt ordering systems / one-sided bound is satisfiable
+[bench 2.52633 ms] SO-14 qlt ordering systems / empty interval is declined
+[bench 2.40533 ms] SO-14 qlt ordering systems / two independent variables both get witnesses
+[bench 2.294 ms] relational qlt ordering systems / strict pair
+[bench 4.3725 ms] relational qlt ordering systems / strict pair, reversed names
+[bench 18.0078 ms] relational qlt ordering systems / increasing and decreasing chains
+[bench 4.80713 ms] relational qlt ordering systems / two variables below one
+[bench 16.381 ms] relational qlt ordering systems / relations bounded by constants
+[bench 16.9981 ms] relational qlt ordering systems / disequalities
+[bench 7.70342 ms] relational qlt ordering systems / non-strict cycle forces equality
+[bench 12.4846 ms] relational qlt ordering systems / inconsistent systems are declined
+[bench 7.18604 ms] relational qlt ordering systems / constant-bound controls
+[bench 6.7165 ms] qlt joint ordering solver: atom shapes / negated comparisons flip over the total order
+[bench 7.72537 ms] qlt joint ordering solver: atom shapes / nXX spellings read as negations
+[bench 5.44654 ms] qlt joint ordering solver: atom shapes / > and >= are oriented as < and <=
+[bench 4.32888 ms] qlt joint ordering solver: atom shapes / equality between variables merges them into one class
+[bench 11.603 ms] qlt joint ordering solver: atom shapes / atoms against the typed 0 / 1 are decided for every point
+[bench 4.04587 ms] qlt joint ordering solver: atom shapes / constants other than finite singletons decline
+[bench 2.32429 ms] qlt joint ordering solver: atom shapes / an atom outside the ordering fragment declines
+[bench 3.222 ms] qlt joint ordering solver: atom shapes / an unread disequality over another algebra is skipped
+[bench 13.7164 ms] qlt residual elimination / bounds with the variable on the right are normalised
+[bench 10.168 ms] qlt residual elimination / negated bounds are flipped
+[bench 9.27679 ms] qlt residual elimination / nXX spellings are read as their positive forms
+[bench 16.3984 ms] qlt residual elimination / a pinned variable is replaced by its pin
+[bench 36.6128 ms] qlt residual elimination / disequalities beside two bounds are eliminated by density
+[bench 6.273 ms] qlt residual elimination / disequalities beside several bounds on one side are left alone
+[bench 34.14 ms] qlt residual elimination / the density rule agrees with a direct check on every ordering
+[bench 15.8803 ms] qlt residual elimination / bodies outside the fragment are left alone
+[bench 14.3658 ms] qlt interval collector / a compound term holding the variable is no bound on it
+[bench 8.81012 ms] qlt interval collector / a closed conjunct without the variable declines
+[bench 7.91904 ms] qlt interval collector / a conjunct on another free variable is the caller's
+[bench 3.955 ms] qlt interval collector / a variable never equals an end of the order
+[bench 2.55679 ms] qlt interval collector / a compound term against an end stays an equation
+[bench 14.6962 ms] qlt singleton intersections / a singleton cannot be split into two nonempty intersections
+[bench 10.4543 ms] qlt singleton intersections / the split preserves intervals and unions of points
+[bench 249.172 ms] qlt singleton intersections / two-case elimination agrees with independent membership
+[bench 9.90842 ms] qlt singleton intersections / uncovered variable uses keep the quantifier
+[bench 7.98533 ms] qlt singleton intersections / nested source names retain their independent bindings
+[bench 1.21513 ms] qlt singleton intersections / an approximate singleton is not used for the split
+
+[benchmark] 57 tests, total 668.818 ms -> benchmark_timing.json
+===============================================================================
+[doctest] test cases:   57 |   57 passed | 0 failed | 0 skipped
+[doctest] assertions: 7236 | 7236 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   1.02 sec
+----------------------------------------------------------
+Test Passed.
+"test_integration-solver-qlt" end time: Sep 30 15:25 EDT
+"test_integration-solver-qlt" time elapsed: 00:00:01
+----------------------------------------------------------
+
+End testing: Sep 30 15:25 EDT

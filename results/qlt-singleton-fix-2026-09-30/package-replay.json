@@ -1,0 +1,7 @@
+{
+  "zip_sha256": "009f4f5f2bca56f0edb59e39829fbe0e73192047334f6f1aad24445347bab5d6",
+  "file_checksums_verified": true,
+  "extracted_reported_replay_passed": true,
+  "extracted_model_replay_passed": true,
+  "extracted_compatibility_replay_passed": true
+}

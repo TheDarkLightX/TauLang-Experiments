@@ -1,0 +1,21 @@
+{
+  "binary_sha256": "5876dc00eb432939d3d67aef9b8235f7cf97e7041b6cf51d38d2cb8ddab1645a",
+  "expected": [
+    "F",
+    "T",
+    "F",
+    "F",
+    "T",
+    "T"
+  ],
+  "actual": [
+    "T",
+    "F",
+    "F",
+    "F",
+    "T",
+    "T"
+  ],
+  "returncode": 0,
+  "passed": false
+}

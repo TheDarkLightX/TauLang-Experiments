@@ -1,0 +1,778 @@
+{
+  "binary_sha256": "5876dc00eb432939d3d67aef9b8235f7cf97e7041b6cf51d38d2cb8ddab1645a",
+  "model": "Each variable independently either contains the one tested point or does not. Both assignments have rational singleton witnesses.",
+  "returncode": 0,
+  "total": 128,
+  "passed": 126,
+  "outputs": 128,
+  "cases": [
+    {
+      "command": "normalize ex x:qlt ex y:qlt ((({3}:qlt & (x)) != 0) || (({3}:qlt & y) != 0)).",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "command": "normalize ex x:qlt all y:qlt ((({3}:qlt & (x)) != 0) || (({3}:qlt & y) != 0)).",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "command": "normalize all x:qlt ex y:qlt ((({3}:qlt & (x)) != 0) || (({3}:qlt & y) != 0)).",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "command": "normalize all x:qlt all y:qlt ((({3}:qlt & (x)) != 0) || (({3}:qlt & y) != 0)).",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    },
+    {
+      "command": "normalize ex x:qlt ex y:qlt ((({3}:qlt & (x)) != 0) && (({3}:qlt & y) != 0)).",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "command": "normalize ex x:qlt all y:qlt ((({3}:qlt & (x)) != 0) && (({3}:qlt & y) != 0)).",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    },
+    {
+      "command": "normalize all x:qlt ex y:qlt ((({3}:qlt & (x)) != 0) && (({3}:qlt & y) != 0)).",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    },
+    {
+      "command": "normalize all x:qlt all y:qlt ((({3}:qlt & (x)) != 0) && (({3}:qlt & y) != 0)).",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    },
+    {
+      "command": "normalize ex x:qlt ex y:qlt ((({3}:qlt & (x)) != 0) || (({3}:qlt & y) = 0)).",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "command": "normalize ex x:qlt all y:qlt ((({3}:qlt & (x)) != 0) || (({3}:qlt & y) = 0)).",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "command": "normalize all x:qlt ex y:qlt ((({3}:qlt & (x)) != 0) || (({3}:qlt & y) = 0)).",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "command": "normalize all x:qlt all y:qlt ((({3}:qlt & (x)) != 0) || (({3}:qlt & y) = 0)).",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    },
+    {
+      "command": "normalize ex x:qlt ex y:qlt ((({3}:qlt & (x)) != 0) && (({3}:qlt & y) = 0)).",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "command": "normalize ex x:qlt all y:qlt ((({3}:qlt & (x)) != 0) && (({3}:qlt & y) = 0)).",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    },
+    {
+      "command": "normalize all x:qlt ex y:qlt ((({3}:qlt & (x)) != 0) && (({3}:qlt & y) = 0)).",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    },
+    {
+      "command": "normalize all x:qlt all y:qlt ((({3}:qlt & (x)) != 0) && (({3}:qlt & y) = 0)).",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    },
+    {
+      "command": "normalize ex x:qlt ex y:qlt ((({3}:qlt & (x)) = 0) || (({3}:qlt & y) != 0)).",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "command": "normalize ex x:qlt all y:qlt ((({3}:qlt & (x)) = 0) || (({3}:qlt & y) != 0)).",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "command": "normalize all x:qlt ex y:qlt ((({3}:qlt & (x)) = 0) || (({3}:qlt & y) != 0)).",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "command": "normalize all x:qlt all y:qlt ((({3}:qlt & (x)) = 0) || (({3}:qlt & y) != 0)).",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    },
+    {
+      "command": "normalize ex x:qlt ex y:qlt ((({3}:qlt & (x)) = 0) && (({3}:qlt & y) != 0)).",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "command": "normalize ex x:qlt all y:qlt ((({3}:qlt & (x)) = 0) && (({3}:qlt & y) != 0)).",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    },
+    {
+      "command": "normalize all x:qlt ex y:qlt ((({3}:qlt & (x)) = 0) && (({3}:qlt & y) != 0)).",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    },
+    {
+      "command": "normalize all x:qlt all y:qlt ((({3}:qlt & (x)) = 0) && (({3}:qlt & y) != 0)).",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    },
+    {
+      "command": "normalize ex x:qlt ex y:qlt ((({3}:qlt & (x)) = 0) || (({3}:qlt & y) = 0)).",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "command": "normalize ex x:qlt all y:qlt ((({3}:qlt & (x)) = 0) || (({3}:qlt & y) = 0)).",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "command": "normalize all x:qlt ex y:qlt ((({3}:qlt & (x)) = 0) || (({3}:qlt & y) = 0)).",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "command": "normalize all x:qlt all y:qlt ((({3}:qlt & (x)) = 0) || (({3}:qlt & y) = 0)).",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    },
+    {
+      "command": "normalize ex x:qlt ex y:qlt ((({3}:qlt & (x)) = 0) && (({3}:qlt & y) = 0)).",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "command": "normalize ex x:qlt all y:qlt ((({3}:qlt & (x)) = 0) && (({3}:qlt & y) = 0)).",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    },
+    {
+      "command": "normalize all x:qlt ex y:qlt ((({3}:qlt & (x)) = 0) && (({3}:qlt & y) = 0)).",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    },
+    {
+      "command": "normalize all x:qlt all y:qlt ((({3}:qlt & (x)) = 0) && (({3}:qlt & y) = 0)).",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    },
+    {
+      "command": "normalize ex x:qlt ex y:qlt ((({3}:qlt & (x & y)) != 0) || (({3}:qlt & y) != 0)).",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "command": "normalize ex x:qlt all y:qlt ((({3}:qlt & (x & y)) != 0) || (({3}:qlt & y) != 0)).",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    },
+    {
+      "command": "normalize all x:qlt ex y:qlt ((({3}:qlt & (x & y)) != 0) || (({3}:qlt & y) != 0)).",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "command": "normalize all x:qlt all y:qlt ((({3}:qlt & (x & y)) != 0) || (({3}:qlt & y) != 0)).",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    },
+    {
+      "command": "normalize ex x:qlt ex y:qlt ((({3}:qlt & (x & y)) != 0) && (({3}:qlt & y) != 0)).",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "command": "normalize ex x:qlt all y:qlt ((({3}:qlt & (x & y)) != 0) && (({3}:qlt & y) != 0)).",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    },
+    {
+      "command": "normalize all x:qlt ex y:qlt ((({3}:qlt & (x & y)) != 0) && (({3}:qlt & y) != 0)).",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    },
+    {
+      "command": "normalize all x:qlt all y:qlt ((({3}:qlt & (x & y)) != 0) && (({3}:qlt & y) != 0)).",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    },
+    {
+      "command": "normalize ex x:qlt ex y:qlt ((({3}:qlt & (x & y)) != 0) || (({3}:qlt & y) = 0)).",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "command": "normalize ex x:qlt all y:qlt ((({3}:qlt & (x & y)) != 0) || (({3}:qlt & y) = 0)).",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "command": "normalize all x:qlt ex y:qlt ((({3}:qlt & (x & y)) != 0) || (({3}:qlt & y) = 0)).",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "command": "normalize all x:qlt all y:qlt ((({3}:qlt & (x & y)) != 0) || (({3}:qlt & y) = 0)).",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    },
+    {
+      "command": "normalize ex x:qlt ex y:qlt ((({3}:qlt & (x & y)) != 0) && (({3}:qlt & y) = 0)).",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    },
+    {
+      "command": "normalize ex x:qlt all y:qlt ((({3}:qlt & (x & y)) != 0) && (({3}:qlt & y) = 0)).",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    },
+    {
+      "command": "normalize all x:qlt ex y:qlt ((({3}:qlt & (x & y)) != 0) && (({3}:qlt & y) = 0)).",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    },
+    {
+      "command": "normalize all x:qlt all y:qlt ((({3}:qlt & (x & y)) != 0) && (({3}:qlt & y) = 0)).",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    },
+    {
+      "command": "normalize ex x:qlt ex y:qlt ((({3}:qlt & (x & y)) = 0) || (({3}:qlt & y) != 0)).",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "command": "normalize ex x:qlt all y:qlt ((({3}:qlt & (x & y)) = 0) || (({3}:qlt & y) != 0)).",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "command": "normalize all x:qlt ex y:qlt ((({3}:qlt & (x & y)) = 0) || (({3}:qlt & y) != 0)).",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "command": "normalize all x:qlt all y:qlt ((({3}:qlt & (x & y)) = 0) || (({3}:qlt & y) != 0)).",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "command": "normalize ex x:qlt ex y:qlt ((({3}:qlt & (x & y)) = 0) && (({3}:qlt & y) != 0)).",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "command": "normalize ex x:qlt all y:qlt ((({3}:qlt & (x & y)) = 0) && (({3}:qlt & y) != 0)).",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    },
+    {
+      "command": "normalize all x:qlt ex y:qlt ((({3}:qlt & (x & y)) = 0) && (({3}:qlt & y) != 0)).",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    },
+    {
+      "command": "normalize all x:qlt all y:qlt ((({3}:qlt & (x & y)) = 0) && (({3}:qlt & y) != 0)).",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    },
+    {
+      "command": "normalize ex x:qlt ex y:qlt ((({3}:qlt & (x & y)) = 0) || (({3}:qlt & y) = 0)).",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "command": "normalize ex x:qlt all y:qlt ((({3}:qlt & (x & y)) = 0) || (({3}:qlt & y) = 0)).",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "command": "normalize all x:qlt ex y:qlt ((({3}:qlt & (x & y)) = 0) || (({3}:qlt & y) = 0)).",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "command": "normalize all x:qlt all y:qlt ((({3}:qlt & (x & y)) = 0) || (({3}:qlt & y) = 0)).",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    },
+    {
+      "command": "normalize ex x:qlt ex y:qlt ((({3}:qlt & (x & y)) = 0) && (({3}:qlt & y) = 0)).",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "command": "normalize ex x:qlt all y:qlt ((({3}:qlt & (x & y)) = 0) && (({3}:qlt & y) = 0)).",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    },
+    {
+      "command": "normalize all x:qlt ex y:qlt ((({3}:qlt & (x & y)) = 0) && (({3}:qlt & y) = 0)).",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "command": "normalize all x:qlt all y:qlt ((({3}:qlt & (x & y)) = 0) && (({3}:qlt & y) = 0)).",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    },
+    {
+      "command": "normalize ex x:qlt ex y:qlt ((({3}:qlt & (x | y)) != 0) || (({3}:qlt & y) != 0)).",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "command": "normalize ex x:qlt all y:qlt ((({3}:qlt & (x | y)) != 0) || (({3}:qlt & y) != 0)).",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "command": "normalize all x:qlt ex y:qlt ((({3}:qlt & (x | y)) != 0) || (({3}:qlt & y) != 0)).",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "command": "normalize all x:qlt all y:qlt ((({3}:qlt & (x | y)) != 0) || (({3}:qlt & y) != 0)).",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    },
+    {
+      "command": "normalize ex x:qlt ex y:qlt ((({3}:qlt & (x | y)) != 0) && (({3}:qlt & y) != 0)).",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "command": "normalize ex x:qlt all y:qlt ((({3}:qlt & (x | y)) != 0) && (({3}:qlt & y) != 0)).",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    },
+    {
+      "command": "normalize all x:qlt ex y:qlt ((({3}:qlt & (x | y)) != 0) && (({3}:qlt & y) != 0)).",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "command": "normalize all x:qlt all y:qlt ((({3}:qlt & (x | y)) != 0) && (({3}:qlt & y) != 0)).",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    },
+    {
+      "command": "normalize ex x:qlt ex y:qlt ((({3}:qlt & (x | y)) != 0) || (({3}:qlt & y) = 0)).",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "command": "normalize ex x:qlt all y:qlt ((({3}:qlt & (x | y)) != 0) || (({3}:qlt & y) = 0)).",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "command": "normalize all x:qlt ex y:qlt ((({3}:qlt & (x | y)) != 0) || (({3}:qlt & y) = 0)).",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "command": "normalize all x:qlt all y:qlt ((({3}:qlt & (x | y)) != 0) || (({3}:qlt & y) = 0)).",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "command": "normalize ex x:qlt ex y:qlt ((({3}:qlt & (x | y)) != 0) && (({3}:qlt & y) = 0)).",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "command": "normalize ex x:qlt all y:qlt ((({3}:qlt & (x | y)) != 0) && (({3}:qlt & y) = 0)).",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    },
+    {
+      "command": "normalize all x:qlt ex y:qlt ((({3}:qlt & (x | y)) != 0) && (({3}:qlt & y) = 0)).",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    },
+    {
+      "command": "normalize all x:qlt all y:qlt ((({3}:qlt & (x | y)) != 0) && (({3}:qlt & y) = 0)).",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    },
+    {
+      "command": "normalize ex x:qlt ex y:qlt ((({3}:qlt & (x | y)) = 0) || (({3}:qlt & y) != 0)).",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "command": "normalize ex x:qlt all y:qlt ((({3}:qlt & (x | y)) = 0) || (({3}:qlt & y) != 0)).",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "command": "normalize all x:qlt ex y:qlt ((({3}:qlt & (x | y)) = 0) || (({3}:qlt & y) != 0)).",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "command": "normalize all x:qlt all y:qlt ((({3}:qlt & (x | y)) = 0) || (({3}:qlt & y) != 0)).",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    },
+    {
+      "command": "normalize ex x:qlt ex y:qlt ((({3}:qlt & (x | y)) = 0) && (({3}:qlt & y) != 0)).",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    },
+    {
+      "command": "normalize ex x:qlt all y:qlt ((({3}:qlt & (x | y)) = 0) && (({3}:qlt & y) != 0)).",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    },
+    {
+      "command": "normalize all x:qlt ex y:qlt ((({3}:qlt & (x | y)) = 0) && (({3}:qlt & y) != 0)).",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    },
+    {
+      "command": "normalize all x:qlt all y:qlt ((({3}:qlt & (x | y)) = 0) && (({3}:qlt & y) != 0)).",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    },
+    {
+      "command": "normalize ex x:qlt ex y:qlt ((({3}:qlt & (x | y)) = 0) || (({3}:qlt & y) = 0)).",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "command": "normalize ex x:qlt all y:qlt ((({3}:qlt & (x | y)) = 0) || (({3}:qlt & y) = 0)).",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    },
+    {
+      "command": "normalize all x:qlt ex y:qlt ((({3}:qlt & (x | y)) = 0) || (({3}:qlt & y) = 0)).",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "command": "normalize all x:qlt all y:qlt ((({3}:qlt & (x | y)) = 0) || (({3}:qlt & y) = 0)).",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    },
+    {
+      "command": "normalize ex x:qlt ex y:qlt ((({3}:qlt & (x | y)) = 0) && (({3}:qlt & y) = 0)).",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "command": "normalize ex x:qlt all y:qlt ((({3}:qlt & (x | y)) = 0) && (({3}:qlt & y) = 0)).",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    },
+    {
+      "command": "normalize all x:qlt ex y:qlt ((({3}:qlt & (x | y)) = 0) && (({3}:qlt & y) = 0)).",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    },
+    {
+      "command": "normalize all x:qlt all y:qlt ((({3}:qlt & (x | y)) = 0) && (({3}:qlt & y) = 0)).",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    },
+    {
+      "command": "normalize ex x:qlt ex y:qlt ((({3}:qlt & (x ^ y)) != 0) || (({3}:qlt & y) != 0)).",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "command": "normalize ex x:qlt all y:qlt ((({3}:qlt & (x ^ y)) != 0) || (({3}:qlt & y) != 0)).",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "command": "normalize all x:qlt ex y:qlt ((({3}:qlt & (x ^ y)) != 0) || (({3}:qlt & y) != 0)).",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "command": "normalize all x:qlt all y:qlt ((({3}:qlt & (x ^ y)) != 0) || (({3}:qlt & y) != 0)).",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    },
+    {
+      "command": "normalize ex x:qlt ex y:qlt ((({3}:qlt & (x ^ y)) != 0) && (({3}:qlt & y) != 0)).",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "command": "normalize ex x:qlt all y:qlt ((({3}:qlt & (x ^ y)) != 0) && (({3}:qlt & y) != 0)).",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    },
+    {
+      "command": "normalize all x:qlt ex y:qlt ((({3}:qlt & (x ^ y)) != 0) && (({3}:qlt & y) != 0)).",
+      "expected": "F",
+      "actual": "T",
+      "passed": false
+    },
+    {
+      "command": "normalize all x:qlt all y:qlt ((({3}:qlt & (x ^ y)) != 0) && (({3}:qlt & y) != 0)).",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    },
+    {
+      "command": "normalize ex x:qlt ex y:qlt ((({3}:qlt & (x ^ y)) != 0) || (({3}:qlt & y) = 0)).",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "command": "normalize ex x:qlt all y:qlt ((({3}:qlt & (x ^ y)) != 0) || (({3}:qlt & y) = 0)).",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "command": "normalize all x:qlt ex y:qlt ((({3}:qlt & (x ^ y)) != 0) || (({3}:qlt & y) = 0)).",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "command": "normalize all x:qlt all y:qlt ((({3}:qlt & (x ^ y)) != 0) || (({3}:qlt & y) = 0)).",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    },
+    {
+      "command": "normalize ex x:qlt ex y:qlt ((({3}:qlt & (x ^ y)) != 0) && (({3}:qlt & y) = 0)).",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "command": "normalize ex x:qlt all y:qlt ((({3}:qlt & (x ^ y)) != 0) && (({3}:qlt & y) = 0)).",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    },
+    {
+      "command": "normalize all x:qlt ex y:qlt ((({3}:qlt & (x ^ y)) != 0) && (({3}:qlt & y) = 0)).",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    },
+    {
+      "command": "normalize all x:qlt all y:qlt ((({3}:qlt & (x ^ y)) != 0) && (({3}:qlt & y) = 0)).",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    },
+    {
+      "command": "normalize ex x:qlt ex y:qlt ((({3}:qlt & (x ^ y)) = 0) || (({3}:qlt & y) != 0)).",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "command": "normalize ex x:qlt all y:qlt ((({3}:qlt & (x ^ y)) = 0) || (({3}:qlt & y) != 0)).",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "command": "normalize all x:qlt ex y:qlt ((({3}:qlt & (x ^ y)) = 0) || (({3}:qlt & y) != 0)).",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "command": "normalize all x:qlt all y:qlt ((({3}:qlt & (x ^ y)) = 0) || (({3}:qlt & y) != 0)).",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    },
+    {
+      "command": "normalize ex x:qlt ex y:qlt ((({3}:qlt & (x ^ y)) = 0) && (({3}:qlt & y) != 0)).",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "command": "normalize ex x:qlt all y:qlt ((({3}:qlt & (x ^ y)) = 0) && (({3}:qlt & y) != 0)).",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    },
+    {
+      "command": "normalize all x:qlt ex y:qlt ((({3}:qlt & (x ^ y)) = 0) && (({3}:qlt & y) != 0)).",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    },
+    {
+      "command": "normalize all x:qlt all y:qlt ((({3}:qlt & (x ^ y)) = 0) && (({3}:qlt & y) != 0)).",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    },
+    {
+      "command": "normalize ex x:qlt ex y:qlt ((({3}:qlt & (x ^ y)) = 0) || (({3}:qlt & y) = 0)).",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "command": "normalize ex x:qlt all y:qlt ((({3}:qlt & (x ^ y)) = 0) || (({3}:qlt & y) = 0)).",
+      "expected": "T",
+      "actual": "F",
+      "passed": false
+    },
+    {
+      "command": "normalize all x:qlt ex y:qlt ((({3}:qlt & (x ^ y)) = 0) || (({3}:qlt & y) = 0)).",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "command": "normalize all x:qlt all y:qlt ((({3}:qlt & (x ^ y)) = 0) || (({3}:qlt & y) = 0)).",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    },
+    {
+      "command": "normalize ex x:qlt ex y:qlt ((({3}:qlt & (x ^ y)) = 0) && (({3}:qlt & y) = 0)).",
+      "expected": "T",
+      "actual": "T",
+      "passed": true
+    },
+    {
+      "command": "normalize ex x:qlt all y:qlt ((({3}:qlt & (x ^ y)) = 0) && (({3}:qlt & y) = 0)).",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    },
+    {
+      "command": "normalize all x:qlt ex y:qlt ((({3}:qlt & (x ^ y)) = 0) && (({3}:qlt & y) = 0)).",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    },
+    {
+      "command": "normalize all x:qlt all y:qlt ((({3}:qlt & (x ^ y)) = 0) && (({3}:qlt & y) = 0)).",
+      "expected": "F",
+      "actual": "F",
+      "passed": true
+    }
+  ]
+}

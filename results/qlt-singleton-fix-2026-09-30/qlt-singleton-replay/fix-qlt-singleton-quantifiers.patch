@@ -1,0 +1,279 @@
+diff --git a/docs/adding_base_bas.md b/docs/adding_base_bas.md
+index 46a158c1..4ab646de 100644
+--- a/docs/adding_base_bas.md
++++ b/docs/adding_base_bas.md
+@@ -144,7 +144,7 @@ need solver or LTL types, which sit beside their single consumer:
+ | `solve(fm)` | your own decision procedure for a whole formula | the single declarer (two are refused at compile time) |
+ | `can_solve(fm)`, `sat_status(fm)` | whether you can decide `fm`; a *definite* answer as `optional<bool>`, so "unknown" stays distinct from "unsat" | any declarer / first definite answer |
+ | `preprocess(fm)`, `set_preprocessing(bool)` | a rewriting pass before solving, and its switch. A failure reports the reason (see [Preprocessing](#preprocessing)) | every declarer, chained in pack order, stopping at the first failure |
+-| `case_split_quantifiers(fm)` | eliminate your quantified variables tested only against constants by a finite case split, before any quantifier block forms | every declarer, chained in pack order |
++| `case_split_quantifiers(fm)` | eliminate your quantified variables by a finite, exact case split, before any quantifier block forms | every declarer, chained in pack order |
+ | `eliminate_definitional_existentials(fm)` | substitute your existentially quantified variables that a total definition in their scope determines and drop the binder, before the case split | every declarer, chained in pack order |
+ | `widen_arithmetic(fm)` | elaborate your arithmetic atoms to an overflow-free width before solving. Returns a `result<tref>`. A failure reports the reason, the same shape as `preprocess` | every declarer, chained in pack order, stopping at the first failure |
+ | `widening_state()` | whether your widening is currently on, for a caller that must key a cache on it (your own construction-time hooks read it too, not just `widen_arithmetic`) | any declarer active |
+diff --git a/src/boolean_algebras/qlt/qlt_descriptor.tmpl.h b/src/boolean_algebras/qlt/qlt_descriptor.tmpl.h
+index e349a941..1981b345 100644
+--- a/src/boolean_algebras/qlt/qlt_descriptor.tmpl.h
++++ b/src/boolean_algebras/qlt/qlt_descriptor.tmpl.h
+@@ -22,6 +22,9 @@ namespace idni::tau_lang {
+ 
+ // Defined in the qlt_qe / qlt_solver templates this file includes at its end;
+ // declared here so the descriptor's own definition context can name them.
++template <NodeType node>
++static tref qlt_singleton_case_split(tref form);
++
+ template <NodeType node>
+ static std::optional<bool> qlt_omcat_qe(tref var, tref body);
+ 
+@@ -145,6 +148,10 @@ struct ba_descriptor<qlt, node<PackBAs...>> {
+ 			type_tree()));
+ 	}
+ 
++	static tref case_split_quantifiers(tref form) {
++		return qlt_singleton_case_split<node_t>(form);
++	}
++
+ 	static tref simplify_symbol(tref sym) { return simplify_qlt_symbol(sym); }
+ 
+ 	static result<tref> simplify_term(tref term) { return result<tref>{simplify_qlt_term(term)}; }
+diff --git a/src/boolean_algebras/qlt/qlt_qe.tmpl.h b/src/boolean_algebras/qlt/qlt_qe.tmpl.h
+index 78c4019d..bfade7e6 100644
+--- a/src/boolean_algebras/qlt/qlt_qe.tmpl.h
++++ b/src/boolean_algebras/qlt/qlt_qe.tmpl.h
+@@ -17,6 +17,97 @@
+ 
+ namespace idni::tau_lang {
+ 
++// A variable used only through intersections with one exact singleton has
++// two observable values: containing that point or not. Both classes have
++// rational-point witnesses, so the split also preserves interval semantics.
++template <NodeType node>
++static tref qlt_singleton_case_split(tref form) {
++	using tau = tree<node>;
++	auto singleton = [](tref n) {
++		const auto& t = tau::get(n);
++		if (!t.is_ba_constant()) return false;
++		const auto value = t.get_ba_constant();
++		const auto* q = std::get_if<qlt>(&value);
++		if (!q || q->inexact || q->pieces.size() != 1) return false;
++		const auto& p = q->pieces.front();
++		return p.lo.val.is_finite() && p.lo.val == p.hi.val
++			&& p.lo.bound == qlt_bound::CLOSED && p.hi.bound == qlt_bound::CLOSED;
++	};
++	subtree_unordered_map<node, tref> point_factors;
++	auto point_factor = [&](tref root) {
++		std::vector<std::pair<tref, bool>> work{{root, false}};
++		while (!work.empty()) {
++			auto [cur, ready] = work.back(); work.pop_back();
++			if (point_factors.contains(cur)) continue;
++			const auto& c = tau::get(cur);
++			if (c.is(tau::bf) && singleton(c.first())) {
++				point_factors.emplace(cur, c.first()); continue;
++			}
++			if (!c.is(tau::bf) || !c.child_is(tau::bf_and)) {
++				point_factors.emplace(cur, nullptr); continue;
++			}
++			if (!ready) {
++				work.emplace_back(cur, true);
++				for (tref child : c[0].children()) work.emplace_back(child, false);
++			} else {
++				tref point = nullptr;
++				for (tref child : c[0].children())
++					if ((point = point_factors.at(child))) break;
++				point_factors.emplace(cur, point);
++			}
++		}
++		return point_factors.at(root);
++	};
++	auto step = [&](tref n) -> tref {
++		if (!is_child_quantifier<node>(n)) return n;
++		const auto& t = tau::get(n);
++		const tref var = t[0].first(), scope = t[0].second();
++		if (!ba_descriptor<qlt, node>::owns_type(tau::get(var).get_ba_type()))
++			return n;
++		tref point = nullptr;
++		bool ok = true;
++		std::set<std::pair<tref, tref>> seen;
++		std::vector<std::pair<tref, tref>> pending{{scope, nullptr}};
++		while (!pending.empty() && ok) {
++			auto [cur, guard] = pending.back(); pending.pop_back();
++			if (!seen.emplace(cur, guard).second) continue;
++			const auto& c = tau::get(cur);
++			if (c.is_ba_constant()) continue;
++			if (c == tau::get(var)) {
++				if (!guard || (point && tau::get(point) != tau::get(guard)))
++					ok = false;
++				else point = guard;
++				continue;
++			}
++			// Substitution must not capture a nested binding of this variable.
++			if (is_child_quantifier<node>(cur)
++				&& tau::get(c[0].first()) == tau::get(var)) { ok = false; break; }
++			// Only Boolean set operations preserve membership at the guard.
++			if (!(c.is(tau::bf) || c.is(tau::bf_and) || c.is(tau::bf_or)
++				|| c.is(tau::bf_xor) || c.is(tau::bf_neg))) guard = nullptr;
++			if (!guard && c.is(tau::bf) && c.child_is(tau::bf_and))
++				guard = point_factor(cur);
++			for (tref child : c.children()) pending.emplace_back(child, guard);
++		}
++		if (!ok || !point) return n;
++		const auto q = std::get<qlt>(tau::get(point).get_ba_constant());
++		const qlt_rational other(q.pieces.front().lo.val == qlt_rational(0,1) ? 1 : 0, 1);
++		const auto closed = qlt_bound::CLOSED;
++		const qlt outside{{{{other, closed}, {other, closed}}}};
++		const tref other_point = tau::get_ba_constant(
++			typename node::constant(outside), tau::get(var).get_ba_type());
++		auto instance = [&](tref value) {
++			subtree_map<node, tref> changes;
++			changes.emplace(var, value);
++			return rewriter::replace<node>(scope, changes);
++		};
++		const tref yes = instance(point), no = instance(other_point);
++		return t.child_is(tau::wff_ex) ? tau::build_wff_or(yes, no)
++			: tau::build_wff_and(yes, no);
++	};
++	return post_order<node>(form).apply_unique(step, while_is_formula<node>);
++}
++
+ // DLO interval computation for (Q,<).
+ // Collects the satisfying interval I for ∃var. body where body is a
+ // conjunction of DLO comparison atoms "var op {c}:qlt" (c finite singleton).
+diff --git a/src/boolean_algebras/qlt/tests/test_integration-solver-qlt.cpp b/src/boolean_algebras/qlt/tests/test_integration-solver-qlt.cpp
+index 9f324f24..489ff6fa 100644
+--- a/src/boolean_algebras/qlt/tests/test_integration-solver-qlt.cpp
++++ b/src/boolean_algebras/qlt/tests/test_integration-solver-qlt.cpp
+@@ -640,3 +640,134 @@ TEST_SUITE("qlt interval collector") {
+ 			is<node_t, tau::bf_eq>) != nullptr );
+ 	}
+ }
++
++TEST_SUITE("qlt singleton intersections") {
++	tref singleton_wff(const std::string& source) {
++		return get_nso_rr<node_t>(tau::get(source.c_str()).value_or(nullptr))
++			.value().main->get();
++	}
++	void check_singleton_normalization(const char* source, bool expected) {
++		CAPTURE(source);
++		tref result = normalize_test_tau(source);
++		REQUIRE(result != nullptr);
++		CHECK((expected ? tau::get(result).equals_T() : tau::get(result).equals_F()));
++	}
++
++	TEST_CASE("a singleton cannot be split into two nonempty intersections") {
++		check_singleton_normalization(
++			"ex x:qlt (({3}:qlt & x) != 0 && ({3}:qlt & x') != 0).", false);
++		check_singleton_normalization(
++			"all x:qlt (({3}:qlt & x) = 0 || ({3}:qlt & x') = 0).", true);
++		check_singleton_normalization(
++			"ex x:qlt (0 != (x & {3}:qlt) && 0 != (x' & {3}:qlt)).", false);
++		check_singleton_normalization(
++			"ex x:qlt ex y:qlt (({3}:qlt & x & y) != 0 && ({3}:qlt & (x & y)') != 0).", false);
++	}
++
++	TEST_CASE("the split preserves intervals and unions of points") {
++		check_singleton_normalization(
++			"ex x:qlt (({[0,1]}:qlt & x) != 0 && ({[0,1]}:qlt & x') != 0).", true);
++		check_singleton_normalization(
++			"ex x:qlt ((({0}:qlt | {1}:qlt) & x) != 0 && (({0}:qlt | {1}:qlt) & x') != 0).", true);
++		check_singleton_normalization(
++			"ex x:qlt (x = {(0,1)}:qlt).", true);
++	}
++
++	TEST_CASE("two-case elimination agrees with independent membership") {
++		const tref xy = singleton_wff("y:qlt < z:qlt.");
++		const tref x = tau::get(xy)[0].first(), y = tau::get(xy)[0].second();
++		const auto open = qlt_bound::OPEN, closed = qlt_bound::CLOSED;
++		auto interval = [&](int lo, int hi, qlt_bound lb, qlt_bound hb) {
++			return qlt{{{{qlt_rational(lo,1),lb},{qlt_rational(hi,1),hb}}}};
++		};
++		const std::vector<qlt> sets{
++			qlt::bottom(), qlt::top(), interval(-1,-1,closed,closed),
++			interval(0,0,closed,closed), interval(1,1,closed,closed),
++			interval(-1,0,closed,closed), interval(-1,0,open,open),
++			interval(0,1,closed,open), interval(0,1,open,closed),
++			interval(-1,-1,closed,closed) | interval(1,1,closed,closed)};
++		auto member = [](size_t s, int p) {
++			switch (s) {
++				case 0: return false;
++				case 1: return true;
++				case 2: return p == -2;
++				case 3: return p == 0;
++				case 4: return p == 2;
++				case 5: return -2 <= p && p <= 0;
++				case 6: return -2 < p && p < 0;
++				case 7: return 0 <= p && p < 2;
++				case 8: return 0 < p && p <= 2;
++				default: return p == -2 || p == 2;
++			}
++		};
++		const std::vector<std::string> terms{
++			"x & y", "x | y", "x ^ y", "(x & y)'", "x & (y | z)", "x ^ (y & z)"};
++		for (int p : {-2,-1,0,1,2}) for (size_t op = 0; op < terms.size(); ++op)
++		for (bool existential : {false, true}) {
++			const std::string c = "{" + std::to_string(p) + "/2}:qlt";
++			const std::string source = (existential ? "ex x:qlt (" : "all x:qlt (")
++				+ std::string("(") + c + " & (" + terms[op] + ")) != 0 "
++				+ (existential ? "&& (" : "|| (") + c + " & x) "
++				+ (existential ? "!= 0)." : "= 0).");
++			CAPTURE(source);
++			const tref original = singleton_wff(source);
++			const tref predicate = qlt_singleton_case_split<node_t>(original);
++			CHECK(predicate != original);
++			CHECK(qlt_singleton_case_split<node_t>(predicate) == predicate);
++			for (size_t a = 0; a < sets.size(); ++a)
++			for (size_t b = 0; b < sets.size(); ++b) {
++				CAPTURE(a); CAPTURE(b);
++				bool av = member(a,p), bv = member(b,p), expected;
++				switch (op) {
++					case 0: expected = av; break;
++					case 1: expected = true; break;
++					case 2: expected = !av; break;
++					case 3: expected = !av; break;
++					case 4: expected = av || bv; break;
++					default: expected = !(av && bv);
++				}
++				subtree_map<node_t,tref> changes;
++				changes.emplace(x,tau::get(tau::bf,tau::get_ba_constant(
++					node_t::constant(sets[a]),qlt_type_id<node_t>())));
++				changes.emplace(y,tau::get(tau::bf,tau::get_ba_constant(
++					node_t::constant(sets[b]),qlt_type_id<node_t>())));
++				tref ground = tau::reget(rewriter::replace<node_t>(predicate,changes));
++				CHECK((expected ? tau::get(ground).equals_T() : tau::get(ground).equals_F()));
++			}
++		}
++	}
++
++	TEST_CASE("uncovered variable uses keep the quantifier") {
++		for (const char* source : {
++			"ex x:qlt (({3}:qlt & x) != 0 && x < {5}:qlt).",
++			"ex x:qlt (({3}:qlt & x) != 0 && ({5}:qlt & x) != 0).",
++			"ex x:qlt (({[0,1]}:qlt & x) != 0).",
++			"ex x:qlt (({c}:qlt & x) != 0)."}) {
++			const std::string input(source); CAPTURE(input);
++			const tref f = singleton_wff(source);
++			const tref r = qlt_singleton_case_split<node_t>(f);
++			CHECK(tau::get(r) == tau::get(f));
++		}
++	}
++	TEST_CASE("nested source names retain their independent bindings") {
++		check_singleton_normalization(
++			"ex x:qlt (({3}:qlt & x) != 0 && ex x:qlt (x < {5}:qlt)).", true);
++		check_singleton_normalization(
++			"ex x:qlt (({3}:qlt & x) != 0 && ex x:qlt (x < {5}:qlt && x > {6}:qlt)).", false);
++	}
++
++	TEST_CASE("an approximate singleton is not used for the split") {
++		const tref xy = singleton_wff("x:qlt < y:qlt.");
++		const tref x = tau::get(xy)[0].first();
++		const auto closed = qlt_bound::CLOSED;
++		qlt q{{{{qlt_rational(17041,13),closed},{qlt_rational(17041,13),closed}}}};
++		q.inexact = true;
++		const tref c = tau::get(tau::bf,tau::get_ba_constant(
++			node_t::constant(q),qlt_type_id<node_t>()));
++		REQUIRE(std::get<qlt>(tau::get(c)[0].get_ba_constant()).inexact);
++		const tref scope = tau::build_bf_neq_0(tau::build_bf_and(c,x));
++		const tref f = tau::build_wff_ex(tau::get(x).first(),scope,false);
++		CHECK(tau::get(qlt_singleton_case_split<node_t>(f)) == tau::get(f));
++	}
++
++}

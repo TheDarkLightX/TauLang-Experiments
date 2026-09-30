@@ -1,0 +1,127 @@
+{
+  "binary_sha256": "61ad9df8584f7bf87f0ffe5dfd3da9f49695791c1d0ec85da6aeda39f375bdba",
+  "total": 10,
+  "passed": 10,
+  "cases": [
+    {
+      "name": "zero_point_can_be_included",
+      "command": "sat ex x:qlt (({0}:qlt & x) != 0).",
+      "expected": "T",
+      "answers": [
+        "T"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "stdout": "[ error ] tau> sat ex x:qlt (({0}:qlt & x) != 0).\n%1: T\n\n[ %1 error ] tau> ",
+      "stderr": "\u001b[39mcalculate_fixed_points:\u001b[0m                            \u001b[39m2\u001b[0m \u001b[39m\u00b5s\u001b[0m\n\u001b[2mapply_rec_relations:\u001b[0m\n\u001b[39mnormalize:\u001b[0m                                       \u001b[39m295\u001b[0m \u001b[39m\u00b5s\u001b[0m\n\t\u001b[2meliminate_arithmetic_and_quantifiers:\u001b[0m    \u001b[2m230\u001b[0m \u001b[2m\u00b5s\u001b[0m\n\t\u001b[39mnormalize_temporal_quantifiers:\u001b[0m           \u001b[39m12\u001b[0m \u001b[39m\u00b5s\u001b[0m\n\u001b[2mexpand_definitions:\u001b[0m\n\u001b[39mnormalize:\u001b[0m                                         \u001b[39m3\u001b[0m \u001b[39m\u00b5s\u001b[0m\n\t\u001b[2mnormalize:\u001b[0m                                 \u001b[2m0\u001b[0m  \u001b[2mms\u001b[0m\n\t\u001b[39mexpand_definitions:\u001b[0m                        \u001b[39m0\u001b[0m  \u001b[39mms\u001b[0m\n\u001b[2mexpression_paths:\u001b[0m\n"
+    },
+    {
+      "name": "zero_point_can_be_excluded",
+      "command": "sat ex x:qlt (({0}:qlt & x) = 0).",
+      "expected": "T",
+      "answers": [
+        "T"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "stdout": "[ error ] tau> sat ex x:qlt (({0}:qlt & x) = 0).\n%1: T\n\n[ %1 error ] tau> ",
+      "stderr": "\u001b[39mcalculate_fixed_points:\u001b[0m                            \u001b[39m2\u001b[0m \u001b[39m\u00b5s\u001b[0m\n\u001b[2mapply_rec_relations:\u001b[0m\n\u001b[39mnormalize:\u001b[0m                                        \u001b[39m59\u001b[0m \u001b[39m\u00b5s\u001b[0m\n\t\u001b[2meliminate_arithmetic_and_quantifiers:\u001b[0m     \u001b[2m41\u001b[0m \u001b[2m\u00b5s\u001b[0m\n\t\u001b[39mnormalize_temporal_quantifiers:\u001b[0m            \u001b[39m7\u001b[0m \u001b[39m\u00b5s\u001b[0m\n\u001b[2mexpand_definitions:\u001b[0m\n\u001b[39mnormalize:\u001b[0m                                         \u001b[39m3\u001b[0m \u001b[39m\u00b5s\u001b[0m\n\t\u001b[2mnormalize:\u001b[0m                                 \u001b[2m0\u001b[0m  \u001b[2mms\u001b[0m\n\t\u001b[39mexpand_definitions:\u001b[0m                        \u001b[39m0\u001b[0m  \u001b[39mms\u001b[0m\n\u001b[2mexpression_paths:\u001b[0m\n"
+    },
+    {
+      "name": "zero_point_not_always_included",
+      "command": "valid all x:qlt (({0}:qlt & x) != 0).",
+      "expected": "F",
+      "answers": [
+        "F"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "stdout": "[ error ] tau> valid all x:qlt (({0}:qlt & x) != 0).\n%1: F\n\n[ %1 error ] tau> ",
+      "stderr": "\u001b[39mcalculate_fixed_points:\u001b[0m                            \u001b[39m2\u001b[0m \u001b[39m\u00b5s\u001b[0m\n\u001b[2mapply_rec_relations:\u001b[0m\n\u001b[39mnormalize:\u001b[0m                                        \u001b[39m46\u001b[0m \u001b[39m\u00b5s\u001b[0m\n\t\u001b[2meliminate_arithmetic_and_quantifiers:\u001b[0m     \u001b[2m35\u001b[0m \u001b[2m\u00b5s\u001b[0m\n\t\u001b[39mnormalize_temporal_quantifiers:\u001b[0m            \u001b[39m3\u001b[0m \u001b[39m\u00b5s\u001b[0m\n\u001b[2mexpand_definitions:\u001b[0m\n\u001b[39meliminate_arithmetic_and_quantifiers:\u001b[0m              \u001b[39m3\u001b[0m \u001b[39m\u00b5s\u001b[0m\n\u001b[2mnormalize_temporal_quantifiers:\u001b[0m\n\u001b[39mnormalize:\u001b[0m\n\u001b[2mexpand_definitions:\u001b[0m\n\u001b[39mexpression_paths:\u001b[0m\n"
+    },
+    {
+      "name": "zero_point_not_always_excluded",
+      "command": "valid all x:qlt (({0}:qlt & x) = 0).",
+      "expected": "F",
+      "answers": [
+        "F"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "stdout": "[ error ] tau> valid all x:qlt (({0}:qlt & x) = 0).\n%1: F\n\n[ %1 error ] tau> ",
+      "stderr": "\u001b[39mcalculate_fixed_points:\u001b[0m                            \u001b[39m2\u001b[0m \u001b[39m\u00b5s\u001b[0m\n\u001b[2mapply_rec_relations:\u001b[0m\n\u001b[39mnormalize:\u001b[0m                                        \u001b[39m43\u001b[0m \u001b[39m\u00b5s\u001b[0m\n\t\u001b[2meliminate_arithmetic_and_quantifiers:\u001b[0m     \u001b[2m32\u001b[0m \u001b[2m\u00b5s\u001b[0m\n\t\u001b[39mnormalize_temporal_quantifiers:\u001b[0m            \u001b[39m3\u001b[0m \u001b[39m\u00b5s\u001b[0m\n\u001b[2mexpand_definitions:\u001b[0m\n\u001b[39meliminate_arithmetic_and_quantifiers:\u001b[0m              \u001b[39m4\u001b[0m \u001b[39m\u00b5s\u001b[0m\n\u001b[2mnormalize_temporal_quantifiers:\u001b[0m\n\u001b[39mnormalize:\u001b[0m\n\u001b[2mexpand_definitions:\u001b[0m\n\u001b[39mexpression_paths:\u001b[0m\n"
+    },
+    {
+      "name": "sat_singleton_split",
+      "command": "sat ex x:qlt (({3}:qlt & x) != 0 && ({3}:qlt & x') != 0).",
+      "expected": "F",
+      "answers": [
+        "F"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "stdout": "[ error ] tau> sat ex x:qlt (({3}:qlt & x) != 0 && ({3}:qlt & x') != 0).\n%1: F\n\n[ %1 error ] tau> ",
+      "stderr": "\u001b[39mcalculate_fixed_points:\u001b[0m                            \u001b[39m3\u001b[0m \u001b[39m\u00b5s\u001b[0m\n\u001b[2mapply_rec_relations:\u001b[0m\n\u001b[39mnormalize:\u001b[0m                                        \u001b[39m84\u001b[0m \u001b[39m\u00b5s\u001b[0m\n\t\u001b[2meliminate_arithmetic_and_quantifiers:\u001b[0m     \u001b[2m72\u001b[0m \u001b[2m\u00b5s\u001b[0m\n\t\u001b[39mnormalize_temporal_quantifiers:\u001b[0m            \u001b[39m4\u001b[0m \u001b[39m\u00b5s\u001b[0m\n\u001b[2mexpand_definitions:\u001b[0m\n\u001b[39mnormalize:\u001b[0m                                         \u001b[39m3\u001b[0m \u001b[39m\u00b5s\u001b[0m\n\t\u001b[2mnormalize:\u001b[0m                                 \u001b[2m0\u001b[0m  \u001b[2mms\u001b[0m\n\t\u001b[39mexpand_definitions:\u001b[0m                        \u001b[39m0\u001b[0m  \u001b[39mms\u001b[0m\n\u001b[2mexpression_paths:\u001b[0m                                  \u001b[2m5\u001b[0m \u001b[2m\u00b5s\u001b[0m\n"
+    },
+    {
+      "name": "valid_singleton_partition",
+      "command": "valid all x:qlt (({3}:qlt & x) = 0 || ({3}:qlt & x') = 0).",
+      "expected": "T",
+      "answers": [
+        "T"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "stdout": "[ error ] tau> valid all x:qlt (({3}:qlt & x) = 0 || ({3}:qlt & x') = 0).\n%1: T\n\n[ %1 error ] tau> ",
+      "stderr": "\u001b[39mcalculate_fixed_points:\u001b[0m                            \u001b[39m3\u001b[0m \u001b[39m\u00b5s\u001b[0m\n\u001b[2mapply_rec_relations:\u001b[0m\n\u001b[39mnormalize:\u001b[0m                                        \u001b[39m61\u001b[0m \u001b[39m\u00b5s\u001b[0m\n\t\u001b[2meliminate_arithmetic_and_quantifiers:\u001b[0m     \u001b[2m48\u001b[0m \u001b[2m\u00b5s\u001b[0m\n\t\u001b[39mnormalize_temporal_quantifiers:\u001b[0m            \u001b[39m3\u001b[0m \u001b[39m\u00b5s\u001b[0m\n\u001b[2mexpand_definitions:\u001b[0m\n\u001b[39mnormalize:\u001b[0m                                         \u001b[39m7\u001b[0m \u001b[39m\u00b5s\u001b[0m\n\t\u001b[2meliminate_arithmetic_and_quantifiers:\u001b[0m      \u001b[2m3\u001b[0m \u001b[2m\u00b5s\u001b[0m\n\t\u001b[39mnormalize_temporal_quantifiers:\u001b[0m            \u001b[39m0\u001b[0m  \u001b[39mms\u001b[0m\n\u001b[2mexpand_definitions:\u001b[0m\n\u001b[39mexpression_paths:\u001b[0m\n"
+    },
+    {
+      "name": "temporal_interval_equality",
+      "command": "realizable F (o1[t]:qlt = {(0,1)}:qlt).",
+      "expected": "T",
+      "answers": [
+        "T"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "stdout": "[ error ] tau> realizable F (o1[t]:qlt = {(0,1)}:qlt).\n%1: T\n\n[ %1 error ] tau> ",
+      "stderr": ""
+    },
+    {
+      "name": "temporal_interval_membership",
+      "command": "realizable F ((o1[t]:qlt & {(0,1)}:qlt) != 0).",
+      "expected": "T",
+      "answers": [
+        "T"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "stdout": "[ error ] tau> realizable F ((o1[t]:qlt & {(0,1)}:qlt) != 0).\n%1: T\n\n[ %1 error ] tau> ",
+      "stderr": ""
+    },
+    {
+      "name": "temporal_singleton_equality",
+      "command": "realizable F (o1[t]:qlt = {0}:qlt).",
+      "expected": "T",
+      "answers": [
+        "T"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "stdout": "[ error ] tau> realizable F (o1[t]:qlt = {0}:qlt).\n%1: T\n\n[ %1 error ] tau> ",
+      "stderr": ""
+    },
+    {
+      "name": "temporal_recurring_interval",
+      "command": "realizable G (F (o1[t]:qlt = {(0,1)}:qlt)).",
+      "expected": "T",
+      "answers": [
+        "T"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "stdout": "[ error ] tau> realizable G (F (o1[t]:qlt = {(0,1)}:qlt)).\n%1: T\n\n[ %1 error ] tau> ",
+      "stderr": ""
+    }
+  ]
+}

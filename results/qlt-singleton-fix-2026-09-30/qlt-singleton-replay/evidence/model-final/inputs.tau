@@ -1,0 +1,128 @@
+normalize ex x:qlt ex y:qlt ((({3}:qlt & (x)) != 0) || (({3}:qlt & y) != 0)).
+normalize ex x:qlt all y:qlt ((({3}:qlt & (x)) != 0) || (({3}:qlt & y) != 0)).
+normalize all x:qlt ex y:qlt ((({3}:qlt & (x)) != 0) || (({3}:qlt & y) != 0)).
+normalize all x:qlt all y:qlt ((({3}:qlt & (x)) != 0) || (({3}:qlt & y) != 0)).
+normalize ex x:qlt ex y:qlt ((({3}:qlt & (x)) != 0) && (({3}:qlt & y) != 0)).
+normalize ex x:qlt all y:qlt ((({3}:qlt & (x)) != 0) && (({3}:qlt & y) != 0)).
+normalize all x:qlt ex y:qlt ((({3}:qlt & (x)) != 0) && (({3}:qlt & y) != 0)).
+normalize all x:qlt all y:qlt ((({3}:qlt & (x)) != 0) && (({3}:qlt & y) != 0)).
+normalize ex x:qlt ex y:qlt ((({3}:qlt & (x)) != 0) || (({3}:qlt & y) = 0)).
+normalize ex x:qlt all y:qlt ((({3}:qlt & (x)) != 0) || (({3}:qlt & y) = 0)).
+normalize all x:qlt ex y:qlt ((({3}:qlt & (x)) != 0) || (({3}:qlt & y) = 0)).
+normalize all x:qlt all y:qlt ((({3}:qlt & (x)) != 0) || (({3}:qlt & y) = 0)).
+normalize ex x:qlt ex y:qlt ((({3}:qlt & (x)) != 0) && (({3}:qlt & y) = 0)).
+normalize ex x:qlt all y:qlt ((({3}:qlt & (x)) != 0) && (({3}:qlt & y) = 0)).
+normalize all x:qlt ex y:qlt ((({3}:qlt & (x)) != 0) && (({3}:qlt & y) = 0)).
+normalize all x:qlt all y:qlt ((({3}:qlt & (x)) != 0) && (({3}:qlt & y) = 0)).
+normalize ex x:qlt ex y:qlt ((({3}:qlt & (x)) = 0) || (({3}:qlt & y) != 0)).
+normalize ex x:qlt all y:qlt ((({3}:qlt & (x)) = 0) || (({3}:qlt & y) != 0)).
+normalize all x:qlt ex y:qlt ((({3}:qlt & (x)) = 0) || (({3}:qlt & y) != 0)).
+normalize all x:qlt all y:qlt ((({3}:qlt & (x)) = 0) || (({3}:qlt & y) != 0)).
+normalize ex x:qlt ex y:qlt ((({3}:qlt & (x)) = 0) && (({3}:qlt & y) != 0)).
+normalize ex x:qlt all y:qlt ((({3}:qlt & (x)) = 0) && (({3}:qlt & y) != 0)).
+normalize all x:qlt ex y:qlt ((({3}:qlt & (x)) = 0) && (({3}:qlt & y) != 0)).
+normalize all x:qlt all y:qlt ((({3}:qlt & (x)) = 0) && (({3}:qlt & y) != 0)).
+normalize ex x:qlt ex y:qlt ((({3}:qlt & (x)) = 0) || (({3}:qlt & y) = 0)).
+normalize ex x:qlt all y:qlt ((({3}:qlt & (x)) = 0) || (({3}:qlt & y) = 0)).
+normalize all x:qlt ex y:qlt ((({3}:qlt & (x)) = 0) || (({3}:qlt & y) = 0)).
+normalize all x:qlt all y:qlt ((({3}:qlt & (x)) = 0) || (({3}:qlt & y) = 0)).
+normalize ex x:qlt ex y:qlt ((({3}:qlt & (x)) = 0) && (({3}:qlt & y) = 0)).
+normalize ex x:qlt all y:qlt ((({3}:qlt & (x)) = 0) && (({3}:qlt & y) = 0)).
+normalize all x:qlt ex y:qlt ((({3}:qlt & (x)) = 0) && (({3}:qlt & y) = 0)).
+normalize all x:qlt all y:qlt ((({3}:qlt & (x)) = 0) && (({3}:qlt & y) = 0)).
+normalize ex x:qlt ex y:qlt ((({3}:qlt & (x & y)) != 0) || (({3}:qlt & y) != 0)).
+normalize ex x:qlt all y:qlt ((({3}:qlt & (x & y)) != 0) || (({3}:qlt & y) != 0)).
+normalize all x:qlt ex y:qlt ((({3}:qlt & (x & y)) != 0) || (({3}:qlt & y) != 0)).
+normalize all x:qlt all y:qlt ((({3}:qlt & (x & y)) != 0) || (({3}:qlt & y) != 0)).
+normalize ex x:qlt ex y:qlt ((({3}:qlt & (x & y)) != 0) && (({3}:qlt & y) != 0)).
+normalize ex x:qlt all y:qlt ((({3}:qlt & (x & y)) != 0) && (({3}:qlt & y) != 0)).
+normalize all x:qlt ex y:qlt ((({3}:qlt & (x & y)) != 0) && (({3}:qlt & y) != 0)).
+normalize all x:qlt all y:qlt ((({3}:qlt & (x & y)) != 0) && (({3}:qlt & y) != 0)).
+normalize ex x:qlt ex y:qlt ((({3}:qlt & (x & y)) != 0) || (({3}:qlt & y) = 0)).
+normalize ex x:qlt all y:qlt ((({3}:qlt & (x & y)) != 0) || (({3}:qlt & y) = 0)).
+normalize all x:qlt ex y:qlt ((({3}:qlt & (x & y)) != 0) || (({3}:qlt & y) = 0)).
+normalize all x:qlt all y:qlt ((({3}:qlt & (x & y)) != 0) || (({3}:qlt & y) = 0)).
+normalize ex x:qlt ex y:qlt ((({3}:qlt & (x & y)) != 0) && (({3}:qlt & y) = 0)).
+normalize ex x:qlt all y:qlt ((({3}:qlt & (x & y)) != 0) && (({3}:qlt & y) = 0)).
+normalize all x:qlt ex y:qlt ((({3}:qlt & (x & y)) != 0) && (({3}:qlt & y) = 0)).
+normalize all x:qlt all y:qlt ((({3}:qlt & (x & y)) != 0) && (({3}:qlt & y) = 0)).
+normalize ex x:qlt ex y:qlt ((({3}:qlt & (x & y)) = 0) || (({3}:qlt & y) != 0)).
+normalize ex x:qlt all y:qlt ((({3}:qlt & (x & y)) = 0) || (({3}:qlt & y) != 0)).
+normalize all x:qlt ex y:qlt ((({3}:qlt & (x & y)) = 0) || (({3}:qlt & y) != 0)).
+normalize all x:qlt all y:qlt ((({3}:qlt & (x & y)) = 0) || (({3}:qlt & y) != 0)).
+normalize ex x:qlt ex y:qlt ((({3}:qlt & (x & y)) = 0) && (({3}:qlt & y) != 0)).
+normalize ex x:qlt all y:qlt ((({3}:qlt & (x & y)) = 0) && (({3}:qlt & y) != 0)).
+normalize all x:qlt ex y:qlt ((({3}:qlt & (x & y)) = 0) && (({3}:qlt & y) != 0)).
+normalize all x:qlt all y:qlt ((({3}:qlt & (x & y)) = 0) && (({3}:qlt & y) != 0)).
+normalize ex x:qlt ex y:qlt ((({3}:qlt & (x & y)) = 0) || (({3}:qlt & y) = 0)).
+normalize ex x:qlt all y:qlt ((({3}:qlt & (x & y)) = 0) || (({3}:qlt & y) = 0)).
+normalize all x:qlt ex y:qlt ((({3}:qlt & (x & y)) = 0) || (({3}:qlt & y) = 0)).
+normalize all x:qlt all y:qlt ((({3}:qlt & (x & y)) = 0) || (({3}:qlt & y) = 0)).
+normalize ex x:qlt ex y:qlt ((({3}:qlt & (x & y)) = 0) && (({3}:qlt & y) = 0)).
+normalize ex x:qlt all y:qlt ((({3}:qlt & (x & y)) = 0) && (({3}:qlt & y) = 0)).
+normalize all x:qlt ex y:qlt ((({3}:qlt & (x & y)) = 0) && (({3}:qlt & y) = 0)).
+normalize all x:qlt all y:qlt ((({3}:qlt & (x & y)) = 0) && (({3}:qlt & y) = 0)).
+normalize ex x:qlt ex y:qlt ((({3}:qlt & (x | y)) != 0) || (({3}:qlt & y) != 0)).
+normalize ex x:qlt all y:qlt ((({3}:qlt & (x | y)) != 0) || (({3}:qlt & y) != 0)).
+normalize all x:qlt ex y:qlt ((({3}:qlt & (x | y)) != 0) || (({3}:qlt & y) != 0)).
+normalize all x:qlt all y:qlt ((({3}:qlt & (x | y)) != 0) || (({3}:qlt & y) != 0)).
+normalize ex x:qlt ex y:qlt ((({3}:qlt & (x | y)) != 0) && (({3}:qlt & y) != 0)).
+normalize ex x:qlt all y:qlt ((({3}:qlt & (x | y)) != 0) && (({3}:qlt & y) != 0)).
+normalize all x:qlt ex y:qlt ((({3}:qlt & (x | y)) != 0) && (({3}:qlt & y) != 0)).
+normalize all x:qlt all y:qlt ((({3}:qlt & (x | y)) != 0) && (({3}:qlt & y) != 0)).
+normalize ex x:qlt ex y:qlt ((({3}:qlt & (x | y)) != 0) || (({3}:qlt & y) = 0)).
+normalize ex x:qlt all y:qlt ((({3}:qlt & (x | y)) != 0) || (({3}:qlt & y) = 0)).
+normalize all x:qlt ex y:qlt ((({3}:qlt & (x | y)) != 0) || (({3}:qlt & y) = 0)).
+normalize all x:qlt all y:qlt ((({3}:qlt & (x | y)) != 0) || (({3}:qlt & y) = 0)).
+normalize ex x:qlt ex y:qlt ((({3}:qlt & (x | y)) != 0) && (({3}:qlt & y) = 0)).
+normalize ex x:qlt all y:qlt ((({3}:qlt & (x | y)) != 0) && (({3}:qlt & y) = 0)).
+normalize all x:qlt ex y:qlt ((({3}:qlt & (x | y)) != 0) && (({3}:qlt & y) = 0)).
+normalize all x:qlt all y:qlt ((({3}:qlt & (x | y)) != 0) && (({3}:qlt & y) = 0)).
+normalize ex x:qlt ex y:qlt ((({3}:qlt & (x | y)) = 0) || (({3}:qlt & y) != 0)).
+normalize ex x:qlt all y:qlt ((({3}:qlt & (x | y)) = 0) || (({3}:qlt & y) != 0)).
+normalize all x:qlt ex y:qlt ((({3}:qlt & (x | y)) = 0) || (({3}:qlt & y) != 0)).
+normalize all x:qlt all y:qlt ((({3}:qlt & (x | y)) = 0) || (({3}:qlt & y) != 0)).
+normalize ex x:qlt ex y:qlt ((({3}:qlt & (x | y)) = 0) && (({3}:qlt & y) != 0)).
+normalize ex x:qlt all y:qlt ((({3}:qlt & (x | y)) = 0) && (({3}:qlt & y) != 0)).
+normalize all x:qlt ex y:qlt ((({3}:qlt & (x | y)) = 0) && (({3}:qlt & y) != 0)).
+normalize all x:qlt all y:qlt ((({3}:qlt & (x | y)) = 0) && (({3}:qlt & y) != 0)).
+normalize ex x:qlt ex y:qlt ((({3}:qlt & (x | y)) = 0) || (({3}:qlt & y) = 0)).
+normalize ex x:qlt all y:qlt ((({3}:qlt & (x | y)) = 0) || (({3}:qlt & y) = 0)).
+normalize all x:qlt ex y:qlt ((({3}:qlt & (x | y)) = 0) || (({3}:qlt & y) = 0)).
+normalize all x:qlt all y:qlt ((({3}:qlt & (x | y)) = 0) || (({3}:qlt & y) = 0)).
+normalize ex x:qlt ex y:qlt ((({3}:qlt & (x | y)) = 0) && (({3}:qlt & y) = 0)).
+normalize ex x:qlt all y:qlt ((({3}:qlt & (x | y)) = 0) && (({3}:qlt & y) = 0)).
+normalize all x:qlt ex y:qlt ((({3}:qlt & (x | y)) = 0) && (({3}:qlt & y) = 0)).
+normalize all x:qlt all y:qlt ((({3}:qlt & (x | y)) = 0) && (({3}:qlt & y) = 0)).
+normalize ex x:qlt ex y:qlt ((({3}:qlt & (x ^ y)) != 0) || (({3}:qlt & y) != 0)).
+normalize ex x:qlt all y:qlt ((({3}:qlt & (x ^ y)) != 0) || (({3}:qlt & y) != 0)).
+normalize all x:qlt ex y:qlt ((({3}:qlt & (x ^ y)) != 0) || (({3}:qlt & y) != 0)).
+normalize all x:qlt all y:qlt ((({3}:qlt & (x ^ y)) != 0) || (({3}:qlt & y) != 0)).
+normalize ex x:qlt ex y:qlt ((({3}:qlt & (x ^ y)) != 0) && (({3}:qlt & y) != 0)).
+normalize ex x:qlt all y:qlt ((({3}:qlt & (x ^ y)) != 0) && (({3}:qlt & y) != 0)).
+normalize all x:qlt ex y:qlt ((({3}:qlt & (x ^ y)) != 0) && (({3}:qlt & y) != 0)).
+normalize all x:qlt all y:qlt ((({3}:qlt & (x ^ y)) != 0) && (({3}:qlt & y) != 0)).
+normalize ex x:qlt ex y:qlt ((({3}:qlt & (x ^ y)) != 0) || (({3}:qlt & y) = 0)).
+normalize ex x:qlt all y:qlt ((({3}:qlt & (x ^ y)) != 0) || (({3}:qlt & y) = 0)).
+normalize all x:qlt ex y:qlt ((({3}:qlt & (x ^ y)) != 0) || (({3}:qlt & y) = 0)).
+normalize all x:qlt all y:qlt ((({3}:qlt & (x ^ y)) != 0) || (({3}:qlt & y) = 0)).
+normalize ex x:qlt ex y:qlt ((({3}:qlt & (x ^ y)) != 0) && (({3}:qlt & y) = 0)).
+normalize ex x:qlt all y:qlt ((({3}:qlt & (x ^ y)) != 0) && (({3}:qlt & y) = 0)).
+normalize all x:qlt ex y:qlt ((({3}:qlt & (x ^ y)) != 0) && (({3}:qlt & y) = 0)).
+normalize all x:qlt all y:qlt ((({3}:qlt & (x ^ y)) != 0) && (({3}:qlt & y) = 0)).
+normalize ex x:qlt ex y:qlt ((({3}:qlt & (x ^ y)) = 0) || (({3}:qlt & y) != 0)).
+normalize ex x:qlt all y:qlt ((({3}:qlt & (x ^ y)) = 0) || (({3}:qlt & y) != 0)).
+normalize all x:qlt ex y:qlt ((({3}:qlt & (x ^ y)) = 0) || (({3}:qlt & y) != 0)).
+normalize all x:qlt all y:qlt ((({3}:qlt & (x ^ y)) = 0) || (({3}:qlt & y) != 0)).
+normalize ex x:qlt ex y:qlt ((({3}:qlt & (x ^ y)) = 0) && (({3}:qlt & y) != 0)).
+normalize ex x:qlt all y:qlt ((({3}:qlt & (x ^ y)) = 0) && (({3}:qlt & y) != 0)).
+normalize all x:qlt ex y:qlt ((({3}:qlt & (x ^ y)) = 0) && (({3}:qlt & y) != 0)).
+normalize all x:qlt all y:qlt ((({3}:qlt & (x ^ y)) = 0) && (({3}:qlt & y) != 0)).
+normalize ex x:qlt ex y:qlt ((({3}:qlt & (x ^ y)) = 0) || (({3}:qlt & y) = 0)).
+normalize ex x:qlt all y:qlt ((({3}:qlt & (x ^ y)) = 0) || (({3}:qlt & y) = 0)).
+normalize all x:qlt ex y:qlt ((({3}:qlt & (x ^ y)) = 0) || (({3}:qlt & y) = 0)).
+normalize all x:qlt all y:qlt ((({3}:qlt & (x ^ y)) = 0) || (({3}:qlt & y) = 0)).
+normalize ex x:qlt ex y:qlt ((({3}:qlt & (x ^ y)) = 0) && (({3}:qlt & y) = 0)).
+normalize ex x:qlt all y:qlt ((({3}:qlt & (x ^ y)) = 0) && (({3}:qlt & y) = 0)).
+normalize all x:qlt ex y:qlt ((({3}:qlt & (x ^ y)) = 0) && (({3}:qlt & y) = 0)).
+normalize all x:qlt all y:qlt ((({3}:qlt & (x ^ y)) = 0) && (({3}:qlt & y) = 0)).

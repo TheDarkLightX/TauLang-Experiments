@@ -1,0 +1,6 @@
+normalize ex y:qlt ((({3}:qlt & y) != 0) && (({3}:qlt & y') != 0)).
+valid all y:qlt ((({3}:qlt & y) = 0) || (({3}:qlt & y') = 0)).
+normalize ((({3}:qlt & {3}:qlt) != 0) && (({3}:qlt & {3}:qlt') != 0)).
+normalize ((({3}:qlt & {5}:qlt) != 0) && (({3}:qlt & {5}:qlt') != 0)).
+normalize ex y:qlt ((({[0,1]}:qlt & y) != 0) && (({[0,1]}:qlt & y') != 0)).
+normalize ((({[0,1]}:qlt & {0}:qlt) != 0) && (({[0,1]}:qlt & {0}:qlt') != 0)).

@@ -1,0 +1,33 @@
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                       [39m148[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m    [2m121[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m           [39m11[0m [39mµs[0m
+[2mexpand_definitions:[0m                                [2m8[0m [2mµs[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m30[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m23[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mnormalize:[0m
+[2mexpand_definitions:[0m
+[39mexpression_paths:[0m
+[39mcalculate_fixed_points:[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                       [39m220[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m    [2m208[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m
+[2mexpand_definitions:[0m

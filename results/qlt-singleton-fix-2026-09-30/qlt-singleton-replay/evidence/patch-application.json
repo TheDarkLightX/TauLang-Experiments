@@ -1,0 +1,12 @@
+{
+  "base_commit": "577b635af244d8a1b6e71ef7b2b92ed756187c7e",
+  "patch_sha256": "88464eef924276bd12b9d7cbd4d739ca672d6abfaf5233f3615640f65eac64b2",
+  "applies_to_clean_base": true,
+  "applied_files_match_build_sources": true,
+  "source_sha256": {
+    "docs/adding_base_bas.md": "bfdc7b922b99a0ba6cd61e37b633bb6c7707e88358955c18980fb6eee72cb0f1",
+    "src/boolean_algebras/qlt/qlt_descriptor.tmpl.h": "40bbb79e3212e531c3ced9578f63a5a8bd59fc624b760891a5c0b20f84173bf8",
+    "src/boolean_algebras/qlt/qlt_qe.tmpl.h": "e04f300a00bf9990ca2ae02582c533634bc79c0d335afef07e00167fbd5546b7",
+    "src/boolean_algebras/qlt/tests/test_integration-solver-qlt.cpp": "c748b68ef165c0ffe00cff065adee78ece85afe4b335fc50f3d661b062fc8896"
+  }
+}

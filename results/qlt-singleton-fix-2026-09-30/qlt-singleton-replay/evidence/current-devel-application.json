@@ -1,0 +1,6 @@
+{
+  "current_devel": "b5445d315071d2eb6d0c20728feab3f09d94fe57",
+  "logical_patch_applies_cleanly": true,
+  "changed_patch_files_identical_to_tested_base": true,
+  "runtime_tests_on_current_devel": false
+}

@@ -1,0 +1,14 @@
+{
+  "total": 2626,
+  "passed": 2622,
+  "failed": [
+    "test_ltl_aba_open_points",
+    "test_repl-normalize_cmd-issue185_juxtaposed_min_printed",
+    "test_repl-normalize_cmd-qlt_pinned_neq_residual",
+    "test_repl-normalize_cmd-qlt_density_residual"
+  ],
+  "elapsed_seconds": 453.12,
+  "exit_code": 8,
+  "source_patch_sha256": "88464eef924276bd12b9d7cbd4d739ca672d6abfaf5233f3615640f65eac64b2",
+  "binary_sha256": "61ad9df8584f7bf87f0ffe5dfd3da9f49695791c1d0ec85da6aeda39f375bdba"
+}

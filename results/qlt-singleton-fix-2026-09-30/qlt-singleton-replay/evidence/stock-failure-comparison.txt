@@ -1,0 +1,6 @@
+1/4 Test  #123: test_ltl_aba_open_points ..................................***Failed   42.11 sec
+2/4 Test #1929: test_repl-normalize_cmd-issue185_juxtaposed_min_printed ...***Failed  Required regular expression not found. Regex=[x min\(x
+3/4 Test #1935: test_repl-normalize_cmd-qlt_pinned_neq_residual ...........***Failed  Required regular expression not found. Regex=[: a != b
+4/4 Test #1939: test_repl-normalize_cmd-qlt_density_residual ..............***Failed  Required regular expression not found. Regex=[: a < b \|\| a = b && [ab] != c
+0% tests passed, 4 tests failed out of 4
+Total Test time (real) =  42.60 sec

@@ -1,0 +1,768 @@
+[39mcalculate_fixed_points:[0m                            [39m3[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m59[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m46[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m4[0m [39mµs[0m
+[2mexpand_definitions:[0m                                [2m1[0m [2mµs[0m
+[39mcalculate_fixed_points:[0m                            [39m3[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m31[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m23[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m26[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m17[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m3[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m33[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m25[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m31[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m24[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m29[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m19[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m32[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m25[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m23[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m16[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m3[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m31[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m23[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m3[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m33[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m25[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m25[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m18[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m27[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m20[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m27[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m20[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m23[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m16[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m26[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m19[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m22[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m15[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m0[0m  [39mms[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m23[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m16[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m0[0m  [39mms[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m28[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m21[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m24[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m17[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m25[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m19[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m0[0m  [39mms[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m26[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m19[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m23[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m16[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m0[0m  [39mms[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m27[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m20[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m21[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m15[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m0[0m  [39mms[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m27[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m20[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m27[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m20[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m22[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m15[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m26[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m19[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m3[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m27[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m20[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m22[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m15[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m0[0m  [39mms[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m4[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m28[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m20[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m22[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m15[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m3[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m29[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m23[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m30[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m23[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m0[0m  [39mms[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m25[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m18[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m28[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m21[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m3[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m36[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m28[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m3[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m27[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m20[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m31[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m24[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m25[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m18[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m27[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m20[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m0[0m  [39mms[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m3[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m30[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m23[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m0[0m  [39mms[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m24[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m17[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m3[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m33[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m26[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m32[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m25[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m25[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m17[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m3[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m34[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m27[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m3[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m29[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m22[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m3[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m29[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m22[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m3[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m32[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m25[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m26[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m19[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m29[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m22[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m3[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m68[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m61[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m25[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m18[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m32[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m25[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m24[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m17[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m0[0m  [39mms[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m26[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m19[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m28[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m22[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m0[0m  [39mms[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m3[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m25[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m18[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m0[0m  [39mms[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m28[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m21[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m3[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m29[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m23[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m0[0m  [39mms[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m24[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m17[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m29[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m22[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m23[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m17[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m0[0m  [39mms[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m28[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m21[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m3[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m50[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m42[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m3[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m28[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m20[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m35[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m25[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m3[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m39[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m31[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m25[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m18[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m32[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m24[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m24[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m17[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m0[0m  [39mms[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m26[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m19[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m3[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m35[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m28[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m3[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m28[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m20[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m3[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m32[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m25[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m3[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m34[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m27[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m26[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m19[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m32[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m25[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m23[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m16[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m0[0m  [39mms[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m3[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m33[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m25[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m37[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m30[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m3[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m34[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m25[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m3[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m45[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m36[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m3[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m40[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m32[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m29[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m22[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m36[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m28[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m28[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m20[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m3[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m29[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m22[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m33[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m26[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m27[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m20[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m3[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m36[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m29[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m3[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m37[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m29[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m3[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m32[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m25[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m3[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m35[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m28[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m27[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m19[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m3[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m34[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m26[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m3[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m36[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m29[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m28[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m21[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m3[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m33[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m26[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m3[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m37[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m30[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m28[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m21[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m3[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m36[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m28[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m27[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m20[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m28[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m21[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m34[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m27[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m26[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m19[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m33[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m26[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m33[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m26[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m26[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m19[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m3[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m34[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m26[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m25[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m18[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m27[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m20[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m32[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m25[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m28[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m21[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m36[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m28[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m33[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m27[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m0[0m  [39mms[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m26[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m19[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m0[0m  [39mms[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m32[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m26[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m0[0m  [39mms[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m24[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m17[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m29[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m22[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m33[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m26[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m3[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m28[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m21[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m3[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m33[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m26[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m35[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m28[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m27[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m20[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m0[0m  [39mms[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m3[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m33[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m26[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m
+[39mcalculate_fixed_points:[0m                            [39m2[0m [39mµs[0m
+[2mapply_rec_relations:[0m
+[39mnormalize:[0m                                        [39m25[0m [39mµs[0m
+	[2meliminate_arithmetic_and_quantifiers:[0m     [2m18[0m [2mµs[0m
+	[39mnormalize_temporal_quantifiers:[0m            [39m1[0m [39mµs[0m
+[2mexpand_definitions:[0m

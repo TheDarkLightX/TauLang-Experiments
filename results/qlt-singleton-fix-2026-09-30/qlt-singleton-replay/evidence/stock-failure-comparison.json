@@ -1,0 +1,48 @@
+{
+  "stock_binary_sha256": "5876dc00eb432939d3d67aef9b8235f7cf97e7041b6cf51d38d2cb8ddab1645a",
+  "patched_binary_sha256": "61ad9df8584f7bf87f0ffe5dfd3da9f49695791c1d0ec85da6aeda39f375bdba",
+  "stock_replayed_ctest_entries": 4,
+  "stock_full_suite_run": false,
+  "same_failed_ctest_entries": true,
+  "failed_ctest_entries": [
+    "test_ltl_aba_open_points",
+    "test_repl-normalize_cmd-issue185_juxtaposed_min_printed",
+    "test_repl-normalize_cmd-qlt_pinned_neq_residual",
+    "test_repl-normalize_cmd-qlt_density_residual"
+  ],
+  "same_unexpected_pass_case": [
+    "tautology check takes a formula beyond the argument limit"
+  ],
+  "printed_answers": [
+    {
+      "test": "test_repl-normalize_cmd-issue185_juxtaposed_min_printed",
+      "stock": [
+        "min(x, { 2 }:bv[2])x = { 2 }:bv[2]"
+      ],
+      "patched": [
+        "min(x, { 2 }:bv[2])x = { 2 }:bv[2]"
+      ],
+      "identical": true
+    },
+    {
+      "test": "test_repl-normalize_cmd-qlt_pinned_neq_residual",
+      "stock": [
+        "b != a"
+      ],
+      "patched": [
+        "b != a"
+      ],
+      "identical": true
+    },
+    {
+      "test": "test_repl-normalize_cmd-qlt_density_residual",
+      "stock": [
+        "a < b || a != c && b = a"
+      ],
+      "patched": [
+        "a < b || a != c && b = a"
+      ],
+      "identical": true
+    }
+  ]
+}
