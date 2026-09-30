@@ -1,0 +1,13 @@
+{
+  "changed_memory_output": {
+    "exit": 1,
+    "rejected": true
+  },
+  "missing_repeat": {
+    "exit": 1,
+    "rejected": true
+  },
+  "changed_source_hash": {
+    "rejected": true
+  }
+}

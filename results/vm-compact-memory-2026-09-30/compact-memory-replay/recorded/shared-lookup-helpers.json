@@ -1,0 +1,20 @@
+[
+  {
+    "name": "vmsharedlookup0",
+    "call": "vmsharedlookup0({0}:bv[32])",
+    "body": "select32(i1[t].code.r0.opcode, i1[t].code.r1.opcode, i1[t].code.r2.opcode, i1[t].code.r3.opcode, i1[t].code.r4.opcode, i1[t].code.r5.opcode, i1[t].code.r6.opcode, i1[t].code.r7.opcode, i1[t].code.r8.opcode, i1[t].code.r9.opcode, i1[t].code.r10.opcode, i1[t].code.r11.opcode, i1[t].code.r12.opcode, i1[t].code.r13.opcode, i1[t].code.r14.opcode, i1[t].code.r15.opcode, i1[t].code.r16.opcode, i1[t].code.r17.opcode, i1[t].code.r18.opcode, i1[t].code.r19.opcode, i1[t].code.r20.opcode, i1[t].code.r21.opcode, i1[t].code.r22.opcode, i1[t].code.r23.opcode, i1[t].code.r24.opcode, i1[t].code.r25.opcode, i1[t].code.r26.opcode, i1[t].code.r27.opcode, i1[t].code.r28.opcode, i1[t].code.r29.opcode, i1[t].code.r30.opcode, i1[t].code.r31.opcode, i3[t].pc)",
+    "uses": 20
+  },
+  {
+    "name": "vmsharedlookup1",
+    "call": "vmsharedlookup1({0}:bv[32])",
+    "body": "select32(i1[t].code.r0.operand, i1[t].code.r1.operand, i1[t].code.r2.operand, i1[t].code.r3.operand, i1[t].code.r4.operand, i1[t].code.r5.operand, i1[t].code.r6.operand, i1[t].code.r7.operand, i1[t].code.r8.operand, i1[t].code.r9.operand, i1[t].code.r10.operand, i1[t].code.r11.operand, i1[t].code.r12.operand, i1[t].code.r13.operand, i1[t].code.r14.operand, i1[t].code.r15.operand, i1[t].code.r16.operand, i1[t].code.r17.operand, i1[t].code.r18.operand, i1[t].code.r19.operand, i1[t].code.r20.operand, i1[t].code.r21.operand, i1[t].code.r22.operand, i1[t].code.r23.operand, i1[t].code.r24.operand, i1[t].code.r25.operand, i1[t].code.r26.operand, i1[t].code.r27.operand, i1[t].code.r28.operand, i1[t].code.r29.operand, i1[t].code.r30.operand, i1[t].code.r31.operand, i3[t].pc)",
+    "uses": 45
+  },
+  {
+    "name": "vmsharedlookup2",
+    "call": "vmsharedlookup2({0}:bv[32])",
+    "body": "select16(i3[t].memory.r0, i3[t].memory.r1, i3[t].memory.r2, i3[t].memory.r3, i3[t].memory.r4, i3[t].memory.r5, i3[t].memory.r6, i3[t].memory.r7, i3[t].memory.r8, i3[t].memory.r9, i3[t].memory.r10, i3[t].memory.r11, i3[t].memory.r12, i3[t].memory.r13, i3[t].memory.r14, i3[t].memory.r15, vmsharedlookup1({0}:bv[32]))",
+    "uses": 7
+  }
+]
