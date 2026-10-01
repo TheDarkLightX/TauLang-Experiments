@@ -1,0 +1,42 @@
+Internal ctest changing into directory: /work/tau-source/build/release-bvonly
+Test project /work/tau-source/build/release-bvonly
+      Start  72: test_ba_conformance
+      Start  73: test_ba_descriptor_pack
+      Start 136: test_api-concrete_eval
+      Start 535: test_repl-evalspec-admitted
+ 1/18 Test  #73: test_ba_descriptor_pack ..................   Passed    0.08 sec
+      Start 536: test_repl-evalspec-ok
+ 2/18 Test #535: test_repl-evalspec-admitted ..............   Passed    0.08 sec
+      Start 537: test_repl-evalspec-arity
+ 3/18 Test  #72: test_ba_conformance ......................   Passed    0.18 sec
+      Start 538: test_repl-evalspec-overflow
+ 4/18 Test #536: test_repl-evalspec-ok ....................   Passed    0.12 sec
+ 5/18 Test #537: test_repl-evalspec-arity .................   Passed    0.09 sec
+      Start 539: test_repl-evalspec-leading_zero
+      Start 540: test_repl-evalspec-junk
+ 6/18 Test #538: test_repl-evalspec-overflow ..............   Passed    0.11 sec
+ 7/18 Test #539: test_repl-evalspec-leading_zero ..........   Passed    0.09 sec
+ 8/18 Test #540: test_repl-evalspec-junk ..................   Passed    0.09 sec
+      Start 541: test_repl-evalspec-huge_value
+      Start 542: test_repl-evalspec-over_budget
+      Start 543: test_repl-evalspec-shadowed_def
+ 9/18 Test #542: test_repl-evalspec-over_budget ...........   Passed    0.08 sec
+      Start 544: test_repl-evalspec-def_after_admission
+10/18 Test #541: test_repl-evalspec-huge_value ............   Passed    0.10 sec
+      Start 545: test_repl-evalspec-declined
+11/18 Test #543: test_repl-evalspec-shadowed_def ..........   Passed    0.14 sec
+      Start 546: test_repl-evalspec-usage
+12/18 Test #545: test_repl-evalspec-declined ..............   Passed    0.09 sec
+      Start 547: test_repl-evalspec-no_history
+13/18 Test #544: test_repl-evalspec-def_after_admission ...   Passed    0.16 sec
+      Start 548: test_repl-evalspec-huge_history
+14/18 Test #546: test_repl-evalspec-usage .................   Passed    0.08 sec
+15/18 Test #547: test_repl-evalspec-no_history ............   Passed    0.05 sec
+      Start 549: test_repl-evalspec-zero_history
+16/18 Test #549: test_repl-evalspec-zero_history ..........   Passed    0.07 sec
+17/18 Test #548: test_repl-evalspec-huge_history ..........   Passed    0.09 sec
+18/18 Test #136: test_api-concrete_eval ...................   Passed   54.40 sec
+
+100% tests passed, 0 tests failed out of 18
+
+Total Test time (real) =  54.48 sec

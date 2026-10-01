@@ -1,0 +1,219 @@
+Start testing: Oct 01 01:33 EDT
+----------------------------------------------------------
+30/1564 Testing: test_ba_descriptor_pack
+30/1564 Test: test_ba_descriptor_pack
+Command: "tau-source/build/release-nobv/test_ba_descriptor_pack"
+Directory: tau-source/tests/unit/..
+"test_ba_descriptor_pack" start time: Oct 01 01:33 EDT
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+[bench 0.027166 ms] configuration / bdd_init
+[bench 0.006542 ms] generic dispatcher over a descriptor-complete pack / types() folds the descriptors in pack order
+[bench 0.0295 ms] generic dispatcher over a descriptor-complete pack / default_type() resolves by descriptor priority
+
+[benchmark] 3 tests, total 0.063208 ms -> benchmark_timing.json
+===============================================================================
+[doctest] test cases: 3 | 3 passed | 0 failed | 0 skipped
+[doctest] assertions: 3 | 3 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.35 sec
+----------------------------------------------------------
+Test Passed.
+"test_ba_descriptor_pack" end time: Oct 01 01:33 EDT
+"test_ba_descriptor_pack" time elapsed: 00:00:00
+----------------------------------------------------------
+
+29/1564 Testing: test_ba_conformance
+29/1564 Test: test_ba_conformance
+Command: "tau-source/build/release-nobv/test_ba_conformance"
+Directory: tau-source/tests/unit/..
+"test_ba_conformance" start time: Oct 01 01:33 EDT
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+[bench 0.003875 ms] configuration / bdd_init
+[bench 4.26008 ms] every algebra of the configured pack / satisfies its descriptor's contract
+[bench 0.007834 ms] tau constant parse reports why / a tau constant that fails to parse carries its own reason
+[bench 0.525542 ms] fold empty cases without bv / nothing in this pack solves, preprocesses or blasts
+
+[benchmark] 4 tests, total 4.79733 ms -> benchmark_timing.json
+===============================================================================
+[doctest] test cases:   4 |   4 passed | 0 failed | 0 skipped
+[doctest] assertions: 221 | 221 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.60 sec
+----------------------------------------------------------
+Test Passed.
+"test_ba_conformance" end time: Oct 01 01:33 EDT
+"test_ba_conformance" time elapsed: 00:00:00
+----------------------------------------------------------
+
+440/1564 Testing: test_repl-evalspec-no_history
+440/1564 Test: test_repl-evalspec-no_history
+Command: "/bin/bash" "-c" "printf '%s\n' 'evalspec %1' q | env TAU_CONCRETE_EVAL=1  tau-source/build/release-nobv/tau"
+Directory: tau-source/build/release-nobv/tests/repl/commands
+"test_repl-evalspec-no_history" start time: Oct 01 01:33 EDT
+Output:
+----------------------------------------------------------
+Welcome to the Tau Language Framework version 0.7.0-alpha (a739b902) by IDNI AG.
+This product is protected by patents and copyright. By using this product, you agree to the license terms. To view the license run "tau --license".
+
+For documentation, open issues and reporting issues please visit https://github.com/IDNI/tau-lang/
+
+For built-in help, type "help" or "help command".
+
+tau> evalspec %1
+evalspec error: history location does not exist
+evalspec-result: status=error reason=bad_history
+evalspec-end
+
+tau> q
+Quit.
+
+<end of output>
+Test time =   0.48 sec
+----------------------------------------------------------
+Test Pass Reason:
+Required regular expression found. Regex=[evalspec-result: status=error reason=bad_history
+evalspec-end]
+"test_repl-evalspec-no_history" end time: Oct 01 01:33 EDT
+"test_repl-evalspec-no_history" time elapsed: 00:00:00
+----------------------------------------------------------
+
+439/1564 Testing: test_repl-evalspec-usage
+439/1564 Test: test_repl-evalspec-usage
+Command: "/bin/bash" "-c" "printf '%s\n' 'evalspec' q | env TAU_CONCRETE_EVAL=1  tau-source/build/release-nobv/tau"
+Directory: tau-source/build/release-nobv/tests/repl/commands
+"test_repl-evalspec-usage" start time: Oct 01 01:33 EDT
+Output:
+----------------------------------------------------------
+Welcome to the Tau Language Framework version 0.7.0-alpha (a739b902) by IDNI AG.
+This product is protected by patents and copyright. By using this product, you agree to the license terms. To view the license run "tau --license".
+
+For documentation, open issues and reporting issues please visit https://github.com/IDNI/tau-lang/
+
+For built-in help, type "help" or "help command".
+
+tau> evalspec
+evalspec error: usage: evalspec %N [value ...]
+evalspec-result: status=error reason=usage
+evalspec-end
+
+tau> q
+Quit.
+
+<end of output>
+Test time =   0.83 sec
+----------------------------------------------------------
+Test Pass Reason:
+Required regular expression found. Regex=[evalspec-result: status=error reason=usage
+evalspec-end]
+"test_repl-evalspec-usage" end time: Oct 01 01:33 EDT
+"test_repl-evalspec-usage" time elapsed: 00:00:00
+----------------------------------------------------------
+
+441/1564 Testing: test_repl-evalspec-huge_history
+441/1564 Test: test_repl-evalspec-huge_history
+Command: "/bin/bash" "-c" "printf '%s\n' 'evalspec %99999999999999999999999999999' q | env TAU_CONCRETE_EVAL=1  tau-source/build/release-nobv/tau"
+Directory: tau-source/build/release-nobv/tests/repl/commands
+"test_repl-evalspec-huge_history" start time: Oct 01 01:33 EDT
+Output:
+----------------------------------------------------------
+Welcome to the Tau Language Framework version 0.7.0-alpha (a739b902) by IDNI AG.
+This product is protected by patents and copyright. By using this product, you agree to the license terms. To view the license run "tau --license".
+
+For documentation, open issues and reporting issues please visit https://github.com/IDNI/tau-lang/
+
+For built-in help, type "help" or "help command".
+
+tau> evalspec %99999999999999999999999999999
+evalspec error: history location does not exist
+evalspec-result: status=error reason=bad_history
+evalspec-end
+
+tau> q
+Quit.
+
+<end of output>
+Test time =   0.24 sec
+----------------------------------------------------------
+Test Pass Reason:
+Required regular expression found. Regex=[evalspec-result: status=error reason=bad_history
+evalspec-end]
+"test_repl-evalspec-huge_history" end time: Oct 01 01:33 EDT
+"test_repl-evalspec-huge_history" time elapsed: 00:00:00
+----------------------------------------------------------
+
+438/1564 Testing: test_repl-evalspec-no_backend
+438/1564 Test: test_repl-evalspec-no_backend
+Command: "/bin/bash" "-c" "printf '%s\n' 'always o1[t]:sbf = i1[t]:sbf.' 'evalspec %1' q | env TAU_CONCRETE_EVAL=1  tau-source/build/release-nobv/tau"
+Directory: tau-source/build/release-nobv/tests/repl/commands
+"test_repl-evalspec-no_backend" start time: Oct 01 01:33 EDT
+Output:
+----------------------------------------------------------
+Welcome to the Tau Language Framework version 0.7.0-alpha (a739b902) by IDNI AG.
+This product is protected by patents and copyright. By using this product, you agree to the license terms. To view the license run "tau --license".
+
+For documentation, open issues and reporting issues please visit https://github.com/IDNI/tau-lang/
+
+For built-in help, type "help" or "help command".
+
+tau> always o1[t]:sbf = i1[t]:sbf.
+%1: always o1[t]:sbf = i1[t]:sbf
+
+[ %1 ] tau> evalspec %1
+evalspec error: no BA of this pack offers a concrete evaluator
+evalspec-result: status=error reason=no_backend
+evalspec-end
+
+[ %1 ] tau> q
+Quit.
+
+<end of output>
+Test time =   0.84 sec
+----------------------------------------------------------
+Test Pass Reason:
+Required regular expression found. Regex=[evalspec-result: status=error reason=no_backend
+evalspec-end]
+"test_repl-evalspec-no_backend" end time: Oct 01 01:33 EDT
+"test_repl-evalspec-no_backend" time elapsed: 00:00:00
+----------------------------------------------------------
+
+442/1564 Testing: test_repl-evalspec-zero_history
+442/1564 Test: test_repl-evalspec-zero_history
+Command: "/bin/bash" "-c" "printf '%s\n' 'evalspec %0' q | env TAU_CONCRETE_EVAL=1  tau-source/build/release-nobv/tau"
+Directory: tau-source/build/release-nobv/tests/repl/commands
+"test_repl-evalspec-zero_history" start time: Oct 01 01:33 EDT
+Output:
+----------------------------------------------------------
+Welcome to the Tau Language Framework version 0.7.0-alpha (a739b902) by IDNI AG.
+This product is protected by patents and copyright. By using this product, you agree to the license terms. To view the license run "tau --license".
+
+For documentation, open issues and reporting issues please visit https://github.com/IDNI/tau-lang/
+
+For built-in help, type "help" or "help command".
+
+tau> evalspec %0
+evalspec error: history location does not exist
+evalspec-result: status=error reason=bad_history
+evalspec-end
+
+tau> q
+Quit.
+
+<end of output>
+Test time =   0.03 sec
+----------------------------------------------------------
+Test Pass Reason:
+Required regular expression found. Regex=[evalspec-result: status=error reason=bad_history
+evalspec-end]
+"test_repl-evalspec-zero_history" end time: Oct 01 01:33 EDT
+"test_repl-evalspec-zero_history" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Oct 01 01:33 EDT

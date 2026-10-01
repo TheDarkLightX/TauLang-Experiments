@@ -1,0 +1,47 @@
+Test project tau-stock-source/build/release
+    Start 1929: test_repl-normalize_cmd-issue185_juxtaposed_min_printed
+1/3 Test #1929: test_repl-normalize_cmd-issue185_juxtaposed_min_printed ...***Failed  Required regular expression not found. Regex=[x min\(x
+]  0.40 sec
+calculate_fixed_points:                            3 µs
+apply_rec_relations:
+normalize:                                      1.45  ms
+	eliminate_arithmetic_and_quantifiers:    131 µs
+	normalize_temporal_quantifiers:         1.30  ms
+expand_definitions:                               16 µs
+%1: min(x, { 2 }:bv[2])x = { 2 }:bv[2]
+
+
+    Start 1935: test_repl-normalize_cmd-qlt_pinned_neq_residual
+2/3 Test #1935: test_repl-normalize_cmd-qlt_pinned_neq_residual ...........***Failed  Required regular expression not found. Regex=[: a != b
+]  0.07 sec
+calculate_fixed_points:                            6 µs
+apply_rec_relations:
+normalize:                                       602 µs
+	eliminate_arithmetic_and_quantifiers:    500 µs
+	normalize_temporal_quantifiers:           91 µs
+expand_definitions:                                1 µs
+%1: b != a
+
+
+    Start 1939: test_repl-normalize_cmd-qlt_density_residual
+3/3 Test #1939: test_repl-normalize_cmd-qlt_density_residual ..............***Failed  Required regular expression not found. Regex=[: a < b \|\| a = b && [ab] != c
+]  0.06 sec
+calculate_fixed_points:                            6 µs
+apply_rec_relations:
+normalize:                                       638 µs
+	eliminate_arithmetic_and_quantifiers:    543 µs
+	normalize_temporal_quantifiers:           83 µs
+expand_definitions:                                2 µs
+%1: a < b || a != c && b = a
+
+
+
+0% tests passed, 3 tests failed out of 3
+
+Total Test time (real) =   0.60 sec
+
+The following tests FAILED:
+	1929 - test_repl-normalize_cmd-issue185_juxtaposed_min_printed (Failed)
+	1935 - test_repl-normalize_cmd-qlt_pinned_neq_residual (Failed)
+	1939 - test_repl-normalize_cmd-qlt_density_residual (Failed)
+Errors while running CTest

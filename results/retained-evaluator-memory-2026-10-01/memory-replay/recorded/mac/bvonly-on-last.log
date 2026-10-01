@@ -1,0 +1,621 @@
+Start testing: Oct 01 01:29 EDT
+----------------------------------------------------------
+73/2007 Testing: test_ba_descriptor_pack
+73/2007 Test: test_ba_descriptor_pack
+Command: "tau-source/build/release-bvonly/test_ba_descriptor_pack"
+Directory: tau-source/tests/unit/..
+"test_ba_descriptor_pack" start time: Oct 01 01:29 EDT
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+[bench 0.005583 ms] configuration / bdd_init
+[bench 0.003208 ms] generic dispatcher over a descriptor-complete pack / types() folds the descriptors in pack order
+[bench 0.011042 ms] generic dispatcher over a descriptor-complete pack / default_type() resolves by descriptor priority
+
+[benchmark] 3 tests, total 0.019833 ms -> benchmark_timing.json
+===============================================================================
+[doctest] test cases: 3 | 3 passed | 0 failed | 0 skipped
+[doctest] assertions: 3 | 3 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.03 sec
+----------------------------------------------------------
+Test Passed.
+"test_ba_descriptor_pack" end time: Oct 01 01:29 EDT
+"test_ba_descriptor_pack" time elapsed: 00:00:00
+----------------------------------------------------------
+
+535/2007 Testing: test_repl-evalspec-admitted
+535/2007 Test: test_repl-evalspec-admitted
+Command: "/bin/bash" "-c" "printf '%s\n' 'always o1[t]:bv[2] = (i1[t]:bv[2] + i2[t]:bv[2]).' 'evalspec %1' q | env TAU_CONCRETE_EVAL=1  tau-source/build/release-bvonly/tau"
+Directory: tau-source/build/release-bvonly/tests/repl/commands
+"test_repl-evalspec-admitted" start time: Oct 01 01:29 EDT
+Output:
+----------------------------------------------------------
+Welcome to the Tau Language Framework version 0.7.0-alpha (a739b902) by IDNI AG.
+This product is protected by patents and copyright. By using this product, you agree to the license terms. To view the license run "tau --license".
+
+For documentation, open issues and reporting issues please visit https://github.com/IDNI/tau-lang/
+
+For built-in help, type "help" or "help command".
+
+tau> always o1[t]:bv[2] = (i1[t]:bv[2] + i2[t]:bv[2]).
+%1: always o1[t]:bv[2] = i1[t]:bv[2]+i2[t]:bv[2]
+
+[ %1 ] tau> evalspec %1
+inputs: i1[t] i2[t]
+outputs: o1[t]
+decisions: 0 leaves: 1 expressions: 4
+evalspec-result: status=admitted inputs=2 outputs=1 decisions=0 leaves=1 expressions=4 retained_terms=1 budget=1048576
+evalspec-end
+
+[ %1 ] tau> q
+Quit.
+
+<end of output>
+Test time =   0.04 sec
+----------------------------------------------------------
+Test Pass Reason:
+Required regular expression found. Regex=[evalspec-result: status=admitted inputs=2 outputs=1 decisions=0 leaves=1 expressions=[0-9]+ retained_terms=[0-9]+ budget=[0-9]+
+evalspec-end]
+"test_repl-evalspec-admitted" end time: Oct 01 01:29 EDT
+"test_repl-evalspec-admitted" time elapsed: 00:00:00
+----------------------------------------------------------
+
+536/2007 Testing: test_repl-evalspec-ok
+536/2007 Test: test_repl-evalspec-ok
+Command: "/bin/bash" "-c" "printf '%s\n' 'always o1[t]:bv[2] = (i1[t]:bv[2] + i2[t]:bv[2]).' 'evalspec %1 3 2' q | env TAU_CONCRETE_EVAL=1  tau-source/build/release-bvonly/tau"
+Directory: tau-source/build/release-bvonly/tests/repl/commands
+"test_repl-evalspec-ok" start time: Oct 01 01:29 EDT
+Output:
+----------------------------------------------------------
+Welcome to the Tau Language Framework version 0.7.0-alpha (a739b902) by IDNI AG.
+This product is protected by patents and copyright. By using this product, you agree to the license terms. To view the license run "tau --license".
+
+For documentation, open issues and reporting issues please visit https://github.com/IDNI/tau-lang/
+
+For built-in help, type "help" or "help command".
+
+tau> always o1[t]:bv[2] = (i1[t]:bv[2] + i2[t]:bv[2]).
+%1: always o1[t]:bv[2] = i1[t]:bv[2]+i2[t]:bv[2]
+
+[ %1 ] tau> evalspec %1 3 2
+evalspec-result: status=ok leaf=0 outputs=1 o1[t]=1
+evalspec-end
+
+[ %1 ] tau> q
+Quit.
+
+<end of output>
+Test time =   0.04 sec
+----------------------------------------------------------
+Test Pass Reason:
+Required regular expression found. Regex=[evalspec-result: status=ok leaf=0 outputs=1 o1\[t\]=1
+evalspec-end]
+"test_repl-evalspec-ok" end time: Oct 01 01:29 EDT
+"test_repl-evalspec-ok" time elapsed: 00:00:00
+----------------------------------------------------------
+
+537/2007 Testing: test_repl-evalspec-arity
+537/2007 Test: test_repl-evalspec-arity
+Command: "/bin/bash" "-c" "printf '%s\n' 'always o1[t]:bv[2] = (i1[t]:bv[2] + i2[t]:bv[2]).' 'evalspec %1 3' q | env TAU_CONCRETE_EVAL=1  tau-source/build/release-bvonly/tau"
+Directory: tau-source/build/release-bvonly/tests/repl/commands
+"test_repl-evalspec-arity" start time: Oct 01 01:29 EDT
+Output:
+----------------------------------------------------------
+Welcome to the Tau Language Framework version 0.7.0-alpha (a739b902) by IDNI AG.
+This product is protected by patents and copyright. By using this product, you agree to the license terms. To view the license run "tau --license".
+
+For documentation, open issues and reporting issues please visit https://github.com/IDNI/tau-lang/
+
+For built-in help, type "help" or "help command".
+
+tau> always o1[t]:bv[2] = (i1[t]:bv[2] + i2[t]:bv[2]).
+%1: always o1[t]:bv[2] = i1[t]:bv[2]+i2[t]:bv[2]
+
+[ %1 ] tau> evalspec %1 3
+evalspec error: expected 2 input values, got 1
+evalspec-result: status=error reason=arity
+evalspec-end
+
+[ %1 ] tau> q
+Quit.
+
+<end of output>
+Test time =   0.04 sec
+----------------------------------------------------------
+Test Pass Reason:
+Required regular expression found. Regex=[evalspec-result: status=error reason=arity
+evalspec-end]
+"test_repl-evalspec-arity" end time: Oct 01 01:29 EDT
+"test_repl-evalspec-arity" time elapsed: 00:00:00
+----------------------------------------------------------
+
+72/2007 Testing: test_ba_conformance
+72/2007 Test: test_ba_conformance
+Command: "tau-source/build/release-bvonly/test_ba_conformance"
+Directory: tau-source/tests/unit/..
+"test_ba_conformance" start time: Oct 01 01:29 EDT
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+[bench 0.004917 ms] configuration / bdd_init
+[bench 4.07221 ms] every algebra of the configured pack / satisfies its descriptor's contract
+[bench 0.009333 ms] tau constant parse reports why / a tau constant that fails to parse carries its own reason
+
+[benchmark] 3 tests, total 4.08646 ms -> benchmark_timing.json
+===============================================================================
+[doctest] test cases:   3 |   3 passed | 0 failed | 0 skipped
+[doctest] assertions: 219 | 219 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.03 sec
+----------------------------------------------------------
+Test Passed.
+"test_ba_conformance" end time: Oct 01 01:29 EDT
+"test_ba_conformance" time elapsed: 00:00:00
+----------------------------------------------------------
+
+544/2007 Testing: test_repl-evalspec-def_after_admission
+544/2007 Test: test_repl-evalspec-def_after_admission
+Command: "/bin/bash" "-c" "printf '%s\n' 'f(x:bv[4]) := x + {1}:bv[4].' 'always o1[t]:bv[4] = f(i1[t]:bv[4]).' 'evalspec %1 3' 'f(x:bv[4]) := x + {2}:bv[4].' 'evalspec %1 3' q | env TAU_CONCRETE_EVAL=1  tau-source/build/release-bvonly/tau"
+Directory: tau-source/build/release-bvonly/tests/repl/commands
+"test_repl-evalspec-def_after_admission" start time: Oct 01 01:29 EDT
+Output:
+----------------------------------------------------------
+Welcome to the Tau Language Framework version 0.7.0-alpha (a739b902) by IDNI AG.
+This product is protected by patents and copyright. By using this product, you agree to the license terms. To view the license run "tau --license".
+
+For documentation, open issues and reporting issues please visit https://github.com/IDNI/tau-lang/
+
+For built-in help, type "help" or "help command".
+
+tau> f(x:bv[4]) := x + {1}:bv[4].
+[1] f(x) := (x+{ 1 }:bv[4]).
+
+tau> always o1[t]:bv[4] = f(i1[t]:bv[4]).
+%1: always o1[t]:bv[4] = f(i1[t]:bv[4])
+
+[ %1 ] tau> evalspec %1 3
+evalspec-result: status=ok leaf=0 outputs=1 o1[t]=4
+evalspec-end
+
+[ %1 ] tau> f(x:bv[4]) := x + {2}:bv[4].
+[2] f(x) := (x+{ 2 }:bv[4]).
+
+[ %1 ] tau> evalspec %1 3
+evalspec-result: status=ok leaf=0 outputs=1 o1[t]=4
+evalspec-end
+
+[ %1 ] tau> q
+Quit.
+
+<end of output>
+Test time =   0.04 sec
+----------------------------------------------------------
+Test Pass Reason:
+Required regular expression found. Regex=[o1\[t\]=4
+evalspec-end
+.*evalspec-result: status=ok leaf=0 outputs=1 o1\[t\]=4
+evalspec-end]
+"test_repl-evalspec-def_after_admission" end time: Oct 01 01:29 EDT
+"test_repl-evalspec-def_after_admission" time elapsed: 00:00:00
+----------------------------------------------------------
+
+543/2007 Testing: test_repl-evalspec-shadowed_def
+543/2007 Test: test_repl-evalspec-shadowed_def
+Command: "/bin/bash" "-c" "printf '%s\n' 'f(x:bv[4]) := x + {1}:bv[4].' 'f(x:bv[4]) := x + {2}:bv[4].' 'always o1[t]:bv[4] = f(i1[t]:bv[4]).' 'evalspec %1 3' q | env TAU_CONCRETE_EVAL=1  tau-source/build/release-bvonly/tau"
+Directory: tau-source/build/release-bvonly/tests/repl/commands
+"test_repl-evalspec-shadowed_def" start time: Oct 01 01:29 EDT
+Output:
+----------------------------------------------------------
+Welcome to the Tau Language Framework version 0.7.0-alpha (a739b902) by IDNI AG.
+This product is protected by patents and copyright. By using this product, you agree to the license terms. To view the license run "tau --license".
+
+For documentation, open issues and reporting issues please visit https://github.com/IDNI/tau-lang/
+
+For built-in help, type "help" or "help command".
+
+tau> f(x:bv[4]) := x + {1}:bv[4].
+[1] f(x) := (x+{ 1 }:bv[4]).
+
+tau> f(x:bv[4]) := x + {2}:bv[4].
+[2] f(x) := (x+{ 2 }:bv[4]).
+
+tau> always o1[t]:bv[4] = f(i1[t]:bv[4]).
+%1: always o1[t]:bv[4] = f(i1[t]:bv[4])
+
+[ %1 ] tau> evalspec %1 3
+evalspec-result: status=ok leaf=0 outputs=1 o1[t]=4
+evalspec-end
+
+[ %1 ] tau> q
+Quit.
+
+<end of output>
+Test time =   0.04 sec
+----------------------------------------------------------
+Test Pass Reason:
+Required regular expression found. Regex=[evalspec-result: status=ok leaf=0 outputs=1 o1\[t\]=4
+evalspec-end]
+"test_repl-evalspec-shadowed_def" end time: Oct 01 01:29 EDT
+"test_repl-evalspec-shadowed_def" time elapsed: 00:00:00
+----------------------------------------------------------
+
+539/2007 Testing: test_repl-evalspec-leading_zero
+539/2007 Test: test_repl-evalspec-leading_zero
+Command: "/bin/bash" "-c" "printf '%s\n' 'always o1[t]:bv[2] = (i1[t]:bv[2] + i2[t]:bv[2]).' 'evalspec %1 03 0' q | env TAU_CONCRETE_EVAL=1  tau-source/build/release-bvonly/tau"
+Directory: tau-source/build/release-bvonly/tests/repl/commands
+"test_repl-evalspec-leading_zero" start time: Oct 01 01:29 EDT
+Output:
+----------------------------------------------------------
+Welcome to the Tau Language Framework version 0.7.0-alpha (a739b902) by IDNI AG.
+This product is protected by patents and copyright. By using this product, you agree to the license terms. To view the license run "tau --license".
+
+For documentation, open issues and reporting issues please visit https://github.com/IDNI/tau-lang/
+
+For built-in help, type "help" or "help command".
+
+tau> always o1[t]:bv[2] = (i1[t]:bv[2] + i2[t]:bv[2]).
+%1: always o1[t]:bv[2] = i1[t]:bv[2]+i2[t]:bv[2]
+
+[ %1 ] tau> evalspec %1 03 0
+evalspec error: input value 1 is not a strict unsigned decimal below 2^2 (i1[t])
+evalspec-result: status=error reason=bad_value
+evalspec-end
+
+[ %1 ] tau> q
+Quit.
+
+<end of output>
+Test time =   0.04 sec
+----------------------------------------------------------
+Test Pass Reason:
+Required regular expression found. Regex=[evalspec-result: status=error reason=bad_value
+evalspec-end]
+"test_repl-evalspec-leading_zero" end time: Oct 01 01:29 EDT
+"test_repl-evalspec-leading_zero" time elapsed: 00:00:00
+----------------------------------------------------------
+
+540/2007 Testing: test_repl-evalspec-junk
+540/2007 Test: test_repl-evalspec-junk
+Command: "/bin/bash" "-c" "printf '%s\n' 'always o1[t]:bv[2] = (i1[t]:bv[2] + i2[t]:bv[2]).' 'evalspec %1 3 x' q | env TAU_CONCRETE_EVAL=1  tau-source/build/release-bvonly/tau"
+Directory: tau-source/build/release-bvonly/tests/repl/commands
+"test_repl-evalspec-junk" start time: Oct 01 01:29 EDT
+Output:
+----------------------------------------------------------
+Welcome to the Tau Language Framework version 0.7.0-alpha (a739b902) by IDNI AG.
+This product is protected by patents and copyright. By using this product, you agree to the license terms. To view the license run "tau --license".
+
+For documentation, open issues and reporting issues please visit https://github.com/IDNI/tau-lang/
+
+For built-in help, type "help" or "help command".
+
+tau> always o1[t]:bv[2] = (i1[t]:bv[2] + i2[t]:bv[2]).
+%1: always o1[t]:bv[2] = i1[t]:bv[2]+i2[t]:bv[2]
+
+[ %1 ] tau> evalspec %1 3 x
+evalspec error: input value 2 is not a strict unsigned decimal below 2^2 (i2[t])
+evalspec-result: status=error reason=bad_value
+evalspec-end
+
+[ %1 ] tau> q
+Quit.
+
+<end of output>
+Test time =   0.04 sec
+----------------------------------------------------------
+Test Pass Reason:
+Required regular expression found. Regex=[evalspec-result: status=error reason=bad_value
+evalspec-end]
+"test_repl-evalspec-junk" end time: Oct 01 01:29 EDT
+"test_repl-evalspec-junk" time elapsed: 00:00:00
+----------------------------------------------------------
+
+538/2007 Testing: test_repl-evalspec-overflow
+538/2007 Test: test_repl-evalspec-overflow
+Command: "/bin/bash" "-c" "printf '%s\n' 'always o1[t]:bv[2] = (i1[t]:bv[2] + i2[t]:bv[2]).' 'evalspec %1 4 0' q | env TAU_CONCRETE_EVAL=1  tau-source/build/release-bvonly/tau"
+Directory: tau-source/build/release-bvonly/tests/repl/commands
+"test_repl-evalspec-overflow" start time: Oct 01 01:29 EDT
+Output:
+----------------------------------------------------------
+Welcome to the Tau Language Framework version 0.7.0-alpha (a739b902) by IDNI AG.
+This product is protected by patents and copyright. By using this product, you agree to the license terms. To view the license run "tau --license".
+
+For documentation, open issues and reporting issues please visit https://github.com/IDNI/tau-lang/
+
+For built-in help, type "help" or "help command".
+
+tau> always o1[t]:bv[2] = (i1[t]:bv[2] + i2[t]:bv[2]).
+%1: always o1[t]:bv[2] = i1[t]:bv[2]+i2[t]:bv[2]
+
+[ %1 ] tau> evalspec %1 4 0
+evalspec error: input value 1 is not a strict unsigned decimal below 2^2 (i1[t])
+evalspec-result: status=error reason=bad_value
+evalspec-end
+
+[ %1 ] tau> q
+Quit.
+
+<end of output>
+Test time =   0.04 sec
+----------------------------------------------------------
+Test Pass Reason:
+Required regular expression found. Regex=[evalspec-result: status=error reason=bad_value
+evalspec-end]
+"test_repl-evalspec-overflow" end time: Oct 01 01:29 EDT
+"test_repl-evalspec-overflow" time elapsed: 00:00:00
+----------------------------------------------------------
+
+541/2007 Testing: test_repl-evalspec-huge_value
+541/2007 Test: test_repl-evalspec-huge_value
+Command: "/bin/bash" "-c" "printf '%s\n' 'always o1[t]:bv[2] = (i1[t]:bv[2] + i2[t]:bv[2]).' 'evalspec %1 99999999999999999999999999999999 0' q | env TAU_CONCRETE_EVAL=1  tau-source/build/release-bvonly/tau"
+Directory: tau-source/build/release-bvonly/tests/repl/commands
+"test_repl-evalspec-huge_value" start time: Oct 01 01:29 EDT
+Output:
+----------------------------------------------------------
+Welcome to the Tau Language Framework version 0.7.0-alpha (a739b902) by IDNI AG.
+This product is protected by patents and copyright. By using this product, you agree to the license terms. To view the license run "tau --license".
+
+For documentation, open issues and reporting issues please visit https://github.com/IDNI/tau-lang/
+
+For built-in help, type "help" or "help command".
+
+tau> always o1[t]:bv[2] = (i1[t]:bv[2] + i2[t]:bv[2]).
+%1: always o1[t]:bv[2] = i1[t]:bv[2]+i2[t]:bv[2]
+
+[ %1 ] tau> evalspec %1 99999999999999999999999999999999 0
+evalspec error: input value 1 is not a strict unsigned decimal below 2^2 (i1[t])
+evalspec-result: status=error reason=bad_value
+evalspec-end
+
+[ %1 ] tau> q
+Quit.
+
+<end of output>
+Test time =   0.04 sec
+----------------------------------------------------------
+Test Pass Reason:
+Required regular expression found. Regex=[evalspec-result: status=error reason=bad_value
+evalspec-end]
+"test_repl-evalspec-huge_value" end time: Oct 01 01:29 EDT
+"test_repl-evalspec-huge_value" time elapsed: 00:00:00
+----------------------------------------------------------
+
+545/2007 Testing: test_repl-evalspec-declined
+545/2007 Test: test_repl-evalspec-declined
+Command: "/bin/bash" "-c" "printf '%s\n' 'always (o1[t]:bv[2] = i1[t]:bv[2] || o1[t]:bv[2] = i2[t]:bv[2]).' 'evalspec %1' q | env TAU_CONCRETE_EVAL=1  tau-source/build/release-bvonly/tau"
+Directory: tau-source/build/release-bvonly/tests/repl/commands
+"test_repl-evalspec-declined" start time: Oct 01 01:29 EDT
+Output:
+----------------------------------------------------------
+Welcome to the Tau Language Framework version 0.7.0-alpha (a739b902) by IDNI AG.
+This product is protected by patents and copyright. By using this product, you agree to the license terms. To view the license run "tau --license".
+
+For documentation, open issues and reporting issues please visit https://github.com/IDNI/tau-lang/
+
+For built-in help, type "help" or "help command".
+
+tau> always (o1[t]:bv[2] = i1[t]:bv[2] || o1[t]:bv[2] = i2[t]:bv[2]).
+%1: always o1[t]:bv[2] = i1[t]:bv[2] || o1[t]:bv[2] = i2[t]:bv[2]
+
+[ %1 ] tau> evalspec %1
+evalspec error: not an admissible concrete conditional definition (reject at line 478)
+evalspec-result: status=error reason=not_admissible
+evalspec-end
+
+[ %1 ] tau> q
+Quit.
+
+<end of output>
+Test time =   0.04 sec
+----------------------------------------------------------
+Test Pass Reason:
+Required regular expression found. Regex=[evalspec-result: status=error reason=not_admissible
+evalspec-end]
+"test_repl-evalspec-declined" end time: Oct 01 01:29 EDT
+"test_repl-evalspec-declined" time elapsed: 00:00:00
+----------------------------------------------------------
+
+547/2007 Testing: test_repl-evalspec-no_history
+547/2007 Test: test_repl-evalspec-no_history
+Command: "/bin/bash" "-c" "printf '%s\n' 'evalspec %1' q | env TAU_CONCRETE_EVAL=1  tau-source/build/release-bvonly/tau"
+Directory: tau-source/build/release-bvonly/tests/repl/commands
+"test_repl-evalspec-no_history" start time: Oct 01 01:29 EDT
+Output:
+----------------------------------------------------------
+Welcome to the Tau Language Framework version 0.7.0-alpha (a739b902) by IDNI AG.
+This product is protected by patents and copyright. By using this product, you agree to the license terms. To view the license run "tau --license".
+
+For documentation, open issues and reporting issues please visit https://github.com/IDNI/tau-lang/
+
+For built-in help, type "help" or "help command".
+
+tau> evalspec %1
+evalspec error: history location does not exist
+evalspec-result: status=error reason=bad_history
+evalspec-end
+
+tau> q
+Quit.
+
+<end of output>
+Test time =   0.03 sec
+----------------------------------------------------------
+Test Pass Reason:
+Required regular expression found. Regex=[evalspec-result: status=error reason=bad_history
+evalspec-end]
+"test_repl-evalspec-no_history" end time: Oct 01 01:29 EDT
+"test_repl-evalspec-no_history" time elapsed: 00:00:00
+----------------------------------------------------------
+
+542/2007 Testing: test_repl-evalspec-over_budget
+542/2007 Test: test_repl-evalspec-over_budget
+Command: "/bin/bash" "-c" "printf '%s\n' 'always o1[t]:bv[2] = (i1[t]:bv[2] + i2[t]:bv[2]).' 'evalspec %1 3 2' q | env TAU_CONCRETE_EVAL=1 TAU_CONCRETE_EVAL_MAX_EXPRESSIONS=1 tau-source/build/release-bvonly/tau"
+Directory: tau-source/build/release-bvonly/tests/repl/commands
+"test_repl-evalspec-over_budget" start time: Oct 01 01:29 EDT
+Output:
+----------------------------------------------------------
+Welcome to the Tau Language Framework version 0.7.0-alpha (a739b902) by IDNI AG.
+This product is protected by patents and copyright. By using this product, you agree to the license terms. To view the license run "tau --license".
+
+For documentation, open issues and reporting issues please visit https://github.com/IDNI/tau-lang/
+
+For built-in help, type "help" or "help command".
+
+tau> always o1[t]:bv[2] = (i1[t]:bv[2] + i2[t]:bv[2]).
+%1: always o1[t]:bv[2] = i1[t]:bv[2]+i2[t]:bv[2]
+
+[ %1 ] tau> evalspec %1 3 2
+evalspec error: admission budget of 1 expressions exceeded (TAU_CONCRETE_EVAL_MAX_EXPRESSIONS)
+evalspec-result: status=error reason=over_budget
+evalspec-end
+
+[ %1 ] tau> q
+Quit.
+
+<end of output>
+Test time =   0.04 sec
+----------------------------------------------------------
+Test Pass Reason:
+Required regular expression found. Regex=[evalspec-result: status=error reason=over_budget
+evalspec-end]
+"test_repl-evalspec-over_budget" end time: Oct 01 01:29 EDT
+"test_repl-evalspec-over_budget" time elapsed: 00:00:00
+----------------------------------------------------------
+
+549/2007 Testing: test_repl-evalspec-zero_history
+549/2007 Test: test_repl-evalspec-zero_history
+Command: "/bin/bash" "-c" "printf '%s\n' 'evalspec %0' q | env TAU_CONCRETE_EVAL=1  tau-source/build/release-bvonly/tau"
+Directory: tau-source/build/release-bvonly/tests/repl/commands
+"test_repl-evalspec-zero_history" start time: Oct 01 01:29 EDT
+Output:
+----------------------------------------------------------
+Welcome to the Tau Language Framework version 0.7.0-alpha (a739b902) by IDNI AG.
+This product is protected by patents and copyright. By using this product, you agree to the license terms. To view the license run "tau --license".
+
+For documentation, open issues and reporting issues please visit https://github.com/IDNI/tau-lang/
+
+For built-in help, type "help" or "help command".
+
+tau> evalspec %0
+evalspec error: history location does not exist
+evalspec-result: status=error reason=bad_history
+evalspec-end
+
+tau> q
+Quit.
+
+<end of output>
+Test time =   0.03 sec
+----------------------------------------------------------
+Test Pass Reason:
+Required regular expression found. Regex=[evalspec-result: status=error reason=bad_history
+evalspec-end]
+"test_repl-evalspec-zero_history" end time: Oct 01 01:29 EDT
+"test_repl-evalspec-zero_history" time elapsed: 00:00:00
+----------------------------------------------------------
+
+548/2007 Testing: test_repl-evalspec-huge_history
+548/2007 Test: test_repl-evalspec-huge_history
+Command: "/bin/bash" "-c" "printf '%s\n' 'evalspec %99999999999999999999999999999' q | env TAU_CONCRETE_EVAL=1  tau-source/build/release-bvonly/tau"
+Directory: tau-source/build/release-bvonly/tests/repl/commands
+"test_repl-evalspec-huge_history" start time: Oct 01 01:29 EDT
+Output:
+----------------------------------------------------------
+Welcome to the Tau Language Framework version 0.7.0-alpha (a739b902) by IDNI AG.
+This product is protected by patents and copyright. By using this product, you agree to the license terms. To view the license run "tau --license".
+
+For documentation, open issues and reporting issues please visit https://github.com/IDNI/tau-lang/
+
+For built-in help, type "help" or "help command".
+
+tau> evalspec %99999999999999999999999999999
+evalspec error: history location does not exist
+evalspec-result: status=error reason=bad_history
+evalspec-end
+
+tau> q
+Quit.
+
+<end of output>
+Test time =   0.03 sec
+----------------------------------------------------------
+Test Pass Reason:
+Required regular expression found. Regex=[evalspec-result: status=error reason=bad_history
+evalspec-end]
+"test_repl-evalspec-huge_history" end time: Oct 01 01:29 EDT
+"test_repl-evalspec-huge_history" time elapsed: 00:00:00
+----------------------------------------------------------
+
+546/2007 Testing: test_repl-evalspec-usage
+546/2007 Test: test_repl-evalspec-usage
+Command: "/bin/bash" "-c" "printf '%s\n' 'evalspec' q | env TAU_CONCRETE_EVAL=1  tau-source/build/release-bvonly/tau"
+Directory: tau-source/build/release-bvonly/tests/repl/commands
+"test_repl-evalspec-usage" start time: Oct 01 01:29 EDT
+Output:
+----------------------------------------------------------
+Welcome to the Tau Language Framework version 0.7.0-alpha (a739b902) by IDNI AG.
+This product is protected by patents and copyright. By using this product, you agree to the license terms. To view the license run "tau --license".
+
+For documentation, open issues and reporting issues please visit https://github.com/IDNI/tau-lang/
+
+For built-in help, type "help" or "help command".
+
+tau> evalspec
+evalspec error: usage: evalspec %N [value ...]
+evalspec-result: status=error reason=usage
+evalspec-end
+
+tau> q
+Quit.
+
+<end of output>
+Test time =   0.03 sec
+----------------------------------------------------------
+Test Pass Reason:
+Required regular expression found. Regex=[evalspec-result: status=error reason=usage
+evalspec-end]
+"test_repl-evalspec-usage" end time: Oct 01 01:29 EDT
+"test_repl-evalspec-usage" time elapsed: 00:00:00
+----------------------------------------------------------
+
+136/2007 Testing: test_api-concrete_eval
+136/2007 Test: test_api-concrete_eval
+Command: "tau-source/build/release-bvonly/test_api-concrete_eval"
+Directory: tau-source/tests/api/..
+"test_api-concrete_eval" start time: Oct 01 01:29 EDT
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+[bench 8.87971 ms]  / parser scratch release preserves lazy results and subsequent parses
+[bench 0.057667 ms]  / parser scratch release refuses an active grow callback
+[bench 6.71288 ms] concrete evaluator: exhaustive small widths / decimal-only preserves default constants and cache semantics
+[bench 113.486 ms] concrete evaluator: exhaustive small widths / flat leaves preserve branch and output dependencies
+[bench 5611.08 ms] concrete evaluator: exhaustive small widths / term operators
+[bench 28758.3 ms] concrete evaluator: exhaustive small widths / comparison guards and conditional forms
+[bench 4807.61 ms] concrete evaluator: exhaustive small widths / guard connectives
+[bench 1448.91 ms] concrete evaluator: exhaustive small widths / nested decisions and output dependency
+[bench 70.5028 ms] concrete evaluator: near misses decline / shapes outside the admitted language
+[bench 18.2965 ms] concrete evaluator: near misses decline / admission budget is fail-closed
+[bench 12.1011 ms] concrete evaluator: near misses decline / admission budget exact boundary
+[bench 2.82158 ms] concrete evaluator: near misses decline / strict decimal inputs
+[bench 8.15075 ms] concrete evaluator: near misses decline / declined solve falls back
+
+[benchmark] 13 tests, total 40866.9 ms -> benchmark_timing.json
+===============================================================================
+[doctest] test cases:    13 |    13 passed | 0 failed | 0 skipped
+[doctest] assertions: 19300 | 19300 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =  40.98 sec
+----------------------------------------------------------
+Test Passed.
+"test_api-concrete_eval" end time: Oct 01 01:29 EDT
+"test_api-concrete_eval" time elapsed: 00:00:40
+----------------------------------------------------------
+
+End testing: Oct 01 01:29 EDT

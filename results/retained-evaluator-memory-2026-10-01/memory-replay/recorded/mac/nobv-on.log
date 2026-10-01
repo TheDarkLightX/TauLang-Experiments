@@ -1,0 +1,19 @@
+Test project tau-source/build/release-nobv
+    Start 438: test_repl-evalspec-no_backend
+    Start 439: test_repl-evalspec-usage
+    Start  29: test_ba_conformance
+    Start 440: test_repl-evalspec-no_history
+1/7 Test  #29: test_ba_conformance ...............   Passed    0.03 sec
+    Start  30: test_ba_descriptor_pack
+2/7 Test #439: test_repl-evalspec-usage ..........   Passed    0.03 sec
+3/7 Test #440: test_repl-evalspec-no_history .....   Passed    0.03 sec
+    Start 441: test_repl-evalspec-huge_history
+    Start 442: test_repl-evalspec-zero_history
+4/7 Test #438: test_repl-evalspec-no_backend .....   Passed    0.03 sec
+5/7 Test  #30: test_ba_descriptor_pack ...........   Passed    0.02 sec
+6/7 Test #441: test_repl-evalspec-huge_history ...   Passed    0.03 sec
+7/7 Test #442: test_repl-evalspec-zero_history ...   Passed    0.03 sec
+
+100% tests passed, 0 tests failed out of 7
+
+Total Test time (real) =   0.09 sec

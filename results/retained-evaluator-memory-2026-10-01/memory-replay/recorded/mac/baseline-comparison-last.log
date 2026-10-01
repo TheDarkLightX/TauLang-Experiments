@@ -1,0 +1,78 @@
+Start testing: Oct 01 01:11 EDT
+----------------------------------------------------------
+1929/2626 Testing: test_repl-normalize_cmd-issue185_juxtaposed_min_printed
+1929/2626 Test: test_repl-normalize_cmd-issue185_juxtaposed_min_printed
+Command: "/bin/bash" "-c" "tau-stock-source/build/release/tau -e "normalize x:bv[2] min(x:bv[2], {2}:bv[2]) = {2}:bv[2]." -S trace"
+Directory: tau-stock-source/build/release/tests/repl/commands
+"test_repl-normalize_cmd-issue185_juxtaposed_min_printed" start time: Oct 01 01:11 EDT
+Output:
+----------------------------------------------------------
+calculate_fixed_points:                            3 µs
+apply_rec_relations:
+normalize:                                      1.45  ms
+	eliminate_arithmetic_and_quantifiers:    131 µs
+	normalize_temporal_quantifiers:         1.30  ms
+expand_definitions:                               16 µs
+%1: min(x, { 2 }:bv[2])x = { 2 }:bv[2]
+
+<end of output>
+Test time =   0.40 sec
+----------------------------------------------------------
+Test Fail Reason:
+Required regular expression not found. Regex=[x min\(x
+]
+"test_repl-normalize_cmd-issue185_juxtaposed_min_printed" end time: Oct 01 01:11 EDT
+"test_repl-normalize_cmd-issue185_juxtaposed_min_printed" time elapsed: 00:00:00
+----------------------------------------------------------
+
+1935/2626 Testing: test_repl-normalize_cmd-qlt_pinned_neq_residual
+1935/2626 Test: test_repl-normalize_cmd-qlt_pinned_neq_residual
+Command: "/bin/bash" "-c" "tau-stock-source/build/release/tau -e "normalize ex x:qlt (a:qlt <= x && x <= a && x != b:qlt)" -S trace"
+Directory: tau-stock-source/build/release/tests/repl/commands
+"test_repl-normalize_cmd-qlt_pinned_neq_residual" start time: Oct 01 01:11 EDT
+Output:
+----------------------------------------------------------
+calculate_fixed_points:                            6 µs
+apply_rec_relations:
+normalize:                                       602 µs
+	eliminate_arithmetic_and_quantifiers:    500 µs
+	normalize_temporal_quantifiers:           91 µs
+expand_definitions:                                1 µs
+%1: b != a
+
+<end of output>
+Test time =   0.07 sec
+----------------------------------------------------------
+Test Fail Reason:
+Required regular expression not found. Regex=[: a != b
+]
+"test_repl-normalize_cmd-qlt_pinned_neq_residual" end time: Oct 01 01:11 EDT
+"test_repl-normalize_cmd-qlt_pinned_neq_residual" time elapsed: 00:00:00
+----------------------------------------------------------
+
+1939/2626 Testing: test_repl-normalize_cmd-qlt_density_residual
+1939/2626 Test: test_repl-normalize_cmd-qlt_density_residual
+Command: "/bin/bash" "-c" "tau-stock-source/build/release/tau -e "normalize ex x:qlt (a:qlt <= x && x <= b:qlt && x != c:qlt)" -S trace"
+Directory: tau-stock-source/build/release/tests/repl/commands
+"test_repl-normalize_cmd-qlt_density_residual" start time: Oct 01 01:11 EDT
+Output:
+----------------------------------------------------------
+calculate_fixed_points:                            6 µs
+apply_rec_relations:
+normalize:                                       638 µs
+	eliminate_arithmetic_and_quantifiers:    543 µs
+	normalize_temporal_quantifiers:           83 µs
+expand_definitions:                                2 µs
+%1: a < b || a != c && b = a
+
+<end of output>
+Test time =   0.06 sec
+----------------------------------------------------------
+Test Fail Reason:
+Required regular expression not found. Regex=[: a < b \|\| a = b && [ab] != c
+]
+"test_repl-normalize_cmd-qlt_density_residual" end time: Oct 01 01:11 EDT
+"test_repl-normalize_cmd-qlt_density_residual" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Oct 01 01:11 EDT
