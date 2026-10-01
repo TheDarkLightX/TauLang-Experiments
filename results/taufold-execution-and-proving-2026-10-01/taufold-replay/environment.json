@@ -1,0 +1,17 @@
+{
+  "date": "2026-10-01",
+  "machine": "Apple M3 Max, Mac15,9, 128 GiB",
+  "os": "macOS 26.6.2 (25G83)",
+  "tau_revision": "a739b90259729590dee7b424df05ba65bfdeacf2",
+  "parser_revision": "5b14b6fde86f16dc52c4c0a953a8a1e53c88f95a",
+  "taufold_revision": "d3671f46ec316b1adcc21a2bfdb8c68afda004cc",
+  "host_rust": "1.97.1",
+  "guest_rust": "1.94.1-dev (06e01cb0d 2026-04-09)",
+  "risc_zero": "3.0.6",
+  "proof_mode": "succinct, development mode disabled, local prover",
+  "official_r0vm_archive_sha256": "efd2f26434ec60ca6c1b6a1398c00dfea7fb5e0cbac09aa99a504b6bd592f38b",
+  "native_timing_scope": "Setup plus sum of individual adapter step calls. Excludes independent Python checking, state assembly between calls, and proof generation.",
+  "repeats": 3,
+  "process_order": "Forward, reverse, forward across four native variants for each app; not fully balanced.",
+  "isolation": "Sequential measured processes; no simultaneous benchmark builds/tests. Shared desktop, no system-wide CPU isolation."
+}

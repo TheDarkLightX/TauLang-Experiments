@@ -1,0 +1,165 @@
+{
+  "status": "passed",
+  "proofs": [
+    {
+      "app": "auction",
+      "variant": "prepared32",
+      "prove_process_seconds": 54.88594616600312,
+      "verify_process_seconds": 0.025713417038787156,
+      "result": {
+        "guest_image_id": [
+          710471366,
+          2541155605,
+          3580891559,
+          1662118232,
+          736654512,
+          118297621,
+          2313920181,
+          3141404003
+        ],
+        "output": 58000,
+        "proof_bytes": 224034,
+        "proving_seconds": 54.875248666,
+        "public_memory": [
+          1
+        ],
+        "receipt_kind": "succinct",
+        "stats": {
+          "paging_cycles": 33274,
+          "reserved_cycles": 198834,
+          "segments": 1,
+          "total_cycles": 524288,
+          "user_cycles": 292180
+        },
+        "status": "proved_and_verified",
+        "steps": 73
+      },
+      "verification": {
+        "guest_image_id": [
+          710471366,
+          2541155605,
+          3580891559,
+          1662118232,
+          736654512,
+          118297621,
+          2313920181,
+          3141404003
+        ],
+        "output": 58000,
+        "public_memory": [
+          1
+        ],
+        "status": "verified",
+        "steps": 73
+      },
+      "wrong_image_rejected": true,
+      "receipt_sha256": "b027f47f900525db436bb1cd43a859b69ebf5150c421bc4d7c197adb560d0158",
+      "claim_sha256": "6b919de83e09fb806e79613e0549c3611c5015068d334100aa0f0ddcafb26360",
+      "host_sha256": "d571f319e0874504cf1e1b169acaab0d0606636daa947fc455a1bdaf7ad57853"
+    },
+    {
+      "app": "payroll",
+      "variant": "prepared32",
+      "prove_process_seconds": 51.528809332987294,
+      "verify_process_seconds": 0.01891924999654293,
+      "result": {
+        "guest_image_id": [
+          710471366,
+          2541155605,
+          3580891559,
+          1662118232,
+          736654512,
+          118297621,
+          2313920181,
+          3141404003
+        ],
+        "output": 1,
+        "proof_bytes": 224026,
+        "proving_seconds": 51.5201945,
+        "public_memory": [],
+        "receipt_kind": "succinct",
+        "stats": {
+          "paging_cycles": 32604,
+          "reserved_cycles": 261816,
+          "segments": 1,
+          "total_cycles": 524288,
+          "user_cycles": 229868
+        },
+        "status": "proved_and_verified",
+        "steps": 56
+      },
+      "verification": {
+        "guest_image_id": [
+          710471366,
+          2541155605,
+          3580891559,
+          1662118232,
+          736654512,
+          118297621,
+          2313920181,
+          3141404003
+        ],
+        "output": 1,
+        "public_memory": [],
+        "status": "verified",
+        "steps": 56
+      },
+      "wrong_image_rejected": true,
+      "receipt_sha256": "478cb8928c88691175215f8453c371126dd4dc2a948e0333eb5dc72d9c213344",
+      "claim_sha256": "1665b09c17db8576d9c4fe1537e31c09bbebef5e3db031c1b7cfd3572a3a9fc8",
+      "host_sha256": "d571f319e0874504cf1e1b169acaab0d0606636daa947fc455a1bdaf7ad57853"
+    },
+    {
+      "app": "inference",
+      "variant": "prepared32",
+      "prove_process_seconds": 30.209862916963175,
+      "verify_process_seconds": 0.018079624976962805,
+      "result": {
+        "guest_image_id": [
+          710471366,
+          2541155605,
+          3580891559,
+          1662118232,
+          736654512,
+          118297621,
+          2313920181,
+          3141404003
+        ],
+        "output": 1,
+        "proof_bytes": 224026,
+        "proving_seconds": 30.203101541,
+        "public_memory": [],
+        "receipt_kind": "succinct",
+        "stats": {
+          "paging_cycles": 31264,
+          "reserved_cycles": 66608,
+          "segments": 1,
+          "total_cycles": 262144,
+          "user_cycles": 164272
+        },
+        "status": "proved_and_verified",
+        "steps": 32
+      },
+      "verification": {
+        "guest_image_id": [
+          710471366,
+          2541155605,
+          3580891559,
+          1662118232,
+          736654512,
+          118297621,
+          2313920181,
+          3141404003
+        ],
+        "output": 1,
+        "public_memory": [],
+        "status": "verified",
+        "steps": 32
+      },
+      "wrong_image_rejected": true,
+      "receipt_sha256": "ae855c7506d89bcd6422449b606b15ce1ffb0044f8a0d81252f6d542026917a5",
+      "claim_sha256": "16926ceec967ea33810262f7a90e9f7c5b47abcd30c0196d7cfde0428c5e6c52",
+      "host_sha256": "d571f319e0874504cf1e1b169acaab0d0606636daa947fc455a1bdaf7ad57853"
+    }
+  ]
+}

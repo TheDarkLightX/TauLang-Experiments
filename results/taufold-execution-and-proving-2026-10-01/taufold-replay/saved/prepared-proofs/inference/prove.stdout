@@ -1,0 +1,1 @@
+{"guest_image_id":[710471366,2541155605,3580891559,1662118232,736654512,118297621,2313920181,3141404003],"output":1,"proof_bytes":224026,"proving_seconds":30.203101541,"public_memory":[],"receipt_kind":"succinct","stats":{"paging_cycles":31264,"reserved_cycles":66608,"segments":1,"total_cycles":262144,"user_cycles":164272},"status":"proved_and_verified","steps":32}

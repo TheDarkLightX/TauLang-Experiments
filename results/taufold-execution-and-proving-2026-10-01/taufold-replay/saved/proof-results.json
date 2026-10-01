@@ -1,0 +1,319 @@
+{
+  "status": "passed",
+  "proofs": [
+    {
+      "app": "auction",
+      "variant": "baseline",
+      "prove_process_seconds": 86.05016524996608,
+      "verify_process_seconds": 0.01977033301955089,
+      "result": {
+        "guest_image_id": [
+          1922232301,
+          3106239560,
+          1700967217,
+          2924015929,
+          3480383529,
+          2321244977,
+          3844740792,
+          762608132
+        ],
+        "output": 58000,
+        "proof_bytes": 224034,
+        "proving_seconds": 86.038369583,
+        "public_memory": [
+          1
+        ],
+        "receipt_kind": "succinct",
+        "stats": {
+          "paging_cycles": 54675,
+          "reserved_cycles": 141300,
+          "segments": 1,
+          "total_cycles": 1048576,
+          "user_cycles": 852601
+        },
+        "status": "proved_and_verified",
+        "steps": 73
+      },
+      "verification": {
+        "guest_image_id": [
+          1922232301,
+          3106239560,
+          1700967217,
+          2924015929,
+          3480383529,
+          2321244977,
+          3844740792,
+          762608132
+        ],
+        "output": 58000,
+        "public_memory": [
+          1
+        ],
+        "status": "verified",
+        "steps": 73
+      },
+      "receipt_sha256": "78883907a98b3d7af19810e3b356b08622effcc5d22ffb526c3f4394db5de171",
+      "claim_sha256": "6b919de83e09fb806e79613e0549c3611c5015068d334100aa0f0ddcafb26360",
+      "host_sha256": "f0e44c78cb7eba7a6f71fd668c5c3e22cac4164ba6783cc30fc536453568a76b"
+    },
+    {
+      "app": "auction",
+      "variant": "shared32",
+      "prove_process_seconds": 102.60393079201458,
+      "verify_process_seconds": 0.02610858401749283,
+      "result": {
+        "guest_image_id": [
+          630740455,
+          4110573385,
+          1537997793,
+          3557507440,
+          3907154223,
+          2217404842,
+          2776687137,
+          3136340729
+        ],
+        "output": 58000,
+        "proof_bytes": 224034,
+        "proving_seconds": 102.593364459,
+        "public_memory": [
+          1
+        ],
+        "receipt_kind": "succinct",
+        "stats": {
+          "paging_cycles": 43659,
+          "reserved_cycles": 188739,
+          "segments": 1,
+          "total_cycles": 1048576,
+          "user_cycles": 816178
+        },
+        "status": "proved_and_verified",
+        "steps": 73
+      },
+      "verification": {
+        "guest_image_id": [
+          630740455,
+          4110573385,
+          1537997793,
+          3557507440,
+          3907154223,
+          2217404842,
+          2776687137,
+          3136340729
+        ],
+        "output": 58000,
+        "public_memory": [
+          1
+        ],
+        "status": "verified",
+        "steps": 73
+      },
+      "receipt_sha256": "43e99ad5e98cd6b80660fbaf37e4f4941f52ee906866d1f5ea02b0463b3b3d44",
+      "claim_sha256": "6b919de83e09fb806e79613e0549c3611c5015068d334100aa0f0ddcafb26360",
+      "host_sha256": "44c09be27473bea6892d90ca1b38b10eed99c92d31141b08ee2df402e6e9e120"
+    },
+    {
+      "app": "payroll",
+      "variant": "shared32",
+      "prove_process_seconds": 120.7925254169968,
+      "verify_process_seconds": 0.020615165994968265,
+      "result": {
+        "guest_image_id": [
+          630740455,
+          4110573385,
+          1537997793,
+          3557507440,
+          3907154223,
+          2217404842,
+          2776687137,
+          3136340729
+        ],
+        "output": 1,
+        "proof_bytes": 224026,
+        "proving_seconds": 120.78507475,
+        "public_memory": [],
+        "receipt_kind": "succinct",
+        "stats": {
+          "paging_cycles": 41623,
+          "reserved_cycles": 381924,
+          "segments": 1,
+          "total_cycles": 1048576,
+          "user_cycles": 625029
+        },
+        "status": "proved_and_verified",
+        "steps": 56
+      },
+      "verification": {
+        "guest_image_id": [
+          630740455,
+          4110573385,
+          1537997793,
+          3557507440,
+          3907154223,
+          2217404842,
+          2776687137,
+          3136340729
+        ],
+        "output": 1,
+        "public_memory": [],
+        "status": "verified",
+        "steps": 56
+      },
+      "receipt_sha256": "59ff639490a0d0e992acccb05b6f73754d7ee96f7af1421d1faaecbe41ff15f4",
+      "claim_sha256": "1665b09c17db8576d9c4fe1537e31c09bbebef5e3db031c1b7cfd3572a3a9fc8",
+      "host_sha256": "44c09be27473bea6892d90ca1b38b10eed99c92d31141b08ee2df402e6e9e120"
+    },
+    {
+      "app": "payroll",
+      "variant": "baseline",
+      "prove_process_seconds": 93.4009441670496,
+      "verify_process_seconds": 0.022061249997932464,
+      "result": {
+        "guest_image_id": [
+          1922232301,
+          3106239560,
+          1700967217,
+          2924015929,
+          3480383529,
+          2321244977,
+          3844740792,
+          762608132
+        ],
+        "output": 1,
+        "proof_bytes": 224026,
+        "proving_seconds": 93.39061516699999,
+        "public_memory": [],
+        "receipt_kind": "succinct",
+        "stats": {
+          "paging_cycles": 52304,
+          "reserved_cycles": 343456,
+          "segments": 1,
+          "total_cycles": 1048576,
+          "user_cycles": 652816
+        },
+        "status": "proved_and_verified",
+        "steps": 56
+      },
+      "verification": {
+        "guest_image_id": [
+          1922232301,
+          3106239560,
+          1700967217,
+          2924015929,
+          3480383529,
+          2321244977,
+          3844740792,
+          762608132
+        ],
+        "output": 1,
+        "public_memory": [],
+        "status": "verified",
+        "steps": 56
+      },
+      "receipt_sha256": "5ff8e8afe1c388b7fdbbdb5634f83098fe3d7a19a85445522fb8c8a80cf91f97",
+      "claim_sha256": "1665b09c17db8576d9c4fe1537e31c09bbebef5e3db031c1b7cfd3572a3a9fc8",
+      "host_sha256": "f0e44c78cb7eba7a6f71fd668c5c3e22cac4164ba6783cc30fc536453568a76b"
+    },
+    {
+      "app": "inference",
+      "variant": "baseline",
+      "prove_process_seconds": 50.18576858297456,
+      "verify_process_seconds": 0.023925624962430447,
+      "result": {
+        "guest_image_id": [
+          1922232301,
+          3106239560,
+          1700967217,
+          2924015929,
+          3480383529,
+          2321244977,
+          3844740792,
+          762608132
+        ],
+        "output": 1,
+        "proof_bytes": 224026,
+        "proving_seconds": 50.178240125,
+        "public_memory": [],
+        "receipt_kind": "succinct",
+        "stats": {
+          "paging_cycles": 47022,
+          "reserved_cycles": 63758,
+          "segments": 1,
+          "total_cycles": 524288,
+          "user_cycles": 413508
+        },
+        "status": "proved_and_verified",
+        "steps": 32
+      },
+      "verification": {
+        "guest_image_id": [
+          1922232301,
+          3106239560,
+          1700967217,
+          2924015929,
+          3480383529,
+          2321244977,
+          3844740792,
+          762608132
+        ],
+        "output": 1,
+        "public_memory": [],
+        "status": "verified",
+        "steps": 32
+      },
+      "receipt_sha256": "7b3bd7439fce1a9960ad7cdc05ab5675a3a88d77c621e25ffc61264105b4ce3c",
+      "claim_sha256": "16926ceec967ea33810262f7a90e9f7c5b47abcd30c0196d7cfde0428c5e6c52",
+      "host_sha256": "f0e44c78cb7eba7a6f71fd668c5c3e22cac4164ba6783cc30fc536453568a76b"
+    },
+    {
+      "app": "inference",
+      "variant": "shared32",
+      "prove_process_seconds": 52.39114299998619,
+      "verify_process_seconds": 0.018426958995405585,
+      "result": {
+        "guest_image_id": [
+          630740455,
+          4110573385,
+          1537997793,
+          3557507440,
+          3907154223,
+          2217404842,
+          2776687137,
+          3136340729
+        ],
+        "output": 1,
+        "proof_bytes": 224026,
+        "proving_seconds": 52.380674583,
+        "public_memory": [],
+        "receipt_kind": "succinct",
+        "stats": {
+          "paging_cycles": 38325,
+          "reserved_cycles": 90221,
+          "segments": 1,
+          "total_cycles": 524288,
+          "user_cycles": 395742
+        },
+        "status": "proved_and_verified",
+        "steps": 32
+      },
+      "verification": {
+        "guest_image_id": [
+          630740455,
+          4110573385,
+          1537997793,
+          3557507440,
+          3907154223,
+          2217404842,
+          2776687137,
+          3136340729
+        ],
+        "output": 1,
+        "public_memory": [],
+        "status": "verified",
+        "steps": 32
+      },
+      "receipt_sha256": "51c2e557086ee0f491891e26cfe9b8d5e112a8228655dcba9462fbf4db8606d6",
+      "claim_sha256": "16926ceec967ea33810262f7a90e9f7c5b47abcd30c0196d7cfde0428c5e6c52",
+      "host_sha256": "44c09be27473bea6892d90ca1b38b10eed99c92d31141b08ee2df402e6e9e120"
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+Error: cryptographic verification failed
+
+Caused by:
+    claim digest does not match the expected digest 2a7196f79bd1ba87df4fb64146e2563794137981084559de18f62ccee96da85b; expected 527c10e9552cc102f823ac3672d72c3e51c8c361b826950128a541c0bcc7bb99

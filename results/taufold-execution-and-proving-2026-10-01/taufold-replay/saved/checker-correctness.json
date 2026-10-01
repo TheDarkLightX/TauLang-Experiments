@@ -1,0 +1,14 @@
+{
+  "status": "passed",
+  "vectors": 1992,
+  "variant_comparisons": 7968,
+  "seed": 1991001,
+  "scope": "Host-native correctness checks, not guest cycles or proof timing.",
+  "stdout": "checked 1992 vectors across four Rust variants\n",
+  "sources": {
+    "shared32.rs": "1ec730a90f2061e3be03a1d7b793c8875fa2251b0d2593c5f4b5b0aacbd4f7c4",
+    "baseline.rs": "ebc0314a847393e651236b567c1c9ff637affebce0c2f3a9dfebcdf82629a8dd",
+    "shared128.rs": "bf0410344ea81a1b23151637ad8dee83c6f84aae956bf0d48e643fedbeb7e696",
+    "width32.rs": "400d2480393dc5cd4926eeac6c80b1ac5826b7342426e949b6b59e55573875ab"
+  }
+}

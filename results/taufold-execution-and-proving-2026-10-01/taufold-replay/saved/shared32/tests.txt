@@ -1,0 +1,52 @@
+   Compiling taufold-methods v0.1.0 (<replay-root>/source/zkvm/methods)
+warning: function `shift_left` is never used
+ --> core/src/generated.rs:3:4
+  |
+3 | fn shift_left(a:u32,b:u32)->u32 { if b >= 32 {0} else { (a << (b as u32)) & 4294967295u32 } }
+  |    ^^^^^^^^^^
+  |
+  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `shift_right` is never used
+ --> core/src/generated.rs:4:4
+  |
+4 | fn shift_right(a:u32,b:u32)->u32 { if b >= 32 {0} else { a >> (b as u32) } }
+  |    ^^^^^^^^^^^
+
+   Compiling taufold-core v0.1.0 (<replay-root>/source/zkvm/core)
+warning: `taufold-core` (lib) generated 2 warnings
+   Compiling taufold-proof v0.1.0 (<replay-root>/source/zkvm/host)
+warning: `taufold-core` (lib test) generated 2 warnings (2 duplicates)
+    Finished `release` profile [optimized] target(s) in 2.02s
+warning: the following packages contain code that will be rejected by a future version of Rust: block v0.1.6
+note: to see what the problems were, use the option `--future-incompat-report`, or run `cargo report future-incompatibilities --id 1`
+     Running unittests src/lib.rs (build-baseline/release/deps/taufold_core-948c46d7af1136ed)
+
+running 9 tests
+test tests::halting_binds_the_entire_private_input_and_fetches_every_code_row ... ok
+test tests::hostile_trace_mutations_cannot_be_accepted ... ok
+test tests::canonical_bindings_and_resource_limits_are_enforced ... ok
+test tests::program_execution_uses_branching_memory_and_private_input ... ok
+test tests::full_width_boundaries_comparisons_and_public_cells ... ok
+test tests::invalid_instructions_and_addresses_reject_without_mutation ... ok
+test tests::branches_fetch_and_input_cursor_follow_tau_contract ... ok
+test tests::every_memory_address_preserves_other_cells ... ok
+test tests::all_byte_arithmetic_matches_machine_contract ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.10s
+
+     Running unittests src/main.rs (build-baseline/release/deps/taufold_proof-560556dc9a7f7016)
+
+running 3 tests
+test tests::fake_receipts_and_trailing_bytes_are_rejected ... ok
+test tests::json_boundary_rejects_unknown_fields_and_out_of_range_words ... ok
+test tests::guest_itself_rejects_hostile_witnesses ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.52s
+
+   Doc-tests taufold_core
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

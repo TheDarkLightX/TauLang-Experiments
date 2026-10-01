@@ -1,0 +1,52 @@
+--- a/zkvm/host/src/main.rs
++++ b/zkvm/host/src/main.rs
+@@ -1,6 +1,6 @@
+ use anyhow::{bail, ensure, Context, Result};
+ use bincode::Options;
+-use risc0_zkvm::{ExecutorEnv, ExternalProver, Prover, ProverOpts, Receipt};
++use risc0_zkvm::{Executor, ExecutorEnv, ExternalProver, Prover, ProverOpts, Receipt};
+ use serde::{de::DeserializeOwned, Serialize};
+ use std::{
+     fs::OpenOptions,
+@@ -96,7 +96,7 @@
+         serde_json::json!({
+             "status": "proved_and_verified", "receipt_kind": "succinct",
+             "proof_bytes": encoded.len(), "proving_seconds": start.elapsed().as_secs_f64(),
+-            "output": expected.output, "steps": expected.steps,
++            "output": expected.output, "steps": expected.steps, "stats": proof.stats,
+             "public_memory": expected.public_memory,
+             "guest_image_id": TAUFOLD_GUEST_ID,
+         })
+@@ -109,10 +109,32 @@
+     Ok(())
+ }
+ 
++fn profile(program_path: &str, witness_path: &str) -> Result<()> {
++    reject_dev_mode()?;
++    let program: Program = read_json(program_path)?;
++    let witness: Witness = read_json(witness_path)?;
++    let expected = check_trace(&program, &witness)
++        .map_err(|error| anyhow::anyhow!("trace rejected: {error:?}"))?;
++    let input = ProofInput { program, witness };
++    let env = ExecutorEnv::builder().write(&input)?.session_limit(Some(1 << 24)).build()?;
++    let executable = std::env::var("TAUFOLD_R0VM").unwrap_or_else(|_| "r0vm".to_string());
++    let session = ExternalProver::new("taufold-profile", executable)
++        .execute(env, TAUFOLD_GUEST_ELF)?;
++    ensure!(session.exit_code == risc0_zkvm::ExitCode::Halted(0), "guest did not succeed");
++    let actual: Statement = session.journal.decode()?;
++    ensure!(actual == expected, "guest statement differs from independent host check");
++    print_json(&serde_json::json!({
++        "status":"executed_and_checked", "user_cycles":session.cycles(),
++        "segments":session.segments.iter().map(|s| serde_json::json!({"po2":s.po2,"cycles":s.cycles})).collect::<Vec<_>>(),
++        "guest_image_id":TAUFOLD_GUEST_ID, "steps":expected.steps,
++    }))
++}
++
+ fn main() -> Result<()> {
+     let args: Vec<_> = std::env::args().skip(1).collect();
+     match args.iter().map(String::as_str).collect::<Vec<_>>().as_slice() {
+         ["prove", program, witness, receipt, claim] => prove(program, witness, receipt, claim),
++        ["profile", program, witness] => profile(program, witness),
+         ["verify", program, receipt, claim] => {
+             reject_dev_mode()?;
+             let program: Program = read_json(program)?;

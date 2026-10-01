@@ -1,0 +1,5 @@
+auction {'stock': 18.866615, 'retained': 2.051772, 'program_bound': 1.823642, 'run_bound': 1.795035}
+payroll {'stock': 14.907987, 'retained': 2.074865, 'program_bound': 1.782326, 'run_bound': 1.774093}
+inference {'stock': 9.998569, 'retained': 2.016626, 'program_bound': 1.871484, 'run_bound': 1.835541}
+PASS: 1932 native transitions, 402 additional transitions, 420 boundary states, 1992 stored checker vectors, generated-source hashes, timing sums, nine receipt hashes and recorded verification results. Changed output, missing run and altered total rejected.
+This checks saved evidence; use the proof executable verify command for fresh cryptographic verification.
