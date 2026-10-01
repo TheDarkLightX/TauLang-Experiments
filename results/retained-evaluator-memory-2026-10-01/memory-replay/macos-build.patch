@@ -1,0 +1,57 @@
+diff --git a/src/satisfiability.tmpl.h b/src/satisfiability.tmpl.h
+index 7964fd75..5808d856 100644
+--- a/src/satisfiability.tmpl.h
++++ b/src/satisfiability.tmpl.h
+@@ -2388,7 +2388,7 @@ bool for_each_static_path(tref fm, const auto& f) {
+ 		return eq_neq(x, y) || eq_neq(y, x);
+ 	};
+ 	// The and/or skeleton of fm, with its leaves numbered by literal
+-	enum kind_t { AND, OR, LIT, TRUE, FALSE };
++	enum kind_t { AND, OR, LIT, CONSTANT_TRUE, CONSTANT_FALSE };
+ 	struct part { kind_t kind; std::vector<size_t> sub; size_t lit = 0; };
+ 	std::vector<part> parts;
+ 	trefs lits;
+@@ -2402,8 +2402,8 @@ bool for_each_static_path(tref fm, const auto& f) {
+ 					? get_cnf_wff_clauses<node>(g)
+ 					: get_dnf_wff_clauses<node>(g))
+ 				p.sub.push_back(build(c));
+-		} else if (t.equals_T()) p.kind = TRUE;
+-		else if (t.equals_F()) p.kind = FALSE;
++		} else if (t.equals_T()) p.kind = CONSTANT_TRUE;
++		else if (t.equals_F()) p.kind = CONSTANT_FALSE;
+ 		else {
+ 			p.kind = LIT;
+ 			auto [it, fresh] = lit_ids.emplace(g, lits.size());
+@@ -2442,7 +2442,7 @@ bool for_each_static_path(tref fm, const auto& f) {
+ 			break;
+ 		case OR:
+ 			if (std::ranges::any_of(p.sub, [&](size_t c) {
+-				return parts[c].kind == TRUE
++				return parts[c].kind == CONSTANT_TRUE
+ 					|| (parts[c].kind == LIT
+ 						&& held[parts[c].lit]);
+ 			})) cont = go();
+@@ -2463,8 +2463,8 @@ bool for_each_static_path(tref fm, const auto& f) {
+ 				--held[p.lit], path.pop_back();
+ 			}
+ 			break;
+-		case TRUE: cont = go(); break;
+-		case FALSE: break;
++		case CONSTANT_TRUE: cont = go(); break;
++		case CONSTANT_FALSE: break;
+ 		}
+ 		todo.push_back(g);
+ 		return cont;
+diff --git a/tests/unit/test_ltl_aba_open_points.cpp b/tests/unit/test_ltl_aba_open_points.cpp
+index 2c931a5c..a2fbdd11 100644
+--- a/tests/unit/test_ltl_aba_open_points.cpp
++++ b/tests/unit/test_ltl_aba_open_points.cpp
+@@ -388,7 +388,7 @@ TEST_SUITE("LTL(ABA) open points: Spot processes") {
+ 			[](int) { return true; });
+ 		REQUIRE_FALSE(r.has_value());
+ 		INFO(report_text(r.report()));
+-		CHECK_FALSE(report_has_attr(r.report(), label::timeout));
++		CHECK_FALSE(report_has_attr(r.report(), idni::tau_lang::label::timeout));
+ 	}
+ }
+ 

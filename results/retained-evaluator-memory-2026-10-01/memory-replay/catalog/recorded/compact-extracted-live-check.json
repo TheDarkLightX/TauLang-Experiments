@@ -1,0 +1,15 @@
+{
+  "status": "passed",
+  "checks": 35,
+  "binary_sha256": "6539b872083f3258bad4e72bf8a6214479d7ec5ccf82cc0b895a943ec9c61973",
+  "admission": {
+    "status": "admitted",
+    "inputs": "102",
+    "outputs": "21",
+    "decisions": "22",
+    "leaves": "17",
+    "expressions": "60940",
+    "retained_terms": "455",
+    "budget": "1048576"
+  }
+}

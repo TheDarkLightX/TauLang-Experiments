@@ -1,0 +1,66 @@
+{
+  "status": "passed",
+  "steps": [
+    {
+      "name": "bvonly-cli-build",
+      "exit_code": 0,
+      "summary": [],
+      "failed_tests": []
+    },
+    {
+      "name": "bvonly-api-build",
+      "exit_code": 0,
+      "summary": [],
+      "failed_tests": []
+    },
+    {
+      "name": "bvonly-off",
+      "exit_code": 0,
+      "summary": [
+        "100% tests passed, 0 tests failed out of 18"
+      ],
+      "failed_tests": []
+    },
+    {
+      "name": "bvonly-on",
+      "exit_code": 0,
+      "summary": [
+        "100% tests passed, 0 tests failed out of 18"
+      ],
+      "failed_tests": []
+    },
+    {
+      "name": "nobv-cli-build",
+      "exit_code": 0,
+      "summary": [],
+      "failed_tests": []
+    },
+    {
+      "name": "nobv-api-build",
+      "exit_code": 0,
+      "summary": [],
+      "failed_tests": []
+    },
+    {
+      "name": "nobv-off",
+      "exit_code": 0,
+      "summary": [
+        "100% tests passed, 0 tests failed out of 7"
+      ],
+      "failed_tests": []
+    },
+    {
+      "name": "nobv-on",
+      "exit_code": 0,
+      "summary": [
+        "100% tests passed, 0 tests failed out of 7"
+      ],
+      "failed_tests": []
+    }
+  ],
+  "scope": "Focused reduced-pack Release checks; not full reduced-pack suites.",
+  "started_utc": "2026-10-01T05:23:44.647158+00:00",
+  "bvonly_binary_sha256": "2868b98fcee0849b8477647123ab9a902c954cfd434ca3df7d2936fe36e53b5a",
+  "nobv_binary_sha256": "4b10c1aacb106b6b043e09cec6a59d364601738638fe9b7b3f7c474fe5611829",
+  "finished_utc": "2026-10-01T05:33:29.072795+00:00"
+}

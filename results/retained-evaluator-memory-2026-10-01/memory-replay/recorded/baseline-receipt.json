@@ -1,0 +1,15 @@
+{
+  "status": "completed; compare outputs with candidate",
+  "scope": "Unmodified current upstream plus the same two macOS compilation corrections; targeted comparison of three printed-order failures.",
+  "build_exit_code": 0,
+  "binary_sha256": "378d2b8dfffa8e6ee42c4f645745ef969ac836ac7ad8f388a10222feb71122c9",
+  "test_exit_code": 8,
+  "failed_tests": [
+    "test_repl-normalize_cmd-issue185_juxtaposed_min_printed",
+    "test_repl-normalize_cmd-qlt_pinned_neq_residual",
+    "test_repl-normalize_cmd-qlt_density_residual"
+  ],
+  "summary": [
+    "0% tests passed, 3 tests failed out of 3"
+  ]
+}

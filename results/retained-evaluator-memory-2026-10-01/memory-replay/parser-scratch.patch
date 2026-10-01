@@ -1,0 +1,57 @@
+diff --git a/src/parser.h b/src/parser.h
+index 8c39949..7f6d9a2 100644
+--- a/src/parser.h
++++ b/src/parser.h
+@@ -1291,6 +1291,18 @@ public:
+ #endif
+ 	grammar<C, T>& get_grammar() { return g; }
+ 	const grammar<C, T>& get_grammar() const { return g; }
++	/**
++	 * Discard the last parse's chart/index scratch, without changing grammar,
++	 * dynamic contexts, results' owned trees/input, or global node pools.
++	 * No concurrent parser operation is allowed. Returns false during a parse
++	 * (including its callbacks). Last-chart print_S/print_data inspection is
++	 * deliberately lost; outer container capacities may remain allocated.
++	 */
++	bool release_parse_scratch() {
++		if (in_) return false;
++		clear_parse_scratch_();
++		return true;
++	}
+ 	/**
+ 	 * Sets the dynamic grow hook (options::on_dynamic_grow and
+ 	 * options::dynamic_grow_nts) on a parser already constructed, such
+@@ -1336,6 +1348,13 @@ public:
+ 	}
+ private:
+ 	mutable idni::diagnostics::report report_;
++	void clear_parse_scratch_() {
++		S.clear(), U.clear(), snapshot_.clear(), revisit_.clear(), fromS.clear(),
++			bin_tnt.clear(), refi.clear(), cache.clear(), gcready.clear(),
++			sorted_citem.clear(), rsorted_citem.clear(), completion_deps.clear(),
++			completion_count.clear(), complete_memo.clear(), forward_deps.clear(),
++			counted_completions.clear(), dyn_child_span.clear(), dyn_child_ids.clear();
++	}
+ 	MC(mutable counters cnt;)
+ 	grammar<C, T>& g;
+ 	options o;
+diff --git a/src/parser.tmpl.h b/src/parser.tmpl.h
+index 6a4c979..025f6c5 100644
+--- a/src/parser.tmpl.h
++++ b/src/parser.tmpl.h
+@@ -876,14 +876,7 @@ parser<C, T>::result parser<C, T>::_parse() {
+ 	// fromS is only read by GC drain and conjunctive cascade machinery.
+ 	// Skip every write for non-conjunctive grammars with GC off.
+ 	need_fromS = po.enable_gc || any_conj;
+-	S.clear(), U.clear(), snapshot_.clear(), fromS.clear(),
+-		bin_tnt.clear(), refi.clear(),
+-		cache.clear(), gcready.clear(), sorted_citem.clear(),
+-		rsorted_citem.clear(), completion_deps.clear(),
+-		completion_count.clear(), complete_memo.clear(),
+-		forward_deps.clear(), counted_completions.clear(),
+-		dyn_child_span.clear();
+-	dyn_child_ids.clear();
++	clear_parse_scratch_();
+ 	// no callback to grow anything means no annotation work is needed
+ 	// either, so a registered pair alone never calls an empty
+ 	// std::function

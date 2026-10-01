@@ -1,0 +1,84 @@
+{
+  "started_utc": "2026-10-01T04:39:02.780261+00:00",
+  "steps": [
+    {
+      "name": "default-build",
+      "exit_code": 0
+    },
+    {
+      "name": "full-ordinary",
+      "exit_code": 8,
+      "failed_tests": [
+        "test_repl-normalize_cmd-issue185_juxtaposed_min_printed",
+        "test_repl-normalize_cmd-qlt_pinned_neq_residual",
+        "test_repl-normalize_cmd-qlt_density_residual"
+      ],
+      "summary": [
+        "99% tests passed, 3 tests failed out of 2642"
+      ],
+      "missing_spot_diagnostic": false,
+      "environment": {
+        "TAU_EVAL_DECIMAL_ONLY": "0",
+        "TAU_EVAL_TRANSIENT_NORMALIZE": "0",
+        "TAU_EVAL_TRIM": "0",
+        "TAU_EVAL_ARENA_OUTPUTS": "0",
+        "TAU_EVAL_FLAT_LEAVES": "0",
+        "TAU_EVAL_RELEASE_PARSE_SCRATCH": "0",
+        "TAU_CONCRETE_EVAL": "0",
+        "TAU_MEMORY_TELEMETRY": "0"
+      }
+    },
+    {
+      "name": "full-evaluator",
+      "exit_code": 8,
+      "failed_tests": [
+        "test_repl-normalize_cmd-issue185_juxtaposed_min_printed",
+        "test_repl-normalize_cmd-qlt_pinned_neq_residual",
+        "test_repl-normalize_cmd-qlt_density_residual"
+      ],
+      "summary": [
+        "99% tests passed, 3 tests failed out of 2642"
+      ],
+      "missing_spot_diagnostic": false,
+      "environment": {
+        "TAU_EVAL_DECIMAL_ONLY": "0",
+        "TAU_EVAL_TRANSIENT_NORMALIZE": "0",
+        "TAU_EVAL_TRIM": "0",
+        "TAU_EVAL_ARENA_OUTPUTS": "0",
+        "TAU_EVAL_FLAT_LEAVES": "0",
+        "TAU_EVAL_RELEASE_PARSE_SCRATCH": "0",
+        "TAU_CONCRETE_EVAL": "1",
+        "TAU_MEMORY_TELEMETRY": "0"
+      }
+    },
+    {
+      "name": "full-memory",
+      "exit_code": 8,
+      "failed_tests": [
+        "test_repl-normalize_cmd-issue185_juxtaposed_min_printed",
+        "test_repl-normalize_cmd-qlt_pinned_neq_residual",
+        "test_repl-normalize_cmd-qlt_density_residual"
+      ],
+      "summary": [
+        "99% tests passed, 3 tests failed out of 2642"
+      ],
+      "missing_spot_diagnostic": false,
+      "environment": {
+        "TAU_EVAL_DECIMAL_ONLY": "1",
+        "TAU_EVAL_TRANSIENT_NORMALIZE": "1",
+        "TAU_EVAL_TRIM": "1",
+        "TAU_EVAL_ARENA_OUTPUTS": "1",
+        "TAU_EVAL_FLAT_LEAVES": "1",
+        "TAU_EVAL_RELEASE_PARSE_SCRATCH": "1",
+        "TAU_CONCRETE_EVAL": "1",
+        "TAU_MEMORY_TELEMETRY": "0"
+      }
+    }
+  ],
+  "spot_version": "/opt/homebrew/bin/ltlsynt (spot) 2.15.1",
+  "source_head": "a739b90259729590dee7b424df05ba65bfdeacf2",
+  "scope": "Default Release pack, real Spot, ordinary mode, evaluator mode, selected memory mode; no global tree collector.",
+  "binary_sha256": "5c8567b26986766fe844cb90425743de0405a5ed591047392e4aeea44171d8e5",
+  "status": "completed; inspect any failures against baseline",
+  "finished_utc": "2026-10-01T05:23:42.711208+00:00"
+}

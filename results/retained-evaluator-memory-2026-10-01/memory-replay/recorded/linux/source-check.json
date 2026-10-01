@@ -1,0 +1,88 @@
+{
+  "status": "passed",
+  "tau_revision": "a739b90259729590dee7b424df05ba65bfdeacf2",
+  "parser_revision": "5b14b6fde86f16dc52c4c0a953a8a1e53c88f95a",
+  "patched_files": [
+    {
+      "file": "src/CMakeLists.txt",
+      "sha256": "9ad0b2a4361e932bbf53682290e589ace440eb5ce28ecf1346ee956071bf1d91"
+    },
+    {
+      "file": "src/api.h",
+      "sha256": "0d3552d4fa1a0b7639e568ca7508b09e98153239749e9adcd3088c739cdafcf0"
+    },
+    {
+      "file": "src/api.tmpl.h",
+      "sha256": "05f88e0342a9fa9d72d487bbc3f1b263ef5a64a8ddb7bf1ef7dd44d9f7f99210"
+    },
+    {
+      "file": "src/ba_constants.h",
+      "sha256": "898670cd78797d89bf02792a94a2c9622e59dc347136305d1f4b706564045e88"
+    },
+    {
+      "file": "src/backends/cvc5/cvc5.h",
+      "sha256": "0c2bb25edc89ffcd089bffdaa597f9f4a3e80cc3ad6a27ee7d0ae88c106891f5"
+    },
+    {
+      "file": "src/boolean_algebras/bv/bv_ba.h",
+      "sha256": "ed8b27ebc380bfab2deb2ec1284bc0b3e324cd361d470e5597b1056e871f46f4"
+    },
+    {
+      "file": "src/boolean_algebras/bv/bv_descriptor.tmpl.h",
+      "sha256": "b98a015e682fdde13ec0038ceef8e0f2cd1c0bbefc40ac34a37d73df3cc0020a"
+    },
+    {
+      "file": "src/boolean_algebras/bv/heuristics/bv_concrete_eval.h",
+      "sha256": "f15e42382d076db7cf65f48a7435fdf31f00694f635f6511be832e4f2f076b67"
+    },
+    {
+      "file": "src/heuristics/concrete_definition.h",
+      "sha256": "3942448a0f4bce6439204bb7ad19972f648314281e8f883e571df81d0ddd7a89"
+    },
+    {
+      "file": "src/heuristics/concrete_eval.h",
+      "sha256": "86aec5ca9432917ea2ebb1a5e8766c332caf0a265dcf8958e14d83940fcf8caa"
+    },
+    {
+      "file": "src/heuristics/memory_telemetry.h",
+      "sha256": "17c6ae1371e0bee1cbafc0bdf97d32307ecfa09cc4ce3f58e9425886106f33eb"
+    },
+    {
+      "file": "src/main.cpp",
+      "sha256": "bdb2999385071faf0b1ec8fa3cc715265e12fdacd3685fdcfcb0135e8b2cf765"
+    },
+    {
+      "file": "src/repl_evaluator.h",
+      "sha256": "cec89b51197e1fd0dc091fcc2e77411f62b8a3e12c8cde2a9958b991cf935f09"
+    },
+    {
+      "file": "src/repl_evaluator.tmpl.h",
+      "sha256": "767bf2c366d2c2db2a50d118a2f9ac694383b73f541f6e0a904cf412cbe0cfa9"
+    },
+    {
+      "file": "tests/api/CMakeLists.txt",
+      "sha256": "72e43c1cb8f934149e756e90b44fc20487aaf61c6143139a274612d8d8f54b76"
+    },
+    {
+      "file": "tests/api/test_api-concrete_eval.cpp",
+      "sha256": "60d2239ce4e1118976c4138fc703302d987537c2ac9fa7ecd1791e8718c8b37e"
+    },
+    {
+      "file": "tests/repl/commands/CMakeLists.txt",
+      "sha256": "b7915cb028598dcd4995067dd510aa4ceee5c1ea47d96f32555d947f38655f76"
+    },
+    {
+      "file": "tests/repl/commands/test_repl-evalspec.cmake",
+      "sha256": "7c084fb4fd9c0e35cf094ef1ba9bcb5e108590558c956b98692e229b92b98310"
+    },
+    {
+      "file": "external/parser/src/parser.h",
+      "sha256": "8e7ed65b023ce6042a2bbfb1f5f38827d11e9e9b54822b62f47a5d2caa959181"
+    },
+    {
+      "file": "external/parser/src/parser.tmpl.h",
+      "sha256": "2b72de701bec67cf6dd537abb2101fea29fead23f49ce9ff6d1f2c2b51cc94cf"
+    }
+  ],
+  "binary_sha256": "1aa44ec0869fa4431c348168715b25743742fdfb455c2d0b58e4985a2631eeba"
+}

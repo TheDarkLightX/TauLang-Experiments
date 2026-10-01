@@ -1,0 +1,540 @@
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index bf644ef8..5b8600db 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -48,6 +48,7 @@ set(TAU_CORE_HEADERS
+ 	pointwise_revision.h
+ 	tau_diagnostics.h  # idni::tau_lang aliases for the parser library's diagnostics types
+ 	tau_memory_budget.h # cap on the interned tree store, checked on entry to each api call
++	heuristics/memory_telemetry.h
+ 	heuristics/concrete_definition.h   # supported concrete conditional definitions
+ 	heuristics/concrete_eval.h          # opt-in retained concrete evaluator interface (TAU_CONCRETE_EVAL)
+ 	api.h
+@@ -248,4 +249,3 @@ endif(TAU_BUILD_SHARED_EXECUTABLE)
+ #
+ # install
+ #
+-
+diff --git a/src/ba_constants.h b/src/ba_constants.h
+index 44136289..ecef100f 100644
+--- a/src/ba_constants.h
++++ b/src/ba_constants.h
+@@ -118,6 +118,8 @@ struct ba_constants {
+ 	/** @brief Dump the constant pool to a new `std::string`. */
+ 	static std::string dump_to_str();
+ 
++	static size_t pool_entries() { return C().size(); }
++
+ 	/** @brief Release all entries from the constant pool. */
+ 	static void cleanup();
+ 
+diff --git a/src/backends/cvc5/cvc5.h b/src/backends/cvc5/cvc5.h
+index 1d7ffd14..fe730abd 100644
+--- a/src/backends/cvc5/cvc5.h
++++ b/src/backends/cvc5/cvc5.h
+@@ -53,7 +53,7 @@ size_t get_cvc5_size(const cvc5::Term& b);
+ 
+ // Forward declaration — defined in bv_ba.h; declared here for use in lambdas
+ // inside templates where two-phase name lookup applies.
+-inline cvc5::Term normalize_bv(const cvc5::Term& fm);
++inline cvc5::Term normalize_bv(const cvc5::Term& fm, bool memoize = true);
+ 
+ //
+ // Basic Boolean algebra operators
+@@ -170,4 +170,4 @@ inline cvc5::Term operator>>(const cvc5::Term& lhs, const cvc5::Term& rhs);
+ #include "backends/cvc5/cvc5_builders.tmpl.h"
+ #include "backends/cvc5/cvc5.tmpl.h"
+ 
+-#endif // __IDNI__TAU__BACKENDS__CVC5_H__
+\ No newline at end of file
++#endif // __IDNI__TAU__BACKENDS__CVC5_H__
+diff --git a/src/boolean_algebras/bv/bv_ba.h b/src/boolean_algebras/bv/bv_ba.h
+index 7ed36fe9..603b0210 100644
+--- a/src/boolean_algebras/bv/bv_ba.h
++++ b/src/boolean_algebras/bv/bv_ba.h
+@@ -48,6 +48,7 @@
+ #include "boolean_algebras/ba_pack_traits.h"
+ #include "tau_tree.h"
+ #include "tau_diagnostics.h"
++#include "heuristics/memory_telemetry.h"
+ #include "splitter_types.h"
+ 
+ namespace idni::tau_lang {
+@@ -513,10 +514,17 @@ result<typename node<BAs...>::constant_with_type> parse_bv(const std::string& sr
+  * LT2-EXEC-03, test_ltl_qlt_bv); the deliberate leak above avoids the
+  * destruction-order interaction. Do not convert it back to an owned
+  * static object. */
+-inline cvc5::Term normalize_bv(const cvc5::Term& fm) {
++inline cvc5::Term normalize_bv(const cvc5::Term& fm, bool memoize) {
++	const bool telemetry = memory_switch("TAU_MEMORY_TELEMETRY");
+ #ifdef TAU_CACHE
+ 	static std::unordered_map<cvc5::Term, cvc5::Term> cache;
+-	if (auto it = cache.find(fm); it != cache.end()) return it->second;
++	if (memoize) {
++		if (auto it = cache.find(fm); it != cache.end()) {
++			if (telemetry) ++memory_counts.normalize_hits;
++			return it->second;
++		}
++		if (telemetry) ++memory_counts.normalize_misses;
++	} else if (telemetry) ++memory_counts.normalize_bypasses;
+ #endif // TAU_CACHE
+ 	static cvc5::Solver* solver = [] {
+ 		auto* s = new cvc5::Solver(cvc5_term_manager);
+@@ -526,7 +534,10 @@ inline cvc5::Term normalize_bv(const cvc5::Term& fm) {
+ 	// Use general simplification procedure
+ 	cvc5::Term res = solver->simplify(fm);
+ #ifdef TAU_CACHE
+-	cache.emplace(fm, res);
++	if (memoize) {
++		cache.emplace(fm, res);
++		memory_counts.normalize_entries = cache.size();
++	}
+ #endif // TAU_CACHE
+ 	return res;
+ }
+diff --git a/src/boolean_algebras/bv/heuristics/bv_concrete_eval.h b/src/boolean_algebras/bv/heuristics/bv_concrete_eval.h
+index b86ad721..0b88b85b 100644
+--- a/src/boolean_algebras/bv/heuristics/bv_concrete_eval.h
++++ b/src/boolean_algebras/bv/heuristics/bv_concrete_eval.h
+@@ -15,6 +15,7 @@
+ // sees cvc5 here.
+ 
+ #include <functional>
++#include <array>
+ #include <memory>
+ #include <optional>
+ #include <string>
+@@ -33,6 +34,7 @@ struct bv_concrete_evaluator : concrete_evaluator_iface<node> {
+ 	std::vector<bv> output_consts;      // per output name
+ 	bv selector;                        // bv[32] leaf index over the guards
+ 	std::vector<std::vector<bv>> leaf_terms;   // [leaf][output slot]
++	std::vector<bv> flat_leaf_terms;           // leaf-major contiguous slots
+ 
+ 	static std::shared_ptr<base> build(tref formula, bool allow_io,
+ 		size_t max_expressions)
+@@ -126,14 +128,17 @@ struct bv_concrete_evaluator : concrete_evaluator_iface<node> {
+ 		auto sel = select(0);
+ 		if (!sel) CONCRETE_REJECT(nullptr);
+ 		ev->selector = *sel;
++		const bool flat = memory_switch("TAU_EVAL_FLAT_LEAVES");
+ 		for (const auto& leaf : ev->def.leaves) {
++			if (leaf.terms.size() != ev->output_consts.size()) CONCRETE_REJECT(nullptr);
+ 			std::vector<bv> terms;
+ 			for (tref t : leaf.terms) {
+ 				auto v = term(t);
+ 				if (!v) CONCRETE_REJECT(nullptr);
+ 				terms.push_back(*v);
+ 			}
+-			ev->leaf_terms.push_back(std::move(terms));
++			if (flat) ev->flat_leaf_terms.insert(ev->flat_leaf_terms.end(), terms.begin(), terms.end());
++			else ev->leaf_terms.push_back(std::move(terms));
+ 		}
+ 		return ev;
+ 	}
+@@ -141,7 +146,8 @@ struct bv_concrete_evaluator : concrete_evaluator_iface<node> {
+ 	// One valuation (strict decimal text per input name, already checked
+ 	// by the caller) to one output tuple.
+ 	std::optional<outcome> evaluate(
+-		const std::vector<std::string>& values) const override
++		const std::vector<std::string>& values,
++		bool materialize_constants = true) const override
+ 	{
+ 		if (values.size() != input_consts.size()) return std::nullopt;
+ 		std::vector<bv> vals;
+@@ -156,16 +162,24 @@ struct bv_concrete_evaluator : concrete_evaluator_iface<node> {
+ 		{
+ 			return keys.empty() ? t : t.substitute(keys, vs);
+ 		};
+-		bv s = normalize_bv(substituted(selector, input_consts, vals));
++		const bool memoize = !memory_switch("TAU_EVAL_TRANSIENT_NORMALIZE");
++		bv s = normalize_bv(substituted(selector, input_consts, vals), memoize);
+ 		if (!s.isBitVectorValue()) return std::nullopt;
+ 		size_t k = 0;
+ 		try { k = std::stoull(s.getBitVectorValue(10)); }
+ 		catch (const std::exception&) { return std::nullopt; }
+-		if (k >= leaf_terms.size()) return std::nullopt;
++		if (k >= this->def.leaves.size()) return std::nullopt;
+ 		std::vector<bv> keys = input_consts;
+-		std::vector<std::optional<bv>> out(output_consts.size());
++		alignas(std::optional<bv>) std::array<std::byte, 4096> storage;
++		output_scratch_resource heap;
++		std::pmr::monotonic_buffer_resource scratch(storage.data(), storage.size(), &heap);
++		std::pmr::vector<std::optional<bv>> out(output_consts.size(),
++			memory_switch("TAU_EVAL_ARENA_OUTPUTS")
++				? static_cast<std::pmr::memory_resource*>(&scratch) : &heap);
+ 		for (size_t o : this->def.leaves[k].order) {
+-			bv v = normalize_bv(substituted(leaf_terms[k][o], keys, vals));
++			const bv& term = flat_leaf_terms.empty() ? leaf_terms[k][o]
++				: flat_leaf_terms[k * output_consts.size() + o];
++			bv v = normalize_bv(substituted(term, keys, vals), memoize);
+ 			if (!v.isBitVectorValue()
+ 				|| v.getSort().getBitVectorSize() != this->output_widths[o])
+ 				return std::nullopt;
+@@ -178,7 +192,8 @@ struct bv_concrete_evaluator : concrete_evaluator_iface<node> {
+ 		for (size_t o = 0; o < out.size(); ++o) {
+ 			if (!out[o]) return std::nullopt;
+ 			result.decimals.push_back(out[o]->getBitVectorValue(10));
+-			result.constants.push_back(constant_node(o, *out[o]));
++			if (materialize_constants)
++				result.constants.push_back(constant_node(o, *out[o]));
+ 		}
+ 		return result;
+ 	}
+diff --git a/src/heuristics/concrete_eval.h b/src/heuristics/concrete_eval.h
+index 3c8beee0..025d613c 100644
+--- a/src/heuristics/concrete_eval.h
++++ b/src/heuristics/concrete_eval.h
+@@ -29,6 +29,7 @@
+ #include "boolean_algebras/ba_descriptor.h"
+ #include "boolean_algebras/ba_pack_traits.h"
+ #include "env_limits.h"
++#include "heuristics/memory_telemetry.h"
+ #include "heuristics/concrete_definition.h"
+ 
+ namespace idni::tau_lang {
+@@ -106,7 +107,8 @@ struct concrete_evaluator_iface {
+ 	// `values[i]` is strict decimal text (see check_input) of input slot i;
+ 	// nullopt when the backend cannot evaluate the valuation.
+ 	virtual std::optional<outcome> evaluate(
+-		const std::vector<std::string>& values) const = 0;
++		const std::vector<std::string>& values,
++		bool materialize_constants = true) const = 0;
+ 
+ 	// Whether `text` is a strict decimal of input slot i's width.
+ 	bool check_input(size_t i, std::string_view text) {
+diff --git a/src/heuristics/memory_telemetry.h b/src/heuristics/memory_telemetry.h
+new file mode 100644
+index 00000000..e8e646ba
+--- /dev/null
++++ b/src/heuristics/memory_telemetry.h
+@@ -0,0 +1,84 @@
++// To view the license please visit https://github.com/IDNI/tau-lang/blob/main/LICENSE.md
++#ifndef __IDNI__TAU__MEMORY_TELEMETRY_H__
++#define __IDNI__TAU__MEMORY_TELEMETRY_H__
++
++#include <cstdlib>
++#include <iostream>
++#include <memory_resource>
++#include <string_view>
++#ifdef __GLIBC__
++#include <malloc.h>
++#endif
++
++namespace idni::tau_lang {
++
++inline bool memory_switch(const char* name) {
++	const char* value = std::getenv(name);
++	return value && std::string_view(value) == "1";
++}
++
++struct memory_counters {
++	size_t normalize_hits = 0, normalize_misses = 0, normalize_bypasses = 0;
++	size_t normalize_entries = 0, trim_calls = 0, parse_scratch_releases = 0;
++	size_t output_scratch_heap_allocations = 0, output_scratch_heap_bytes = 0;
++};
++inline memory_counters memory_counts;
++
++struct output_scratch_resource final : std::pmr::memory_resource {
++	void* do_allocate(size_t bytes, size_t alignment) override {
++		void* p = std::pmr::new_delete_resource()->allocate(bytes, alignment);
++		if (memory_switch("TAU_MEMORY_TELEMETRY")) {
++			++memory_counts.output_scratch_heap_allocations;
++			memory_counts.output_scratch_heap_bytes += bytes;
++		}
++		return p;
++	}
++	void do_deallocate(void* p, size_t bytes, size_t alignment) override {
++		std::pmr::new_delete_resource()->deallocate(p, bytes, alignment);
++	}
++	bool do_is_equal(const std::pmr::memory_resource& other) const noexcept override {
++		return this == &other;
++	}
++};
++
++inline void emit_memory_telemetry(const char* phase, size_t pool_entries,
++	std::ostream& out, size_t tree_nodes) {
++	if (!memory_switch("TAU_MEMORY_TELEMETRY")) return;
++	out << "tau-memory: {\"phase\":\"" << phase
++		<< "\",\"constant_pool_entries\":" << pool_entries
++		<< ",\"interned_tree_nodes\":" << tree_nodes
++		<< ",\"normalizer_cache_entries\":" << memory_counts.normalize_entries
++		<< ",\"normalizer_hits\":" << memory_counts.normalize_hits
++		<< ",\"normalizer_misses\":" << memory_counts.normalize_misses
++		<< ",\"normalizer_bypasses\":" << memory_counts.normalize_bypasses
++		<< ",\"trim_calls\":" << memory_counts.trim_calls
++		<< ",\"parse_scratch_releases\":" << memory_counts.parse_scratch_releases
++		<< ",\"output_scratch_heap_allocations\":" << memory_counts.output_scratch_heap_allocations
++		<< ",\"output_scratch_heap_bytes\":" << memory_counts.output_scratch_heap_bytes;
++#if defined(__GLIBC__) && defined(__GLIBC_PREREQ)
++#if __GLIBC_PREREQ(2, 33)
++	// mallinfo2 walks allocator free lists. After scratch release those are
++	// large: scanning every valuation biases the candidate's measured cost.
++	// Full heap attribution belongs at explicit, quiescent phase boundaries.
++	if (std::string_view(phase) != "after_evaluation") {
++		const auto info = mallinfo2();
++		out << ",\"allocator_arena_live_bytes\":" << info.uordblks
++			<< ",\"allocator_arena_free_bytes\":" << info.fordblks
++			<< ",\"allocator_mmap_bytes\":" << info.hblkhd;
++	}
++#endif
++#endif
++	out << "}\n";
++}
++
++inline void reclaim_free_allocator_pages() {
++#ifdef __GLIBC__
++	if (memory_switch("TAU_EVAL_TRIM")) {
++		malloc_trim(0);
++		++memory_counts.trim_calls;
++	}
++#endif
++}
++
++} // namespace idni::tau_lang
++#endif
+diff --git a/src/main.cpp b/src/main.cpp
+index fd3eebe6..3136b660 100644
+--- a/src/main.cpp
++++ b/src/main.cpp
+@@ -519,7 +519,8 @@ int main(int argc, char** argv) {
+ 		.debug_repl = opts["debug"].get<bool>(),
+ #endif // DEBUG
+ 		.severity = sev,
+-		.experimental = exp
++		.experimental = exp,
++		.standalone_memory_cleanup = true
+ 	});
+ 	string e = opts["evaluate"].get<string>();
+ 	if (e.size()) {
+diff --git a/src/repl_evaluator.h b/src/repl_evaluator.h
+index 9cd75ec7..bf0a1e7a 100644
+--- a/src/repl_evaluator.h
++++ b/src/repl_evaluator.h
+@@ -162,6 +162,7 @@ struct repl_evaluator {
+ #endif // DEBUG
+ 		bool experimental        = false; ///< Enable experimental features.
+ 		logic_fragment fragment   = fragment_ltl; ///< Active logic fragment (LTL or CTL*).
++		bool standalone_memory_cleanup = false;
+ 	};
+ 
+ 	/**
+diff --git a/src/repl_evaluator.tmpl.h b/src/repl_evaluator.tmpl.h
+index c1ab3ef4..1d9b7fec 100644
+--- a/src/repl_evaluator.tmpl.h
++++ b/src/repl_evaluator.tmpl.h
+@@ -2495,10 +2495,12 @@ void repl_evaluator<BAs...>::evalspec_line(const std::string& args) {
+ 		concrete_cache_defs = defs_seen;
+ 	}
+ 	std::shared_ptr<concrete_evaluator_iface<node>> ev;
++	bool newly_admitted = false;
+ 	if (auto it = concrete_cache.find(entry); it != concrete_cache.end())
+ 		ev = it->second;
+ 	else {
+ 		// The spec is assembled as run_cmd assembles it for `run %N`.
++		emit_memory_telemetry("before_admission", ba_constants<node>::pool_entries(), out, tau::m_size());
+ 		tau_spec<node> spec;
+ 		spec.add(get_spec_as_written(entry));
+ 		for (const htref& d : rr_defs) spec.add(d->get());
+@@ -2525,9 +2527,26 @@ void repl_evaluator<BAs...>::evalspec_line(const std::string& args) {
+ 			<< ev->def.input_names.size() << " outputs="
+ 			<< ev->def.output_names.size() << "\n";
+ 		concrete_cache.emplace(entry, ev);
++		emit_memory_telemetry("after_admission", ba_constants<node>::pool_entries(), out, tau::m_size());
++		newly_admitted = true;
++	}
++	if (newly_admitted) {
++		// The load's owned parser result and this admission's local spec are
++		// gone. Direct evalspec commands otherwise leave the last large chart
++		// resident indefinitely. Embedded/concurrent owners remain excluded.
++		if (opt.standalone_memory_cleanup && !running && !pending
++			&& memory_switch("TAU_EVAL_RELEASE_PARSE_SCRATCH")
++			&& tau_parser::instance().release_parse_scratch())
++			++memory_counts.parse_scratch_releases;
++		emit_memory_telemetry("after_parse_scratch_release", ba_constants<node>::pool_entries(), out, tau::m_size());
++		reclaim_free_allocator_pages();
++		emit_memory_telemetry("after_reclaim", ba_constants<node>::pool_entries(), out, tau::m_size());
+ 	}
+ 	const auto& def = ev->def;
+ 	if (tokens.size() == 1) {
++		// Cached admission is also a read-only checkpoint; no parser call,
++		// evaluation, second trim or scratch release is performed here.
++		emit_memory_telemetry("checkpoint", ba_constants<node>::pool_entries(), out, tau::m_size());
+ 		out << "inputs:";
+ 		for (const auto& name : def.input_names) out << " " << name;
+ 		out << "\noutputs:";
+@@ -2557,12 +2576,13 @@ void repl_evaluator<BAs...>::evalspec_line(const std::string& args) {
+ 		values.push_back(tokens[i]);
+ 	}
+ 	std::optional<typename concrete_evaluator_iface<node>::outcome> outcome;
+-	try { outcome = ev->evaluate(values); }
++	try { outcome = ev->evaluate(values, !memory_switch("TAU_EVAL_DECIMAL_ONLY")); }
+ 	catch (const std::exception& e) {
+ 		return fail("evaluation_exception",
+ 			std::string("evaluation failed by exception: ") + e.what());
+ 	}
+ 	if (!outcome) return fail("evaluation_failed", "evaluation failed");
++	emit_memory_telemetry("after_evaluation", ba_constants<node>::pool_entries(), out, tau::m_size());
+ 	std::string fields = "status=ok leaf=" + std::to_string(outcome->leaf)
+ 		+ " outputs=" + std::to_string(outcome->decimals.size());
+ 	for (size_t k = 0; k < outcome->decimals.size(); ++k)
+diff --git a/tests/api/test_api-concrete_eval.cpp b/tests/api/test_api-concrete_eval.cpp
+index 684a0701..07fc9ed4 100644
+--- a/tests/api/test_api-concrete_eval.cpp
++++ b/tests/api/test_api-concrete_eval.cpp
+@@ -11,11 +11,70 @@
+ 
+ #include <cstdlib>
+ #include <optional>
++#include <sstream>
+ #include <string>
+ #include <vector>
+ 
+ using tau_api = api<node_t>;
+ 
++TEST_CASE("parser scratch release preserves lazy results and subsequent parses") {
++	auto& p = tau_parser::instance();
++	const auto* grammar = &p.get_grammar();
++	auto first = p.parse("version", 7, { .start = tau_parser::cli });
++	REQUIRE(first.found);
++	CHECK(p.release_parse_scratch());
++	CHECK(p.release_parse_scratch());
++	// Materialize the earlier result only after release: it owns its root.
++	CHECK(first.get_shaped_tree2() != nullptr);
++	auto second = p.parse("get charvar", 11, { .start = tau_parser::cli });
++	REQUIRE(second.found);
++	CHECK(p.release_parse_scratch());
++	CHECK(second.get_shaped_tree2() != nullptr);
++	CHECK(first.get_shaped_tree2() != nullptr);
++	CHECK(&p.get_grammar() == grammar);
++	tau_dynamic_context names;
++	const std::string declaration = "type MemoryProbe = {x: bool}. T.";
++	auto declared = p.parse(declaration.data(), declaration.size(),
++		{ .start = tau_parser::spec_multiline, .dynamic_ctx = &names });
++	REQUIRE(declared.found);
++	const auto saved_names = names.values;
++	REQUIRE(!saved_names.empty());
++	CHECK(p.release_parse_scratch());
++	CHECK(names.values == saved_names);
++	const std::string use = "ex x:MemoryProbe x = 0.";
++	auto used = p.parse(use.data(), use.size(),
++		{ .start = tau_parser::spec_multiline, .dynamic_ctx = &names });
++	REQUIRE(used.found);
++	CHECK(p.release_parse_scratch());
++	CHECK(names.values == saved_names);
++	CHECK(declared.get_shaped_tree2() != nullptr);
++	CHECK(used.get_shaped_tree2() != nullptr);
++}
++
++TEST_CASE("parser scratch release refuses an active grow callback") {
++	idni::nonterminals<char> nts;
++	idni::prods<char> ps, start(nts("start")), parent(nts("parent")), child(nts("child"));
++	ps(start, parent);
++	ps(parent, child + "x");
++	ps(child, idni::prods<char>("a"));
++	idni::char_class_fns<char> character_classes;
++	idni::grammar<char> grammar(nts, ps, start, character_classes);
++	idni::parser<char>* active = nullptr;
++	bool callback_ran = false;
++	idni::parser<char>::options options;
++	options.dynamic_grow_nts = {{grammar.nt("parent").n(), grammar.nt("child").n()}};
++	options.on_dynamic_grow = [&](idni::parser<char>::input&, size_t, size_t, size_t) {
++		callback_ran = true;
++		CHECK_FALSE(active->release_parse_scratch());
++	};
++	idni::parser<char> local(grammar, options);
++	active = &local;
++	auto parsed = local.parse("ax", 2);
++	REQUIRE(parsed.found);
++	CHECK(callback_ran);
++	CHECK(local.release_parse_scratch());
++}
++
+ namespace {
+ 
+ struct env_guard {
+@@ -182,6 +241,85 @@ std::string op_term(const std::string& op, const std::string& l,
+ } // namespace
+ 
+ TEST_SUITE("concrete evaluator: exhaustive small widths") {
++	TEST_CASE_FIXTURE(api_fixture, "decimal-only preserves default constants and cache semantics") {
++		{
++			env_guard telemetry("TAU_MEMORY_TELEMETRY", "1");
++			std::ostringstream incremental, checkpoint;
++			emit_memory_telemetry("after_evaluation", 0, incremental, 0);
++			emit_memory_telemetry("checkpoint", 0, checkpoint, 0);
++			CHECK(incremental.str().find("allocator_arena_live_bytes") == std::string::npos);
++#if defined(__GLIBC__) && defined(__GLIBC_PREREQ)
++#if __GLIBC_PREREQ(2, 33)
++			CHECK(checkpoint.str().find("allocator_arena_live_bytes") != std::string::npos);
++#endif
++#endif
++		}
++		env_guard enabled("TAU_MEMORY_TELEMETRY", "1");
++		env_guard decimal_only("TAU_EVAL_DECIMAL_ONLY", "1");
++		env_guard transient("TAU_EVAL_TRANSIENT_NORMALIZE", "1");
++		env_guard arena("TAU_EVAL_ARENA_OUTPUTS", "1");
++		env_guard flat("TAU_EVAL_FLAT_LEAVES", "1");
++		auto a = admit("always o1[t]:bv[8] = (i1[t]:bv[8] + {7}:bv[8]).");
++		REQUIRE(a.ev);
++		const auto scratch_before = memory_counts.output_scratch_heap_allocations;
++		auto first = a.ev->evaluate({"250"});
++		auto decimal = a.ev->evaluate({"250"}, false);
++		auto last = a.ev->evaluate({"250"}, true);
++		REQUIRE(first); REQUIRE(decimal); REQUIRE(last);
++		CHECK(memory_counts.output_scratch_heap_allocations == scratch_before);
++		CHECK(first->decimals == std::vector<std::string>{"1"});
++		CHECK(first->decimals == decimal->decimals);
++		CHECK(first->decimals == last->decimals);
++		CHECK(first->leaf == decimal->leaf);
++		REQUIRE(first->constants.size() == 1);
++		CHECK(last->constants == first->constants);
++		CHECK(decimal->constants.empty());
++		using tr = tree<node_t>;
++		const auto c = tr::get(first->constants[0])[0];
++		CHECK(c.get_ba_type() == a.ev->def.output_types[0]);
++		CHECK(std::get<bv>(c.get_ba_constant()).getBitVectorValue(10) == "1");
++		auto solved = switched_solve("x:bv[8] = ({250}:bv[8] + {7}:bv[8])", {"x"}, 8);
++		REQUIRE(solved);
++		CHECK(*solved == std::vector<uint64_t>{1});
++		{
++			std::array<std::byte, 128> small_storage;
++			output_scratch_resource heap;
++			std::pmr::monotonic_buffer_resource scratch(small_storage.data(), small_storage.size(), &heap);
++			const auto before = memory_counts.output_scratch_heap_allocations;
++			std::pmr::vector<std::optional<bv>> large(16, &scratch);
++			CHECK(memory_counts.output_scratch_heap_allocations > before);
++			CHECK(large.size() == 16);
++		}
++#ifdef TAU_CACHE
++		const auto term = cvc5_term_manager.mkTerm(cvc5::Kind::BITVECTOR_ADD,
++			{make_bitvector_value(16, 31337), make_bitvector_value(16, 17)});
++		const auto before = memory_counts;
++		auto v = normalize_bv(term, false);
++		CHECK(memory_counts.normalize_entries == before.normalize_entries);
++		CHECK(memory_counts.normalize_hits == before.normalize_hits);
++		CHECK(memory_counts.normalize_bypasses == before.normalize_bypasses + 1);
++		CHECK(normalize_bv(term) == v);
++		const auto cached = memory_counts;
++		CHECK(normalize_bv(term) == v);
++		CHECK(memory_counts.normalize_entries == cached.normalize_entries);
++		CHECK(memory_counts.normalize_hits == cached.normalize_hits + 1);
++#endif
++	}
++	TEST_CASE_FIXTURE(api_fixture, "flat leaves preserve branch and output dependencies") {
++		const std::string spec = "always (i1[t]:bv[8] < {128}:bv[8] ? "
++			"(o1[t]:bv[8] = (i1[t]:bv[8] + {1}:bv[8]) && o2[t]:bv[8] = (o1[t]:bv[8] + {7}:bv[8])) : "
++			"(o1[t]:bv[8] = (i1[t]:bv[8] - {1}:bv[8]) && o2[t]:bv[8] = (o1[t]:bv[8] - {7}:bv[8]))).";
++		for (uint64_t input : {uint64_t{0}, uint64_t{127}, uint64_t{128}, uint64_t{255}}) {
++			env_guard normal("TAU_EVAL_FLAT_LEAVES", "0");
++			auto baseline = admit(spec).run({{"i1[t]", input}}, {"o1[t]", "o2[t]"});
++			REQUIRE(baseline);
++			env_guard flat("TAU_EVAL_FLAT_LEAVES", "1");
++			env_guard arena("TAU_EVAL_ARENA_OUTPUTS", "1");
++			auto candidate = admit(spec).run({{"i1[t]", input}}, {"o1[t]", "o2[t]"});
++			REQUIRE(candidate);
++			CHECK(*candidate == *baseline);
++		}
++	}
+ 
+ 	// Every admitted term operator, widths 1-3, every valuation: the
+ 	// evaluator's `o1[t]` equals the ordinary solver's `x` for the same

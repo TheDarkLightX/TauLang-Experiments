@@ -1,0 +1,106 @@
+{
+  "ctest_entries": 2642,
+  "cpp_suites_with_summary": 166,
+  "cpp_cases": 6643,
+  "cpp_skipped": 12,
+  "concrete_api": {
+    "test": "test_api-concrete_eval",
+    "cases": [
+      13,
+      13,
+      0,
+      0
+    ],
+    "assertions": [
+      19300,
+      19300,
+      0
+    ]
+  },
+  "skipped_suites": [
+    {
+      "test": "test_integration-interpreter-bv",
+      "cases": [
+        8,
+        8,
+        0,
+        1
+      ],
+      "assertions": [
+        21,
+        21,
+        0
+      ]
+    },
+    {
+      "test": "test_integration-heuristics-bv_predicate_blasting",
+      "cases": [
+        371,
+        371,
+        0,
+        6
+      ],
+      "assertions": [
+        438,
+        438,
+        0
+      ]
+    },
+    {
+      "test": "test_integration-pointwise_revision",
+      "cases": [
+        15,
+        15,
+        0,
+        1
+      ],
+      "assertions": [
+        88,
+        88,
+        0
+      ]
+    },
+    {
+      "test": "test_integration-wff_normalization",
+      "cases": [
+        81,
+        81,
+        0,
+        1
+      ],
+      "assertions": [
+        173,
+        173,
+        0
+      ]
+    },
+    {
+      "test": "test_integration-bv_stress_check",
+      "cases": [
+        13,
+        13,
+        0,
+        2
+      ],
+      "assertions": [
+        236,
+        236,
+        0
+      ]
+    },
+    {
+      "test": "test_tau_tree_from_parser",
+      "cases": [
+        87,
+        87,
+        0,
+        1
+      ],
+      "assertions": [
+        90,
+        90,
+        0
+      ]
+    }
+  ]
+}

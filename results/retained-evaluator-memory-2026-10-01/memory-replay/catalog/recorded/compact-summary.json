@@ -1,0 +1,27 @@
+{
+  "status": "passed",
+  "checked_per_variant": 531,
+  "medians": {
+    "shared": {
+      "setup_seconds": 3.4513735830000005,
+      "load_seconds": 2.9834005,
+      "admission_seconds": 0.22860170799999935,
+      "step_median_seconds": 0.00100154200000091,
+      "rss_after_workload_kib": 1100576
+    },
+    "compact": {
+      "setup_seconds": 1.9624953339999998,
+      "load_seconds": 1.4855730420000004,
+      "admission_seconds": 0.22376958399999936,
+      "step_median_seconds": 0.000959457999996971,
+      "rss_after_workload_kib": 568096
+    }
+  },
+  "setup_inclusive_distinct_seconds": {
+    "compact": 2.257627283000012,
+    "shared": 3.792712090000009
+  },
+  "setup_reduction_percent": 43.138716026963365,
+  "rss_reduction_percent": 48.381938185095805,
+  "setup_inclusive_speedup": 1.6799549325786514
+}

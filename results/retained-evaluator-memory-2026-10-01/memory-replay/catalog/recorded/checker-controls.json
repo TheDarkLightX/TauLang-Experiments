@@ -1,0 +1,14 @@
+{
+  "controls": [
+    {
+      "case": "changed-output",
+      "rejected": true,
+      "exit_code": 1
+    },
+    {
+      "case": "missing-repeat",
+      "rejected": true,
+      "exit_code": 1
+    }
+  ]
+}

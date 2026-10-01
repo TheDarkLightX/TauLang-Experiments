@@ -1,0 +1,8 @@
+{
+  "aggregate_equalities": 22,
+  "original_bytes": 77942,
+  "shared_bytes": 29839,
+  "compact_bytes": 17233,
+  "compact_sha256": "fb4c5bbd096435311fc3b503029c03adb027c1ba9b48f5517ab6d287231ae76e",
+  "exact_field_expansion": true
+}

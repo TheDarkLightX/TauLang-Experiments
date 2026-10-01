@@ -1,0 +1,14 @@
+{
+  "loaded_formula_byte_equal": true,
+  "admission_equal": true,
+  "formula_sha256": {
+    "shared": "ffcda6fea6ee1f62533eeb653f22be24388609de4ce54c10214ce3491c4941b3",
+    "compact": "ffcda6fea6ee1f62533eeb653f22be24388609de4ce54c10214ce3491c4941b3"
+  },
+  "formula_bytes": {
+    "shared": 28546,
+    "compact": 28546
+  },
+  "binary_sha256": "6539b872083f3258bad4e72bf8a6214479d7ec5ccf82cc0b895a943ec9c61973",
+  "scope": "Exact printed loaded-formula comparison on the pinned executable; not a proof of all language behavior."
+}

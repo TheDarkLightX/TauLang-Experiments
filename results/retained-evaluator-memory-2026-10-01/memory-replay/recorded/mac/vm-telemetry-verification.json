@@ -1,0 +1,34 @@
+{
+  "status": "passed",
+  "model_checks": 933,
+  "processes": 3,
+  "medians": {
+    "baseline": {
+      "setup_seconds": 4.391696917,
+      "step_median_seconds": 0.0029556250000002393,
+      "total_seconds": 5.518253466999983,
+      "rss_after_workload_kib": 538512,
+      "rss_after_workload_mib": 525.890625
+    },
+    "parser_trim": {
+      "setup_seconds": 4.780268458,
+      "step_median_seconds": 0.0029338330000001633,
+      "total_seconds": 5.8656496270000265,
+      "rss_after_workload_kib": 521424,
+      "rss_after_workload_mib": 509.203125
+    },
+    "selected": {
+      "setup_seconds": 4.604377291999999,
+      "step_median_seconds": 0.0035070409999988783,
+      "total_seconds": 5.893827631000022,
+      "rss_after_workload_kib": 522896,
+      "rss_after_workload_mib": 510.640625
+    }
+  },
+  "rejected_mutations": [
+    "missing process",
+    "changed output",
+    "changed step sum",
+    "changed RSS type"
+  ]
+}

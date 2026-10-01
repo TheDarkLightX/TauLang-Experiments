@@ -1,0 +1,21 @@
+{
+  "platform": "macOS-26.6.2-arm64-arm-64bit",
+  "python": "3.9.6",
+  "processor": "Apple M3 Max",
+  "compiler": "Homebrew clang version 22.1.2",
+  "cmake": "cmake version 4.1.1",
+  "spot": "ltlsynt (spot) 2.15.1",
+  "cvc5": "1.3.1",
+  "boost": "1.89.0",
+  "build_type": "Release",
+  "lto": false,
+  "effective_tau_cache": true,
+  "default_pack": "tau,qint,qlt,nlang,bv,sbf,hsb",
+  "reduced_packs": [
+    "sbf,tau,bv",
+    "sbf,tau,qint"
+  ],
+  "artifact_preinstantiation": true,
+  "source_revision": "a739b90259729590dee7b424df05ba65bfdeacf2",
+  "parser_revision": "5b14b6fde86f16dc52c4c0a953a8a1e53c88f95a"
+}

@@ -1,0 +1,1889 @@
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index 13d02ceb..bf644ef8 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -48,6 +48,8 @@ set(TAU_CORE_HEADERS
+ 	pointwise_revision.h
+ 	tau_diagnostics.h  # idni::tau_lang aliases for the parser library's diagnostics types
+ 	tau_memory_budget.h # cap on the interned tree store, checked on entry to each api call
++	heuristics/concrete_definition.h   # supported concrete conditional definitions
++	heuristics/concrete_eval.h          # opt-in retained concrete evaluator interface (TAU_CONCRETE_EVAL)
+ 	api.h
+ 	union_find.h       # union find data structure
+ 	union_find_with_sets.h
+diff --git a/src/api.h b/src/api.h
+index a33a9a73..282d2583 100644
+--- a/src/api.h
++++ b/src/api.h
+@@ -32,6 +32,10 @@
+ #include "tau_memory_budget.h"
+ #include "reset_hooks.h"
+ 
++namespace idni::tau_lang {
++template <NodeType node> struct concrete_evaluator_iface;
++}
++
+ namespace idni::tau_lang {
+ 
+ /// Operator-preference strengthening order for `api::apply_preferences`.
+@@ -895,6 +899,14 @@ struct api {
+ 		htref formula,
+ 		solver_mode mode = solver_mode::general);
+ 
++	/// TAU_CONCRETE_EVAL: admit @p spec (assembled as for `run`: the
++	/// formula plus its definitions and streams) as a concrete conditional
++	/// definition and build its retained evaluator
++	/// (heuristics/concrete_eval.h); nullptr with @p reason naming the
++	/// decline.  Never a verdict.
++	static std::shared_ptr<concrete_evaluator_iface<node>>
++	admit_concrete_evaluator(tau_spec<node>& spec, std::string& reason);
++
+ 	/// Compute the Least General Recursive Solution (LGRS) for a
+ 	/// Boolean equation.  The equation must be a single bf_eq equality
+ 	/// with no non-Boolean operations.
+@@ -1073,6 +1085,7 @@ private:
+ 
+ } // namespace idni::tau_lang
+ 
++#include "heuristics/concrete_eval.h"
+ #include "api.tmpl.h"
+ #include "api.tmpl.htref.h"
+ #include "api.tmpl.string.h"
+diff --git a/src/api.tmpl.h b/src/api.tmpl.h
+index 443b02b3..39a4fdac 100644
+--- a/src/api.tmpl.h
++++ b/src/api.tmpl.h
+@@ -1570,6 +1570,37 @@ result<bool> api<node>::valid_spec(tref fm) {
+ // Solving
+ // ------------------------------------------------------------
+ 
++// TAU_CONCRETE_EVAL: definitions are applied as get_interpreter(tau_spec)
++// applies them for `run`, so a spec admitted here unfolds exactly as the
++// same spec run by the REPL (a definition shadowed by an earlier one of the
++// same head included).
++template <NodeType node>
++std::shared_ptr<concrete_evaluator_iface<node>>
++api<node>::admit_concrete_evaluator(tau_spec<node>& spec, std::string& reason) {
++	using tt = typename tau::traverser;
++	reason = "definitions_failed";
++	spec.keep_warm_ups();
++	auto nso_rr = spec.get_nso_rr();
++	if (!nso_rr) return nullptr;
++	auto applied = nso_rr_apply<node>(nso_rr.value());
++	if (!applied.has_value()) return nullptr;
++	tref fm = applied.value();
++	if (fm && tau::get(fm).is(tau::spec))
++		fm = tt(fm) | tau::main | tau::wff | tt::ref;
++	if (!fm || !tau::get(fm).is(tau::wff)) return reason = "no_main", nullptr;
++	{
++		// Stamp declared stream directions. Keep hooks off to preserve
++		// the formula as written.
++		use_hooks_guard<node> hooks_off(false);
++		fm = resolve_io_vars<node>(
++			*definitions<node>::instance().get_io_context(), fm);
++	}
++	if (!fm) return reason = "io_resolution_failed", nullptr;
++	auto ev = build_concrete_evaluator<node>(fm, true, reason);
++	if (ev) ev->pin = tau::geth(fm);   // keeps the admitted formula alive
++	return ev;
++}
++
+ // Solve: apply defs, reject temporal quantifiers, then run the solver.
+ template <NodeType node>
+ result<subtree_map<node, tref>> api<node>::solve(
+@@ -1597,6 +1628,38 @@ result<subtree_map<node, tref>> api<node>::solve(
+ 			return r.with_assert_check_error(code::invalid_argument,
+ 				"Found temporal quantifier in formula");
+ 		DBG(TAU_LOG_TRACE << "solve: " << LOG_FM(a);)
++		// Opt-in: a ground conditional definition is evaluated instead
++		// of solved; anything the recognizer or evaluator declines keeps
++		// the solver path below.
++		if (concrete_eval_enabled()) {
++			std::string reason;
++			auto ev = build_concrete_evaluator<node>(a, false, reason);
++			std::optional<typename concrete_evaluator_iface<node>::outcome>
++				outcome;
++			if (ev) try { outcome = ev->evaluate({}); }
++			catch (const std::exception& e) {
++				// a backend exception is a decline, never an answer
++				if (concrete_eval_trace()) std::cerr
++					<< "concrete_eval: solve declined by exception: "
++					<< e.what() << "\n";
++				outcome.reset();
++			}
++			if (ev && outcome) {
++				if (concrete_eval_trace()) std::cerr
++					<< "concrete_eval: solve admitted, leaves="
++					<< ev->def.leaves.size() << " decisions="
++					<< ev->def.branches.size() << " outputs="
++					<< ev->def.output_names.size() << "\n";
++				subtree_map<node, tref> sol;
++				for (size_t k = 0; k < outcome->constants.size(); ++k)
++					sol.emplace(ev->def.leaves[outcome->leaf].lhs[k],
++						outcome->constants[k]);
++				return r.with_assert_check_value(sol);
++			}
++			if (concrete_eval_trace()) std::cerr
++				<< "concrete_eval: solve declined (" << reason
++				<< ") at line " << concrete_reject_line << "\n";
++		}
+ 		// setting solver options
+ 		solver_options options = {
+ 			.splitter_one = node::ba::
+diff --git a/src/boolean_algebras/bv/bv_ba.h b/src/boolean_algebras/bv/bv_ba.h
+index 83baa104..c4f16fd1 100644
+--- a/src/boolean_algebras/bv/bv_ba.h
++++ b/src/boolean_algebras/bv/bv_ba.h
+@@ -656,6 +656,7 @@ template<NodeType node> result<tref> simplify_bv_term(tref term);
+ #include "boolean_algebras/bv/heuristics/bv_case_split.h"
+ #include "boolean_algebras/bv/heuristics/bv_definitional_elimination.h"
+ #include "boolean_algebras/bv/heuristics/bv_widening.h"
++#include "boolean_algebras/bv/heuristics/bv_concrete_eval.h"
+ #include "boolean_algebras/bv/bv_descriptor.tmpl.h"
+ 
+ #endif // __IDNI__TAU__BOOLEAN_ALGEBRAS__BV__BV_BA_H__
+diff --git a/src/boolean_algebras/bv/bv_descriptor.tmpl.h b/src/boolean_algebras/bv/bv_descriptor.tmpl.h
+index 140e94d7..cdc4b0a0 100644
+--- a/src/boolean_algebras/bv/bv_descriptor.tmpl.h
++++ b/src/boolean_algebras/bv/bv_descriptor.tmpl.h
+@@ -231,6 +231,14 @@ struct ba_descriptor<bv, node<PackBAs...>> {
+ 	 */
+ 	static bool widening_state() { return bv_widening; }
+ 
++	// heuristics/concrete_eval.h: the retained evaluator of an admitted
++	// concrete conditional definition (nullptr: declined).
++	static std::shared_ptr<concrete_evaluator_iface<node_t>>
++	concrete_evaluator(tref formula, bool allow_io, size_t max_expressions) {
++		return bv_concrete_evaluator<node_t>::build(formula, allow_io,
++			max_expressions);
++	}
++
+ 	/**
+ 	 * @brief Set bv's OWN preprocessing switch (`bv_blasting`), not the
+ 	 * core master `preprocessing`.
+diff --git a/src/boolean_algebras/bv/heuristics/bv_concrete_eval.h b/src/boolean_algebras/bv/heuristics/bv_concrete_eval.h
+new file mode 100644
+index 00000000..b86ad721
+--- /dev/null
++++ b/src/boolean_algebras/bv/heuristics/bv_concrete_eval.h
+@@ -0,0 +1,196 @@
++// To view the license please visit https://github.com/IDNI/tau-lang/blob/main/LICENSE.md
++
++#ifndef __IDNI__TAU__BV_CONCRETE_EVAL_H__
++#define __IDNI__TAU__BV_CONCRETE_EVAL_H__
++
++// The bv backend of heuristics/concrete_eval.h.  The admitted DAG is
++// translated once into cvc5 terms by the bv translator the solver uses
++// (bv_eval_node); the guards become one ite chain selecting a leaf index.
++// Each evaluation substitutes the input values and normalizes
++// (normalize_bv, the same cvc5 simplification the constant-folding hooks
++// use) the selector and the selected leaf's output terms, in the leaf's
++// checked dependency order.  Any translation or evaluation failure is a
++// decline: the caller keeps the existing path.  Reached only through
++// ba_descriptor<bv, node>::concrete_evaluator, so a pack without bv never
++// sees cvc5 here.
++
++#include <functional>
++#include <memory>
++#include <optional>
++#include <string>
++#include <vector>
++
++#include "heuristics/concrete_eval.h"
++
++namespace idni::tau_lang {
++
++template <NodeType node>
++struct bv_concrete_evaluator : concrete_evaluator_iface<node> {
++	using base = concrete_evaluator_iface<node>;
++	using tau = tree<node>;
++	using typename base::outcome;
++	std::vector<bv> input_consts;       // per input name
++	std::vector<bv> output_consts;      // per output name
++	bv selector;                        // bv[32] leaf index over the guards
++	std::vector<std::vector<bv>> leaf_terms;   // [leaf][output slot]
++
++	static std::shared_ptr<base> build(tref formula, bool allow_io,
++		size_t max_expressions)
++	{
++		auto recognized = recognize_concrete_definition<node>(formula,
++			allow_io, max_expressions);
++		if (!recognized) return nullptr;   // reject line set by the recognizer
++		auto ev = std::make_shared<bv_concrete_evaluator>();
++		ev->def = std::move(*recognized);
++		auto widths_of = [](const std::vector<size_t>& types,
++			std::vector<size_t>& widths)
++		{
++			for (size_t t : types) {
++				auto w = get_bv_width<node>(t);
++				if (!w.has_value() || !w.value()) return false;
++				widths.push_back(w.value());
++			}
++			return true;
++		};
++		if (!widths_of(ev->def.input_types, ev->input_widths)
++			|| !widths_of(ev->def.output_types, ev->output_widths))
++			CONCRETE_REJECT(nullptr);
++		for (size_t i = 0; i < ev->def.input_names.size(); ++i)
++			ev->input_consts.push_back(cvc5_term_manager.mkConst(
++				cvc5_term_manager.mkBitVectorSort(ev->input_widths[i]),
++				"in" + std::to_string(i)));
++		for (size_t i = 0; i < ev->def.output_names.size(); ++i)
++			ev->output_consts.push_back(cvc5_term_manager.mkConst(
++				cvc5_term_manager.mkBitVectorSort(ev->output_widths[i]),
++				"out" + std::to_string(i)));
++		subtree_map<node, bv> vars, free_vars;
++		for (const auto& ref : ev->def.inputs)
++			vars.emplace(ref.var, ev->input_consts[ref.slot]);
++		for (const auto& ref : ev->def.outputs)
++			vars.emplace(ref.var, ev->output_consts[ref.slot]);
++		size_t& terms_held = ev->retained_terms;
++		// terms and comparisons: the solver's own translator; a variable
++		// it did not find in `vars` would land in free_vars: a decline.
++		auto term = [&](tref t) -> std::optional<bv> {
++			auto r = bv_eval_node<node>(t, vars, free_vars);
++			if (!r.has_value() || !free_vars.empty()) CONCRETE_REJECT(std::nullopt);
++			++terms_held;
++			return r.value();
++		};
++		std::function<std::optional<bv>(tref)> wff;
++		wff = [&](tref w) -> std::optional<bv> {
++			const auto& op = tau::get(w)[0];
++			auto connective = [&](cvc5::Kind k, size_t n)
++				-> std::optional<bv>
++			{
++				std::vector<bv> args;
++				for (size_t i = 0; i < n; ++i) {
++					auto a = wff(op[i].get());
++					if (!a) CONCRETE_REJECT(std::nullopt);
++					args.push_back(*a);
++				}
++				++terms_held;
++				return cvc5_term_manager.mkTerm(k, args);
++			};
++			if (op.is(tau::wff_t)) return cvc5_term_manager.mkTrue();
++			if (op.is(tau::wff_f)) return cvc5_term_manager.mkFalse();
++			if (op.is(tau::wff_neg)) return connective(cvc5::Kind::NOT, 1);
++			if (op.is(tau::wff_and)) return connective(cvc5::Kind::AND, 2);
++			if (op.is(tau::wff_or)) return connective(cvc5::Kind::OR, 2);
++			if (op.is(tau::wff_imply))
++				return connective(cvc5::Kind::IMPLIES, 2);
++			if (op.is(tau::wff_equiv))
++				return connective(cvc5::Kind::EQUAL, 2);
++			if (op.is(tau::wff_xor)) return connective(cvc5::Kind::XOR, 2);
++			if (op.is(tau::wff_conditional))
++				return connective(cvc5::Kind::ITE, 3);
++			return term(w);
++		};
++		std::vector<std::optional<bv>> memo(ev->def.nodes.size());
++		std::function<std::optional<bv>(size_t)> select;
++		select = [&](size_t id) -> std::optional<bv> {
++			if (memo[id]) return memo[id];
++			const auto& n = ev->def.nodes[id];
++			if (n.is_leaf) return memo[id] = make_bitvector_value(32, n.index);
++			const auto& b = ev->def.branches[n.index];
++			auto g = wff(b.guard);
++			if (!g) CONCRETE_REJECT(std::nullopt);
++			auto yes = select(b.yes);
++			if (!yes) CONCRETE_REJECT(std::nullopt);
++			auto no = select(b.no);
++			if (!no) CONCRETE_REJECT(std::nullopt);
++			++terms_held;
++			return memo[id] = cvc5_term_manager.mkTerm(cvc5::Kind::ITE,
++				{*g, *yes, *no});
++		};
++		auto sel = select(0);
++		if (!sel) CONCRETE_REJECT(nullptr);
++		ev->selector = *sel;
++		for (const auto& leaf : ev->def.leaves) {
++			std::vector<bv> terms;
++			for (tref t : leaf.terms) {
++				auto v = term(t);
++				if (!v) CONCRETE_REJECT(nullptr);
++				terms.push_back(*v);
++			}
++			ev->leaf_terms.push_back(std::move(terms));
++		}
++		return ev;
++	}
++
++	// One valuation (strict decimal text per input name, already checked
++	// by the caller) to one output tuple.
++	std::optional<outcome> evaluate(
++		const std::vector<std::string>& values) const override
++	{
++		if (values.size() != input_consts.size()) return std::nullopt;
++		std::vector<bv> vals;
++		for (size_t i = 0; i < values.size(); ++i) {
++			bv v = make_bitvector_value(this->input_widths[i], values[i], 10);
++			if (!v.isBitVectorValue()
++				|| v.getBitVectorValue(10) != values[i]) return std::nullopt;
++			vals.push_back(v);
++		}
++		auto substituted = [&](const bv& t, const std::vector<bv>& keys,
++			const std::vector<bv>& vs)
++		{
++			return keys.empty() ? t : t.substitute(keys, vs);
++		};
++		bv s = normalize_bv(substituted(selector, input_consts, vals));
++		if (!s.isBitVectorValue()) return std::nullopt;
++		size_t k = 0;
++		try { k = std::stoull(s.getBitVectorValue(10)); }
++		catch (const std::exception&) { return std::nullopt; }
++		if (k >= leaf_terms.size()) return std::nullopt;
++		std::vector<bv> keys = input_consts;
++		std::vector<std::optional<bv>> out(output_consts.size());
++		for (size_t o : this->def.leaves[k].order) {
++			bv v = normalize_bv(substituted(leaf_terms[k][o], keys, vals));
++			if (!v.isBitVectorValue()
++				|| v.getSort().getBitVectorSize() != this->output_widths[o])
++				return std::nullopt;
++			out[o] = v;
++			keys.push_back(output_consts[o]);
++			vals.push_back(v);
++		}
++		outcome result;
++		result.leaf = k;
++		for (size_t o = 0; o < out.size(); ++o) {
++			if (!out[o]) return std::nullopt;
++			result.decimals.push_back(out[o]->getBitVectorValue(10));
++			result.constants.push_back(constant_node(o, *out[o]));
++		}
++		return result;
++	}
++
++	// The Tau constant `{ v }:bv[w]` of output slot o.
++	tref constant_node(size_t o, const bv& v) const {
++		typename node::constant c = {v};
++		return tau::get(tau::bf, tau::get_ba_constant(c,
++			bv_type<node>(this->output_widths[o])));
++	}
++};
++
++} // namespace idni::tau_lang
++
++#endif // __IDNI__TAU__BV_CONCRETE_EVAL_H__
+diff --git a/src/heuristics/concrete_definition.h b/src/heuristics/concrete_definition.h
+new file mode 100644
+index 00000000..36876ad2
+--- /dev/null
++++ b/src/heuristics/concrete_definition.h
+@@ -0,0 +1,565 @@
++// To view the license please visit https://github.com/IDNI/tau-lang/blob/main/LICENSE.md
++
++#ifndef __IDNI__TAU__CONCRETE_DEFINITION_H__
++#define __IDNI__TAU__CONCRETE_DEFINITION_H__
++
++#include <algorithm>
++#include <cstdlib>
++#include <functional>
++#include <iostream>
++#include <string>
++#include <optional>
++#include <string_view>
++#include <unordered_map>
++#include <unordered_set>
++#include <vector>
++
++#include "definitions.h"
++#include "tau_tree.h"
++
++namespace idni::tau_lang {
++
++namespace concrete_definition_detail {
++
++enum class type_family { unsupported, bv };
++
++template <NodeType node>
++type_family family_of(tref n) {
++	using tau = tree<node>;
++	const size_t id = get_effective_ba_type<node>(n);
++	if (!id) return type_family::unsupported;
++	tref type = get_ba_type_tree<node>(id);
++	if (!type || !tau::get(type).children_size())
++		return type_family::unsupported;
++	const std::string& name = tau::get(type)[0].get_string();
++	// A family-only `bv` has no fixed carrier.  Accept only a concrete
++	// bit-width established by inference.
++	if (name == "bv" && !type_needs_param<node>(id))
++		return type_family::bv;
++	return type_family::unsupported;
++}
++
++template <NodeType node>
++bool only_typed_after(tref n, size_t first) {
++	using tau = tree<node>;
++	const auto& t = tau::get(n);
++	for (size_t i = first; i < t.children_size(); ++i)
++		if (!t[i].is(tau::typed)) return false;
++	return true;
++}
++
++} // namespace concrete_definition_detail
++
++// ------------------------------------------------------------------
++// Extension: concrete conditional definitions (TAU_CONCRETE_EVAL).
++//
++// A formula (or the body of a single `always`) is admitted when it is a
++// conditional DAG
++//     F ::= (G ? F : F) | L
++// whose guards G are total wffs over input variables only and whose leaves
++// L are conjunctions `o = term` defining every output exactly once, each
++// term total over inputs and over outputs of the same leaf in a checked
++// acyclic order.  Inputs are current-time (`[t]`) input streams; outputs
++// are current-time output streams, or, for a ground `solve` query, plain
++// variables (then no variable may occur in a guard).  Every leaf must
++// define the same output set.  Anything else is rejected, and the caller
++// falls back to the existing path.  Only bv terms of a concrete width are
++// admitted; every operator admitted here is one the bv translator
++// (bv_eval_node) implements, so evaluation uses the existing algebra.
++// ------------------------------------------------------------------
++
++// Source line of the last admission rejection (diagnostics only).
++inline int concrete_reject_line = 0;
++// Set when the last rejection was the admission budget (diagnostics only).
++inline bool concrete_reject_over_budget = false;
++#define CONCRETE_REJECT(v) return (concrete_reject_line \
++	? concrete_reject_line : (concrete_reject_line = __LINE__), (v))
++
++template <NodeType node>
++struct concrete_definition {
++	struct variable_ref {
++		tref var;          // the `variable` node (translator key)
++		size_t slot;       // index into input_names / output_names
++	};
++	struct leaf {
++		std::vector<tref> terms;     // terms[k] defines output k
++		std::vector<tref> lhs;       // lhs[k]: the clause's left `bf`
++		std::vector<size_t> order;   // evaluation order of output slots
++	};
++	struct branch { tref guard; size_t yes; size_t no; };
++	struct dag_node { bool is_leaf; size_t index; };
++	std::vector<dag_node> nodes;             // nodes[0] is the root
++	std::vector<branch> branches;
++	std::vector<leaf> leaves;
++	std::vector<variable_ref> inputs;        // distinct input variable nodes
++	std::vector<std::string> input_names;    // distinct printed names
++	std::vector<size_t> input_types;         // ba type id per name
++	std::vector<variable_ref> outputs;       // distinct output variable nodes
++	std::vector<std::string> output_names;
++	std::vector<size_t> output_types;
++	size_t expression_count = 0;             // admitted wff/bf occurrences
++};
++
++namespace concrete_definition_detail {
++
++enum class var_class { rejected, input, output };
++
++// Classifies a `variable` node.  A plain variable is an output of a
++// ground query (allow_io == false).  A current-time io stream is an
++// input or output by its direction.  Member paths (flattened tuple
++// members) and type annotations may follow the head.
++template <NodeType node>
++var_class classify_variable(tref var, bool allow_io) {
++	using tau = tree<node>;
++	const auto& v = tau::get(var);
++	if (!v.is(tau::variable) || !v.children_size()) CONCRETE_REJECT(var_class::rejected);
++	for (size_t i = 1; i < v.children_size(); ++i)
++		if (!v[i].is(tau::typed) && !v[i].is(tau::member_path))
++			CONCRETE_REJECT(var_class::rejected);
++	const auto& head = v[0];
++	if (head.is(tau::var_name))
++		return allow_io ? var_class::rejected : var_class::output;
++	if (!allow_io || !head.is(tau::io_var)) CONCRETE_REJECT(var_class::rejected);
++	if (head.children_size() != 2 || !head[0].is(tau::var_name)
++		|| !head[1].is(tau::offset)) CONCRETE_REJECT(var_class::rejected);
++	const auto& offset = head[1];
++	if (offset.children_size() != 1 || !offset[0].is(tau::variable))
++		CONCRETE_REJECT(var_class::rejected);
++	const auto& time = offset[0];
++	if (!time.children_size() || !time[0].is(tau::var_name)
++		|| !only_typed_after<node>(time.get(), 1)
++		|| time[0].get_string() != "t") CONCRETE_REJECT(var_class::rejected);
++	const size_t direction = head.data();
++	return direction == 1 ? var_class::input
++		: direction == 2 ? var_class::output : var_class::rejected;
++}
++
++// Type-independent name of a variable node: the stream or variable name,
++// `[t]` for a current io stream, then the flattened member path.
++template <NodeType node>
++std::string canonical_variable_name(tref var) {
++	using tau = tree<node>;
++	const auto& v = tau::get(var);
++	std::string name;
++	const auto& head = v[0];
++	if (head.is(tau::io_var)) name = head[0].get_string() + "[t]";
++	else name = head.get_string();
++	for (size_t i = 1; i < v.children_size(); ++i)
++		if (v[i].is(tau::member_path))
++			for (size_t j = 0; j < v[i].children_size(); ++j)
++				name += "." + v[i][j].get_string();
++	return name;
++}
++
++// Structural equality of two formulas or terms over the admitted fragment:
++// same node kinds and arity (type annotations ignored), same constants
++// (id and type), same canonical variable names, same effective BA type of
++// every `bf`.  Two such trees denote the same function, whatever their
++// interning history.
++template <NodeType node>
++bool same_structure(tref x, tref y) {
++	using tau = tree<node>;
++	if (x == y) return true;
++	const auto& a = tau::get(x);
++	const auto& b = tau::get(y);
++	if (a.value.nt != b.value.nt) return false;
++	if (a.is(tau::ba_constant))
++		return a.get_ba_constant_id() == b.get_ba_constant_id()
++			&& a.get_ba_type() == b.get_ba_type();
++	if (a.is(tau::variable))
++		return canonical_variable_name<node>(x)
++			== canonical_variable_name<node>(y);
++	if (a.is(tau::bf) && get_effective_ba_type<node>(x)
++		!= get_effective_ba_type<node>(y)) return false;
++	if (!a.children_size() && !b.children_size())
++		return a.is(tau::wff_t) || a.is(tau::wff_f) || a.is(tau::bf_t)
++			|| a.is(tau::bf_f) || a.to_str() == b.to_str();
++	std::vector<tref> ca, cb;
++	for (size_t i = 0; i < a.children_size(); ++i)
++		if (!a[i].is(tau::typed)) ca.push_back(a[i].get());
++	for (size_t i = 0; i < b.children_size(); ++i)
++		if (!b[i].is(tau::typed)) cb.push_back(b[i].get());
++	if (ca.size() != cb.size()) return false;
++	for (size_t i = 0; i < ca.size(); ++i)
++		if (!same_structure<node>(ca[i], cb[i])) return false;
++	return true;
++}
++
++// Matches a conditional `G ? A : B` as the node itself or as one of the
++// two desugarings the normal forms produce, `(!G || A) && (G || B)` and
++// `(G && A) || (!G && B)`, by guard identity (interned subtrees).
++template <NodeType node>
++bool match_conditional(tref n, tref& g, tref& a, tref& b) {
++	using tau = tree<node>;
++	const auto& w = tau::get(n);
++	if (!w.is(tau::wff) || w.children_size() != 1) return false;
++	const auto& op = w[0];
++	if (op.is(tau::wff_conditional) && op.children_size() == 3) {
++		g = op[0].get(), a = op[1].get(), b = op[2].get();
++		return true;
++	}
++	auto binary = [&](const tau& x, size_t kind, tref& l, tref& r) {
++		if (!x.is(tau::wff) || x.children_size() != 1 || !x[0].is(kind)
++			|| x[0].children_size() != 2) return false;
++		l = x[0][0].get(), r = x[0][1].get();
++		return true;
++	};
++	auto negation_of = [&](tref x, tref y) {   // x == !y
++		const auto& t = tau::get(x);
++		if (!(t.is(tau::wff) && t.children_size() == 1
++			&& t[0].is(tau::wff_neg) && t[0].children_size() == 1))
++			return false;
++		if (same_structure<node>(t[0][0].get(), y)) return true;
++		if (const char* trace = std::getenv("TAU_CONCRETE_EVAL_TRACE");
++			trace && std::string_view(trace) == "1")
++			std::cerr << "concrete_eval: guard mismatch\n  neg: "
++				<< tau::get(t[0][0].get()).to_str().substr(0, 300)
++				<< "\n  pos: " << tau::get(y).to_str().substr(0, 300) << "\n";
++		return false;
++	};
++	tref l = nullptr, r = nullptr;
++	if (op.is(tau::wff_and) && op.children_size() == 2) {
++		tref l1, l2, r1, r2;
++		// (G -> A) && (!G -> B), either order: what build_wff_conditional
++		// constructs
++		if (binary(w[0][0], tau::wff_imply, l1, l2)
++			&& binary(w[0][1], tau::wff_imply, r1, r2))
++		{
++			for (int swap = 0; swap < 2; ++swap) {
++				tref gg = swap ? r1 : l1, aa = swap ? r2 : l2;
++				tref ng = swap ? l1 : r1, bb = swap ? l2 : r2;
++				if (negation_of(ng, gg)) { g = gg, a = aa, b = bb; return true; }
++			}
++			return false;
++		}
++		// (!G || A) && (G || B), either order
++		if (!binary(w[0][0], tau::wff_or, l1, l2)
++			|| !binary(w[0][1], tau::wff_or, r1, r2)) return false;
++		for (int swap = 0; swap < 2; ++swap) {
++			tref ng = swap ? r1 : l1, aa = swap ? r2 : l2;
++			tref gg = swap ? l1 : r1, bb = swap ? l2 : r2;
++			if (negation_of(ng, gg)) { g = gg, a = aa, b = bb; return true; }
++		}
++		return false;
++	}
++	if (op.is(tau::wff_or) && op.children_size() == 2) {
++		// (G && A) || (!G && B), either order
++		tref l1, l2, r1, r2;
++		if (!binary(w[0][0], tau::wff_and, l1, l2)
++			|| !binary(w[0][1], tau::wff_and, r1, r2)) return false;
++		for (int swap = 0; swap < 2; ++swap) {
++			tref gg = swap ? r1 : l1, aa = swap ? r2 : l2;
++			tref ng = swap ? l1 : r1, bb = swap ? l2 : r2;
++			if (negation_of(ng, gg)) { g = gg, a = aa, b = bb; return true; }
++		}
++		return false;
++	}
++	(void) l; (void) r;
++	return false;
++}
++
++// Diagnostics: node kinds of the first levels of @p n.
++template <NodeType node>
++void dump_shape(std::ostream& os, tref n, size_t depth, size_t max_depth) {
++	using tau = tree<node>;
++	const auto& t = tau::get(n);
++	os << std::string(depth * 2, ' ') << node::name(t.value.nt)
++		<< " (" << t.children_size() << ")";
++	if (!t.children_size()) os << " " << t.to_str();
++	os << "\n";
++	if (depth < max_depth)
++		for (size_t i = 0; i < t.children_size() && i < 4; ++i)
++			dump_shape<node>(os, t[i].get(), depth + 1, max_depth);
++}
++
++struct concrete_scan {
++	bool allow_io = false;
++	std::vector<std::pair<tref, tref>> vars;   // (variable, its bf) met by the walk
++	size_t count = 0;
++	size_t limit = 0;   // occurrences this scan may still admit
++	// Counts one occurrence; false (over budget) once the limit is spent.
++	bool tick() {
++		if (count >= limit) return concrete_reject_over_budget = true, false;
++		return ++count, true;
++	}
++};
++
++template <NodeType node>
++bool admit_concrete_term(tref term, concrete_scan& s) {
++	using tau = tree<node>;
++	const auto& wrapper = tau::get(term);
++	if (!wrapper.is(tau::bf) || !wrapper.children_size()
++		|| !only_typed_after<node>(term, 1)) CONCRETE_REJECT(false);
++	if (family_of<node>(term) != type_family::bv) CONCRETE_REJECT(false);
++	if (!s.tick()) CONCRETE_REJECT(false);
++	const size_t type = get_effective_ba_type<node>(term);
++	tref inner_ref = wrapper[0].get();
++	const auto& inner = tau::get(inner_ref);
++	if (inner.is(tau::variable)) {
++		if (classify_variable<node>(inner_ref, s.allow_io)
++			== var_class::rejected) CONCRETE_REJECT(false);
++		s.vars.push_back({inner_ref, term});
++		return true;
++	}
++	if (inner.is(tau::ba_constant)) return inner.get_ba_constant_id() != 0;
++	if (inner.is(tau::bf_t) || inner.is(tau::bf_f)) return true;
++	if (inner.is(tau::bf_neg)) {
++		if (inner.children_size() != 1) CONCRETE_REJECT(false);
++		tref operand = inner[0].get();
++		return get_effective_ba_type<node>(operand) == type
++			&& admit_concrete_term<node>(operand, s);
++	}
++	if (inner.is(tau::bf_and) || inner.is(tau::bf_or) || inner.is(tau::bf_xor)
++		|| inner.is(tau::bf_add) || inner.is(tau::bf_sub)
++		|| inner.is(tau::bf_mul) || inner.is(tau::bf_div)
++		|| inner.is(tau::bf_mod) || inner.is(tau::bf_shl)
++		|| inner.is(tau::bf_shr) || inner.is(tau::bf_min)
++		|| inner.is(tau::bf_max) || inner.is(tau::bf_nand)
++		|| inner.is(tau::bf_nor) || inner.is(tau::bf_xnor))
++	{
++		if (inner.children_size() != 2) CONCRETE_REJECT(false);
++		tref left = inner[0].get(), right = inner[1].get();
++		return get_effective_ba_type<node>(left) == type
++			&& get_effective_ba_type<node>(right) == type
++			&& admit_concrete_term<node>(left, s)
++			&& admit_concrete_term<node>(right, s);
++	}
++	CONCRETE_REJECT(false);
++}
++
++template <NodeType node>
++bool admit_concrete_wff(tref formula, concrete_scan& s) {
++	using tau = tree<node>;
++	const auto& wrapper = tau::get(formula);
++	if (!wrapper.is(tau::wff) || wrapper.children_size() != 1) CONCRETE_REJECT(false);
++	if (!s.tick()) CONCRETE_REJECT(false);
++	const auto& op = wrapper[0];
++	if (op.is(tau::wff_t) || op.is(tau::wff_f)) return op.children_size() == 0;
++	if (op.is(tau::wff_neg))
++		return op.children_size() == 1
++			&& admit_concrete_wff<node>(op[0].get(), s);
++	if (op.is(tau::wff_conditional))
++		return op.children_size() == 3
++			&& admit_concrete_wff<node>(op[0].get(), s)
++			&& admit_concrete_wff<node>(op[1].get(), s)
++			&& admit_concrete_wff<node>(op[2].get(), s);
++	if (op.is(tau::wff_and) || op.is(tau::wff_or) || op.is(tau::wff_imply)
++		|| op.is(tau::wff_equiv) || op.is(tau::wff_xor))
++		return op.children_size() == 2
++			&& admit_concrete_wff<node>(op[0].get(), s)
++			&& admit_concrete_wff<node>(op[1].get(), s);
++	if (op.is(tau::bf_eq) || op.is(tau::bf_neq)
++		|| op.is(tau::bf_lt) || op.is(tau::bf_nlt)
++		|| op.is(tau::bf_lteq) || op.is(tau::bf_nlteq)
++		|| op.is(tau::bf_gt) || op.is(tau::bf_ngt)
++		|| op.is(tau::bf_gteq) || op.is(tau::bf_ngteq))
++	{
++		if (op.children_size() != 2) CONCRETE_REJECT(false);
++		tref left = op[0].get(), right = op[1].get();
++		if (family_of<node>(left) != type_family::bv
++			|| get_effective_ba_type<node>(left)
++				!= get_effective_ba_type<node>(right)) CONCRETE_REJECT(false);
++		return admit_concrete_term<node>(left, s)
++			&& admit_concrete_term<node>(right, s);
++	}
++	CONCRETE_REJECT(false);
++}
++
++template <NodeType node>
++void flatten_conjunction(tref formula, trefs& clauses) {
++	using tau = tree<node>;
++	const auto& w = tau::get(formula);
++	if (w.is(tau::wff) && w.children_size() == 1 && w[0].is(tau::wff_and)
++		&& w[0].children_size() == 2)
++	{
++		flatten_conjunction<node>(w[0][0].get(), clauses);
++		flatten_conjunction<node>(w[0][1].get(), clauses);
++	} else clauses.push_back(formula);
++}
++
++} // namespace concrete_definition_detail
++
++// `max_expressions` is the admission budget: the most wff/bf occurrences
++// the definition may hold (guards and leaf terms together); one more is a
++// rejection with concrete_reject_over_budget set.
++template <NodeType node>
++std::optional<concrete_definition<node>>
++recognize_concrete_definition(tref formula, bool allow_io,
++	size_t max_expressions)
++{
++	using tau = tree<node>;
++	using namespace concrete_definition_detail;
++	concrete_reject_line = 0;
++	concrete_reject_over_budget = false;
++	auto remaining = [&](concrete_definition<node>& d) {
++		return max_expressions > d.expression_count
++			? max_expressions - d.expression_count : 0;
++	};
++	if (!formula) CONCRETE_REJECT(std::nullopt);
++	const auto& root = tau::get(formula);
++	if (!root.is(tau::wff) || root.children_size() != 1) CONCRETE_REJECT(std::nullopt);
++	tref body = formula;
++	if (root[0].is(tau::wff_always)) {
++		if (!allow_io || root[0].children_size() != 1) CONCRETE_REJECT(std::nullopt);
++		body = root[0][0].get();
++	}
++	concrete_definition<node> def;
++	std::unordered_map<std::string, size_t> input_slot, output_slot;
++	std::unordered_map<tref, size_t> input_seen, output_seen;
++	auto register_var = [&](tref var, tref wrapper, var_class cls) -> bool {
++		auto& slots = cls == var_class::input ? input_slot : output_slot;
++		auto& seen = cls == var_class::input ? input_seen : output_seen;
++		auto& refs = cls == var_class::input ? def.inputs : def.outputs;
++		auto& names = cls == var_class::input ? def.input_names
++							: def.output_names;
++		auto& types = cls == var_class::input ? def.input_types
++							: def.output_types;
++		const size_t type = get_effective_ba_type<node>(wrapper);
++		if (auto it = seen.find(var); it != seen.end())
++			return types[refs[it->second].slot] == type;
++		const std::string name = canonical_variable_name<node>(var);
++		size_t slot;
++		if (auto it = slots.find(name); it != slots.end()) {
++			slot = it->second;
++			if (types[slot] != type) CONCRETE_REJECT(false);
++		} else {
++			slot = names.size();
++			slots.emplace(name, slot);
++			names.push_back(name);
++			types.push_back(type);
++		}
++		seen.emplace(var, refs.size());
++		refs.push_back({var, slot});
++		return true;
++	};
++	std::function<std::optional<size_t>(tref)> visit;
++	std::unordered_map<tref, size_t> visited;
++	visit = [&](tref n) -> std::optional<size_t> {
++		if (auto it = visited.find(n); it != visited.end())
++			return it->second;
++		const auto& w = tau::get(n);
++		if (!w.is(tau::wff) || w.children_size() != 1) CONCRETE_REJECT(std::nullopt);
++		tref guard = nullptr, yes_branch = nullptr, no_branch = nullptr;
++		if (match_conditional<node>(n, guard, yes_branch, no_branch)) {
++			concrete_scan s{allow_io};
++			s.limit = remaining(def);
++			if (!admit_concrete_wff<node>(guard, s)) CONCRETE_REJECT(std::nullopt);
++			def.expression_count += s.count;
++			for (auto [var, wrapper] : s.vars) {
++				if (classify_variable<node>(var, allow_io)
++					!= var_class::input) CONCRETE_REJECT(std::nullopt);
++				if (!register_var(var, wrapper, var_class::input))
++					CONCRETE_REJECT(std::nullopt);
++			}
++			const size_t id = def.nodes.size();
++			def.nodes.push_back({false, def.branches.size()});
++			def.branches.push_back({guard, 0, 0});
++			auto yes = visit(yes_branch);
++			if (!yes) CONCRETE_REJECT(std::nullopt);
++			auto no = visit(no_branch);
++			if (!no) CONCRETE_REJECT(std::nullopt);
++			def.branches[def.nodes[id].index].yes = *yes;
++			def.branches[def.nodes[id].index].no = *no;
++			visited.emplace(n, id);
++			return id;
++		}
++		// a leaf: a conjunction of output definitions
++		trefs clauses;
++		flatten_conjunction<node>(n, clauses);
++		const bool first_leaf = def.leaves.empty();
++		typename concrete_definition<node>::leaf leaf;
++		const size_t known = def.output_names.size();
++		std::vector<std::vector<size_t>> deps;
++		std::vector<size_t> slots;
++		for (tref clause : clauses) {
++			const auto& c = tau::get(clause);
++			if (!c.is(tau::wff) || c.children_size() != 1
++				|| !c[0].is(tau::bf_eq) || c[0].children_size() != 2)
++				CONCRETE_REJECT(std::nullopt);
++			tref lhs = c[0][0].get(), rhs = c[0][1].get();
++			const auto& lw = tau::get(lhs);
++			if (!lw.is(tau::bf) || !lw.children_size()
++				|| !only_typed_after<node>(lhs, 1)
++				|| !lw[0].is(tau::variable)
++				|| family_of<node>(lhs) != type_family::bv
++				|| get_effective_ba_type<node>(lhs)
++					!= get_effective_ba_type<node>(rhs)) CONCRETE_REJECT(std::nullopt);
++			tref var = lw[0].get();
++			if (classify_variable<node>(var, allow_io) != var_class::output)
++				CONCRETE_REJECT(std::nullopt);
++			if (!first_leaf && !output_slot.count(canonical_variable_name<node>(var)))
++				CONCRETE_REJECT(std::nullopt);
++			if (!register_var(var, lhs, var_class::output)) CONCRETE_REJECT(std::nullopt);
++			const size_t slot = output_slot.at(canonical_variable_name<node>(var));
++			if (std::find(slots.begin(), slots.end(), slot) != slots.end())
++				CONCRETE_REJECT(std::nullopt);   // defined twice
++			concrete_scan s{allow_io};
++			s.limit = remaining(def);
++			if (!s.tick() || !admit_concrete_term<node>(rhs, s))
++				CONCRETE_REJECT(std::nullopt);
++			def.expression_count += s.count;
++			std::vector<size_t> d;
++			for (auto [v, wrapper] : s.vars) {
++				const var_class cls = classify_variable<node>(v, allow_io);
++				if (cls == var_class::rejected
++					|| !register_var(v, wrapper, cls)) CONCRETE_REJECT(std::nullopt);
++				if (cls == var_class::output)
++					d.push_back(output_slot.at(canonical_variable_name<node>(v)));
++			}
++			slots.push_back(slot);
++			deps.push_back(std::move(d));
++			leaf.terms.push_back(rhs);
++			leaf.lhs.push_back(lhs);
++		}
++		// every leaf defines exactly the output set of the first leaf
++		if (first_leaf ? slots.size() != def.output_names.size()
++			: (slots.size() != known || def.output_names.size() != known))
++			CONCRETE_REJECT(std::nullopt);
++		if (slots.empty()) CONCRETE_REJECT(std::nullopt);
++		// reorder to slot order and check the dependency order is acyclic
++		typename concrete_definition<node>::leaf ordered;
++		ordered.terms.assign(slots.size(), nullptr);
++		ordered.lhs.assign(slots.size(), nullptr);
++		std::vector<std::vector<size_t>> by_slot(slots.size());
++		for (size_t i = 0; i < slots.size(); ++i) {
++			ordered.terms[slots[i]] = leaf.terms[i];
++			ordered.lhs[slots[i]] = leaf.lhs[i];
++			by_slot[slots[i]] = deps[i];
++		}
++		std::vector<bool> done(slots.size(), false);
++		for (size_t round = 0; round < slots.size(); ++round) {
++			bool progress = false;
++			for (size_t k = 0; k < slots.size(); ++k) {
++				if (done[k]) continue;
++				bool ready = true;
++				for (size_t dep : by_slot[k])
++					if (dep >= slots.size() || !done[dep]) ready = false;
++				if (!ready) continue;
++				done[k] = true, progress = true;
++				ordered.order.push_back(k);
++			}
++			if (!progress) break;
++		}
++		if (ordered.order.size() != slots.size()) CONCRETE_REJECT(std::nullopt);
++		const size_t id = def.nodes.size();
++		def.nodes.push_back({true, def.leaves.size()});
++		def.leaves.push_back(std::move(ordered));
++		visited.emplace(n, id);
++		return id;
++	};
++	if (!visit(body) || def.nodes.empty()) {
++		if (const char* trace = std::getenv("TAU_CONCRETE_EVAL_TRACE");
++			trace && std::string_view(trace) == "1")
++		{
++			std::cerr << "concrete_eval: rejected at line "
++				<< concrete_reject_line << "; body shape:\n";
++			dump_shape<node>(std::cerr, body, 0, 5);
++		}
++		CONCRETE_REJECT(std::nullopt);
++	}
++	return def;
++}
++
++} // namespace idni::tau_lang
++
++#endif // __IDNI__TAU__CONCRETE_DEFINITION_H__
+diff --git a/src/heuristics/concrete_eval.h b/src/heuristics/concrete_eval.h
+new file mode 100644
+index 00000000..3c8beee0
+--- /dev/null
++++ b/src/heuristics/concrete_eval.h
+@@ -0,0 +1,179 @@
++// To view the license please visit https://github.com/IDNI/tau-lang/blob/main/LICENSE.md
++
++#ifndef __IDNI__TAU__CONCRETE_EVAL_H__
++#define __IDNI__TAU__CONCRETE_EVAL_H__
++
++// Opt-in (TAU_CONCRETE_EVAL=1) evaluation of an admitted concrete
++// conditional definition (recognize_concrete_definition) under a concrete
++// input valuation.  This header is pack-independent: it holds the switches,
++// the admission budget, the strict decimal reader and the evaluator
++// interface.  The evaluation itself is a BA capability
++// (ba_descriptor<BA, node>::concrete_evaluator, ba_has_concrete_evaluator):
++// build_concrete_evaluator asks the pack's BAs in order and declines when
++// none offers one, so a pack without such a BA (e.g. -DTAU_BAS=sbf,tau,qint)
++// builds and answers every request with a clean decline.  The bv backend
++// lives in boolean_algebras/bv/heuristics/bv_concrete_eval.h.
++//
++// Related upstream work evaluates a functional step inside `run`
++// (IDNI/tau-lang #178, #179); this path is separate, opt-in, and retains an
++// admitted evaluator across REPL calls (`evalspec`).
++
++#include <cstdlib>
++#include <iostream>
++#include <memory>
++#include <optional>
++#include <string>
++#include <string_view>
++#include <vector>
++
++#include "boolean_algebras/ba_descriptor.h"
++#include "boolean_algebras/ba_pack_traits.h"
++#include "env_limits.h"
++#include "heuristics/concrete_definition.h"
++
++namespace idni::tau_lang {
++
++inline bool concrete_eval_enabled() {
++	const char* value = std::getenv("TAU_CONCRETE_EVAL");
++	return value && std::string_view(value) == "1";
++}
++
++// TAU_CONCRETE_EVAL_TRACE=1: one stderr line per admission or decline.
++inline bool concrete_eval_trace() {
++	const char* value = std::getenv("TAU_CONCRETE_EVAL_TRACE");
++	return value && std::string_view(value) == "1";
++}
++
++// Admission budget: the most wff/bf occurrences the recognizer may admit
++// for one definition (TAU_CONCRETE_EVAL_MAX_EXPRESSIONS, default 2^20).
++// Over budget is a decline, never a verdict.  The retained evaluator holds
++// at most one backend term per admitted occurrence plus one per leaf, so
++// this also bounds the evaluator's size.
++inline size_t concrete_eval_max_expressions() {
++	return env_limit_count("TAU_CONCRETE_EVAL_MAX_EXPRESSIONS",
++		size_t{1} << 20);
++}
++
++// 2^width as decimal text (schoolbook doubling; width is a bit-width).
++inline std::string decimal_pow2(size_t width) {
++	std::string digits = "1";   // least significant digit first
++	for (size_t i = 0; i < width; ++i) {
++		int carry = 0;
++		for (char& d : digits) {
++			const int v = (d - '0') * 2 + carry;
++			d = char('0' + v % 10), carry = v / 10;
++		}
++		if (carry) digits.push_back(char('0' + carry));
++	}
++	return std::string(digits.rbegin(), digits.rend());
++}
++
++// Strict unsigned decimal of a `width`-bit value: digits only, no sign, no
++// leading zero (except "0" itself), and below 2^width (`pow2` is
++// decimal_pow2(width)).  Nothing else is accepted: text that fails here is
++// a bad input, not a value.
++inline bool strict_unsigned_decimal(std::string_view text,
++	const std::string& pow2)
++{
++	if (text.empty() || text.size() > pow2.size()) return false;
++	for (char c : text) if (c < '0' || c > '9') return false;
++	if (text.size() > 1 && text[0] == '0') return false;
++	if (text.size() < pow2.size()) return true;
++	return text < std::string_view(pow2);
++}
++
++// The evaluator a backend hands back: the admitted definition plus the
++// evaluation of one valuation.  Values cross this boundary as canonical
++// decimal text and as Tau constant nodes, so core never names a backend's
++// value type.
++template <NodeType node>
++struct concrete_evaluator_iface {
++	using tau = tree<node>;
++	struct outcome {
++		size_t leaf = 0;
++		std::vector<std::string> decimals;   // per output slot
++		std::vector<tref> constants;         // `{ v }:T` per output slot
++	};
++	concrete_definition<node> def;
++	htref pin;                          // keeps the admitted formula alive
++	std::vector<size_t> input_widths;   // bits per input slot
++	std::vector<size_t> output_widths;  // bits per output slot
++	size_t retained_terms = 0;          // backend terms held (size report)
++	std::vector<std::string> input_pow2; // decimal_pow2 per input slot (lazy)
++
++	virtual ~concrete_evaluator_iface() = default;
++
++	// `values[i]` is strict decimal text (see check_input) of input slot i;
++	// nullopt when the backend cannot evaluate the valuation.
++	virtual std::optional<outcome> evaluate(
++		const std::vector<std::string>& values) const = 0;
++
++	// Whether `text` is a strict decimal of input slot i's width.
++	bool check_input(size_t i, std::string_view text) {
++		if (input_pow2.size() != input_widths.size()) {
++			input_pow2.clear();
++			for (size_t w : input_widths)
++				input_pow2.push_back(decimal_pow2(w));
++		}
++		return i < input_pow2.size()
++			&& strict_unsigned_decimal(text, input_pow2[i]);
++	}
++};
++
++template <typename Node, typename BA>
++concept ba_has_concrete_evaluator = ba_has_descriptor_v<Node, BA>
++	&& requires(tref f, bool allow_io, size_t budget) {
++		{ ba_descriptor<BA, Node>::concrete_evaluator(f, allow_io, budget) }
++			-> std::convertible_to<
++				std::shared_ptr<concrete_evaluator_iface<Node>>>; };
++
++/** @brief Whether any BA of @p Node's pack offers a concrete evaluator. */
++template <typename Node>
++constexpr bool pack_has_concrete_evaluator() {
++	return []<std::size_t... Is>(std::index_sequence<Is...>) {
++		return (false || ... || ba_has_concrete_evaluator<Node,
++			std::tuple_element_t<Is, typename Node::bas_tuple>>);
++	}(std::make_index_sequence<std::tuple_size_v<typename Node::bas_tuple>>{});
++}
++
++// Builds the evaluator of @p formula with the first BA of the pack that
++// offers one.  `reason` names the decline: "no_backend" when the pack has
++// no evaluating BA, "over_budget" when the recognizer stopped at the
++// admission budget, "not_admissible" (with concrete_reject_line) otherwise.
++// A backend exception is a decline ("exception"), never an answer.
++template <NodeType node>
++std::shared_ptr<concrete_evaluator_iface<node>> build_concrete_evaluator(
++	tref formula, bool allow_io, std::string& reason)
++{
++	std::shared_ptr<concrete_evaluator_iface<node>> ev;
++	reason = "no_backend";
++	if constexpr (!pack_has_concrete_evaluator<node>()) return ev;
++	else {
++		const size_t budget = concrete_eval_max_expressions();
++		bool tried = false;
++		pack_visit_all<node>([&]<typename BA>() {
++			if constexpr (ba_has_concrete_evaluator<node, BA>) {
++				if (tried) return;
++				tried = true;
++				try {
++					ev = ba_descriptor<BA, node>::concrete_evaluator(
++						formula, allow_io, budget);
++					reason = ev ? "admitted"
++						: concrete_reject_over_budget ? "over_budget"
++						: "not_admissible";
++				} catch (const std::exception& e) {
++					ev.reset();
++					reason = "exception";
++					if (concrete_eval_trace()) std::cerr
++						<< "concrete_eval: declined by exception: "
++						<< e.what() << "\n";
++				}
++			}
++		});
++		return ev;
++	}
++}
++
++} // namespace idni::tau_lang
++
++#endif // __IDNI__TAU__CONCRETE_EVAL_H__
+diff --git a/src/repl_evaluator.h b/src/repl_evaluator.h
+index 7512df62..47682a0a 100644
+--- a/src/repl_evaluator.h
++++ b/src/repl_evaluator.h
+@@ -51,6 +51,7 @@
+ #define __IDNI__TAU__REPL_EVALUATOR_H__
+ 
+ #include <iostream>
++#include <map>
+ #include <memory>
+ #include <ostream>
+ 
+@@ -398,6 +399,13 @@ private:
+ 	bool equal_modulo_types(tref a, tref b) const;
+ 
+ 	std::vector<history> H;
++	// TAU_CONCRETE_EVAL: admitted concrete evaluators by history entry
++	std::map<tref, std::shared_ptr<concrete_evaluator_iface<node>>>
++		concrete_cache;
++	// type_defs + rr_defs + io_defs sizes when concrete_cache was filled
++	size_t concrete_cache_defs = 0;
++	/// @brief `evalspec %N [value ...]`: evaluate an admitted concrete definition.
++	void evalspec_line(const std::string& args);
+ 	options opt{};
+ 	// Held as htrefs, not raw trefs: interpreter::step() calls maybe_gc(),
+ 	// and bintree<node>::gc() destroys every node that is neither reachable
+diff --git a/src/repl_evaluator.tmpl.h b/src/repl_evaluator.tmpl.h
+index 7a08e8c8..94949cb9 100644
+--- a/src/repl_evaluator.tmpl.h
++++ b/src/repl_evaluator.tmpl.h
+@@ -682,6 +682,8 @@ void repl_evaluator<BAs...>::reset_cmd() {
+ 	const bool was_running = (bool)running;
+ 	finish_running();
+ 	H.clear();
++	concrete_cache.clear();
++	concrete_cache_defs = 0;
+ 	rr_defs.clear();
+ 	io_defs.clear();
+ 	type_defs.clear();
+@@ -2380,6 +2382,18 @@ idni::diagnostics::result<int> repl_evaluator<BAs...>::eval(
+ 		return idni::diagnostics::result<int>(0);
+ 	}
+ 	error = false;
++	// TAU_CONCRETE_EVAL: `evalspec` bypasses the command parser; its
++	// valuation is plain decimal text (see evalspec_line).
++	if (concrete_eval_enabled() && src.compare(0, 8, "evalspec") == 0
++		&& (src.size() == 8 || std::isspace((unsigned char) src[8])))
++	{
++		evalspec_line(src.substr(8));
++		out << "\n", out.flush();
++		if (error && opt.error_quits)
++			return idni::diagnostics::result<int>(1);
++		reprompt();
++		return idni::diagnostics::result<int>(0);
++	}
+ 	// make_cli() already prints its own report (see its own comment);
+ 	// eval()'s result<int> return carries REPL quit codes, not a report.
+ 	tref cli = make_cli(src).value_or(nullptr);
+@@ -2409,6 +2423,129 @@ idni::diagnostics::result<int> repl_evaluator<BAs...>::eval(
+ 	return idni::diagnostics::result<int>(quit);
+ }
+ 
++
++template <typename... BAs>
++requires BAsPack<BAs...>
++void repl_evaluator<BAs...>::evalspec_line(const std::string& args) {
++	std::vector<std::string> tokens;
++	for (size_t i = 0; i < args.size();) {
++		while (i < args.size() && std::isspace((unsigned char) args[i])) ++i;
++		size_t j = i;
++		while (j < args.size() && !std::isspace((unsigned char) args[j])) ++j;
++		if (j > i) tokens.push_back(args.substr(i, j - i));
++		i = j;
++	}
++	// a command terminator is tolerated
++	if (!tokens.empty() && tokens.back() == ".") tokens.pop_back();
++	if (!tokens.empty() && tokens.back().size() > 1
++		&& tokens.back().back() == '.') tokens.back().pop_back();
++	// Response frame: one `evalspec-result:` line of name=value pairs,
++	// then `evalspec-end`.  A failure is status=error with a reason token
++	// on the frame and the message on err; it never carries a verdict.
++	auto frame = [&](const std::string& fields) {
++		out << "evalspec-result: " << fields << "\nevalspec-end\n";
++	};
++	auto fail = [&](const std::string& reason, const std::string& msg) {
++		err << "evalspec error: " << msg << "\n";
++		error = true;
++		frame("status=error reason=" + reason);
++	};
++	// %N: decimal digits only, no leading zero; a location longer than any
++	// history could be is not an index either
++	if (tokens.empty() || tokens[0].size() < 2 || tokens[0][0] != '%'
++		|| tokens[0].find_first_not_of("0123456789", 1) != std::string::npos)
++		return fail("usage", "usage: evalspec %N [value ...]");
++	size_t n = 0;
++	if (tokens[0].size() <= 10 && tokens[0][1] != '0')
++		for (size_t i = 1; i < tokens[0].size(); ++i)
++			n = n * 10 + size_t(tokens[0][i] - '0');
++	if (n == 0 || n > H.size())
++		return fail("bad_history", "history location does not exist");
++	tref entry = H[n - 1]->get();
++	// An admitted evaluator has the definitions of its admission unfolded
++	// into it; the definition and stream lists only grow (reset clears them
++	// with the cache), so a change in their sizes retires the cache.
++	const size_t defs_seen = type_defs.size() + rr_defs.size() + io_defs.size();
++	if (defs_seen != concrete_cache_defs) {
++		concrete_cache.clear();
++		concrete_cache_defs = defs_seen;
++	}
++	std::shared_ptr<concrete_evaluator_iface<node>> ev;
++	if (auto it = concrete_cache.find(entry); it != concrete_cache.end())
++		ev = it->second;
++	else {
++		// The spec is assembled as run_cmd assembles it for `run %N`.
++		tau_spec<node> spec;
++		spec.add(get_spec_as_written(entry));
++		for (const htref& d : rr_defs) spec.add(d->get());
++		for (const htref& d : io_defs) spec.add(d->get());
++		std::string reason;
++		ev = tau_api::admit_concrete_evaluator(spec, reason);
++		if (!ev) {
++			if (reason == "no_backend") return fail(reason,
++				"no BA of this pack offers a concrete evaluator");
++			if (reason == "over_budget") return fail(reason,
++				"admission budget of "
++				+ std::to_string(concrete_eval_max_expressions())
++				+ " expressions exceeded (TAU_CONCRETE_EVAL_MAX_EXPRESSIONS)");
++			if (reason == "not_admissible" || reason == "exception")
++				return fail(reason,
++					"not an admissible concrete conditional definition (reject at line "
++					+ std::to_string(concrete_reject_line) + ")");
++			return fail(reason, "admission failed: " + reason);
++		}
++		if (concrete_eval_trace()) std::cerr
++			<< "concrete_eval: evalspec admitted, leaves="
++			<< ev->def.leaves.size() << " decisions="
++			<< ev->def.branches.size() << " inputs="
++			<< ev->def.input_names.size() << " outputs="
++			<< ev->def.output_names.size() << "\n";
++		concrete_cache.emplace(entry, ev);
++	}
++	const auto& def = ev->def;
++	if (tokens.size() == 1) {
++		out << "inputs:";
++		for (const auto& name : def.input_names) out << " " << name;
++		out << "\noutputs:";
++		for (const auto& name : def.output_names) out << " " << name;
++		out << "\ndecisions: " << def.branches.size()
++			<< " leaves: " << def.leaves.size()
++			<< " expressions: " << def.expression_count << "\n";
++		frame("status=admitted inputs=" + std::to_string(def.input_names.size())
++			+ " outputs=" + std::to_string(def.output_names.size())
++			+ " decisions=" + std::to_string(def.branches.size())
++			+ " leaves=" + std::to_string(def.leaves.size())
++			+ " expressions=" + std::to_string(def.expression_count)
++			+ " retained_terms=" + std::to_string(ev->retained_terms)
++			+ " budget=" + std::to_string(concrete_eval_max_expressions()));
++		return;
++	}
++	if (tokens.size() - 1 != def.input_names.size())
++		return fail("arity", "expected " + std::to_string(def.input_names.size())
++			+ " input values, got " + std::to_string(tokens.size() - 1));
++	std::vector<std::string> values;
++	for (size_t i = 1; i < tokens.size(); ++i) {
++		if (!ev->check_input(i - 1, tokens[i]))
++			return fail("bad_value", "input value " + std::to_string(i)
++				+ " is not a strict unsigned decimal below 2^"
++				+ std::to_string(ev->input_widths[i - 1]) + " ("
++				+ def.input_names[i - 1] + ")");
++		values.push_back(tokens[i]);
++	}
++	std::optional<typename concrete_evaluator_iface<node>::outcome> outcome;
++	try { outcome = ev->evaluate(values); }
++	catch (const std::exception& e) {
++		return fail("evaluation_exception",
++			std::string("evaluation failed by exception: ") + e.what());
++	}
++	if (!outcome) return fail("evaluation_failed", "evaluation failed");
++	std::string fields = "status=ok leaf=" + std::to_string(outcome->leaf)
++		+ " outputs=" + std::to_string(outcome->decimals.size());
++	for (size_t k = 0; k < outcome->decimals.size(); ++k)
++		fields += " " + def.output_names[k] + "=" + outcome->decimals[k];
++	frame(fields);
++}
++
+ template <typename... BAs>
+ requires BAsPack<BAs...>
+ void repl_evaluator<BAs...>::version_cmd() {
+diff --git a/tests/api/CMakeLists.txt b/tests/api/CMakeLists.txt
+index 5ed14e27..8d588fe4 100644
+--- a/tests/api/CMakeLists.txt
++++ b/tests/api/CMakeLists.txt
+@@ -9,8 +9,12 @@ set(TESTS
+ 	ltl_execution
+ 	normal_forms_xor
+ 	undecided_verdicts
++	concrete_eval
+ )
+ 
++# the retained evaluator's backend is bv's (heuristics/concrete_eval.h)
++set(TAU_TEST_REQUIRES_test_api-concrete_eval bv)
++
+ foreach(TEST IN LISTS TESTS)
+ 	add("test_api-${TEST}")
+ endforeach()
+diff --git a/tests/api/test_api-concrete_eval.cpp b/tests/api/test_api-concrete_eval.cpp
+new file mode 100644
+index 00000000..684a0701
+--- /dev/null
++++ b/tests/api/test_api-concrete_eval.cpp
+@@ -0,0 +1,472 @@
++// To view the license please visit https://github.com/IDNI/tau-lang/blob/main/LICENSE.md
++
++// TAU_CONCRETE_EVAL (heuristics/concrete_eval.h): exhaustive small-width
++// differential tests of the retained evaluator against the ordinary solver,
++// plus the near-miss shapes that must be declined.  Requires bv in the pack
++// (tests/api/CMakeLists.txt skips it otherwise).
++
++#include "test_init.h"
++#include "test_tau_helpers.h"
++#include "test_api-fixture.h"
++
++#include <cstdlib>
++#include <optional>
++#include <string>
++#include <vector>
++
++using tau_api = api<node_t>;
++
++namespace {
++
++struct env_guard {
++	env_guard(const char* name, const char* value) : name(name) {
++		if (const char* p = std::getenv(name)) had_value = true, saved = p;
++		if (value) setenv(name, value, 1); else unsetenv(name);
++	}
++	~env_guard() {
++		if (had_value) setenv(name, saved.c_str(), 1); else unsetenv(name);
++	}
++	const char* name;
++	bool had_value = false;
++	std::string saved;
++};
++
++std::string bvt(size_t w) { return ":bv[" + std::to_string(w) + "]"; }
++std::string cst(uint64_t v, size_t w) {
++	return "{" + std::to_string(v) + "}" + bvt(w);
++}
++uint64_t top(size_t w) { return (uint64_t{1} << w) - 1; }
++
++// The value text the string solve API renders for a bv constant: the
++// numeral `{ n }:bv[w]`, a bare numeral (the endpoints: `0`, and all ones
++// as e.g. `3` for bv[2]), or F/T.
++std::optional<uint64_t> read_value(const std::string& text, size_t w) {
++	const auto lb = text.find('{'), rb = text.find('}');
++	if (lb != std::string::npos && rb != std::string::npos && rb > lb) {
++		std::string digits;
++		for (size_t i = lb + 1; i < rb; ++i)
++			if (text[i] >= '0' && text[i] <= '9') digits += text[i];
++			else if (text[i] != ' ') return std::nullopt;
++		if (digits.empty()) return std::nullopt;
++		return std::stoull(digits);
++	}
++	std::string t;
++	for (char c : text) if (c != ' ' && c != '\t' && c != '\n') t += c;
++	if (t == "F") return uint64_t{0};
++	if (t == "T") return top(w);
++	if (t.empty() || t.size() > 19
++		|| t.find_first_not_of("0123456789") != std::string::npos)
++		return std::nullopt;
++	return std::stoull(t);
++}
++
++// Ordinary `solve` of a ground formula with the switch off: the oracle.
++// Returns the value of each variable named in `vars`.
++std::optional<std::vector<uint64_t>> oracle(const std::string& formula,
++	const std::vector<std::string>& vars, size_t w)
++{
++	env_guard off("TAU_CONCRETE_EVAL", nullptr);
++	auto r = tau_api::solve(formula, solver_mode::general);
++	if (!r.has_value()) return std::nullopt;
++	std::vector<uint64_t> out;
++	for (const auto& v : vars) {
++		std::optional<uint64_t> found;
++		for (const auto& [name, value] : r.value())
++			if (name == v || name.rfind(v + ":", 0) == 0)
++				found = read_value(value, w);
++		if (!found) return std::nullopt;
++		out.push_back(*found);
++	}
++	return out;
++}
++
++// The same ground formula solved with the switch on (solve's admitted
++// ground path) -- must agree with the oracle.
++std::optional<std::vector<uint64_t>> switched_solve(const std::string& formula,
++	const std::vector<std::string>& vars, size_t w)
++{
++	env_guard on("TAU_CONCRETE_EVAL", "1");
++	auto r = tau_api::solve(formula, solver_mode::general);
++	if (!r.has_value()) return std::nullopt;
++	std::vector<uint64_t> out;
++	for (const auto& v : vars) {
++		std::optional<uint64_t> found;
++		for (const auto& [name, value] : r.value())
++			if (name == v || name.rfind(v + ":", 0) == 0)
++				found = read_value(value, w);
++		if (!found) return std::nullopt;
++		out.push_back(*found);
++	}
++	return out;
++}
++
++struct admitted {
++	std::shared_ptr<concrete_evaluator_iface<node_t>> ev;
++	std::string reason;
++	// evaluate a valuation given by input name (`i1[t]`, ...); output
++	// values by output name
++	std::optional<std::vector<uint64_t>> run(
++		const std::vector<std::pair<std::string, uint64_t>>& inputs,
++		const std::vector<std::string>& outputs) const
++	{
++		if (!ev) return std::nullopt;
++		std::vector<std::string> values(ev->def.input_names.size());
++		std::vector<bool> set(values.size(), false);
++		// an input the admitted definition does not read (simplified
++		// away, as i2 under a constant guard) is ignored; every input it
++		// does read must be given
++		for (const auto& [name, v] : inputs)
++			for (size_t i = 0; i < ev->def.input_names.size(); ++i)
++				if (ev->def.input_names[i] == name)
++					values[i] = std::to_string(v), set[i] = true;
++		for (bool b : set) if (!b) return std::nullopt;
++		for (size_t i = 0; i < values.size(); ++i)
++			if (!ev->check_input(i, values[i])) return std::nullopt;
++		auto out = ev->evaluate(values);
++		if (!out) return std::nullopt;
++		std::vector<uint64_t> result;
++		for (const auto& o : outputs) {
++			bool found = false;
++			for (size_t k = 0; k < ev->def.output_names.size(); ++k)
++				if (ev->def.output_names[k] == o) {
++					result.push_back(std::stoull(out->decimals[k]));
++					found = true;
++				}
++			if (!found) return std::nullopt;
++		}
++		return result;
++	}
++};
++
++// Parse `source` as a spec and admit it as the REPL's evalspec would.
++admitted admit(const std::string& source) {
++	env_guard on("TAU_CONCRETE_EVAL", "1");
++	auto& defs = definitions<node_t>::instance();
++	auto snapshot = defs.save();
++	admitted a;
++	auto p = tau_api::get_spec_as_written(source);
++	if (!p.has_value()) a.reason = "parse_failed";
++	else {
++		// as the REPL assembles `evalspec %N`: the history entry alone
++		// when no definitions were entered
++		tau_spec<node_t> spec;
++		spec.add(p.value());
++		a.ev = tau_api::admit_concrete_evaluator(spec, a.reason);
++	}
++	defs.restore(std::move(snapshot));
++	return a;
++}
++
++// All (a, b) in [0, 2^w)^2.
++struct valuations {
++	size_t w;
++	template <typename F> void each(F f) const {
++		for (uint64_t a = 0; a <= top(w); ++a)
++			for (uint64_t b = 0; b <= top(w); ++b) f(a, b);
++	}
++};
++
++const std::vector<std::string> binary_terms = {
++	"&", "|", "^", "+", "-", "*", "/", "%", "<<", ">>", "!&", "!|", "!^" };
++const std::vector<std::string> comparisons = {
++	"=", "!=", "<", "!<", "<=", "!<=", ">", "!>", ">=", "!>=" };
++
++std::string op_term(const std::string& op, const std::string& l,
++	const std::string& r)
++{
++	if (op == "min" || op == "max") return op + "(" + l + ", " + r + ")";
++	if (op == "'") return "(" + l + ")'";
++	return "(" + l + " " + op + " " + r + ")";
++}
++
++} // namespace
++
++TEST_SUITE("concrete evaluator: exhaustive small widths") {
++
++	// Every admitted term operator, widths 1-3, every valuation: the
++	// evaluator's `o1[t]` equals the ordinary solver's `x` for the same
++	// ground term, and solve with the switch on agrees with the oracle.
++	TEST_CASE_FIXTURE(api_fixture, "term operators") {
++		std::vector<std::string> ops = binary_terms;
++		ops.push_back("min"), ops.push_back("max"), ops.push_back("'");
++		for (size_t w = 1; w <= 3; ++w) for (const auto& op : ops) {
++			const std::string i1 = "i1[t]" + bvt(w), i2 = "i2[t]" + bvt(w);
++			admitted a = admit("always o1[t]" + bvt(w) + " = "
++				+ op_term(op, i1, i2) + ".");
++			REQUIRE_MESSAGE(a.ev, "op " << op << " w " << w << ": " << a.reason);
++			valuations{w}.each([&](uint64_t x, uint64_t y) {
++				if (op == "'" && y) return;   // unary: one valuation per x
++				const std::string ground = "x" + bvt(w) + " = "
++					+ op_term(op, cst(x, w), cst(y, w));
++				auto expect = oracle(ground, {"x"}, w);
++				REQUIRE_MESSAGE(expect, "oracle failed: " << ground);
++				auto got = a.run({{"i1[t]", x}, {"i2[t]", y}}, {"o1[t]"});
++				REQUIRE_MESSAGE(got, "evaluation failed: " << ground);
++				CHECK_MESSAGE(*got == *expect, ground << " evaluator "
++					<< (*got)[0] << " solver " << (*expect)[0]);
++				auto on = switched_solve(ground, {"x"}, w);
++				REQUIRE_MESSAGE(on, "switched solve failed: " << ground);
++				CHECK_MESSAGE(*on == *expect, ground << " switched solve "
++					<< (*on)[0] << " solver " << (*expect)[0]);
++			});
++		}
++	}
++
++	// Every comparison as the guard of a conditional, in the conditional
++	// node itself and in the three desugared shapes the normal forms
++	// produce; the selected leaf's output equals the solver's.
++	TEST_CASE_FIXTURE(api_fixture, "comparison guards and conditional forms") {
++		const std::vector<std::string> forms = {
++			"(G ? A : B)",
++			"((G -> A) && (!G -> B))",
++			"((!G || A) && (G || B))",
++			"((G && A) || (!G && B))" };
++		auto instantiate = [](std::string form, const std::string& g,
++			const std::string& a, const std::string& b)
++		{
++			for (size_t p; (p = form.find("!G")) != std::string::npos;)
++				form.replace(p, 2, "!(" + g + ")");
++			for (size_t p; (p = form.find('G')) != std::string::npos;)
++				form.replace(p, 1, "(" + g + ")");
++			for (size_t p; (p = form.find('A')) != std::string::npos;)
++				form.replace(p, 1, "(" + a + ")");
++			for (size_t p; (p = form.find('B')) != std::string::npos;)
++				form.replace(p, 1, "(" + b + ")");
++			return form;
++		};
++		for (size_t w = 1; w <= 3; ++w) for (const auto& cmp : comparisons)
++			for (const auto& form : forms)
++		{
++			const std::string i1 = "i1[t]" + bvt(w), i2 = "i2[t]" + bvt(w);
++			const std::string o1 = "o1[t]" + bvt(w);
++			admitted a = admit("always " + instantiate(form,
++				i1 + " " + cmp + " " + i2,
++				o1 + " = (" + i1 + " + " + i2 + ")",
++				o1 + " = (" + i1 + " & " + i2 + ")") + ".");
++			REQUIRE_MESSAGE(a.ev, cmp << " " << form << " w " << w << ": "
++				<< a.reason);
++			valuations{w}.each([&](uint64_t x, uint64_t y) {
++				const std::string cx = cst(x, w), cy = cst(y, w);
++				const std::string ground = instantiate(form,
++					cx + " " + cmp + " " + cy,
++					"x" + bvt(w) + " = (" + cx + " + " + cy + ")",
++					"x" + bvt(w) + " = (" + cx + " & " + cy + ")");
++				auto expect = oracle(ground, {"x"}, w);
++				REQUIRE_MESSAGE(expect, "oracle failed: " << ground);
++				auto got = a.run({{"i1[t]", x}, {"i2[t]", y}}, {"o1[t]"});
++				REQUIRE_MESSAGE(got, "evaluation failed: " << ground);
++				CHECK_MESSAGE(*got == *expect, ground << " evaluator "
++					<< (*got)[0] << " solver " << (*expect)[0]);
++			});
++		}
++	}
++
++	// Every wff connective over two comparison atoms as a guard, plus
++	// negation and a nested conditional guard.
++	TEST_CASE_FIXTURE(api_fixture, "guard connectives") {
++		const std::vector<std::string> guards = {
++			"(P && Q)", "(P || Q)", "(P -> Q)", "(P <-> Q)", "(P ^^ Q)",
++			"!P", "(P ? Q : !Q)", "T", "F" };
++		for (size_t w = 1; w <= 3; ++w) for (const auto& guard : guards) {
++			auto with = [&](const std::string& l1, const std::string& l2,
++				const std::string& k)
++			{
++				std::string g = guard;
++				for (size_t p; (p = g.find('P')) != std::string::npos;)
++					g.replace(p, 1, "(" + l1 + " < " + l2 + ")");
++				for (size_t p; (p = g.find('Q')) != std::string::npos;)
++					g.replace(p, 1, "(" + l1 + " = " + k + ")");
++				return g;
++			};
++			const std::string i1 = "i1[t]" + bvt(w), i2 = "i2[t]" + bvt(w);
++			const std::string o1 = "o1[t]" + bvt(w);
++			admitted a = admit("always (" + with(i1, i2, cst(1, w))
++				+ " ? " + o1 + " = " + i1 + " : " + o1 + " = " + i2 + ").");
++			REQUIRE_MESSAGE(a.ev, guard << " w " << w << ": " << a.reason);
++			valuations{w}.each([&](uint64_t x, uint64_t y) {
++				const std::string cx = cst(x, w), cy = cst(y, w);
++				const std::string ground = "(" + with(cx, cy, cst(1, w))
++					+ " ? x" + bvt(w) + " = " + cx + " : x" + bvt(w)
++					+ " = " + cy + ")";
++				auto expect = oracle(ground, {"x"}, w);
++				REQUIRE_MESSAGE(expect, "oracle failed: " << ground);
++				auto got = a.run({{"i1[t]", x}, {"i2[t]", y}}, {"o1[t]"});
++				REQUIRE_MESSAGE(got, "evaluation failed: " << ground);
++				CHECK_MESSAGE(*got == *expect, ground << " evaluator "
++					<< (*got)[0] << " solver " << (*expect)[0]);
++			});
++		}
++	}
++
++	// A nested conditional DAG with two outputs where one leaf defines
++	// o2 from o1 (the checked intra-leaf dependency order).
++	TEST_CASE_FIXTURE(api_fixture, "nested decisions and output dependency") {
++		for (size_t w = 1; w <= 3; ++w) {
++			const std::string i1 = "i1[t]" + bvt(w), i2 = "i2[t]" + bvt(w);
++			const std::string o1 = "o1[t]" + bvt(w), o2 = "o2[t]" + bvt(w);
++			admitted a = admit("always ((" + i1 + " < " + i2 + ") ? ((" + i1
++				+ " = " + cst(0, w) + ") ? (" + o2 + " = (" + o1 + " * " + i2
++				+ ") && " + o1 + " = (" + i1 + " + " + i2 + ")) : (" + o1
++				+ " = " + i2 + " && " + o2 + " = " + o1 + ")) : (" + o1
++				+ " = (" + i1 + " - " + i2 + ") && " + o2 + " = (" + o1
++				+ " ^ " + i1 + "))).");
++			REQUIRE_MESSAGE(a.ev, "w " << w << ": " << a.reason);
++			CHECK(a.ev->def.branches.size() == 2);
++			CHECK(a.ev->def.leaves.size() == 3);
++			valuations{w}.each([&](uint64_t x, uint64_t y) {
++				const std::string cx = cst(x, w), cy = cst(y, w);
++				const std::string X = "x" + bvt(w), Y = "y" + bvt(w);
++				const std::string ground = "((" + cx + " < " + cy + ") ? (("
++					+ cx + " = " + cst(0, w) + ") ? (" + Y + " = (" + X + " * "
++					+ cy + ") && " + X + " = (" + cx + " + " + cy + ")) : ("
++					+ X + " = " + cy + " && " + Y + " = " + X + ")) : (" + X
++					+ " = (" + cx + " - " + cy + ") && " + Y + " = (" + X
++					+ " ^ " + cx + ")))";
++				auto expect = oracle(ground, {"x", "y"}, w);
++				REQUIRE_MESSAGE(expect, "oracle failed: " << ground);
++				auto got = a.run({{"i1[t]", x}, {"i2[t]", y}},
++					{"o1[t]", "o2[t]"});
++				REQUIRE_MESSAGE(got, "evaluation failed: " << ground);
++				CHECK_MESSAGE(*got == *expect, ground << " evaluator "
++					<< (*got)[0] << "," << (*got)[1] << " solver "
++					<< (*expect)[0] << "," << (*expect)[1]);
++			});
++		}
++	}
++}
++
++TEST_SUITE("concrete evaluator: near misses decline") {
++
++	TEST_CASE_FIXTURE(api_fixture, "shapes outside the admitted language") {
++		const std::string w = bvt(2);
++		const std::string i1 = "i1[t]" + w, i2 = "i2[t]" + w;
++		const std::string o1 = "o1[t]" + w, o2 = "o2[t]" + w;
++		struct near_miss { const char* what; std::string source; };
++		const std::vector<near_miss> cases = {
++			{ "free non-output variable in a guard",
++				"always ((" + i1 + " < y" + w + ") ? " + o1 + " = " + i1
++				+ " : " + o1 + " = " + i2 + ")." },
++			{ "output variable in a guard",
++				"always ((" + o1 + " < " + i1 + ") ? " + o1 + " = " + i1
++				+ " : " + o1 + " = " + i2 + ")." },
++			{ "output defined twice in a leaf",
++				"always (" + o1 + " = " + i1 + " && " + o1 + " = " + i2 + ")." },
++			{ "output missing in a leaf",
++				"always ((" + i1 + " < " + i2 + ") ? (" + o1 + " = " + i1
++				+ " && " + o2 + " = " + i2 + ") : " + o1 + " = " + i2 + ")." },
++			{ "cycle between outputs",
++				"always (" + o1 + " = (" + o2 + " + " + i1 + ") && " + o2
++				+ " = " + o1 + ")." },
++			{ "self-dependency",
++				"always " + o1 + " = (" + o1 + " + " + i1 + ")." },
++			{ "lookback input",
++				"always " + o1 + " = i1[t-1]" + w + "." },
++			{ "lookback output",
++				"always " + o1 + " = (o1[t-1]" + w + " + " + i1 + ")." },
++			{ "existential quantifier",
++				"always ex y" + w + " " + o1 + " = (y" + w + " + " + i1 + ")." },
++			{ "universal quantifier",
++				"always all y" + w + " " + o1 + " = (y" + w + " & " + i1 + ")." },
++			{ "sometimes instead of always",
++				"sometimes " + o1 + " = " + i1 + "." },
++			{ "sbf-typed output",
++				"always o1[t]:sbf = i1[t]:sbf." },
++			{ "no output definition at all",
++				"always " + i1 + " = " + i2 + "." },
++			{ "disjunction of leaves without a guard",
++				"always (" + o1 + " = " + i1 + " || " + o1 + " = " + i2 + ")." },
++		};
++		for (const auto& c : cases) {
++			admitted a = admit(c.source);
++			CHECK_MESSAGE(!a.ev, c.what << " was admitted: " << c.source);
++			const bool declined = a.reason == "not_admissible"
++				|| a.reason == "parse_failed"
++				|| a.reason == "definitions_failed";
++			CHECK_MESSAGE(declined, c.what << ": reason " << a.reason);
++		}
++	}
++
++	// The admission budget: a definition over the expression budget is
++	// declined with the over_budget reason; the same one is admitted
++	// under a budget that fits it.
++	TEST_CASE_FIXTURE(api_fixture, "admission budget is fail-closed") {
++		const std::string w = bvt(2);
++		const std::string source = "always ((i1[t]" + w + " < i2[t]" + w
++			+ ") ? o1[t]" + w + " = (i1[t]" + w + " + i2[t]" + w + ") : o1[t]"
++			+ w + " = (i1[t]" + w + " & i2[t]" + w + ")).";
++		{
++			env_guard budget("TAU_CONCRETE_EVAL_MAX_EXPRESSIONS", "4");
++			admitted a = admit(source);
++			CHECK(!a.ev);
++			CHECK(a.reason == "over_budget");
++		}
++		{
++			env_guard budget("TAU_CONCRETE_EVAL_MAX_EXPRESSIONS", "64");
++			admitted a = admit(source);
++			REQUIRE_MESSAGE(a.ev, a.reason);
++			CHECK(a.ev->def.expression_count <= 64);
++			CHECK(a.ev->retained_terms > 0);
++		}
++	}
++
++	TEST_CASE_FIXTURE(api_fixture, "admission budget exact boundary") {
++		const std::string source = "always o1[t]:bv[2] = i1[t]:bv[2].";
++		size_t expressions = 0;
++		{
++			env_guard budget("TAU_CONCRETE_EVAL_MAX_EXPRESSIONS", "64");
++			auto a = admit(source);
++			REQUIRE_MESSAGE(a.ev, a.reason);
++			expressions = a.ev->def.expression_count;
++			REQUIRE(expressions > 1);
++		}
++		for (size_t limit : {expressions - 1, expressions, expressions + 1}) {
++			const std::string text = std::to_string(limit);
++			env_guard budget("TAU_CONCRETE_EVAL_MAX_EXPRESSIONS", text.c_str());
++			auto a = admit(source);
++			CAPTURE(limit);
++			if (limit < expressions) {
++				CHECK_FALSE(a.ev);
++				CHECK(a.reason == "over_budget");
++			} else {
++				REQUIRE_MESSAGE(a.ev, a.reason);
++				CHECK(a.ev->def.expression_count == expressions);
++				CHECK(a.ev->def.expression_count <= limit);
++				auto out = a.run({{"i1[t]", 3}}, {"o1[t]"});
++				REQUIRE(out);
++				CHECK((*out)[0] == 3);
++			}
++		}
++	}
++
++	// Strict input reading: only canonical unsigned decimals below 2^w.
++	TEST_CASE_FIXTURE(api_fixture, "strict decimal inputs") {
++		admitted a = admit("always o1[t]:bv[3] = i1[t]:bv[3].");
++		REQUIRE_MESSAGE(a.ev, a.reason);
++		CHECK(a.ev->check_input(0, "0"));
++		CHECK(a.ev->check_input(0, "7"));
++		CHECK_FALSE(a.ev->check_input(0, "8"));
++		CHECK_FALSE(a.ev->check_input(0, "07"));
++		CHECK_FALSE(a.ev->check_input(0, "-1"));
++		CHECK_FALSE(a.ev->check_input(0, "+1"));
++		CHECK_FALSE(a.ev->check_input(0, ""));
++		CHECK_FALSE(a.ev->check_input(0, "1x"));
++		CHECK_FALSE(a.ev->check_input(0, "99999999999999999999999999"));
++		CHECK_FALSE(a.ev->check_input(1, "0"));   // no such slot
++		CHECK(decimal_pow2(0) == "1");
++		CHECK(decimal_pow2(32) == "4294967296");
++		CHECK(decimal_pow2(64) == "18446744073709551616");
++		CHECK(strict_unsigned_decimal("4294967295", decimal_pow2(32)));
++		CHECK_FALSE(strict_unsigned_decimal("4294967296", decimal_pow2(32)));
++	}
++
++	// A declined ground formula keeps the ordinary solver's answer with the
++	// switch on.
++	TEST_CASE_FIXTURE(api_fixture, "declined solve falls back") {
++		const std::string ground = "x:bv[2] = (y:bv[2] + {1}:bv[2]) && y:bv[2] = {2}:bv[2]";
++		auto off = oracle(ground, {"x", "y"}, 2);
++		auto on = switched_solve(ground, {"x", "y"}, 2);
++		REQUIRE(off);
++		REQUIRE(on);
++		CHECK(*on == *off);
++	}
++}
+diff --git a/tests/repl/commands/CMakeLists.txt b/tests/repl/commands/CMakeLists.txt
+index 5b13419a..d53c8eec 100644
+--- a/tests/repl/commands/CMakeLists.txt
++++ b/tests/repl/commands/CMakeLists.txt
+@@ -28,6 +28,9 @@ include(test_repl-ba_constants_cmd.cmake)
+ # files: it covers every option they did (and more) under the same test names,
+ # so including all three would collide on duplicate ctest names.
+ include(test_repl-enable_disable_cmd.cmake)
++
++# TAU_CONCRETE_EVAL: the retained evaluator's REPL protocol
++include(test_repl-evalspec.cmake)
+ include(test_repl-toggle_cmd.cmake)
+ include(test_repl-option_aliases.cmake)
+ 
+diff --git a/tests/repl/commands/test_repl-evalspec.cmake b/tests/repl/commands/test_repl-evalspec.cmake
+new file mode 100644
+index 00000000..7451a12c
+--- /dev/null
++++ b/tests/repl/commands/test_repl-evalspec.cmake
+@@ -0,0 +1,65 @@
++# TAU_CONCRETE_EVAL=1 `evalspec %N [value ...]` (heuristics/concrete_eval.h):
++# the response frame, its strict input reading and its declines.  The
++# evaluator's backend is bv's; a pack without bv declines with no_backend.
++
++# Each case is a list of REPL lines fed one per line on stdin (as a user
++# types them): `-e` would put the spec and `evalspec` on ONE line, which the
++# command parser then reads, bypassing evalspec.  printf's format is '%s\n'
++# so that `%N` in a line is not taken as a printf directive.
++function(add_evalspec_test test_name test_env test_regex)
++	set(quoted "")
++	foreach(line ${ARGN})
++		string(APPEND quoted " '${line}'")
++	endforeach()
++	add_test(NAME "test_repl-${test_name}"
++		COMMAND bash -c "printf '%s\\n'${quoted} q | env TAU_CONCRETE_EVAL=1 ${test_env} $<TARGET_FILE:${TAU_EXECUTABLE_NAME}>")
++	set_tests_properties("test_repl-${test_name}" PROPERTIES
++		PASS_REGULAR_EXPRESSION "${test_regex}")
++endfunction()
++
++set(_spec "always o1[t]:bv[2] = (i1[t]:bv[2] + i2[t]:bv[2])")
++
++if(bv IN_LIST TAU_PACK_BA_IDS)
++	add_evalspec_test(evalspec-admitted "" "evalspec-result: status=admitted inputs=2 outputs=1 decisions=0 leaves=1 expressions=[0-9]+ retained_terms=[0-9]+ budget=[0-9]+\nevalspec-end"
++		"${_spec}." "evalspec %1")
++	add_evalspec_test(evalspec-ok "" "evalspec-result: status=ok leaf=0 outputs=1 o1\\[t\\]=1\nevalspec-end"
++		"${_spec}." "evalspec %1 3 2")
++	add_evalspec_test(evalspec-arity "" "evalspec-result: status=error reason=arity\nevalspec-end"
++		"${_spec}." "evalspec %1 3")
++	add_evalspec_test(evalspec-overflow "" "evalspec-result: status=error reason=bad_value\nevalspec-end"
++		"${_spec}." "evalspec %1 4 0")
++	add_evalspec_test(evalspec-leading_zero "" "evalspec-result: status=error reason=bad_value\nevalspec-end"
++		"${_spec}." "evalspec %1 03 0")
++	add_evalspec_test(evalspec-junk "" "evalspec-result: status=error reason=bad_value\nevalspec-end"
++		"${_spec}." "evalspec %1 3 x")
++	add_evalspec_test(evalspec-huge_value "" "evalspec-result: status=error reason=bad_value\nevalspec-end"
++		"${_spec}." "evalspec %1 99999999999999999999999999999999 0")
++	add_evalspec_test(evalspec-over_budget "TAU_CONCRETE_EVAL_MAX_EXPRESSIONS=1"
++		"evalspec-result: status=error reason=over_budget\nevalspec-end"
++		"${_spec}." "evalspec %1 3 2")
++	# a definition shadowed by an earlier one of the same head unfolds as
++	# under `run %1` (the first one applies: o1[0] := 4 there), whether it
++	# comes before the spec, or after the spec was already admitted
++	set(_f1 "f(x:bv[4]) := x + {1}:bv[4].")
++	set(_f2 "f(x:bv[4]) := x + {2}:bv[4].")
++	set(_fspec "always o1[t]:bv[4] = f(i1[t]:bv[4]).")
++	add_evalspec_test(evalspec-shadowed_def ""
++		"evalspec-result: status=ok leaf=0 outputs=1 o1\\[t\\]=4\nevalspec-end"
++		"${_f1}" "${_f2}" "${_fspec}" "evalspec %1 3")
++	add_evalspec_test(evalspec-def_after_admission ""
++		"o1\\[t\\]=4\nevalspec-end\n.*evalspec-result: status=ok leaf=0 outputs=1 o1\\[t\\]=4\nevalspec-end"
++		"${_f1}" "${_fspec}" "evalspec %1 3" "${_f2}" "evalspec %1 3")
++	add_evalspec_test(evalspec-declined "" "evalspec-result: status=error reason=not_admissible\nevalspec-end"
++		"always (o1[t]:bv[2] = i1[t]:bv[2] || o1[t]:bv[2] = i2[t]:bv[2])." "evalspec %1")
++else()
++	add_evalspec_test(evalspec-no_backend "" "evalspec-result: status=error reason=no_backend\nevalspec-end"
++		"always o1[t]:sbf = i1[t]:sbf." "evalspec %1")
++endif()
++add_evalspec_test(evalspec-usage "" "evalspec-result: status=error reason=usage\nevalspec-end"
++	"evalspec")
++add_evalspec_test(evalspec-no_history "" "evalspec-result: status=error reason=bad_history\nevalspec-end"
++	"evalspec %1")
++add_evalspec_test(evalspec-huge_history "" "evalspec-result: status=error reason=bad_history\nevalspec-end"
++	"evalspec %99999999999999999999999999999")
++add_evalspec_test(evalspec-zero_history "" "evalspec-result: status=error reason=bad_history\nevalspec-end"
++	"evalspec %0")

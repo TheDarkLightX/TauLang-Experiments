@@ -1,0 +1,35 @@
+{
+  "status": "passed",
+  "steps": [
+    {
+      "name": "vm-measured",
+      "exit_code": 0
+    },
+    {
+      "name": "vm-measured-verify",
+      "exit_code": 0
+    },
+    {
+      "name": "linux-measured",
+      "exit_code": 0
+    }
+  ],
+  "scope": "Own builds and regression suites finished before timing. Other host activity was present; times are descriptive.",
+  "host_before": {
+    "load_average": [
+      7.76220703125,
+      10.50341796875,
+      22.10546875
+    ],
+    "sample_utc": "2026-10-01T05:33:33.670424+00:00"
+  },
+  "host_after": {
+    "load_average": [
+      7.58740234375,
+      9.42626953125,
+      20.14306640625
+    ],
+    "sample_utc": "2026-10-01T05:35:33.181531+00:00"
+  },
+  "finished_utc": "2026-10-01T05:35:33.181550+00:00"
+}

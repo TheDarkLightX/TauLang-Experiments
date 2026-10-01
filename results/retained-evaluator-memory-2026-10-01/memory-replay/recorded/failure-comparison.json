@@ -1,0 +1,26 @@
+{
+  "status": "passed",
+  "scope": "Exact equality of printed formulas, ignoring diagnostic timings and ANSI colors.",
+  "stock": {
+    "test_repl-normalize_cmd-issue185_juxtaposed_min_printed": "min(x, { 2 }:bv[2])x = { 2 }:bv[2]",
+    "test_repl-normalize_cmd-qlt_pinned_neq_residual": "b != a",
+    "test_repl-normalize_cmd-qlt_density_residual": "a < b || a != c && b = a"
+  },
+  "candidate": {
+    "ordinary": {
+      "test_repl-normalize_cmd-issue185_juxtaposed_min_printed": "min(x, { 2 }:bv[2])x = { 2 }:bv[2]",
+      "test_repl-normalize_cmd-qlt_pinned_neq_residual": "b != a",
+      "test_repl-normalize_cmd-qlt_density_residual": "a < b || a != c && b = a"
+    },
+    "evaluator": {
+      "test_repl-normalize_cmd-issue185_juxtaposed_min_printed": "min(x, { 2 }:bv[2])x = { 2 }:bv[2]",
+      "test_repl-normalize_cmd-qlt_pinned_neq_residual": "b != a",
+      "test_repl-normalize_cmd-qlt_density_residual": "a < b || a != c && b = a"
+    },
+    "memory": {
+      "test_repl-normalize_cmd-qlt_density_residual": "a < b || a != c && b = a",
+      "test_repl-normalize_cmd-issue185_juxtaposed_min_printed": "min(x, { 2 }:bv[2])x = { 2 }:bv[2]",
+      "test_repl-normalize_cmd-qlt_pinned_neq_residual": "b != a"
+    }
+  }
+}

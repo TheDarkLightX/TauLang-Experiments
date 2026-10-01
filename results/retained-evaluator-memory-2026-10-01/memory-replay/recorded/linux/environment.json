@@ -1,0 +1,31 @@
+{
+  "platform": "Linux-6.10.14-linuxkit-aarch64-with-glibc2.41",
+  "architecture": "aarch64",
+  "python": "3.11.15",
+  "gcc": "g++ (Debian 14.2.0-19) 14.2.0",
+  "cmake": "cmake version 3.31.6",
+  "glibc": [
+    "glibc",
+    "2.41"
+  ],
+  "cpu_quota": "400000 100000",
+  "cpu_affinity": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15
+  ],
+  "scope": "Focused Linux arm64 qualification; container limited to four CPU equivalents and 12 GiB."
+}
