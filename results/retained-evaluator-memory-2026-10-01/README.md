@@ -15,7 +15,7 @@ Linux checks pass. The package includes complete and incremental Tau patches,
 the required parser patch, source identities, raw results and reproduction tools.
 Per-evaluation figures are medians of the five per-process step medians.
 
-ZIP SHA-256: `fd82deb5589b8301420e90f80a74911174a00ce702a5a3b2d1075f8ed872588a`
+ZIP SHA-256: `670cecab1f856c14a0874de9d5d310beeb4dae06ecf687362f71d1c14c447481`
 
 The extracted ZIP passed every manifest check, independent replay of both saved
 4,665-output measurement sets, and a fresh live example on the tested executable.

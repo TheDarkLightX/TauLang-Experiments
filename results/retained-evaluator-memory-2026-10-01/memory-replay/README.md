@@ -29,7 +29,7 @@ diagnostic counters disabled. The Linux arm64 medians are:
 | Per-evaluation time | 1.442 ms | 1.442 ms | 1.355 ms |
 | Setup + 311 evaluations | 2.207 s | 2.240 s | 2.216 s |
 
-Parser cleanup plus trim cuts sampled RSS by **66.3%**; all six options cut it by **67.0%**. The smaller change captures **99.1% of the measured saving**. Setup increased by 2.8% and 4.1%, respectively; setup plus 311 evaluations increased by 1.5% and 0.4%. Times are descriptive medians on a shared host, with other activity present. No build or regression suite ran during measurement.
+Parser cleanup plus trim cuts sampled RSS by **66.3%**; all six options cut it by **67.0%**. The smaller change captures **99.1% of the measured saving**. Setup increased by 2.8% and 4.1%, respectively; setup plus 311 evaluations increased by 1.5% and 0.4%. Times are descriptive medians on a shared host, with other activity present. The Tau builds and test suites reported here had finished before measurement; other host work remained active.
 
 This is a reduction after loading and evaluation, not a peak-memory result: median RSS immediately after loading remained about **476 MiB**. On macOS, the corresponding medians were **525.91, 509.67 and 510.47 MiB**; glibc trimming is unavailable there. The Linux percentage should not be applied to the earlier Mac table.
 
@@ -192,7 +192,8 @@ inputs and 256 distinct saved inputs: 311 comparisons. Five processes per
 configuration make 4,665 comparisons. The separate one-repeat counter run adds
 933 comparisons.
 
-Setup includes loading and admission. Per-evaluation time includes the adapter,
+Setup includes loading and admission. The per-evaluation figure is the median of five per-process step medians.
+Per-evaluation time includes the adapter,
 pipe exchange and decoding; model evaluation occurs outside the timer. Total
 is setup plus the sum of the 311 measured evaluations, excluding model checks
 and memory observations. Sampled RSS after the workload is not lifetime peak
