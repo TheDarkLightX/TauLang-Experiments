@@ -1,0 +1,34 @@
+{
+  "base_revision": "65ef69bdc5e6f1e479236d9dfb4d9b6d2e5302d1",
+  "clean_checkout_replay": {
+    "actual_revision": "4d5e97f18bb79aebebb3d386e9c09670e1d3b757",
+    "scope": "The unchanged historical receipts record the original local scientific revision. They are not relabeled as a new remote checkout or a fresh native campaign."
+  },
+  "original_local_release_revision": "4ab5b188d086d37ceb6640962d3f033a082ebd7e",
+  "original_local_scientific_revision": "4d5e97f18bb79aebebb3d386e9c09670e1d3b757",
+  "original_local_scientific_tree": "79abaee912cfbd32ac06f9a3c35c1a52a0e96f13",
+  "packaging_audit": {
+    "path": "audit/lossless-packaging-validation.json",
+    "sha256": "4a318a79cafa070dc995a4efbc292ecbf03e6974e05ef9106641c65e8897f88d",
+    "status": "LOSSLESS_PACKAGING_PASS"
+  },
+  "publication_route": "Authenticated Git data API; commit identity differs from local commits while the reviewed tree is preserved.",
+  "published_release_revision": "the remote Git commit containing this record",
+  "published_scientific_blobs": 169,
+  "published_scientific_revision": "3ee5ee545486b910e24e5efe034ad762a1abad36",
+  "published_scientific_tree": "2705912415f2bb37e52826d07d81feee96852623",
+  "reconstructed_reuse_archive": {
+    "bytes": 25305939,
+    "git_blob_sha1": "f92d1582b21628d388f97193cb86c79f3714876a",
+    "parts_manifest": "evidence/reuse-001.parts.json",
+    "sha256": "ede9201dbbc4aa3d37c175c360a5514bdfe9d17c5f424d7465ae282799f8f581"
+  },
+  "repository": "TheDarkLightX/TauLang-Experiments",
+  "schema": "tau-publication-provenance/v1",
+  "scientific_changes": false,
+  "storage_adaptation": "The original reuse gzip archive is split into four consecutive unchanged byte parts for bounded publication payloads. Reconstruction is verified before use. No recompression, omitted member or scientific change.",
+  "storage_packaging_local_revision": "12a00314bbef5f74b5ab0c7f8e624918384a332d",
+  "storage_packaging_tree": "2705912415f2bb37e52826d07d81feee96852623",
+  "unchanged_frozen_files": 37,
+  "unchanged_original_scientific_blobs": 162
+}

@@ -1,0 +1,47 @@
+{
+  "archives": [
+    {
+      "entries": 4461,
+      "extensions": [
+        ".json",
+        ".tau"
+      ],
+      "path": "experiments/semantic_saturation/evidence/development-evidence.tar.gz",
+      "sha256": "579728e6b18dfcbe4df80a24a15d18e5c1e3953889fe3f83cc40e94fb3d8be46",
+      "unexpected_entries": []
+    },
+    {
+      "entries": 14184,
+      "extensions": [
+        ".json",
+        ".tau"
+      ],
+      "path": "experiments/semantic_saturation/evidence/heldout-001.tar.gz",
+      "sha256": "46f812cce3a59c80ede785092a5f65df3be237bd52f2047d058e9e8111155fb9",
+      "unexpected_entries": []
+    },
+    {
+      "entries": 16734,
+      "extensions": [
+        ".csv",
+        ".json",
+        ".md"
+      ],
+      "parts_manifest": "experiments/semantic_saturation/evidence/reuse-001.parts.json",
+      "path": "experiments/semantic_saturation/evidence/reuse-001.tar.gz",
+      "reconstruction_audit": "experiments/semantic_saturation/audit/lossless-packaging-validation.json",
+      "sha256": "ede9201dbbc4aa3d37c175c360a5514bdfe9d17c5f424d7465ae282799f8f581",
+      "storage": "lossless ordered parts; reconstruct before extraction",
+      "unexpected_entries": []
+    }
+  ],
+  "excluded_categories": [
+    "Official Tau implementation source and source archives",
+    "Tau and dependency executable/shared/static binaries",
+    "Lean toolchain and generated build products",
+    "Credentials, environment secrets and private tracking state",
+    "Unrelated repository content"
+  ],
+  "note": "New study artifacts only. Original archive bytes and all previously inspected entries are preserved. Reuse evidence is stored as lossless ordered parts; reconstruction is independently checked. Generated PDF/PNG figures are original research outputs, not executable dependencies.",
+  "status": "PUBLICATION_CONTENT_BOUNDARY_PASS"
+}

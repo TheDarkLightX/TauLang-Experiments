@@ -1,0 +1,122 @@
+{
+  "archive_member_identity": "Follows from independently checked exact compressed-byte equality to previously audited archive; no recompression or changed members.",
+  "checked_at_utc": "2026-10-04T06:02:05.357340+00:00",
+  "clean_working_tree": true,
+  "compressed_archive_bytes": 25305939,
+  "compressed_archive_sha256": "ede9201dbbc4aa3d37c175c360a5514bdfe9d17c5f424d7465ae282799f8f581",
+  "delta": {
+    "added": [
+      "experiments/semantic_saturation/evidence/ARCHIVE_PARTS.md",
+      "experiments/semantic_saturation/evidence/reconstruct_reuse.py",
+      "experiments/semantic_saturation/evidence/reuse-001.parts.json",
+      "experiments/semantic_saturation/evidence/reuse-001.tar.gz.part001",
+      "experiments/semantic_saturation/evidence/reuse-001.tar.gz.part002",
+      "experiments/semantic_saturation/evidence/reuse-001.tar.gz.part003",
+      "experiments/semantic_saturation/evidence/reuse-001.tar.gz.part004"
+    ],
+    "removed": [
+      "experiments/semantic_saturation/evidence/reuse-001.tar.gz"
+    ]
+  },
+  "failures": [],
+  "frozen_files_unchanged": 37,
+  "helper_actual_reconstruction": "RECONSTRUCTED and VERIFIED_EXISTING, both exact byte equality",
+  "helper_controls": [
+    {
+      "exit_code": 1,
+      "expected": "reject without altering output",
+      "name": "corrupted_part",
+      "pass": true
+    },
+    {
+      "exit_code": 1,
+      "expected": "reject without altering output",
+      "name": "missing_part",
+      "pass": true
+    },
+    {
+      "exit_code": 1,
+      "expected": "reject without altering output",
+      "name": "wrong_part_size",
+      "pass": true
+    },
+    {
+      "exit_code": 1,
+      "expected": "reject without altering output",
+      "name": "wrong_whole_hash",
+      "pass": true
+    },
+    {
+      "exit_code": 1,
+      "expected": "reject without altering output",
+      "name": "wrong_whole_size",
+      "pass": true
+    },
+    {
+      "exit_code": 1,
+      "expected": "reject without altering output",
+      "name": "reversed_order",
+      "pass": true
+    },
+    {
+      "exit_code": 1,
+      "expected": "reject without altering output",
+      "name": "unsafe_path",
+      "pass": true
+    },
+    {
+      "exit_code": 1,
+      "expected": "reject without altering output",
+      "name": "duplicate_part",
+      "pass": true
+    },
+    {
+      "exit_code": 1,
+      "expected": "reject without altering output",
+      "name": "symlink_part",
+      "pass": true
+    },
+    {
+      "exit_code": 1,
+      "expected": "reject without altering output",
+      "name": "different_existing",
+      "pass": true
+    },
+    {
+      "exit_code": 1,
+      "expected": "reject without altering output",
+      "name": "symlink_output",
+      "pass": true
+    },
+    {
+      "exit_code": 1,
+      "expected": "reject without altering output",
+      "name": "unknown_schema",
+      "pass": true
+    },
+    {
+      "exit_code": 0,
+      "expected": "accept",
+      "name": "happy_small",
+      "pass": true
+    }
+  ],
+  "helper_sha256": "1c82aa4ef0e07d432b37534f283ca9c8970d87f439351f03faa52c3b4329ac71",
+  "manifest_sha256": "a6068b619bdfd87a5066fb92eafaea9456e88666c9eb933616dbefcb824bd05b",
+  "original_scientific_revision": "4d5e97f18bb79aebebb3d386e9c09670e1d3b757",
+  "original_scientific_tree": "79abaee912cfbd32ac06f9a3c35c1a52a0e96f13",
+  "packaging_revision": "12a00314bbef5f74b5ab0c7f8e624918384a332d",
+  "packaging_tree": "2705912415f2bb37e52826d07d81feee96852623",
+  "part_sizes": [
+    7000000,
+    7000000,
+    7000000,
+    4305939
+  ],
+  "reconstructed_git_blob": "f92d1582b21628d388f97193cb86c79f3714876a",
+  "remote_writes_performed": false,
+  "schema": "tau-independent-lossless-packaging/v1",
+  "scientific_files_other_than_archive_unchanged": 162,
+  "scope": "Storage-only publication packaging; original historical scientific/replay revision remains distinguishable. No experiment or native-process rerun.",
+  "status": "LOSSLESS_PACKAGING_PASS"
+}

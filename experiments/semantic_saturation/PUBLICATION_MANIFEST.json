@@ -1,0 +1,1307 @@
+{
+  "allowed_categories": [
+    "Original harnesses and generated synthetic inputs",
+    "Original Lean source and proof receipts",
+    "Retained native stdout/stderr/cost evidence in pinned archives",
+    "Original manuscript, figures, PDF and reproduction scripts",
+    "Public-source bibliography and bounded validation results"
+  ],
+  "changes_to_preexisting_files": [
+    "README.md: ten-line additive study index; no prior content removed"
+  ],
+  "excluded_categories": [
+    "Official Tau source or source archives",
+    "Tau binaries and third-party executable/dependency archives",
+    "Lean toolchain, compiled products and caches",
+    "Credentials, private tracking records, unrelated user files and conversation history"
+  ],
+  "file_count_excluding_manifest": 213,
+  "files": [
+    {
+      "bytes": 22983,
+      "git_blob_sha1": "8f084e003c47b11c75faac5d9007f33a99ecef27",
+      "path": "README.md",
+      "sha256": "65aed3259997bab151f635259f2dd4aca47d13dda576e97e419675bc775cae07"
+    },
+    {
+      "bytes": 454,
+      "git_blob_sha1": "a4b29412ae7582d19b05450d6843ba74359063db",
+      "path": "experiments/semantic_saturation/.gitignore",
+      "sha256": "4e397c8e74f8a1b46cbdc79e54385daf4a4e498d74aa6cd0ac484425407e06ca"
+    },
+    {
+      "bytes": 4160,
+      "git_blob_sha1": "09742db65a7279a2d9f1498dafd0cde02bbfebb1",
+      "path": "experiments/semantic_saturation/FREEZE.json",
+      "sha256": "f98ef54d269d43e79561010bfa3faff327d97981159a0aa1c5224128d14f67f2"
+    },
+    {
+      "bytes": 1838,
+      "git_blob_sha1": "a40cc817db32e066c451d0219beaf4cac5fd7735",
+      "path": "experiments/semantic_saturation/PUBLICATION_CONTENT_AUDIT.json",
+      "sha256": "a10a6b5aef25f296393d4ba45c64304b4e1c043201c14ddee95bb8bb29782e90"
+    },
+    {
+      "bytes": 2060,
+      "git_blob_sha1": "7f90666c410447f9e4f3b5fdc07102e7107bebf7",
+      "path": "experiments/semantic_saturation/PUBLICATION_PROVENANCE.json",
+      "sha256": "9eae7ad94bcb41071cfbea0d55e9b9452fdbcd5906dcace23b25ebe578192de9"
+    },
+    {
+      "bytes": 3282,
+      "git_blob_sha1": "eb5a29213eeb7f59d39cee973f86c67d102b65c1",
+      "path": "experiments/semantic_saturation/README.md",
+      "sha256": "562de9f68f6e6eba19f10d294fffa573b92f5c71c25f4943a2a0fe3027a6c10b"
+    },
+    {
+      "bytes": 49642,
+      "git_blob_sha1": "52a8ab3e01673195098ff06c89d5adbb18a84613",
+      "path": "experiments/semantic_saturation/RELEASE_BINDING.json",
+      "sha256": "aec58aaceb9824f788f38da4c977d2a32e7140d6fd8d7e59e4d238983515d325"
+    },
+    {
+      "bytes": 2323,
+      "git_blob_sha1": "b089e1211d41f4568b7cc7f3d00295e05d4dbe6c",
+      "path": "experiments/semantic_saturation/audit/README.md",
+      "sha256": "4b788d289911e54e1621fd1e25ee4796872bcb245945523855a7229da24e3fba"
+    },
+    {
+      "bytes": 1499,
+      "git_blob_sha1": "97d6d2fa3e6b9ce669d48e8b48a9522cc5b97bd0",
+      "path": "experiments/semantic_saturation/audit/VALIDATION_STATUS.json",
+      "sha256": "3e476b0791a97c29e754c38b6168a8049de4246d87ae0ed70cbc9669532fd798"
+    },
+    {
+      "bytes": 2182,
+      "git_blob_sha1": "d8d7a3885999fb5ff4e5e646917042d2eb83d04f",
+      "path": "experiments/semantic_saturation/audit/audit_byte_extraction.py",
+      "sha256": "072f0f4c940748739a476a3d1170ce2b7f4f09374355978a7a9c52bb788b7078"
+    },
+    {
+      "bytes": 3140,
+      "git_blob_sha1": "8d84292ea11f6954406b710e04fd35ef34a681a7",
+      "path": "experiments/semantic_saturation/audit/audit_matched_congruence.py",
+      "sha256": "2ffdd0566f4a18b6632a588ae979e0cc6221efb5370cda28fc35d8f9e14f8522"
+    },
+    {
+      "bytes": 7925,
+      "git_blob_sha1": "46420c181aedcd37f971c42b9fda6af1d6e970d1",
+      "path": "experiments/semantic_saturation/audit/audit_math_harness.py",
+      "sha256": "465b335c5e26982f60541e0c8175981342b5d825b7bedbd74809a9da2398aa87"
+    },
+    {
+      "bytes": 2805,
+      "git_blob_sha1": "a3559afc12fe95000e6d434e66e7c9ff9b45bf31",
+      "path": "experiments/semantic_saturation/audit/audit_native_boundaries.py",
+      "sha256": "dc17685862db39fac781df69b64e8314e59fee74878e93d4e2ccb43019b5a2ad"
+    },
+    {
+      "bytes": 2016,
+      "git_blob_sha1": "11ba944667e16f9684632568d29780668389c875",
+      "path": "experiments/semantic_saturation/audit/audit_native_repeatability.py",
+      "sha256": "b7acc281370359d86967807a6f4023186f20c23fa24ee133e848616882e18baa"
+    },
+    {
+      "bytes": 1907,
+      "git_blob_sha1": "8415ff47cb0ca86eb89fde334dd61b88710b0df5",
+      "path": "experiments/semantic_saturation/audit/audit_native_unknown_retry.py",
+      "sha256": "7c9fc29d7ea3ab7adb40bb6e2b96f2b97956f315f37fd35f6b8a1baeba4afe69"
+    },
+    {
+      "bytes": 5964,
+      "git_blob_sha1": "fcc921cfdf3e698322bfd3c550945a7ce3b5c876",
+      "path": "experiments/semantic_saturation/audit/audit_packet_mutations.py",
+      "sha256": "3fa3a5f5a349f0b51ab2da6aa676bf61f501dc9e9d7aedcadb816a768a43480b"
+    },
+    {
+      "bytes": 2054,
+      "git_blob_sha1": "143613a91388612e11d4fc81349e2deb6d212401",
+      "path": "experiments/semantic_saturation/audit/audit_receipt_binding.py",
+      "sha256": "5d0a5b58e6705ee6972079aa7810c7895fb96298bffe8057141a4c43f97ba73e"
+    },
+    {
+      "bytes": 2356,
+      "git_blob_sha1": "5a9849951da4096c6a9bd23dc0376f015bdd662b",
+      "path": "experiments/semantic_saturation/audit/audit_run_failure_accounting.py",
+      "sha256": "9e2447b73887c9b0863ca7a6295dc4d73937db1cec1c4a1875110539f9f08438"
+    },
+    {
+      "bytes": 2625,
+      "git_blob_sha1": "d868969cdece434214ddee420f04f910ea57fb02",
+      "path": "experiments/semantic_saturation/audit/audit_runner_integrity.py",
+      "sha256": "0598c7d54e5981abd8bc9719b6530d7edc8087c31756338b858121d47c67afe4"
+    },
+    {
+      "bytes": 1808,
+      "git_blob_sha1": "7836f514f9130b2d69f21cbec7fe75dc082dd76f",
+      "path": "experiments/semantic_saturation/audit/audit_typed_parser.py",
+      "sha256": "6fef9eadf1be9520dc1592155e6a60b30ae17eb8b524efd430cf64fc90beaf20"
+    },
+    {
+      "bytes": 698,
+      "git_blob_sha1": "f5cc08830c6c575bc85e31ee5ba505b0ed61a381",
+      "path": "experiments/semantic_saturation/audit/byte-extraction-audit.json",
+      "sha256": "e4a0a5d562e5cdaedc0df35edbac3c865469dbdf09091f97a1a20d4dc9cb902b"
+    },
+    {
+      "bytes": 1463,
+      "git_blob_sha1": "e02a2c96739b4d8bef41994dd82aa628a3d0ec14",
+      "path": "experiments/semantic_saturation/audit/committed-artifact-validation.json",
+      "sha256": "02f804f09b23df530198bc4463f042c27e0667c96270fcb043c7d92fd844934c"
+    },
+    {
+      "bytes": 7080,
+      "git_blob_sha1": "e61d5c74591f7a2bc30944c367260a6668b5193f",
+      "path": "experiments/semantic_saturation/audit/failure-accounting-run001/SUMMARY.json",
+      "sha256": "e8547d90ea1eb10c641c7b88203b8906ad7ff2c2c04774e8f762b1f3f54a7c78"
+    },
+    {
+      "bytes": 343,
+      "git_blob_sha1": "12667e25e7746f695232bdbd0ba06b878a6bf366",
+      "path": "experiments/semantic_saturation/audit/final-freeze-validation.json",
+      "sha256": "cb04d64111848d4e4604a1a7f1047c5dfc1d93b2daf6b26ac34187000de4359d"
+    },
+    {
+      "bytes": 419,
+      "git_blob_sha1": "3460b2882dd53062598daab7c85b225234a79e62",
+      "path": "experiments/semantic_saturation/audit/heldout-independent-validation.json",
+      "sha256": "8e101417f8ffe4eac26dafca8fd6a23731acb7dec89caf30bd077a7fc3392b38"
+    },
+    {
+      "bytes": 4685,
+      "git_blob_sha1": "7cbf91effb749f9d854bf56e1afa2f2e90c813c5",
+      "path": "experiments/semantic_saturation/audit/lean-independent-correspondence.json",
+      "sha256": "3ec652c991aed9c819ecd4ce152f9b362b73ec2a78cc7b4aa54d5725070c0772"
+    },
+    {
+      "bytes": 967,
+      "git_blob_sha1": "e651a8e26e5b836d40f56fcbbb383e07a971e20a",
+      "path": "experiments/semantic_saturation/audit/lean-optimized-python-rejection.json",
+      "sha256": "6057a53910a4e46f4ca181e0459180f7e29686344fa9feba7f89e177e59b3dfe"
+    },
+    {
+      "bytes": 3927,
+      "git_blob_sha1": "74bc42cee148f4f9719ad88faf25cb4ba881cf9f",
+      "path": "experiments/semantic_saturation/audit/lossless-packaging-validation.json",
+      "sha256": "4a318a79cafa070dc995a4efbc292ecbf03e6974e05ef9106641c65e8897f88d"
+    },
+    {
+      "bytes": 631,
+      "git_blob_sha1": "0cdf663d1c1ff753fbbd00ff300992e62b3e2130",
+      "path": "experiments/semantic_saturation/audit/matched-congruence-after-binder-fix.json",
+      "sha256": "fc4babd000a30f782da5537399bdaa994abfc93b4a561f04e1ff9d85483ec90e"
+    },
+    {
+      "bytes": 30971,
+      "git_blob_sha1": "cef174d4fe80a7230a38e5f43ea3f661365ee124",
+      "path": "experiments/semantic_saturation/audit/native-boundaries-run001/SUMMARY.json",
+      "sha256": "da48d6240fa29bf5481a4ec80b535fe6247c13d7cdce01010e15f3cb695d4ce1"
+    },
+    {
+      "bytes": 787,
+      "git_blob_sha1": "9ccd248a3d61ca7b72c0c70ac17b1b22b6fddfcb",
+      "path": "experiments/semantic_saturation/audit/native-boundaries-run001/native/0001.json",
+      "sha256": "196eb10bf1bc89e05814087490aea35f846c6e0f12c169d3e875ec1602eaa1cc"
+    },
+    {
+      "bytes": 787,
+      "git_blob_sha1": "0191c401b90ffaf9236f3c864443c219b5d92225",
+      "path": "experiments/semantic_saturation/audit/native-boundaries-run001/native/0002.json",
+      "sha256": "24a3eb547bdca1032bcada14dd0c71b3e12c1c523e19d4f53849875848748a89"
+    },
+    {
+      "bytes": 821,
+      "git_blob_sha1": "6b69489496c8c90d4a8ccdfff49a5812987021cb",
+      "path": "experiments/semantic_saturation/audit/native-boundaries-run001/native/0003.json",
+      "sha256": "a137d8acacecaf00fb9e4d527eb9068607d49c277de66a7901a0e2a722a9b794"
+    },
+    {
+      "bytes": 823,
+      "git_blob_sha1": "f237c9b7845700ecb2cc449c36030f74162eb32b",
+      "path": "experiments/semantic_saturation/audit/native-boundaries-run001/native/0004.json",
+      "sha256": "6d88b710ca6200512c36c2d7bbb97fa9eda0bf756603a05a96b98f18c0f719a5"
+    },
+    {
+      "bytes": 798,
+      "git_blob_sha1": "a187a5a7f1602bfbf613319dc8d5449d34202114",
+      "path": "experiments/semantic_saturation/audit/native-boundaries-run001/native/0005.json",
+      "sha256": "48feb3639d0f1f65ad2085b4bc26e4bdb7607c0415405a39487bb806b63ab60d"
+    },
+    {
+      "bytes": 799,
+      "git_blob_sha1": "64b8e39fd3592bcab6e9333957cb293cc7a3cf74",
+      "path": "experiments/semantic_saturation/audit/native-boundaries-run001/native/0006.json",
+      "sha256": "b4a54bd8224ebf8c52bbd21ed197bea1664596a132f791fa94143e26e279085d"
+    },
+    {
+      "bytes": 800,
+      "git_blob_sha1": "d55f2d6e16556396fe6338cce1407d8ba1965a63",
+      "path": "experiments/semantic_saturation/audit/native-boundaries-run001/native/0007.json",
+      "sha256": "6b6cb3a3f3833917d7a438e1177c3b5c7c06e7cfd3abe3e3c0e12cb0a6f9d7c4"
+    },
+    {
+      "bytes": 800,
+      "git_blob_sha1": "67231410fcfbc56893af23d1c04eeb89b2984373",
+      "path": "experiments/semantic_saturation/audit/native-boundaries-run001/native/0008.json",
+      "sha256": "89ebd57629fe489ae367948bd017a88b34265e9837e5aff5803c505419b754b2"
+    },
+    {
+      "bytes": 799,
+      "git_blob_sha1": "0914c95c5a13de6aaaf455a0974e58b885745f77",
+      "path": "experiments/semantic_saturation/audit/native-boundaries-run001/native/0009.json",
+      "sha256": "096144c63f7cdf9112226f3a0c30c92535a7543a6e8ab0f872dddb3faef00dcf"
+    },
+    {
+      "bytes": 801,
+      "git_blob_sha1": "9ea411730a1b2fcb6fc4db9b55674b3445d3addd",
+      "path": "experiments/semantic_saturation/audit/native-boundaries-run001/native/0010.json",
+      "sha256": "70649a141af86bb3e7cf9b10305c182ca2f3b72e2ee0638989f27658506d40ea"
+    },
+    {
+      "bytes": 969,
+      "git_blob_sha1": "7d470d7b9c0f4b04f862028708b51ec15f3274fe",
+      "path": "experiments/semantic_saturation/audit/native-boundaries-run001/native/0011.json",
+      "sha256": "8f1d20f3105240ac50604dfba7c10a17abc05f79d93ac9dd7028519c3932c573"
+    },
+    {
+      "bytes": 969,
+      "git_blob_sha1": "6a4bd69271dc26d4adfbed0ecf728fbcb8f7b2a6",
+      "path": "experiments/semantic_saturation/audit/native-boundaries-run001/native/0012.json",
+      "sha256": "0201672818df05474d1e075fee02deda2d6eb729263aabfcfa05bc416a4f02b6"
+    },
+    {
+      "bytes": 842,
+      "git_blob_sha1": "ac594c001ef9e84b6df3daada0202ffa3ffd5da6",
+      "path": "experiments/semantic_saturation/audit/native-boundaries-run001/native/0013.json",
+      "sha256": "c3009dec2dadd788b7caa56402075ee4f534f76169817181f5e3790981e8ef71"
+    },
+    {
+      "bytes": 842,
+      "git_blob_sha1": "6f2c62c17ccc9ed4156670dac7bb4d9b5c4bf01e",
+      "path": "experiments/semantic_saturation/audit/native-boundaries-run001/native/0014.json",
+      "sha256": "6f195ee3aa01d13691045749704690a74464db79f1d96daefc84d8fcd1c4da24"
+    },
+    {
+      "bytes": 698,
+      "git_blob_sha1": "d42c3f2a910822f4cec34893d34818670a91f8b6",
+      "path": "experiments/semantic_saturation/audit/native-boundaries-run001/native/0015.json",
+      "sha256": "ff00facc90c35335da8a2aa624a6b91d7229db847b2b858bbf0a4bd14320ab49"
+    },
+    {
+      "bytes": 698,
+      "git_blob_sha1": "257408fe2b6c1e348f306847754c8deae5820467",
+      "path": "experiments/semantic_saturation/audit/native-boundaries-run001/native/0016.json",
+      "sha256": "ff84ca262cd75f7a6e4afc9dc5c5bc7cb6162123bbdbd8294229783f09390bb6"
+    },
+    {
+      "bytes": 852,
+      "git_blob_sha1": "b29446342b909b979d6906d113ff0e388d845ac8",
+      "path": "experiments/semantic_saturation/audit/native-boundaries-run001/native/0017.json",
+      "sha256": "825fa180035cf5bf87d2c215e253cd002aede3a4420c82ee37348f47ad5ec079"
+    },
+    {
+      "bytes": 323,
+      "git_blob_sha1": "1e5628b76fa11344d0596e444cc8729c1dd5d878",
+      "path": "experiments/semantic_saturation/audit/native-boundaries-run001/native/SUMMARY.json",
+      "sha256": "af68c79e7bf05b290fc265610c4ee31170032237bccf55be294a7f78e33f4edf"
+    },
+    {
+      "bytes": 6081,
+      "git_blob_sha1": "a971039acdcc314e372a0d938f12387e29ba134e",
+      "path": "experiments/semantic_saturation/audit/native-repeatability-run001/SUMMARY.json",
+      "sha256": "d144518203f884e53fa0fbbd3ff98de05ae4f97beeea44283664a5977a9b41bf"
+    },
+    {
+      "bytes": 779,
+      "git_blob_sha1": "1eebd598cadf2c59d0b7414064ab709104d41b69",
+      "path": "experiments/semantic_saturation/audit/native-repeatability-run001/native/0001.json",
+      "sha256": "19914276f3ee218c0c639f3f2d306149aec40a9d4f7d4f4238ed07b8b0428650"
+    },
+    {
+      "bytes": 781,
+      "git_blob_sha1": "6ad8e1a6af3f983efe7d799a3dcaa0cfc38ed5e0",
+      "path": "experiments/semantic_saturation/audit/native-repeatability-run001/native/0002.json",
+      "sha256": "635c9ef5cd32df731ad98ede2322b57df8be25244dea39fa47f766db4034d554"
+    },
+    {
+      "bytes": 780,
+      "git_blob_sha1": "cb6441c7872752f676c71868050b8634ba1b5d99",
+      "path": "experiments/semantic_saturation/audit/native-repeatability-run001/native/0003.json",
+      "sha256": "507a607838d74fcecadb8994a217024d8826cd2fea753887b3d6790618312e58"
+    },
+    {
+      "bytes": 781,
+      "git_blob_sha1": "034520b58f2a22e3dc029d62439029db4133a8e7",
+      "path": "experiments/semantic_saturation/audit/native-repeatability-run001/native/0004.json",
+      "sha256": "ef2b10f678bc6c5b81c68af893354adf3d92e4db837c2e02fba37a4a1be5ea1a"
+    },
+    {
+      "bytes": 781,
+      "git_blob_sha1": "2331ad631f2ae3ebe3e9c49c6d11d49fd1a06a14",
+      "path": "experiments/semantic_saturation/audit/native-repeatability-run001/native/0005.json",
+      "sha256": "141f418f80bfd37ae1967a3d2aee660f62ea7f7fa7d1ee38f0d7d457c0a66722"
+    },
+    {
+      "bytes": 775,
+      "git_blob_sha1": "ee1ec0e5639a37b350bdd56d153d6d48a47e4460",
+      "path": "experiments/semantic_saturation/audit/native-repeatability-run001/native/0006.json",
+      "sha256": "508084df6469b1e2b0badca2ed44377bcf677b467b183c26d5c818c553e88169"
+    },
+    {
+      "bytes": 773,
+      "git_blob_sha1": "1f6969deab2484b6824e92093ea565d7c0c74bcf",
+      "path": "experiments/semantic_saturation/audit/native-repeatability-run001/native/0007.json",
+      "sha256": "a83fc1e5a3e9703d42cc8cf7ddd63740285a25de0612022197ce43d0281292dd"
+    },
+    {
+      "bytes": 773,
+      "git_blob_sha1": "113cf7b9bef628297ede27e9bbdc1c2f41994d6f",
+      "path": "experiments/semantic_saturation/audit/native-repeatability-run001/native/0008.json",
+      "sha256": "637f87cafbd2ae7f997ecd6473a241cfa1f39288dcda0d6b41d27d798638e791"
+    },
+    {
+      "bytes": 775,
+      "git_blob_sha1": "6550a3049db1e2c37d6697eb12ca22b85b13702a",
+      "path": "experiments/semantic_saturation/audit/native-repeatability-run001/native/0009.json",
+      "sha256": "a5ae5842708b7f575b504cc3d15944e8699e8ff371ec13bb3aaee1a6499c2445"
+    },
+    {
+      "bytes": 775,
+      "git_blob_sha1": "e04183be071f652d8d21119ae378a952eda602d1",
+      "path": "experiments/semantic_saturation/audit/native-repeatability-run001/native/0010.json",
+      "sha256": "0e0b5d555712f91f55836ef7a32caa6f23865f5eb7fbc4d562d34a095a40f72b"
+    },
+    {
+      "bytes": 324,
+      "git_blob_sha1": "07c2634e0b3064675aa5320238261f2d0f3629b9",
+      "path": "experiments/semantic_saturation/audit/native-repeatability-run001/native/SUMMARY.json",
+      "sha256": "2f9e2a7b8c3e6d20922ec055415d7f8167a600e421fda4aa9808ceafc8ff0100"
+    },
+    {
+      "bytes": 510,
+      "git_blob_sha1": "7cad893d198948bf54e1c12b737e7a35a730d033",
+      "path": "experiments/semantic_saturation/audit/native-unknown-retry-audit.json",
+      "sha256": "c71abbc69a3086b0f466447defee69e23630e773446d720e459fc023fe0daa6b"
+    },
+    {
+      "bytes": 4189,
+      "git_blob_sha1": "a8404619bb506b35d77cfb7bd697f1874f0d4260",
+      "path": "experiments/semantic_saturation/audit/packet-mutations-run002/SUMMARY.json",
+      "sha256": "f85b2e86a2d8bee0bbf93dafd8994038b79492c1a34ee88726028ef0d8d4fd0d"
+    },
+    {
+      "bytes": 1011,
+      "git_blob_sha1": "9e63f9c1b9f65cc6d6c85eef67bff1dfa952eb42",
+      "path": "experiments/semantic_saturation/audit/pilot-math-audit.json",
+      "sha256": "21187143319622e5d9b40babbf958a3d12e333290b251d515cd9a6a128b98e66"
+    },
+    {
+      "bytes": 1701,
+      "git_blob_sha1": "5b376008ed93dae42287fe3ee715caec3fb9716e",
+      "path": "experiments/semantic_saturation/audit/recursive_baseline_regression.py",
+      "sha256": "83c6dee41b49db2afa970d56d35176e6d11309b3fffcafe51affc1db731eb6d3"
+    },
+    {
+      "bytes": 931,
+      "git_blob_sha1": "85f9b379e59fbc8d19ee9399f36bc0a5d540ad11",
+      "path": "experiments/semantic_saturation/audit/resource-independent-validation.json",
+      "sha256": "6632f366314a93facc0aa4e51127f41216e9e3443f77a9070178e3d4f21d6a30"
+    },
+    {
+      "bytes": 667,
+      "git_blob_sha1": "49bcb1fc9f577c75ca6a2f3d0fe46cbaaabb2e6d",
+      "path": "experiments/semantic_saturation/audit/reuse-independent-tests.json",
+      "sha256": "009667a8e34775a31db1236b3c1531f659fe6f88465e0a3897086f9d358727d8"
+    },
+    {
+      "bytes": 373,
+      "git_blob_sha1": "1b4a65a92c29dc60f59ea7c127a12d582e91adf9",
+      "path": "experiments/semantic_saturation/audit/reuse-independent-validation.json",
+      "sha256": "2494cacb656d48de935304e891d33c552df6759f0a53d88a5f2a2947aaeff7d0"
+    },
+    {
+      "bytes": 2288,
+      "git_blob_sha1": "74fbc20018422a3e3f4e073f460a54c77fe38805",
+      "path": "experiments/semantic_saturation/audit/run_mutations.py",
+      "sha256": "660d42d73271edb3afd8dc52358ca1ef4a7efef2ae1638cfd8fecf27600f0d41"
+    },
+    {
+      "bytes": 1525,
+      "git_blob_sha1": "496974d7df9d05a704f09d1561c9ef9bb18b65fb",
+      "path": "experiments/semantic_saturation/audit/runner-integrity-run001/SUMMARY.json",
+      "sha256": "1133dd5a32d5e1eff423dee3cdc3decc9360bca4d541dacb7a463299c888297b"
+    },
+    {
+      "bytes": 43,
+      "git_blob_sha1": "250769ccf201fcb3d7a7aec800fc3ca97c6f2685",
+      "path": "experiments/semantic_saturation/audit/runner-integrity-run001/empty-development.json",
+      "sha256": "276fd19c6f61c34acfe1c411c30d1a454f296a00739ec0a88a5b7018388e6593"
+    },
+    {
+      "bytes": 495,
+      "git_blob_sha1": "00bf14bf5c72c2ac584d17a3e45495e754a150f3",
+      "path": "experiments/semantic_saturation/audit/typed-parser-audit.json",
+      "sha256": "0f907b290c6c29aab319a0778e4644b1880f4ad820fb14b7dc7cafa17422066d"
+    },
+    {
+      "bytes": 228364,
+      "git_blob_sha1": "670667f1ab359c6961bc2033e2d3e8dc5a86796f",
+      "path": "experiments/semantic_saturation/corpora/dev.json",
+      "sha256": "17f6fdc2812be0b0988c2c5e2f00aadc0ea1cec799ca54fc7a7ce77f01ca5a71"
+    },
+    {
+      "bytes": 322,
+      "git_blob_sha1": "37abe97985ce2b8ee171e2924ee512ddc26fe534",
+      "path": "experiments/semantic_saturation/corpora/duplicate-audit.json",
+      "sha256": "02c406b3184bc6ed3981d23dc799cdfce1c97020207d95497db723294a763ef2"
+    },
+    {
+      "bytes": 313,
+      "git_blob_sha1": "0a0f04352b81f5057661ffb88c369605d319af96",
+      "path": "experiments/semantic_saturation/corpora/resource-protocol/manifest-start.json",
+      "sha256": "7ec559716b8154164588b692d5ebb49dff6df5bd673a0d20eb21db6840b34890"
+    },
+    {
+      "bytes": 210078,
+      "git_blob_sha1": "97b00cb46191e75769f8dfae251a8a0c3051cbfb",
+      "path": "experiments/semantic_saturation/corpora/resource-protocol/matrix.json",
+      "sha256": "d79567fb34446f355d0c2c451a3225d850a89b278455c2f2a1d98f9ff958bfb0"
+    },
+    {
+      "bytes": 1292500,
+      "git_blob_sha1": "03e1a39b5a4e604ea0d2a2352fd16e33986b0cd6",
+      "path": "experiments/semantic_saturation/corpora/reuse-frozen-v1.json",
+      "sha256": "080f547d64b7b7387fad4162140f8e07981fe0ec926d304d92a0c32755229456"
+    },
+    {
+      "bytes": 924528,
+      "git_blob_sha1": "7568cdec678ca2a0a46d4b2f5848f14dd0b1da72",
+      "path": "experiments/semantic_saturation/corpora/test.json",
+      "sha256": "4539af8b8d78059958a0c5ce7fa50a36f7a36db7a4253ee40430e2835b32973b"
+    },
+    {
+      "bytes": 231247,
+      "git_blob_sha1": "422be4313e15942ff6344f2526e4edcf937ce268",
+      "path": "experiments/semantic_saturation/corpora/train.json",
+      "sha256": "1fb5b2f2b088f0639a0b72398d6c2478445945b6d583de6fa6849da48072e01f"
+    },
+    {
+      "bytes": 9680,
+      "git_blob_sha1": "653f31c3c4d8cf2471cd622acff4d893b577e62a",
+      "path": "experiments/semantic_saturation/docs/BASELINES.md",
+      "sha256": "0c36b219dbcf88222164bac47127754c771dd7f7b61e7d3f3b1f6d6ecfa6dc0f"
+    },
+    {
+      "bytes": 4382,
+      "git_blob_sha1": "66d209a5e97ce820362c57e6ce596d3ff1cbb095",
+      "path": "experiments/semantic_saturation/docs/CLAIM_LEDGER.json",
+      "sha256": "1da06b8636878b2cb45ce2489f4a5cf21cefcf03a204111e318c7c042e4430d7"
+    },
+    {
+      "bytes": 3398,
+      "git_blob_sha1": "26b3631edc4a5ecdaba3dd062a727c39c215bc69",
+      "path": "experiments/semantic_saturation/docs/DEVELOPMENT_HISTORY.md",
+      "sha256": "f8daba2ae4bf4372f51d99715e1760e5969e3b87802cdb8deab057ae35d94a3e"
+    },
+    {
+      "bytes": 1983,
+      "git_blob_sha1": "73b274d2d46460249fd6231c332d04a0aa79a2e3",
+      "path": "experiments/semantic_saturation/docs/EXPERIMENT_LEDGER.json",
+      "sha256": "683f12ef3fdb53f8f65af81ea39b96d286cd5cde8cff10a319e3c72336982bb5"
+    },
+    {
+      "bytes": 7063,
+      "git_blob_sha1": "b950f19c6817416212e4d2db5a6b778b16a0dfd1",
+      "path": "experiments/semantic_saturation/docs/EXPERIMENT_MATRIX.md",
+      "sha256": "c6294a9a76b33e007cdfec0932cbe12048a38b6b1107dadf39e2ccfb65baabc4"
+    },
+    {
+      "bytes": 6682,
+      "git_blob_sha1": "9b5dc4569ac3f84e7107e979189fd9c460ad2870",
+      "path": "experiments/semantic_saturation/docs/EXPERIMENT_MATRIX_DRAFT.md",
+      "sha256": "b212b608830d9492c58a0e18d425b85ea27af72f78a48ede8c43e68a952c354b"
+    },
+    {
+      "bytes": 1078,
+      "git_blob_sha1": "24e33636dd9d2cceea9925deefc06acf313973da",
+      "path": "experiments/semantic_saturation/docs/INHERITED_SOURCE.json",
+      "sha256": "a84dee5f332c19e041f5317bc17e246e9388335a581ac32da27539ec8190d247"
+    },
+    {
+      "bytes": 3906,
+      "git_blob_sha1": "d06636d7a4e7f7b9e9ecf5fbdf50d585dbc16e74",
+      "path": "experiments/semantic_saturation/docs/PROOF_OBLIGATIONS.json",
+      "sha256": "fa7d3d877a94a793f30a1d238f03c6e6edf7c747471a062fcefc9cfce798af22"
+    },
+    {
+      "bytes": 10309,
+      "git_blob_sha1": "5b6de81bfd46e6dca4a3fbe1e9365c1419cfe67b",
+      "path": "experiments/semantic_saturation/docs/PROTOCOL.md",
+      "sha256": "e5f168d2e7f1695978efff524c29bd64400a0de909990b9e0d9efe66323f17eb"
+    },
+    {
+      "bytes": 7457,
+      "git_blob_sha1": "89b2cf5aad18b3736fe99448033b6515a124462c",
+      "path": "experiments/semantic_saturation/docs/PROTOCOL_DRAFT.md",
+      "sha256": "7b3e3e3359b15ed83d243d6e89491e30d651373408ebd0c97dbafce611b684fb"
+    },
+    {
+      "bytes": 3963,
+      "git_blob_sha1": "20f9d7e1c1e8f21999589f16b4729ae4691429e2",
+      "path": "experiments/semantic_saturation/docs/REPLAY_PLAN.md",
+      "sha256": "32dd4e3d4b01df9a2e1fcbe40eb3c38f24892fc34911eac9902329efce14c07b"
+    },
+    {
+      "bytes": 13787,
+      "git_blob_sha1": "5634b37b484804315d6478a0f2fbf3cf64017b12",
+      "path": "experiments/semantic_saturation/docs/REUSE_PROTOCOL.md",
+      "sha256": "5b575eafe4174ea1bd0242e7c13d5a03d6e5df38f224a309bba39ab54a471177"
+    },
+    {
+      "bytes": 12563,
+      "git_blob_sha1": "2b495ad401a3b13f44ec1d92f208d3d9700e383f",
+      "path": "experiments/semantic_saturation/docs/references/source-ledger.json",
+      "sha256": "04b8ae133174c77e4465895ef95ff870a36144543ea25ad07e97df435ed41077"
+    },
+    {
+      "bytes": 879,
+      "git_blob_sha1": "1252fa08822e5c2f82c9aa0f6157491522ad9c1f",
+      "path": "experiments/semantic_saturation/evidence/ARCHIVES.json",
+      "sha256": "26994c381e5a98a166f71b2e3415c6e8c3e057e3f4c1e92c9504745537721d1b"
+    },
+    {
+      "bytes": 1162,
+      "git_blob_sha1": "a406638b3ec8948efde7da0be22ff9b1c77eec0a",
+      "path": "experiments/semantic_saturation/evidence/ARCHIVE_PARTS.md",
+      "sha256": "8e6353f51210aa4a108531bfe7ebcc31a454a60a4245fbc568e207fcbd246904"
+    },
+    {
+      "bytes": 1771,
+      "git_blob_sha1": "60db26289b410ca0edb8ee7c96ff037dca539082",
+      "path": "experiments/semantic_saturation/evidence/README.md",
+      "sha256": "b7b4b56de4dffb6a2f70cac4fe61b83b4411154e9e013d4f363a165d10f56b8d"
+    },
+    {
+      "bytes": 2101240,
+      "git_blob_sha1": "e04b1c0801d58f84811022cb5ac775ef0a63eb0d",
+      "path": "experiments/semantic_saturation/evidence/development-evidence.tar.gz",
+      "sha256": "579728e6b18dfcbe4df80a24a15d18e5c1e3953889fe3f83cc40e94fb3d8be46"
+    },
+    {
+      "bytes": 7179812,
+      "git_blob_sha1": "a7ffd313aaceb2d102376337510ef7c836df1a29",
+      "path": "experiments/semantic_saturation/evidence/heldout-001.tar.gz",
+      "sha256": "46f812cce3a59c80ede785092a5f65df3be237bd52f2047d058e9e8111155fb9"
+    },
+    {
+      "bytes": 3178,
+      "git_blob_sha1": "ed847691e5af26580f84f993d3c6a603f3739cdd",
+      "path": "experiments/semantic_saturation/evidence/reconstruct_reuse.py",
+      "sha256": "1c82aa4ef0e07d432b37534f283ca9c8970d87f439351f03faa52c3b4329ac71"
+    },
+    {
+      "bytes": 1252,
+      "git_blob_sha1": "fdcdd5a5ecca32bbcd084642c41f9e4f2c0de94e",
+      "path": "experiments/semantic_saturation/evidence/reuse-001.parts.json",
+      "sha256": "a6068b619bdfd87a5066fb92eafaea9456e88666c9eb933616dbefcb824bd05b"
+    },
+    {
+      "bytes": 7000000,
+      "git_blob_sha1": "a122b20cdf2f8cfcbda97a763897247413ebedff",
+      "path": "experiments/semantic_saturation/evidence/reuse-001.tar.gz.part001",
+      "sha256": "3066a5f2a3d783087c70f722fdb9ac75f16c4838bfa5e9e16af1a5d1804a6215"
+    },
+    {
+      "bytes": 7000000,
+      "git_blob_sha1": "e35f547e535e66319c7328b575cb74181d4970df",
+      "path": "experiments/semantic_saturation/evidence/reuse-001.tar.gz.part002",
+      "sha256": "dae01fdbfaa0b51ef672d393dc49f111e9b6d84d9065d3dbe921bfbd30129123"
+    },
+    {
+      "bytes": 7000000,
+      "git_blob_sha1": "f1c6e3f9974c692aa687368d5b33c90a7396c4ee",
+      "path": "experiments/semantic_saturation/evidence/reuse-001.tar.gz.part003",
+      "sha256": "7cc82ca4f36b917c967ff320399e7c114d86455f137ffbbc2493d1c9a203490f"
+    },
+    {
+      "bytes": 4305939,
+      "git_blob_sha1": "4b3c28e36d9e490934e66373f77d94d0db1641c2",
+      "path": "experiments/semantic_saturation/evidence/reuse-001.tar.gz.part004",
+      "sha256": "352b7f7509c87ec328600a4cd944afefb316899c6cfb9fb62a5caa94ed98c689"
+    },
+    {
+      "bytes": 21,
+      "git_blob_sha1": "35efccbccbe809a8092c4ed1d96b405025f1e891",
+      "path": "experiments/semantic_saturation/paper/.gitignore",
+      "sha256": "03824949a66ab6db1429bd078d10d1bc2d75706aa1b756c547f9a7ff541c77cb"
+    },
+    {
+      "bytes": 57576,
+      "git_blob_sha1": "667a1ea575f13cffb9de0d70d01016be07cec4e1",
+      "path": "experiments/semantic_saturation/paper/MANUSCRIPT.md",
+      "sha256": "e3cef7fc6e05a2bb028ef04bbd50e39448031fa0d435b533d5e2a22d71fc5375"
+    },
+    {
+      "bytes": 8045,
+      "git_blob_sha1": "df0b15d1d3dccb2698043fe81a5324a4a6c01d19",
+      "path": "experiments/semantic_saturation/paper/PAPER_QA.json",
+      "sha256": "970c77a40244a30e519cf0a826d7943b35b530a750127b6400df5333f56510ac"
+    },
+    {
+      "bytes": 6958,
+      "git_blob_sha1": "5324fbbd11cff6c6153835f22daddc87c7f22709",
+      "path": "experiments/semantic_saturation/paper/PUBLICATION_CHECKLIST.md",
+      "sha256": "da6ebf05d8bd31c2c6243d5897bfb40dbb8a3d2b56125a65632f5642915218c9"
+    },
+    {
+      "bytes": 3500,
+      "git_blob_sha1": "06b8f9083a6b133cf4c185512578ac1bfe1eb55e",
+      "path": "experiments/semantic_saturation/paper/QUALITY_TABLES.md",
+      "sha256": "01eb1101c15213b365ece44209db798668c6dc4366207b8fa07d7ec9c4a1563e"
+    },
+    {
+      "bytes": 5109,
+      "git_blob_sha1": "2368ec46097d14053cd6f5d1e2e3b81f4f06154f",
+      "path": "experiments/semantic_saturation/paper/README.md",
+      "sha256": "5dc4007052c1a31262e1da62a3567b4b748d89abf34bae8fbda1f24461f7ff6d"
+    },
+    {
+      "bytes": 10880,
+      "git_blob_sha1": "1e6af62844b88106d693b0d4991d9ff0f74ff0f1",
+      "path": "experiments/semantic_saturation/paper/REPRODUCTION.md",
+      "sha256": "50d097dc3b3900ec0008f64da7a14437cd6131b5e8f3bc09ad37f70b7c4e3467"
+    },
+    {
+      "bytes": 11251,
+      "git_blob_sha1": "a31216e8bf29d0f0c618df987090458deae84a10",
+      "path": "experiments/semantic_saturation/paper/TABLE_FIGURE_SPEC.md",
+      "sha256": "fd90c3324ec35f95d3420de4d9fbb23f44cbbf84f40af1c7bfdec9f46a83f9c7"
+    },
+    {
+      "bytes": 6013,
+      "git_blob_sha1": "566df19da08ff6b0b8365bf69b63e87c1ff081ae",
+      "path": "experiments/semantic_saturation/paper/build_parser_sensitivity.py",
+      "sha256": "ac63626c1c9a700951386747c470adff9edba2230478a91d40fef151b88e088d"
+    },
+    {
+      "bytes": 6861,
+      "git_blob_sha1": "73447ad8f27cfe85c165d1aa583432038e15358b",
+      "path": "experiments/semantic_saturation/paper/build_pdf.py",
+      "sha256": "1d29e53ea91b3401d77d97e3c0fd51628c6d8c533192395fb372afcfd0366c10"
+    },
+    {
+      "bytes": 11506,
+      "git_blob_sha1": "f140fdc23b135077fe191855b2d926e39ca8b0ee",
+      "path": "experiments/semantic_saturation/paper/build_quality_figures.py",
+      "sha256": "e670e384841f6a6b9d65299b01b3575911cc9aacbcd404379a97fdcd82932430"
+    },
+    {
+      "bytes": 3977,
+      "git_blob_sha1": "a1f36b953988b97b418d1793769a2c7910e54889",
+      "path": "experiments/semantic_saturation/paper/build_reuse_figures.py",
+      "sha256": "06552a603e612ea00171bec4be2112d1d2c12be4cef20373a57a1bf60bb05a8b"
+    },
+    {
+      "bytes": 816392,
+      "git_blob_sha1": "138f07bab81c2419914b986570ab2e59af05f166",
+      "path": "experiments/semantic_saturation/paper/checked-semantic-saturation.pdf",
+      "sha256": "e4ce72ce6cb7e96ffb638b664ec3f2c6e8d56eed091e462c763d3e82346c6cda"
+    },
+    {
+      "bytes": 66872,
+      "git_blob_sha1": "f810d9733c3b5ee2aa221f1d95bcadd6d10a7524",
+      "path": "experiments/semantic_saturation/paper/figures/paired_quality_differences.pdf",
+      "sha256": "963ecc8c239491a32ccd4c3596dd3df761597e129bba4c5f20016b225c8f6ef5"
+    },
+    {
+      "bytes": 210164,
+      "git_blob_sha1": "03c82d5539dc9884596fb2a58bcb6c6b05a798c9",
+      "path": "experiments/semantic_saturation/paper/figures/paired_quality_differences.png",
+      "sha256": "af2e076082f8f476701362772d12d7193fc250afde478db7d7eff5a04004ef52"
+    },
+    {
+      "bytes": 193007,
+      "git_blob_sha1": "4c0f626090308c6bbc8fd38844b2918890983ec6",
+      "path": "experiments/semantic_saturation/paper/figures/paired_quality_differences.svg",
+      "sha256": "9188eea9771a500f9d71cb3f732f334cdef0287f5fff9821fa8bb3c8f3fd11bc"
+    },
+    {
+      "bytes": 14545,
+      "git_blob_sha1": "d4752db44ea1092f1c5ed269a5901aa9505daefc",
+      "path": "experiments/semantic_saturation/paper/figures/quality_totals.pdf",
+      "sha256": "cd53624fed1b3124c86f697b206d92f940ba69edb08c6e261d1fac352eede343"
+    },
+    {
+      "bytes": 106118,
+      "git_blob_sha1": "9a9bfd6bc8281826b29b6bcd28ae6b60bceb16b8",
+      "path": "experiments/semantic_saturation/paper/figures/quality_totals.png",
+      "sha256": "ef1f5ffbcb7e34490e8e58bb4a9e44ca575031775630795c63073bb5f2eaa865"
+    },
+    {
+      "bytes": 15026,
+      "git_blob_sha1": "be8e0d3186874fcffa02ec48cbf3a08b2a609f15",
+      "path": "experiments/semantic_saturation/paper/figures/quality_totals.svg",
+      "sha256": "57285fb6875190c4ebb414e1f1fc224d3c82b04879f9aab55c9c0b4036436d75"
+    },
+    {
+      "bytes": 26271,
+      "git_blob_sha1": "05942e3f31e58131762f973e55e2a5c1d13aae54",
+      "path": "experiments/semantic_saturation/paper/figures/representation_parity.pdf",
+      "sha256": "6737c670a19ba643bb66dd85d8579a11be418c6d7ab609ae3203655256a84cda"
+    },
+    {
+      "bytes": 121067,
+      "git_blob_sha1": "a37063a62e6a19c08ef4efea445349912664525d",
+      "path": "experiments/semantic_saturation/paper/figures/representation_parity.png",
+      "sha256": "bbc99cf120f259ee890cd72b36699a0934b8417f1db8ab2e395b57b727f8a4d4"
+    },
+    {
+      "bytes": 38341,
+      "git_blob_sha1": "a1064aba6689b066eb4b412cca222bf073845254",
+      "path": "experiments/semantic_saturation/paper/figures/representation_parity.svg",
+      "sha256": "317d397430ece809d1a0fa1b89525fb95e7ffdbece69e40b6304ba63217b7808"
+    },
+    {
+      "bytes": 55849,
+      "git_blob_sha1": "958793d2d1d95a71ee1719eb61284320617575b0",
+      "path": "experiments/semantic_saturation/paper/figures/reuse_cumulative_wall.pdf",
+      "sha256": "71be4f494ffeaa1ee4dec6ebf47473182fc8e7ff1235be27e915c289ce90f42e"
+    },
+    {
+      "bytes": 261009,
+      "git_blob_sha1": "e008c52d142734d93330fcaaca42b7c57265acf2",
+      "path": "experiments/semantic_saturation/paper/figures/reuse_cumulative_wall.png",
+      "sha256": "373d804b4822edb0e088b0906d43a65f9b71fee71c0b067c41ec8022c4c1baa9"
+    },
+    {
+      "bytes": 217665,
+      "git_blob_sha1": "26dfa2c882da5528f9bc55c9ecf7c9c18340d3af",
+      "path": "experiments/semantic_saturation/paper/figures/reuse_cumulative_wall.svg",
+      "sha256": "d1b0d9b35634f2d3fbaebb53565873f3ea84fc2e82af2e8838b229f8b8d2653b"
+    },
+    {
+      "bytes": 48443,
+      "git_blob_sha1": "0648d4bc0c8ee2e4e9875e4a9678cedf511ba8f8",
+      "path": "experiments/semantic_saturation/paper/native-parser-sensitivity-provenance.json",
+      "sha256": "2fcb5bcba5f6037c499b36ac818b8627ec50b28edbb7c87644990e9ac95d39a3"
+    },
+    {
+      "bytes": 27269,
+      "git_blob_sha1": "2814aadbb16a1ab97fa682509095db46efb56215",
+      "path": "experiments/semantic_saturation/paper/native-parser-sensitivity.json",
+      "sha256": "d4ea09621ddd637487078605337549d5ecb7a928adaee9c414f53b8afd0ffd7b"
+    },
+    {
+      "bytes": 248414,
+      "git_blob_sha1": "a57bc738d4a8dd1346d8f9d329ebdee118304018",
+      "path": "experiments/semantic_saturation/paper/quality-display-data.json",
+      "sha256": "be7ea18179278aa6c426424bd3508953c707669b3ae05579dcebf0c6c79743d6"
+    },
+    {
+      "bytes": 12875,
+      "git_blob_sha1": "f352c34e2467f5fb7e2f97b8604fd4e1e97f1682",
+      "path": "experiments/semantic_saturation/paper/references.json",
+      "sha256": "b82d547388fc3c4df7ee32df855947728dbe1dbb338250b5c5f445f658ac9760"
+    },
+    {
+      "bytes": 1338846,
+      "git_blob_sha1": "d016a2737f2d6c862d5adb05f89b1b3a0c665dfb",
+      "path": "experiments/semantic_saturation/paper/reuse-display-data.json",
+      "sha256": "e885fd535feb55ae5562413def3f008898d83998a83f376a490384293592554a"
+    },
+    {
+      "bytes": 914,
+      "git_blob_sha1": "c8763ff4c17fe4f7d758c35f715512920863c5ef",
+      "path": "experiments/semantic_saturation/results/build/build-receipt.json",
+      "sha256": "9d5d6abb7a9c536dd3c2c6a1ff082fc499f3a47493e6212c15eba27e7cb3f7d7"
+    },
+    {
+      "bytes": 1311,
+      "git_blob_sha1": "ffcc2816e9027396036ae79781455efa088ed49d",
+      "path": "experiments/semantic_saturation/results/build/environment.json",
+      "sha256": "b79b3e8a638c3be2f6a8140a5cb4d771864798e80df6cad250a000eef5114dd2"
+    },
+    {
+      "bytes": 343,
+      "git_blob_sha1": "bdffb9e808f065bbdd50f50ec312bbe6c17b527f",
+      "path": "experiments/semantic_saturation/results/build/machine.json",
+      "sha256": "0eda1e76995e574724a982ad0454a2ea38d016fee1b6b0e264c312ad2cf80864"
+    },
+    {
+      "bytes": 2314,
+      "git_blob_sha1": "6463552e7562d6e2b837394c335e183cbd666d54",
+      "path": "experiments/semantic_saturation/results/clean-checkout-replay/SUMMARY.json",
+      "sha256": "23fa656e1841acb328be2e25ec42f18b2e7c703441817b273f40d0c16c9eb4a7"
+    },
+    {
+      "bytes": 360,
+      "git_blob_sha1": "06dbd8ef71b607195d115a1f199226cee1fa30a5",
+      "path": "experiments/semantic_saturation/results/clean-checkout-replay/command-history.json",
+      "sha256": "edce7b196adccc4e0d7decd393b001c1849114b0933e64ed85c1a1c086f73121"
+    },
+    {
+      "bytes": 419,
+      "git_blob_sha1": "3460b2882dd53062598daab7c85b225234a79e62",
+      "path": "experiments/semantic_saturation/results/clean-checkout-replay/heldout.json",
+      "sha256": "8e101417f8ffe4eac26dafca8fd6a23731acb7dec89caf30bd077a7fc3392b38"
+    },
+    {
+      "bytes": 1762,
+      "git_blob_sha1": "4e2744e3c7887836e0e75ba6ed622cf05652f7e0",
+      "path": "experiments/semantic_saturation/results/clean-checkout-replay/lake.txt",
+      "sha256": "ab0fc4a4d2c0691ce595c3205f00db6554d09288c39e2f6c996ef26ed7b59274"
+    },
+    {
+      "bytes": 4771,
+      "git_blob_sha1": "ee8c4b17cefdcb58aa790acc117ee555c49faab6",
+      "path": "experiments/semantic_saturation/results/clean-checkout-replay/lean-correspondence.json",
+      "sha256": "206be3828ee150dc16632c88d98abfc409fb896e01fc9186a31d8fc535510dba"
+    },
+    {
+      "bytes": 203,
+      "git_blob_sha1": "8c335c7af24e542ad86c1014d9c64d64df196e56",
+      "path": "experiments/semantic_saturation/results/clean-checkout-replay/lean.txt",
+      "sha256": "8d123e671ed14ee3a00f9c4b24b255fb60801352771b210e090d069cfe79a1e9"
+    },
+    {
+      "bytes": 373,
+      "git_blob_sha1": "1b4a65a92c29dc60f59ea7c127a12d582e91adf9",
+      "path": "experiments/semantic_saturation/results/clean-checkout-replay/reuse.txt",
+      "sha256": "2494cacb656d48de935304e891d33c552df6759f0a53d88a5f2a2947aaeff7d0"
+    },
+    {
+      "bytes": 11162,
+      "git_blob_sha1": "0c1d50e6837a84a842f1cab5954589160e9d8275",
+      "path": "experiments/semantic_saturation/results/clean-checkout-replay/unit-tests.txt",
+      "sha256": "63361e54a3ed6ed72530da4a6f89a86da97a25370c19e3050e292feca3569ef8"
+    },
+    {
+      "bytes": 910,
+      "git_blob_sha1": "c7318d75dc691a8739195f441bef61d1f6455cfb",
+      "path": "experiments/semantic_saturation/results/cross_build_replication.json",
+      "sha256": "92ec637a1c1dcfc5da94515661425b59793700d0dae675babf39a35db374ff11"
+    },
+    {
+      "bytes": 5880,
+      "git_blob_sha1": "083bf634e9ce2e65c34c7f54ea1c845049e3febd",
+      "path": "experiments/semantic_saturation/results/dev-accounting-002-summary.json",
+      "sha256": "ec699e7a138138e7b192a9b728a5043ccd5cb02c48999e5c055d56ed7f221b24"
+    },
+    {
+      "bytes": 412,
+      "git_blob_sha1": "89b0e7a32112f00865f934c0a63fea9f3c9c8069",
+      "path": "experiments/semantic_saturation/results/dev-accounting-002-validation.json",
+      "sha256": "4980c5280dfe9e263174b4180866f3f2756c1da4cc9594df8268244837ee876e"
+    },
+    {
+      "bytes": 5882,
+      "git_blob_sha1": "d050afe5e55a9fe93f1e8044b7edc92c4b6bac36",
+      "path": "experiments/semantic_saturation/results/dev-binding-003-summary.json",
+      "sha256": "70d22a57145b1ed06a82904c3074c9ff1402f06519994dbe88bf6d56e307963f"
+    },
+    {
+      "bytes": 412,
+      "git_blob_sha1": "2c981abb9a65eba023f6eb60d28158fb39a16735",
+      "path": "experiments/semantic_saturation/results/dev-binding-003-validation-tightened.json",
+      "sha256": "a908de1ff505b95b9b6cfe62891294263847e6fcdfe8b6330c20690e58ec84db"
+    },
+    {
+      "bytes": 411,
+      "git_blob_sha1": "0700988fdbb4920836bf8fda0aedae8801b4ff33",
+      "path": "experiments/semantic_saturation/results/dev-binding-003-validation.json",
+      "sha256": "3dafced43dec4a73227ded3149375ed0e11b8dd0698254bc0b966fddb42b0a23"
+    },
+    {
+      "bytes": 4131,
+      "git_blob_sha1": "573f1c96d72abfe7ed0a48951d1a426ce6dcb366",
+      "path": "experiments/semantic_saturation/results/dev-smoke-001-summary.json",
+      "sha256": "44f6acea88c8bd028a07257f009a3f77683d9af8090a2387822fe41882ad0838"
+    },
+    {
+      "bytes": 4389,
+      "git_blob_sha1": "6d857b21704a26ca0ba148c7dec2e8b4f705c365",
+      "path": "experiments/semantic_saturation/results/development-001-summary.json",
+      "sha256": "5c0aaa5596fdd1de27bc4287e975c590d4d9fe9c472eaad38a59efa664ab0026"
+    },
+    {
+      "bytes": 5881,
+      "git_blob_sha1": "e1adf99975f46872a9c2b361679d6abf2f1c2f1e",
+      "path": "experiments/semantic_saturation/results/final-prefreeze-smoke-004-summary.json",
+      "sha256": "c21966a7b3f49391621e8d10bcf13b8009137b2d47911314c5657afcd9e7d296"
+    },
+    {
+      "bytes": 411,
+      "git_blob_sha1": "cdc3e87e3141aad89a46aaecba54886331969b65",
+      "path": "experiments/semantic_saturation/results/final-prefreeze-smoke-004-validation.json",
+      "sha256": "af136ac1cc97122ac7d63f5c3372541fb8a5c2549efcb5ccaf46482ecb06e053"
+    },
+    {
+      "bytes": 180,
+      "git_blob_sha1": "31cb86c453b7897275f29f0dafa79eafa684c425",
+      "path": "experiments/semantic_saturation/results/final-prefreeze-unit-tests.txt",
+      "sha256": "b24bdb55668b909ed85d454f6b91bd36ec1e6f50f35fc5107cd429311be0b6bb"
+    },
+    {
+      "bytes": 67840,
+      "git_blob_sha1": "e2c89582b6955f353d0dd92a78a7449042da9aa4",
+      "path": "experiments/semantic_saturation/results/heldout-001-analysis.json",
+      "sha256": "418d4fc4b61c331d26fedf0b14c81833610ac4fee6f307412eb1d1155d38b326"
+    },
+    {
+      "bytes": 6542,
+      "git_blob_sha1": "8100cc7a1b51c0fe6e2b9ba7006391487a45c008",
+      "path": "experiments/semantic_saturation/results/heldout-001-summary.json",
+      "sha256": "5e8bb2f521163c13667225c6816c3fd768d31cc790d0d885855c6f2332ddfdae"
+    },
+    {
+      "bytes": 419,
+      "git_blob_sha1": "3460b2882dd53062598daab7c85b225234a79e62",
+      "path": "experiments/semantic_saturation/results/heldout-001-validation.json",
+      "sha256": "8e101417f8ffe4eac26dafca8fd6a23731acb7dec89caf30bd077a7fc3392b38"
+    },
+    {
+      "bytes": 1333,
+      "git_blob_sha1": "e6241a4982df4a27fc627f90b5cc6f8f7856c808",
+      "path": "experiments/semantic_saturation/results/linux-pilot-summary.json",
+      "sha256": "6121a7faa6eb96bc8004a28788cffe1400e22b0804b04654f50e40a4abce1c77"
+    },
+    {
+      "bytes": 451,
+      "git_blob_sha1": "fb5e30e7d4e61236fae8f06bcc0b6d953b427e88",
+      "path": "experiments/semantic_saturation/results/resources-001/SUMMARY.json",
+      "sha256": "ad1d17f72c25ac6d064e9c913290825813fd28613612e560984bc3e08d400128"
+    },
+    {
+      "bytes": 313,
+      "git_blob_sha1": "0a0f04352b81f5057661ffb88c369605d319af96",
+      "path": "experiments/semantic_saturation/results/resources-001/manifest-start.json",
+      "sha256": "7ec559716b8154164588b692d5ebb49dff6df5bd673a0d20eb21db6840b34890"
+    },
+    {
+      "bytes": 210078,
+      "git_blob_sha1": "97b00cb46191e75769f8dfae251a8a0c3051cbfb",
+      "path": "experiments/semantic_saturation/results/resources-001/matrix.json",
+      "sha256": "d79567fb34446f355d0c2c451a3225d850a89b278455c2f2a1d98f9ff958bfb0"
+    },
+    {
+      "bytes": 205230,
+      "git_blob_sha1": "8307b3a61023ded6a14e0881d8244c17ee37313b",
+      "path": "experiments/semantic_saturation/results/resources-001/search-results.json",
+      "sha256": "d660fc3034d42c10d55b37e636f64707a91541cf74abae655ac2692083c144e5"
+    },
+    {
+      "bytes": 186530,
+      "git_blob_sha1": "fea2cfeda128f1f65a1c77b47b22bae00235baab",
+      "path": "experiments/semantic_saturation/results/resources-001/support-results.json",
+      "sha256": "15145f39c407d3c81d6c690763d539fdd4673d8a9cf4657a91e0dafc6da57c9c"
+    },
+    {
+      "bytes": 1346907,
+      "git_blob_sha1": "03ba2e5cc2d4963c41a438f542290ce7cfdc72a4",
+      "path": "experiments/semantic_saturation/results/reuse-001-ANALYSIS.json",
+      "sha256": "77fb84facafc7b3fd82f3c77197f19d77feceb8b43cbf9218bdbd53a8c430cc6"
+    },
+    {
+      "bytes": 5938,
+      "git_blob_sha1": "3d2990db90ff777ea3a33eb44c3c4221cc91bff9",
+      "path": "experiments/semantic_saturation/results/reuse-001-ANALYSIS.md",
+      "sha256": "5d35ea31f060cf04e30dc682692e061bb62f36d9faac4e3b24ee6bef5535e24e"
+    },
+    {
+      "bytes": 1629,
+      "git_blob_sha1": "899e50063598311f15e00ec68ce2371e99d41ea0",
+      "path": "experiments/semantic_saturation/results/reuse-001-TIMING_NOTE.json",
+      "sha256": "33b5fb4f54efd93ec9a49bd30e94c547d59b3e1b878b83452119cbebca647b67"
+    },
+    {
+      "bytes": 976,
+      "git_blob_sha1": "6aa1668cc0ffc55a377d96be635436dbd879c4c5",
+      "path": "experiments/semantic_saturation/results/reuse-001-TIMING_NOTE.md",
+      "sha256": "32868c74bfa538d43a8230d3f070d146448e9df8ba51bca1075b6e4cd97ead03"
+    },
+    {
+      "bytes": 4645,
+      "git_blob_sha1": "a052777bcfd8223dd16b2de619083a73951f03b7",
+      "path": "experiments/semantic_saturation/results/reuse-001-costs-and-break-even.csv",
+      "sha256": "6ca21498d5bc72e761c32ed910d67ab710c35ef48187f02a9164405603c0b0f2"
+    },
+    {
+      "bytes": 1335789,
+      "git_blob_sha1": "8ae25df5bd80a8311727d538942218d0c92aa487",
+      "path": "experiments/semantic_saturation/results/reuse-001-summary.json",
+      "sha256": "3ec60f6d3fa2d832d16c8e2337f1cd8b986027dbe9aa2e8ac447ed944480ab40"
+    },
+    {
+      "bytes": 373,
+      "git_blob_sha1": "1b4a65a92c29dc60f59ea7c127a12d582e91adf9",
+      "path": "experiments/semantic_saturation/results/reuse-001-verification.json",
+      "sha256": "2494cacb656d48de935304e891d33c552df6759f0a53d88a5f2a2947aaeff7d0"
+    },
+    {
+      "bytes": 1898,
+      "git_blob_sha1": "70aecf779d9a5cd1852dd8c238a2ba2f397a88ee",
+      "path": "experiments/semantic_saturation/scripts/build_tau.sh",
+      "sha256": "1c92095ece4c0aff53036c12b9d5b745916d86cccee4d8468a68ccff0f7754b6"
+    },
+    {
+      "bytes": 1535,
+      "git_blob_sha1": "15f8b3997be6ac08e638675e6ac3db4db2b608ff",
+      "path": "experiments/semantic_saturation/scripts/package_evidence.py",
+      "sha256": "63bc24c27562efc6e4197cc8cf10bb40cc163a5a1ca9af3336c5eb67df509c01"
+    },
+    {
+      "bytes": 5269,
+      "git_blob_sha1": "0846c1b6851d8de9aeb833f87a045220b45ad58a",
+      "path": "experiments/semantic_saturation/src/analyze_results.py",
+      "sha256": "d751ac5f68b46bd8bfc2e987473c04f97d035f75bf17cea82ee955b5fae3febb"
+    },
+    {
+      "bytes": 20208,
+      "git_blob_sha1": "0edae463a4c9202c4e7973fb228b86e1178ce56d",
+      "path": "experiments/semantic_saturation/src/baselines.py",
+      "sha256": "d2a3d27a1cd8f179efa039e7e6326c164dd282bf9ec26d23970a353d3452efbc"
+    },
+    {
+      "bytes": 11514,
+      "git_blob_sha1": "03490ec444cec32a1e2b0f267f6e90bb5bb46769",
+      "path": "experiments/semantic_saturation/src/checked_registry.py",
+      "sha256": "3b4ec9988de437232186d88a9485505a2d4e474b51977b83622e80a2d67eb1e2"
+    },
+    {
+      "bytes": 16038,
+      "git_blob_sha1": "d3b1cd64a53fbc5b48c3175a2edf1a0fefbf7230",
+      "path": "experiments/semantic_saturation/src/engine.py",
+      "sha256": "10541eb6502dca227b875f7f4355ec6a61cc4bdeb72ce6b9cc92aa00d45da9e1"
+    },
+    {
+      "bytes": 2370,
+      "git_blob_sha1": "68d32d25793e4c780467e25f55fd492afb0b61a2",
+      "path": "experiments/semantic_saturation/src/freeze_protocol.py",
+      "sha256": "535b06ff82cce18b4051d942f084d8be88fc41ab3f149c74aaafda059c2e4766"
+    },
+    {
+      "bytes": 5494,
+      "git_blob_sha1": "c6c101a9aa8af2c1fa5b268214915561c1efe943",
+      "path": "experiments/semantic_saturation/src/generate_corpus.py",
+      "sha256": "e0e34d698f4f31faa8d2ab50ed6b9a85528ad48a4d3c9b887129b75a0257dc5b"
+    },
+    {
+      "bytes": 4995,
+      "git_blob_sha1": "f90bbaf54161bb0d4a62602ef300cde3cfaca9d2",
+      "path": "experiments/semantic_saturation/src/native_oracle.py",
+      "sha256": "98306306f8c1badd8967b83949e5687a66c27ba02ae0b8997697418ef5efdbaa"
+    },
+    {
+      "bytes": 6817,
+      "git_blob_sha1": "3a7b1d6bf1068dab98bbae3f0ba7927105313125",
+      "path": "experiments/semantic_saturation/src/normalized_parser.py",
+      "sha256": "4edb582c9895b035175f72dc23a23f3779468b565f38709ca56667aaee0f4e09"
+    },
+    {
+      "bytes": 4688,
+      "git_blob_sha1": "3e573c7a3bbb1c6d94b0e092dd61d61892333bb7",
+      "path": "experiments/semantic_saturation/src/run_resources.py",
+      "sha256": "353588df943bf5ebca4d5a92266abc93130018679d353207b8f7f00fe19b896a"
+    },
+    {
+      "bytes": 43612,
+      "git_blob_sha1": "7c75651fad517154f57ceda6f78cd9b8c5cbce61",
+      "path": "experiments/semantic_saturation/src/run_reuse.py",
+      "sha256": "84c62b3582bec04ff220e8fe66221be7945a1d824c855457f880c99d713e3e44"
+    },
+    {
+      "bytes": 16312,
+      "git_blob_sha1": "4b0cce6a1bfef9ddb4aadc422769eb77f1e3b108",
+      "path": "experiments/semantic_saturation/src/run_study.py",
+      "sha256": "4d34dc38780a50b4f2abd8213199ac740333c1472402f84dd4f370d9d89e0d59"
+    },
+    {
+      "bytes": 4906,
+      "git_blob_sha1": "a85ac7e527980c896366cdc44773faad538b0b10",
+      "path": "experiments/semantic_saturation/src/study_core.py",
+      "sha256": "5fe15e205943aacb8042f03c707f2486d6b83eb52d1be0738d68b5e7e799eed9"
+    },
+    {
+      "bytes": 21624,
+      "git_blob_sha1": "f81d4083ebf7ef6b5fe16369cf3affbf7b7a44eb",
+      "path": "experiments/semantic_saturation/src/support_oracle.py",
+      "sha256": "432f5c05d41123a88fee2fab77ac5a15130c7aab59c78fb0efa3ebdec0ab8f79"
+    },
+    {
+      "bytes": 3566,
+      "git_blob_sha1": "f5efc142b359dc6c0e87d7fe6423399dc25b388b",
+      "path": "experiments/semantic_saturation/src/typed_parser.py",
+      "sha256": "7972b8343189865e92e7e0a264a6fd8459e9e59d245ed5db7128ebfa89577f07"
+    },
+    {
+      "bytes": 14498,
+      "git_blob_sha1": "a72ced61ceeffbf34a7f7efd0a606b18f89f50f9",
+      "path": "experiments/semantic_saturation/src/validate_run.py",
+      "sha256": "7fbc9cdfb42d73d294229c55d74c60bcf66568a3ebb5ba5727d038f85f8e844d"
+    },
+    {
+      "bytes": 578,
+      "git_blob_sha1": "6b34ce58b9e265ba7806c55d4e1e0e50fc4e81d9",
+      "path": "experiments/semantic_saturation/tests/test_accounting.py",
+      "sha256": "fc4c50f001a1e43338d460ae92a64964e5c1378677dcb7298fb0ebf36de5171a"
+    },
+    {
+      "bytes": 12091,
+      "git_blob_sha1": "aec461ca97d1831fd8058b93c409dd7ab2a1d2b0",
+      "path": "experiments/semantic_saturation/tests/test_baselines.py",
+      "sha256": "80ec11b6fe8cfed5c91c719dc41dcd16361df523fe7170b807773142ccdc0050"
+    },
+    {
+      "bytes": 7536,
+      "git_blob_sha1": "b8ce8f69db5ca3a20b454950607fce2f0eb3fc51",
+      "path": "experiments/semantic_saturation/tests/test_engine.py",
+      "sha256": "5df4bfc341c42cf6e30dcceda87fd03eb89096dd45b7f1876b8360cace36e970"
+    },
+    {
+      "bytes": 1093,
+      "git_blob_sha1": "5c6b1db294f24888c43c9bd2ac5cd809326ef5b2",
+      "path": "experiments/semantic_saturation/tests/test_native_oracle.py",
+      "sha256": "bcb59c8dbf54a9633aeef26b5e05e4f57409a4ad79dc42c3b54eb199ee95a61b"
+    },
+    {
+      "bytes": 2835,
+      "git_blob_sha1": "2f03252027ab393fea75ba63b178365856e336ff",
+      "path": "experiments/semantic_saturation/tests/test_normalized_parser.py",
+      "sha256": "89742f614beea63e867830f1c7be6aac3cc89cd303a2da5420f85f17de59cfff"
+    },
+    {
+      "bytes": 16186,
+      "git_blob_sha1": "c47147effdc3ec3d7f4d4e229c1c9bbcd54c326c",
+      "path": "experiments/semantic_saturation/tests/test_reuse.py",
+      "sha256": "64e0007914ee26e539743c5594bc1f7f19a1ef87d4d0e1d6dabf71a6d0b0e910"
+    },
+    {
+      "bytes": 1724,
+      "git_blob_sha1": "99e0c75c92d483ccc8a195c6f6982c82541feaf8",
+      "path": "experiments/semantic_saturation/tests/test_study_core.py",
+      "sha256": "25fb18e313d7dbfc37505ff95e7cca3edf6017183c69fa0b8c46d683061fc674"
+    },
+    {
+      "bytes": 10004,
+      "git_blob_sha1": "187bd8f5ff7aa8e2f5376e95d7e763ab24ff71f0",
+      "path": "experiments/semantic_saturation/tests/test_support_oracle.py",
+      "sha256": "ffbea4ee2bdf69e26167257e6118dc8386341201a240c2f53abe5e2f97c0605a"
+    },
+    {
+      "bytes": 28,
+      "git_blob_sha1": "15c6b45503938f392dd04851c15f7722077ce913",
+      "path": "proofs/lean/support_cells_v001/.gitignore",
+      "sha256": "94f4851486816c2a3edeb3b62955b61d94bfdd62da75894b012f32ac7511bb7d"
+    },
+    {
+      "bytes": 129060,
+      "git_blob_sha1": "d5711818f0224c3a9edb4ba5628eaca4abb511e2",
+      "path": "proofs/lean/support_cells_v001/Bridge.lean",
+      "sha256": "512c203da91ab331c3633eb9e1ad7882c275d7156adcea5f6ce7b1075acec528"
+    },
+    {
+      "bytes": 3384,
+      "git_blob_sha1": "b4b4a789539d992d42c53779d805704e98463969",
+      "path": "proofs/lean/support_cells_v001/MANIFEST.json",
+      "sha256": "3f62aac498d3e361acf4e31e43b1d8144a8421b83aea3e75d658102ad9c06327"
+    },
+    {
+      "bytes": 5851,
+      "git_blob_sha1": "c48d915e1d54d22fe93f4920c029f611b4e5ce38",
+      "path": "proofs/lean/support_cells_v001/OBLIGATIONS.md",
+      "sha256": "5074704104d70b8773daef5a6ad63aed9ca6c7949f7f95e75a721979447d103e"
+    },
+    {
+      "bytes": 23921,
+      "git_blob_sha1": "28d431c37fdfe2a84a289c3d57580ffbf7665667",
+      "path": "proofs/lean/support_cells_v001/Proofs.lean",
+      "sha256": "deeccac5285fa2e1a38c3ebe964df3dbf0fab9ccedbb7b15d19c3bc182aa7491"
+    },
+    {
+      "bytes": 7967,
+      "git_blob_sha1": "b1467d3a8a80573bd836fdc6020ed700a624b50a",
+      "path": "proofs/lean/support_cells_v001/README.md",
+      "sha256": "4eece7042bd5a87e763846f361459bce91836499fafe74de09a89e54c7ac47e2"
+    },
+    {
+      "bytes": 514038,
+      "git_blob_sha1": "445de33c9dd4825487f3422d5711187999777a0c",
+      "path": "proofs/lean/support_cells_v001/fixtures.json",
+      "sha256": "5a1ecbf7f168ad4c33d06c1e131d8a2879b24f0fcd35bb63f7c49db9bb8fc100"
+    },
+    {
+      "bytes": 124,
+      "git_blob_sha1": "1fdd42b6c78d32edc7b16eac7bc9a37af15cfc52",
+      "path": "proofs/lean/support_cells_v001/lake-manifest.json",
+      "sha256": "e709854fa3e54e6ae3c7381df5908958fc2dd268caccd9035e41aa16461fcdeb"
+    },
+    {
+      "bytes": 131,
+      "git_blob_sha1": "61ad19e272669752dd6fa17eb5256823b8589879",
+      "path": "proofs/lean/support_cells_v001/lakefile.lean",
+      "sha256": "f1208e36a55f9018432156a4105f80bb89190df97be7e943b4fc69b819ff60a3"
+    },
+    {
+      "bytes": 25,
+      "git_blob_sha1": "33e0c088939ad08c9f2b1befa3118a423b06ad7d",
+      "path": "proofs/lean/support_cells_v001/lean-toolchain",
+      "sha256": "7dc000621e0046d1aada809e2b7177e64454645cf4c741e9daaf79c99ec2e7a2"
+    },
+    {
+      "bytes": 4183,
+      "git_blob_sha1": "588711164b504d81cd9f10e7209525dcb7f77e44",
+      "path": "proofs/lean/support_cells_v001/prepare_fixtures.py",
+      "sha256": "20897f4fe99f78310466bd165d64adbb8386c9590f516c9d35753e3a4c0f0789"
+    },
+    {
+      "bytes": 2381,
+      "git_blob_sha1": "7c138f27fd73be9df6d5c10665690f1b5a8689cb",
+      "path": "proofs/lean/support_cells_v001/proof-contract.json",
+      "sha256": "f7cc4aec2dd5e980681fbe49e34e25f223fbdbf55d87a778ed1f2dabc51648e3"
+    },
+    {
+      "bytes": 4751,
+      "git_blob_sha1": "a6932b7e3d1779fe10e546dee4b18c7d766c1747",
+      "path": "proofs/lean/support_cells_v001/receipts/correspondence.json",
+      "sha256": "b60d89c93c23b778a7781a0efb3f2060fb0205a561278f99199077c4664ad126"
+    },
+    {
+      "bytes": 1762,
+      "git_blob_sha1": "4a0c17821a06388f0ab0e28c858d672f8d6b3fd4",
+      "path": "proofs/lean/support_cells_v001/receipts/lake-build.txt",
+      "sha256": "a8595cfdcc11bda55afbe4ef6cf44084caf4a7e7636bfb431dd3559e3429fbf2"
+    },
+    {
+      "bytes": 1318,
+      "git_blob_sha1": "1d69547fa506d610107a277e7b078522c85a3a9c",
+      "path": "proofs/lean/support_cells_v001/receipts/lean-build.txt",
+      "sha256": "318aa4f083f855d84936f7b5a138bd9ba128476f89b1923f511cde359458270e"
+    },
+    {
+      "bytes": 20649,
+      "git_blob_sha1": "2ce43f74256327adc132a986d8afc877ff95da14",
+      "path": "proofs/lean/support_cells_v001/receipts/lean-correspondence.txt",
+      "sha256": "90e95116394af6d0a47da2346ce8baa1f50de679646ac743824b0fc488b520cf"
+    },
+    {
+      "bytes": 598,
+      "git_blob_sha1": "891c6f4a2d83761e6d80df0336f04ada04edf412",
+      "path": "proofs/lean/support_cells_v001/receipts/toolchain.json",
+      "sha256": "1971482c18f3a5d1dc11b6c3c67ff5764abf2c94d188a2cfae8498800094fc7b"
+    },
+    {
+      "bytes": 13128,
+      "git_blob_sha1": "fb7edb626ea8ad18069e19c817ec75b9b94be8ad",
+      "path": "proofs/lean/support_cells_v001/replay.py",
+      "sha256": "c57bb0819c7bc76aecc77c835c678743fa21b0ce6bc4beb5aaa3acd0ad76d906"
+    }
+  ],
+  "manifest_self_hash_excluded": true,
+  "maximum_file_bytes": 7179812,
+  "publication_provenance": "PUBLICATION_PROVENANCE.json",
+  "release_commit": "the Git commit containing this manifest; all listed regular blobs must match that commit",
+  "repository_base": "65ef69bdc5e6f1e479236d9dfb4d9b6d2e5302d1",
+  "schema": "tau-publication-allowlist/v1",
+  "scientific_revision": "3ee5ee545486b910e24e5efe034ad762a1abad36",
+  "total_bytes_excluding_manifest": 46133546
+}

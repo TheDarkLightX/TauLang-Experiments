@@ -1,0 +1,8 @@
+{
+  "initial_reuse_cli_attempt": {
+    "status": "ARGUMENT_ERROR",
+    "exit_code": 2,
+    "cause": "Invocation omitted the required expected freeze digest; no evidence was read as verified and no native process ran."
+  },
+  "correction": "Reran the frozen verifier with the exact precommitted reuse freeze digest; no source or experimental inputs changed."
+}

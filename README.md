@@ -8,6 +8,16 @@ This repository does **not** redistribute Tau Language source code or binaries. 
 https://github.com/IDNI/tau-lang
 ```
 
+## Checked semantic saturation study
+
+The [checked semantic saturation research packet](experiments/semantic_saturation/README.md)
+contains a Lean support-semantics reference, a frozen 336-case Tau study, and
+complete reproduction evidence. Its main attribution results are negative:
+matched semantic egraphs and scoped recursive congruence tie byte quality, and
+semantic caching saves no native checks beyond ordinary exact memoization.
+The full rewrite hybrid produces smaller expressions on the restricted corpus,
+with parser-sensitivity, cost, and scope limits reported explicitly.
+
 ## Purpose
 
 This repo is for educational and research work around Tau Language, including:

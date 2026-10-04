@@ -1,0 +1,1007 @@
+{
+  "status": "POSTHOC_ATTRIBUTION_SENSITIVITY",
+  "scope": "Frozen primary unchanged; this diagnostic separates unsupported native output syntax from optimizer-attributable comparisons.",
+  "all_336": {
+    "cases": 336,
+    "hybrid_bytes": 14448,
+    "comparisons": {
+      "native_guarded": {
+        "baseline_bytes": 19705,
+        "byte_saving": 5257,
+        "saving_pct": 26.678507992895206,
+        "wins": 102,
+        "ties": 234,
+        "regressions": 0
+      },
+      "native_sympy_portfolio": {
+        "baseline_bytes": 18128,
+        "byte_saving": 3680,
+        "saving_pct": 20.30008826125331,
+        "wins": 79,
+        "ties": 247,
+        "regressions": 10
+      },
+      "recursive_congruence": {
+        "baseline_bytes": 15796,
+        "byte_saving": 1348,
+        "saving_pct": 8.533806026842239,
+        "wins": 76,
+        "ties": 260,
+        "regressions": 0
+      },
+      "semantic_list": {
+        "baseline_bytes": 19173,
+        "byte_saving": 4725,
+        "saving_pct": 24.644030668127055,
+        "wins": 94,
+        "ties": 242,
+        "regressions": 0
+      }
+    }
+  },
+  "supported_native_333": {
+    "cases": 333,
+    "hybrid_bytes": 14206,
+    "comparisons": {
+      "native_guarded": {
+        "baseline_bytes": 18717,
+        "byte_saving": 4511,
+        "saving_pct": 24.101084575519582,
+        "wins": 99,
+        "ties": 234,
+        "regressions": 0
+      },
+      "native_sympy_portfolio": {
+        "baseline_bytes": 17140,
+        "byte_saving": 2934,
+        "saving_pct": 17.117852975495914,
+        "wins": 76,
+        "ties": 247,
+        "regressions": 10
+      },
+      "recursive_congruence": {
+        "baseline_bytes": 15530,
+        "byte_saving": 1324,
+        "saving_pct": 8.525434642627173,
+        "wins": 75,
+        "ties": 258,
+        "regressions": 0
+      },
+      "semantic_list": {
+        "baseline_bytes": 18580,
+        "byte_saving": 4374,
+        "saving_pct": 23.541442411194833,
+        "wins": 92,
+        "ties": 241,
+        "regressions": 0
+      }
+    }
+  },
+  "unsupported_native_3": {
+    "cases": 3,
+    "hybrid_bytes": 242,
+    "comparisons": {
+      "native_guarded": {
+        "baseline_bytes": 988,
+        "byte_saving": 746,
+        "saving_pct": 75.50607287449392,
+        "wins": 3,
+        "ties": 0,
+        "regressions": 0
+      },
+      "native_sympy_portfolio": {
+        "baseline_bytes": 988,
+        "byte_saving": 746,
+        "saving_pct": 75.50607287449392,
+        "wins": 3,
+        "ties": 0,
+        "regressions": 0
+      },
+      "recursive_congruence": {
+        "baseline_bytes": 266,
+        "byte_saving": 24,
+        "saving_pct": 9.022556390977442,
+        "wins": 1,
+        "ties": 2,
+        "regressions": 0
+      },
+      "semantic_list": {
+        "baseline_bytes": 593,
+        "byte_saving": 351,
+        "saving_pct": 59.190556492411474,
+        "wins": 2,
+        "ties": 1,
+        "regressions": 0
+      }
+    }
+  },
+  "excluded_cases": [
+    {
+      "name": "test-proper_split_composition_holdout-n3-s32-r0",
+      "native_stdout": "%1: b' != 0 || c' != a || c' != 0\n\n",
+      "reason": "only term equality/inequality to literal zero is accepted",
+      "original_bytes": 216,
+      "hybrid_bytes": 190
+    },
+    {
+      "name": "test-proper_split_composition_holdout-n3-s64-r1",
+      "native_stdout": "%1: a = 0 || cb' != b\n\n",
+      "reason": "only term equality/inequality to literal zero is accepted",
+      "original_bytes": 376,
+      "hybrid_bytes": 51
+    },
+    {
+      "name": "test-proper_split_composition_holdout-n3-s64-r2",
+      "native_stdout": "%1: c'b' != c || (a != 0 || a' != 0) && (c' = 0 || b != 0)\n\n",
+      "reason": "only term equality/inequality to literal zero is accepted",
+      "original_bytes": 396,
+      "hybrid_bytes": 1
+    }
+  ],
+  "families": {
+    "factoring_composition": {
+      "all": {
+        "cases": 48,
+        "hybrid_bytes": 1853,
+        "comparisons": {
+          "native_guarded": {
+            "baseline_bytes": 2837,
+            "byte_saving": 984,
+            "saving_pct": 34.684525907648926,
+            "wins": 15,
+            "ties": 33,
+            "regressions": 0
+          },
+          "native_sympy_portfolio": {
+            "baseline_bytes": 2503,
+            "byte_saving": 650,
+            "saving_pct": 25.96883739512585,
+            "wins": 11,
+            "ties": 37,
+            "regressions": 0
+          },
+          "recursive_congruence": {
+            "baseline_bytes": 2326,
+            "byte_saving": 473,
+            "saving_pct": 20.335339638865005,
+            "wins": 15,
+            "ties": 33,
+            "regressions": 0
+          },
+          "semantic_list": {
+            "baseline_bytes": 2837,
+            "byte_saving": 984,
+            "saving_pct": 34.684525907648926,
+            "wins": 15,
+            "ties": 33,
+            "regressions": 0
+          }
+        }
+      },
+      "native_supported": {
+        "cases": 48,
+        "hybrid_bytes": 1853,
+        "comparisons": {
+          "native_guarded": {
+            "baseline_bytes": 2837,
+            "byte_saving": 984,
+            "saving_pct": 34.684525907648926,
+            "wins": 15,
+            "ties": 33,
+            "regressions": 0
+          },
+          "native_sympy_portfolio": {
+            "baseline_bytes": 2503,
+            "byte_saving": 650,
+            "saving_pct": 25.96883739512585,
+            "wins": 11,
+            "ties": 37,
+            "regressions": 0
+          },
+          "recursive_congruence": {
+            "baseline_bytes": 2326,
+            "byte_saving": 473,
+            "saving_pct": 20.335339638865005,
+            "wins": 15,
+            "ties": 33,
+            "regressions": 0
+          },
+          "semantic_list": {
+            "baseline_bytes": 2837,
+            "byte_saving": 984,
+            "saving_pct": 34.684525907648926,
+            "wins": 15,
+            "ties": 33,
+            "regressions": 0
+          }
+        }
+      }
+    },
+    "mixed_quantifier_pair_holdout": {
+      "all": {
+        "cases": 36,
+        "hybrid_bytes": 84,
+        "comparisons": {
+          "native_guarded": {
+            "baseline_bytes": 84,
+            "byte_saving": 0,
+            "saving_pct": 0.0,
+            "wins": 0,
+            "ties": 36,
+            "regressions": 0
+          },
+          "native_sympy_portfolio": {
+            "baseline_bytes": 84,
+            "byte_saving": 0,
+            "saving_pct": 0.0,
+            "wins": 0,
+            "ties": 36,
+            "regressions": 0
+          },
+          "recursive_congruence": {
+            "baseline_bytes": 84,
+            "byte_saving": 0,
+            "saving_pct": 0.0,
+            "wins": 0,
+            "ties": 36,
+            "regressions": 0
+          },
+          "semantic_list": {
+            "baseline_bytes": 84,
+            "byte_saving": 0,
+            "saving_pct": 0.0,
+            "wins": 0,
+            "ties": 36,
+            "regressions": 0
+          }
+        }
+      },
+      "native_supported": {
+        "cases": 36,
+        "hybrid_bytes": 84,
+        "comparisons": {
+          "native_guarded": {
+            "baseline_bytes": 84,
+            "byte_saving": 0,
+            "saving_pct": 0.0,
+            "wins": 0,
+            "ties": 36,
+            "regressions": 0
+          },
+          "native_sympy_portfolio": {
+            "baseline_bytes": 84,
+            "byte_saving": 0,
+            "saving_pct": 0.0,
+            "wins": 0,
+            "ties": 36,
+            "regressions": 0
+          },
+          "recursive_congruence": {
+            "baseline_bytes": 84,
+            "byte_saving": 0,
+            "saving_pct": 0.0,
+            "wins": 0,
+            "ties": 36,
+            "regressions": 0
+          },
+          "semantic_list": {
+            "baseline_bytes": 84,
+            "byte_saving": 0,
+            "saving_pct": 0.0,
+            "wins": 0,
+            "ties": 36,
+            "regressions": 0
+          }
+        }
+      }
+    },
+    "multiplexer_holdout": {
+      "all": {
+        "cases": 48,
+        "hybrid_bytes": 3293,
+        "comparisons": {
+          "native_guarded": {
+            "baseline_bytes": 3917,
+            "byte_saving": 624,
+            "saving_pct": 15.930559101353076,
+            "wins": 20,
+            "ties": 28,
+            "regressions": 0
+          },
+          "native_sympy_portfolio": {
+            "baseline_bytes": 3015,
+            "byte_saving": -278,
+            "saving_pct": -9.220563847429519,
+            "wins": 7,
+            "ties": 35,
+            "regressions": 6
+          },
+          "recursive_congruence": {
+            "baseline_bytes": 3622,
+            "byte_saving": 329,
+            "saving_pct": 9.083379348426284,
+            "wins": 16,
+            "ties": 32,
+            "regressions": 0
+          },
+          "semantic_list": {
+            "baseline_bytes": 3917,
+            "byte_saving": 624,
+            "saving_pct": 15.930559101353076,
+            "wins": 20,
+            "ties": 28,
+            "regressions": 0
+          }
+        }
+      },
+      "native_supported": {
+        "cases": 48,
+        "hybrid_bytes": 3293,
+        "comparisons": {
+          "native_guarded": {
+            "baseline_bytes": 3917,
+            "byte_saving": 624,
+            "saving_pct": 15.930559101353076,
+            "wins": 20,
+            "ties": 28,
+            "regressions": 0
+          },
+          "native_sympy_portfolio": {
+            "baseline_bytes": 3015,
+            "byte_saving": -278,
+            "saving_pct": -9.220563847429519,
+            "wins": 7,
+            "ties": 35,
+            "regressions": 6
+          },
+          "recursive_congruence": {
+            "baseline_bytes": 3622,
+            "byte_saving": 329,
+            "saving_pct": 9.083379348426284,
+            "wins": 16,
+            "ties": 32,
+            "regressions": 0
+          },
+          "semantic_list": {
+            "baseline_bytes": 3917,
+            "byte_saving": 624,
+            "saving_pct": 15.930559101353076,
+            "wins": 20,
+            "ties": 28,
+            "regressions": 0
+          }
+        }
+      }
+    },
+    "parity_holdout": {
+      "all": {
+        "cases": 48,
+        "hybrid_bytes": 5032,
+        "comparisons": {
+          "native_guarded": {
+            "baseline_bytes": 7027,
+            "byte_saving": 1995,
+            "saving_pct": 28.390493809591575,
+            "wins": 38,
+            "ties": 10,
+            "regressions": 0
+          },
+          "native_sympy_portfolio": {
+            "baseline_bytes": 6920,
+            "byte_saving": 1888,
+            "saving_pct": 27.28323699421965,
+            "wins": 37,
+            "ties": 10,
+            "regressions": 1
+          },
+          "recursive_congruence": {
+            "baseline_bytes": 5360,
+            "byte_saving": 328,
+            "saving_pct": 6.119402985074627,
+            "wins": 28,
+            "ties": 20,
+            "regressions": 0
+          },
+          "semantic_list": {
+            "baseline_bytes": 6959,
+            "byte_saving": 1927,
+            "saving_pct": 27.690760166690616,
+            "wins": 36,
+            "ties": 12,
+            "regressions": 0
+          }
+        }
+      },
+      "native_supported": {
+        "cases": 48,
+        "hybrid_bytes": 5032,
+        "comparisons": {
+          "native_guarded": {
+            "baseline_bytes": 7027,
+            "byte_saving": 1995,
+            "saving_pct": 28.390493809591575,
+            "wins": 38,
+            "ties": 10,
+            "regressions": 0
+          },
+          "native_sympy_portfolio": {
+            "baseline_bytes": 6920,
+            "byte_saving": 1888,
+            "saving_pct": 27.28323699421965,
+            "wins": 37,
+            "ties": 10,
+            "regressions": 1
+          },
+          "recursive_congruence": {
+            "baseline_bytes": 5360,
+            "byte_saving": 328,
+            "saving_pct": 6.119402985074627,
+            "wins": 28,
+            "ties": 20,
+            "regressions": 0
+          },
+          "semantic_list": {
+            "baseline_bytes": 6959,
+            "byte_saving": 1927,
+            "saving_pct": 27.690760166690616,
+            "wins": 36,
+            "ties": 12,
+            "regressions": 0
+          }
+        }
+      }
+    },
+    "proper_split_composition_holdout": {
+      "all": {
+        "cases": 36,
+        "hybrid_bytes": 842,
+        "comparisons": {
+          "native_guarded": {
+            "baseline_bytes": 1633,
+            "byte_saving": 791,
+            "saving_pct": 48.438456827924064,
+            "wins": 7,
+            "ties": 29,
+            "regressions": 0
+          },
+          "native_sympy_portfolio": {
+            "baseline_bytes": 1633,
+            "byte_saving": 791,
+            "saving_pct": 48.438456827924064,
+            "wins": 7,
+            "ties": 29,
+            "regressions": 0
+          },
+          "recursive_congruence": {
+            "baseline_bytes": 866,
+            "byte_saving": 24,
+            "saving_pct": 2.771362586605081,
+            "wins": 1,
+            "ties": 35,
+            "regressions": 0
+          },
+          "semantic_list": {
+            "baseline_bytes": 1193,
+            "byte_saving": 351,
+            "saving_pct": 29.42162615255658,
+            "wins": 2,
+            "ties": 34,
+            "regressions": 0
+          }
+        }
+      },
+      "native_supported": {
+        "cases": 33,
+        "hybrid_bytes": 600,
+        "comparisons": {
+          "native_guarded": {
+            "baseline_bytes": 645,
+            "byte_saving": 45,
+            "saving_pct": 6.976744186046512,
+            "wins": 4,
+            "ties": 29,
+            "regressions": 0
+          },
+          "native_sympy_portfolio": {
+            "baseline_bytes": 645,
+            "byte_saving": 45,
+            "saving_pct": 6.976744186046512,
+            "wins": 4,
+            "ties": 29,
+            "regressions": 0
+          },
+          "recursive_congruence": {
+            "baseline_bytes": 600,
+            "byte_saving": 0,
+            "saving_pct": 0.0,
+            "wins": 0,
+            "ties": 33,
+            "regressions": 0
+          },
+          "semantic_list": {
+            "baseline_bytes": 600,
+            "byte_saving": 0,
+            "saving_pct": 0.0,
+            "wins": 0,
+            "ties": 33,
+            "regressions": 0
+          }
+        }
+      }
+    },
+    "quantified_random": {
+      "all": {
+        "cases": 36,
+        "hybrid_bytes": 353,
+        "comparisons": {
+          "native_guarded": {
+            "baseline_bytes": 353,
+            "byte_saving": 0,
+            "saving_pct": 0.0,
+            "wins": 0,
+            "ties": 36,
+            "regressions": 0
+          },
+          "native_sympy_portfolio": {
+            "baseline_bytes": 353,
+            "byte_saving": 0,
+            "saving_pct": 0.0,
+            "wins": 0,
+            "ties": 36,
+            "regressions": 0
+          },
+          "recursive_congruence": {
+            "baseline_bytes": 353,
+            "byte_saving": 0,
+            "saving_pct": 0.0,
+            "wins": 0,
+            "ties": 36,
+            "regressions": 0
+          },
+          "semantic_list": {
+            "baseline_bytes": 353,
+            "byte_saving": 0,
+            "saving_pct": 0.0,
+            "wins": 0,
+            "ties": 36,
+            "regressions": 0
+          }
+        }
+      },
+      "native_supported": {
+        "cases": 36,
+        "hybrid_bytes": 353,
+        "comparisons": {
+          "native_guarded": {
+            "baseline_bytes": 353,
+            "byte_saving": 0,
+            "saving_pct": 0.0,
+            "wins": 0,
+            "ties": 36,
+            "regressions": 0
+          },
+          "native_sympy_portfolio": {
+            "baseline_bytes": 353,
+            "byte_saving": 0,
+            "saving_pct": 0.0,
+            "wins": 0,
+            "ties": 36,
+            "regressions": 0
+          },
+          "recursive_congruence": {
+            "baseline_bytes": 353,
+            "byte_saving": 0,
+            "saving_pct": 0.0,
+            "wins": 0,
+            "ties": 36,
+            "regressions": 0
+          },
+          "semantic_list": {
+            "baseline_bytes": 353,
+            "byte_saving": 0,
+            "saving_pct": 0.0,
+            "wins": 0,
+            "ties": 36,
+            "regressions": 0
+          }
+        }
+      }
+    },
+    "random_formula": {
+      "all": {
+        "cases": 36,
+        "hybrid_bytes": 400,
+        "comparisons": {
+          "native_guarded": {
+            "baseline_bytes": 432,
+            "byte_saving": 32,
+            "saving_pct": 7.4074074074074066,
+            "wins": 2,
+            "ties": 34,
+            "regressions": 0
+          },
+          "native_sympy_portfolio": {
+            "baseline_bytes": 432,
+            "byte_saving": 32,
+            "saving_pct": 7.4074074074074066,
+            "wins": 2,
+            "ties": 34,
+            "regressions": 0
+          },
+          "recursive_congruence": {
+            "baseline_bytes": 400,
+            "byte_saving": 0,
+            "saving_pct": 0.0,
+            "wins": 0,
+            "ties": 36,
+            "regressions": 0
+          },
+          "semantic_list": {
+            "baseline_bytes": 408,
+            "byte_saving": 8,
+            "saving_pct": 1.9607843137254901,
+            "wins": 1,
+            "ties": 35,
+            "regressions": 0
+          }
+        }
+      },
+      "native_supported": {
+        "cases": 36,
+        "hybrid_bytes": 400,
+        "comparisons": {
+          "native_guarded": {
+            "baseline_bytes": 432,
+            "byte_saving": 32,
+            "saving_pct": 7.4074074074074066,
+            "wins": 2,
+            "ties": 34,
+            "regressions": 0
+          },
+          "native_sympy_portfolio": {
+            "baseline_bytes": 432,
+            "byte_saving": 32,
+            "saving_pct": 7.4074074074074066,
+            "wins": 2,
+            "ties": 34,
+            "regressions": 0
+          },
+          "recursive_congruence": {
+            "baseline_bytes": 400,
+            "byte_saving": 0,
+            "saving_pct": 0.0,
+            "wins": 0,
+            "ties": 36,
+            "regressions": 0
+          },
+          "semantic_list": {
+            "baseline_bytes": 408,
+            "byte_saving": 8,
+            "saving_pct": 1.9607843137254901,
+            "wins": 1,
+            "ties": 35,
+            "regressions": 0
+          }
+        }
+      }
+    },
+    "random_term": {
+      "all": {
+        "cases": 48,
+        "hybrid_bytes": 2591,
+        "comparisons": {
+          "native_guarded": {
+            "baseline_bytes": 3422,
+            "byte_saving": 831,
+            "saving_pct": 24.28404441846873,
+            "wins": 20,
+            "ties": 28,
+            "regressions": 0
+          },
+          "native_sympy_portfolio": {
+            "baseline_bytes": 3188,
+            "byte_saving": 597,
+            "saving_pct": 18.72647427854454,
+            "wins": 15,
+            "ties": 30,
+            "regressions": 3
+          },
+          "recursive_congruence": {
+            "baseline_bytes": 2785,
+            "byte_saving": 194,
+            "saving_pct": 6.9658886894075405,
+            "wins": 16,
+            "ties": 32,
+            "regressions": 0
+          },
+          "semantic_list": {
+            "baseline_bytes": 3422,
+            "byte_saving": 831,
+            "saving_pct": 24.28404441846873,
+            "wins": 20,
+            "ties": 28,
+            "regressions": 0
+          }
+        }
+      },
+      "native_supported": {
+        "cases": 48,
+        "hybrid_bytes": 2591,
+        "comparisons": {
+          "native_guarded": {
+            "baseline_bytes": 3422,
+            "byte_saving": 831,
+            "saving_pct": 24.28404441846873,
+            "wins": 20,
+            "ties": 28,
+            "regressions": 0
+          },
+          "native_sympy_portfolio": {
+            "baseline_bytes": 3188,
+            "byte_saving": 597,
+            "saving_pct": 18.72647427854454,
+            "wins": 15,
+            "ties": 30,
+            "regressions": 3
+          },
+          "recursive_congruence": {
+            "baseline_bytes": 2785,
+            "byte_saving": 194,
+            "saving_pct": 6.9658886894075405,
+            "wins": 16,
+            "ties": 32,
+            "regressions": 0
+          },
+          "semantic_list": {
+            "baseline_bytes": 3422,
+            "byte_saving": 831,
+            "saving_pct": 24.28404441846873,
+            "wins": 20,
+            "ties": 28,
+            "regressions": 0
+          }
+        }
+      }
+    }
+  },
+  "strata": {
+    "pure_term": {
+      "all": {
+        "cases": 192,
+        "hybrid_bytes": 12769,
+        "comparisons": {
+          "native_guarded": {
+            "baseline_bytes": 17203,
+            "byte_saving": 4434,
+            "saving_pct": 25.774574202174037,
+            "wins": 93,
+            "ties": 99,
+            "regressions": 0
+          },
+          "native_sympy_portfolio": {
+            "baseline_bytes": 15626,
+            "byte_saving": 2857,
+            "saving_pct": 18.28362984768975,
+            "wins": 70,
+            "ties": 112,
+            "regressions": 10
+          },
+          "recursive_congruence": {
+            "baseline_bytes": 14093,
+            "byte_saving": 1324,
+            "saving_pct": 9.39473497481019,
+            "wins": 75,
+            "ties": 117,
+            "regressions": 0
+          },
+          "semantic_list": {
+            "baseline_bytes": 17135,
+            "byte_saving": 4366,
+            "saving_pct": 25.48001167201634,
+            "wins": 91,
+            "ties": 101,
+            "regressions": 0
+          }
+        }
+      },
+      "native_supported": {
+        "cases": 192,
+        "hybrid_bytes": 12769,
+        "comparisons": {
+          "native_guarded": {
+            "baseline_bytes": 17203,
+            "byte_saving": 4434,
+            "saving_pct": 25.774574202174037,
+            "wins": 93,
+            "ties": 99,
+            "regressions": 0
+          },
+          "native_sympy_portfolio": {
+            "baseline_bytes": 15626,
+            "byte_saving": 2857,
+            "saving_pct": 18.28362984768975,
+            "wins": 70,
+            "ties": 112,
+            "regressions": 10
+          },
+          "recursive_congruence": {
+            "baseline_bytes": 14093,
+            "byte_saving": 1324,
+            "saving_pct": 9.39473497481019,
+            "wins": 75,
+            "ties": 117,
+            "regressions": 0
+          },
+          "semantic_list": {
+            "baseline_bytes": 17135,
+            "byte_saving": 4366,
+            "saving_pct": 25.48001167201634,
+            "wins": 91,
+            "ties": 101,
+            "regressions": 0
+          }
+        }
+      }
+    },
+    "quantifier_free_formula": {
+      "all": {
+        "cases": 36,
+        "hybrid_bytes": 400,
+        "comparisons": {
+          "native_guarded": {
+            "baseline_bytes": 432,
+            "byte_saving": 32,
+            "saving_pct": 7.4074074074074066,
+            "wins": 2,
+            "ties": 34,
+            "regressions": 0
+          },
+          "native_sympy_portfolio": {
+            "baseline_bytes": 432,
+            "byte_saving": 32,
+            "saving_pct": 7.4074074074074066,
+            "wins": 2,
+            "ties": 34,
+            "regressions": 0
+          },
+          "recursive_congruence": {
+            "baseline_bytes": 400,
+            "byte_saving": 0,
+            "saving_pct": 0.0,
+            "wins": 0,
+            "ties": 36,
+            "regressions": 0
+          },
+          "semantic_list": {
+            "baseline_bytes": 408,
+            "byte_saving": 8,
+            "saving_pct": 1.9607843137254901,
+            "wins": 1,
+            "ties": 35,
+            "regressions": 0
+          }
+        }
+      },
+      "native_supported": {
+        "cases": 36,
+        "hybrid_bytes": 400,
+        "comparisons": {
+          "native_guarded": {
+            "baseline_bytes": 432,
+            "byte_saving": 32,
+            "saving_pct": 7.4074074074074066,
+            "wins": 2,
+            "ties": 34,
+            "regressions": 0
+          },
+          "native_sympy_portfolio": {
+            "baseline_bytes": 432,
+            "byte_saving": 32,
+            "saving_pct": 7.4074074074074066,
+            "wins": 2,
+            "ties": 34,
+            "regressions": 0
+          },
+          "recursive_congruence": {
+            "baseline_bytes": 400,
+            "byte_saving": 0,
+            "saving_pct": 0.0,
+            "wins": 0,
+            "ties": 36,
+            "regressions": 0
+          },
+          "semantic_list": {
+            "baseline_bytes": 408,
+            "byte_saving": 8,
+            "saving_pct": 1.9607843137254901,
+            "wins": 1,
+            "ties": 35,
+            "regressions": 0
+          }
+        }
+      }
+    },
+    "quantified": {
+      "all": {
+        "cases": 108,
+        "hybrid_bytes": 1279,
+        "comparisons": {
+          "native_guarded": {
+            "baseline_bytes": 2070,
+            "byte_saving": 791,
+            "saving_pct": 38.212560386473434,
+            "wins": 7,
+            "ties": 101,
+            "regressions": 0
+          },
+          "native_sympy_portfolio": {
+            "baseline_bytes": 2070,
+            "byte_saving": 791,
+            "saving_pct": 38.212560386473434,
+            "wins": 7,
+            "ties": 101,
+            "regressions": 0
+          },
+          "recursive_congruence": {
+            "baseline_bytes": 1303,
+            "byte_saving": 24,
+            "saving_pct": 1.841903300076746,
+            "wins": 1,
+            "ties": 107,
+            "regressions": 0
+          },
+          "semantic_list": {
+            "baseline_bytes": 1630,
+            "byte_saving": 351,
+            "saving_pct": 21.533742331288344,
+            "wins": 2,
+            "ties": 106,
+            "regressions": 0
+          }
+        }
+      },
+      "native_supported": {
+        "cases": 105,
+        "hybrid_bytes": 1037,
+        "comparisons": {
+          "native_guarded": {
+            "baseline_bytes": 1082,
+            "byte_saving": 45,
+            "saving_pct": 4.1589648798521255,
+            "wins": 4,
+            "ties": 101,
+            "regressions": 0
+          },
+          "native_sympy_portfolio": {
+            "baseline_bytes": 1082,
+            "byte_saving": 45,
+            "saving_pct": 4.1589648798521255,
+            "wins": 4,
+            "ties": 101,
+            "regressions": 0
+          },
+          "recursive_congruence": {
+            "baseline_bytes": 1037,
+            "byte_saving": 0,
+            "saving_pct": 0.0,
+            "wins": 0,
+            "ties": 105,
+            "regressions": 0
+          },
+          "semantic_list": {
+            "baseline_bytes": 1037,
+            "byte_saving": 0,
+            "saving_pct": 0.0,
+            "wins": 0,
+            "ties": 105,
+            "regressions": 0
+          }
+        }
+      }
+    }
+  },
+  "unsupported_share_of_total_savings_pct": {
+    "native_guarded": 14.190603005516456,
+    "native_sympy_portfolio": 20.27173913043478
+  }
+}

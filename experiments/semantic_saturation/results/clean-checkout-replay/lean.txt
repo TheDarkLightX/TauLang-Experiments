@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "fixture_count": 1073,
+  "formula_support_observations": 11979,
+  "refinement_cases": 19,
+  "refinement_children_checked": 273,
+  "mismatches": [],
+  "duration_seconds": 28.369
+}

@@ -1,0 +1,49 @@
+{
+  "status": "CLEAN_COMMITTED_CHECKOUT_REPLAY_PASS",
+  "artifact_revision": "4d5e97f18bb79aebebb3d386e9c09670e1d3b757",
+  "checkout_type": "separate local Git clone with no copied untracked source files; evidence archives extracted after hash verification",
+  "environment": "same Linux host; existing Python3.12.14,SymPy1.14.0 and official Lean4.29.1 toolchain",
+  "unit_tests": 81,
+  "heldout": {
+    "case_count": 336,
+    "checked_pairs_replayed": 3875,
+    "fallbacks_verified": 0,
+    "final_gates": 3360,
+    "manifest_sha256": "4817bb8e16011cf4d44f5f0915a080e794a5f1dc38076207a0ef784549481274",
+    "native_evidence": "strict replay of retained raw receipts, not new native invocation",
+    "native_processes_launched": 0,
+    "source_checked": true,
+    "status": "VALIDATION_PASS",
+    "transformed_outputs_rechecked": 3030
+  },
+  "reuse": {
+    "checks": "exact stream/profile/source identity; both emitted commands and argv; strict native verdicts; cache provenance; raw hashes; timing bounds; recomputed fixed-bank selection and cumulative summaries",
+    "freeze_sha256": "080f547d64b7b7387fad4162140f8e07981fe0ec926d304d92a0c32755229456",
+    "native_processes": 8892,
+    "requests": 7680,
+    "runs": 30,
+    "status": "VERIFIED"
+  },
+  "lean": {
+    "status": "PASS",
+    "fixtures": 1073,
+    "observations": 11979,
+    "refinements": 19,
+    "children": 273
+  },
+  "native_processes_launched": 0,
+  "nonclaims": [
+    "Not a fresh OS/dependency installation",
+    "Not a fresh native Tau rebuild or new native campaign"
+  ],
+  "post_replay_change": "Only the Lean correspondence receipt runtime changed; committed source/input files unchanged",
+  "receipts": {
+    "command-history.json": "edce7b196adccc4e0d7decd393b001c1849114b0933e64ed85c1a1c086f73121",
+    "heldout.json": "8e101417f8ffe4eac26dafca8fd6a23731acb7dec89caf30bd077a7fc3392b38",
+    "lake.txt": "ab0fc4a4d2c0691ce595c3205f00db6554d09288c39e2f6c996ef26ed7b59274",
+    "lean-correspondence.json": "206be3828ee150dc16632c88d98abfc409fb896e01fc9186a31d8fc535510dba",
+    "lean.txt": "8d123e671ed14ee3a00f9c4b24b255fb60801352771b210e090d069cfe79a1e9",
+    "reuse.txt": "2494cacb656d48de935304e891d33c552df6759f0a53d88a5f2a2947aaeff7d0",
+    "unit-tests.txt": "63361e54a3ed6ed72530da4a6f89a86da97a25370c19e3050e292feca3569ef8"
+  }
+}
