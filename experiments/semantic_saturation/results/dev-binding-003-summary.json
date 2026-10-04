@@ -1,0 +1,227 @@
+{
+  "actual_wall_s": 1.7439568180016067,
+  "arms": {
+    "hybrid": {
+      "component_accounted_wall_s": 0.9852313550072722,
+      "dag_nodes": 6,
+      "expression_bytes": 30,
+      "fallbacks": 0,
+      "gate_statuses": {
+        "ACCEPTED": 2
+      },
+      "native_cold_charge_s": 0.9586786290128657,
+      "normalization_admission_statuses": {},
+      "normalization_retained_original": 0,
+      "search_wall_s": 0.010777904000860872,
+      "tree_nodes": 6
+    },
+    "hybrid_root_only": {
+      "component_accounted_wall_s": 0.9833332270027313,
+      "dag_nodes": 6,
+      "expression_bytes": 30,
+      "fallbacks": 0,
+      "gate_statuses": {
+        "ACCEPTED": 2
+      },
+      "native_cold_charge_s": 0.9586786290128657,
+      "normalization_admission_statuses": {},
+      "normalization_retained_original": 0,
+      "search_wall_s": 0.00887977599631995,
+      "tree_nodes": 6
+    },
+    "native_guarded": {
+      "component_accounted_wall_s": 0.3980230080014735,
+      "dag_nodes": 6,
+      "expression_bytes": 30,
+      "fallbacks": 0,
+      "gate_statuses": {
+        "ACCEPTED": 2
+      },
+      "native_cold_charge_s": 0.39424360200064257,
+      "normalization_admission_statuses": {
+        "ACCEPTED": 2
+      },
+      "normalization_retained_original": 0,
+      "search_wall_s": 0.0,
+      "tree_nodes": 6
+    },
+    "native_reserialized": {
+      "component_accounted_wall_s": 0.3980230080014735,
+      "dag_nodes": 6,
+      "expression_bytes": 30,
+      "fallbacks": 0,
+      "gate_statuses": {
+        "ACCEPTED": 2
+      },
+      "native_cold_charge_s": 0.39424360200064257,
+      "normalization_admission_statuses": {
+        "ACCEPTED": 2
+      },
+      "normalization_retained_original": 0,
+      "search_wall_s": 0.0,
+      "tree_nodes": 6
+    },
+    "native_sympy_portfolio": {
+      "component_accounted_wall_s": 0.97112532599931,
+      "dag_nodes": 6,
+      "expression_bytes": 30,
+      "fallbacks": 0,
+      "gate_statuses": {
+        "ACCEPTED": 2
+      },
+      "native_cold_charge_s": 0.5638194130042393,
+      "normalization_admission_statuses": {},
+      "normalization_retained_original": 0,
+      "search_wall_s": 0.40175453999836463,
+      "tree_nodes": 6
+    },
+    "recursive_congruence": {
+      "component_accounted_wall_s": 0.9885990390066581,
+      "dag_nodes": 6,
+      "expression_bytes": 30,
+      "fallbacks": 0,
+      "gate_statuses": {
+        "ACCEPTED": 2
+      },
+      "native_cold_charge_s": 0.9714856240098015,
+      "normalization_admission_statuses": {},
+      "normalization_retained_original": 0,
+      "search_wall_s": 0.0014171130023896694,
+      "tree_nodes": 6
+    },
+    "rewrite_guarded": {
+      "component_accounted_wall_s": 0.22615959500762983,
+      "dag_nodes": 8,
+      "expression_bytes": 72,
+      "fallbacks": 0,
+      "gate_statuses": {
+        "ACCEPTED": 2
+      },
+      "native_cold_charge_s": 0.2207483809979749,
+      "normalization_admission_statuses": {},
+      "normalization_retained_original": 0,
+      "search_wall_s": 0.0035164630062354263,
+      "tree_nodes": 12
+    },
+    "semantic_graph": {
+      "component_accounted_wall_s": 0.9765227450043312,
+      "dag_nodes": 6,
+      "expression_bytes": 30,
+      "fallbacks": 0,
+      "gate_statuses": {
+        "ACCEPTED": 2
+      },
+      "native_cold_charge_s": 0.9586786290128657,
+      "normalization_admission_statuses": {},
+      "normalization_retained_original": 0,
+      "search_wall_s": 0.0020692939979198854,
+      "tree_nodes": 6
+    },
+    "semantic_list": {
+      "component_accounted_wall_s": 0.9872289170052682,
+      "dag_nodes": 6,
+      "expression_bytes": 30,
+      "fallbacks": 0,
+      "gate_statuses": {
+        "ACCEPTED": 2
+      },
+      "native_cold_charge_s": 0.9714856240098015,
+      "normalization_admission_statuses": {},
+      "normalization_retained_original": 0,
+      "search_wall_s": 4.699100099969655e-05,
+      "tree_nodes": 6
+    },
+    "sympy": {
+      "component_accounted_wall_s": 0.5731023179978365,
+      "dag_nodes": 8,
+      "expression_bytes": 55,
+      "fallbacks": 0,
+      "gate_statuses": {
+        "ACCEPTED": 2
+      },
+      "native_cold_charge_s": 0.16957581100359675,
+      "normalization_admission_statuses": {},
+      "normalization_retained_original": 0,
+      "search_wall_s": 0.40175453999836463,
+      "tree_nodes": 9
+    }
+  },
+  "binary_unchanged": true,
+  "case_binary_profiles_match": true,
+  "cases": 2,
+  "hybrid_vs": {
+    "hybrid": {
+      "byte_difference": 0,
+      "regressions": 0,
+      "ties": 2,
+      "wins": 0
+    },
+    "hybrid_root_only": {
+      "byte_difference": 0,
+      "regressions": 0,
+      "ties": 2,
+      "wins": 0
+    },
+    "native_guarded": {
+      "byte_difference": 0,
+      "regressions": 0,
+      "ties": 2,
+      "wins": 0
+    },
+    "native_reserialized": {
+      "byte_difference": 0,
+      "regressions": 0,
+      "ties": 2,
+      "wins": 0
+    },
+    "native_sympy_portfolio": {
+      "byte_difference": 0,
+      "regressions": 0,
+      "ties": 2,
+      "wins": 0
+    },
+    "recursive_congruence": {
+      "byte_difference": 0,
+      "regressions": 0,
+      "ties": 2,
+      "wins": 0
+    },
+    "rewrite_guarded": {
+      "byte_difference": -42,
+      "regressions": 0,
+      "ties": 1,
+      "wins": 1
+    },
+    "semantic_graph": {
+      "byte_difference": 0,
+      "regressions": 0,
+      "ties": 2,
+      "wins": 0
+    },
+    "semantic_list": {
+      "byte_difference": 0,
+      "regressions": 0,
+      "ties": 2,
+      "wins": 0
+    },
+    "sympy": {
+      "byte_difference": -25,
+      "regressions": 0,
+      "ties": 1,
+      "wins": 1
+    }
+  },
+  "native_processes": 38,
+  "normalization_admission_statuses": {
+    "ACCEPTED": 2
+  },
+  "original_expression_bytes": 172,
+  "proposal_gate_statuses": {
+    "ACCEPTED": 14
+  },
+  "signature_statuses": {
+    "EQUIVALENT": 25
+  },
+  "source_unchanged": true,
+  "status": "COMPLETE"
+}

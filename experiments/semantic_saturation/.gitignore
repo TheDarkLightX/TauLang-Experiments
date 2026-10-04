@@ -1,0 +1,13 @@
+# Reproduction expands the immutable evidence archives into these directories.
+# Raw receipts are preserved inside evidence/*.tar.gz, not duplicated in Git.
+results/heldout-001/
+results/reuse-001/
+results/development-001/
+results/dev-smoke-001/
+results/dev-accounting-002/
+results/dev-binding-003/
+results/final-prefreeze-smoke-004/
+
+# Override the repository-wide build-directory ignore for original JSON receipts.
+!results/build/
+!results/build/*.json

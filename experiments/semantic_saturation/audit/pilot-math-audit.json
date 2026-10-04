@@ -1,0 +1,25 @@
+{
+  "status": "PASS",
+  "seed": 708130042,
+  "checks": 2419,
+  "failures": [],
+  "refinement_states": 273,
+  "generated_formula_count": 240,
+  "generated_support_observations": 1680,
+  "parser_roundtrips": 200,
+  "egraph_cases": 80,
+  "elapsed_s": 0.2760143359992071,
+  "source": "/workspace/scratch/b6becd93c24b/tau-study/private/import/tau-pilot-cloud-checkpoint/executed-source",
+  "source_sha256": {
+    "support_oracle.py": "432f5c05d41123a88fee2fab77ac5a15130c7aab59c78fb0efa3ebdec0ab8f79",
+    "engine.py": "10541eb6502dca227b875f7f4355ec6a61cc4bdeb72ce6b9cc92aa00d45da9e1",
+    "normalized_parser.py": "4edb582c9895b035175f72dc23a23f3779468b565f38709ca56667aaee0f4e09",
+    "native_oracle.py": "98306306f8c1badd8967b83949e5687a66c27ba02ae0b8997697418ef5efdbaa"
+  },
+  "limitations": [
+    "No native executable was invoked.",
+    "Finite regression evidence does not prove Python refinement.",
+    "Egraph tested with no semantic pair injections.",
+    "No native parser or C++ semantics proved."
+  ]
+}

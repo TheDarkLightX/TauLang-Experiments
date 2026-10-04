@@ -1,0 +1,42 @@
+{
+  "platform": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "python": "3.12.14",
+  "tau_source_revision": "7625580db1a54e0b55beaf753566c137df42fe66",
+  "tau_source_status": "",
+  "parser_revision": "cdcc0f7e9bba21cce518405693ca55e75f292e3e",
+  "binary_sha256": "874511bf414d0bfbaca224d6fde1cc2514419ad15c912d24dd334f6792909726",
+  "binary_version": "Tau Language Framework version 0.7.0-alpha (7625580d)\nalgebras: tau, sbf",
+  "compiler": "g++ (Debian 14.2.0-19) 14.2.0",
+  "pack": [
+    "sbf",
+    "tau"
+  ],
+  "CMAKE_BUILD_TYPE": "Release",
+  "TAU_LTO": false,
+  "TAU_ARTIFACT_PREINST": false,
+  "TAU_DONT_USE_FTXUI": true,
+  "TAU_BUILD_JOBS": 1,
+  "boost_revision": "65c1319bb92fe7a9a4abd588eff5818d9c2bccf9",
+  "boost_log_sha256": "98d32c18c9cd40512db88e8520cb4721584c19f89841d48f1a02737407f8de77",
+  "command": [
+    "./dev",
+    "preset",
+    "release-tau",
+    "-DCMAKE_C_COMPILER=/usr/bin/gcc",
+    "-DCMAKE_CXX_COMPILER=/usr/bin/g++",
+    "-DTAU_BAS=sbf,tau",
+    "-DTAU_DONT_USE_FTXUI=ON",
+    "-DTAU_LTO=OFF",
+    "-DTAU_ARTIFACT_PREINST=OFF",
+    "-DTAU_BUILD_JOBS=1",
+    "-DTAU_SHARED_PREFIX=<private-dependency-prefix>"
+  ],
+  "different_from_mac_pilot": [
+    "compiler",
+    "operating_system",
+    "binary",
+    "BA pack",
+    "Boost version"
+  ],
+  "sources_or_binaries_redistributed": false
+}

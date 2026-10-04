@@ -1,0 +1,35 @@
+{
+  "archive": "reuse-001.tar.gz",
+  "archive_bytes": 25305939,
+  "archive_sha256": "ede9201dbbc4aa3d37c175c360a5514bdfe9d17c5f424d7465ae282799f8f581",
+  "operation": "Concatenation in ascending index order; no recompression or filtering.",
+  "original_scientific_revision": "4d5e97f18bb79aebebb3d386e9c09670e1d3b757",
+  "parts": [
+    {
+      "bytes": 7000000,
+      "index": 0,
+      "path": "reuse-001.tar.gz.part001",
+      "sha256": "3066a5f2a3d783087c70f722fdb9ac75f16c4838bfa5e9e16af1a5d1804a6215"
+    },
+    {
+      "bytes": 7000000,
+      "index": 1,
+      "path": "reuse-001.tar.gz.part002",
+      "sha256": "dae01fdbfaa0b51ef672d393dc49f111e9b6d84d9065d3dbe921bfbd30129123"
+    },
+    {
+      "bytes": 7000000,
+      "index": 2,
+      "path": "reuse-001.tar.gz.part003",
+      "sha256": "7cc82ca4f36b917c967ff320399e7c114d86455f137ffbbc2493d1c9a203490f"
+    },
+    {
+      "bytes": 4305939,
+      "index": 3,
+      "path": "reuse-001.tar.gz.part004",
+      "sha256": "352b7f7509c87ec328600a4cd944afefb316899c6cfb9fb62a5caa94ed98c689"
+    }
+  ],
+  "purpose": "Lossless storage-only packaging for bounded upload payloads; the reconstructed bytes equal the previously audited compressed archive.",
+  "schema": "tau-lossless-archive-parts/v1"
+}

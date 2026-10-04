@@ -1,0 +1,136 @@
+{
+  "control": {
+    "case_count": 2,
+    "checked_pairs_replayed": 13,
+    "fallbacks_verified": 0,
+    "final_gates": 20,
+    "manifest_sha256": "50c3a3427304556fc77696acc515295b5360f61b32a86ecf4f69322b1324b876",
+    "native_evidence": "strict replay of retained raw receipts, not new native invocation",
+    "native_processes_launched": 0,
+    "source_checked": false,
+    "status": "VALIDATION_PASS",
+    "transformed_outputs_rechecked": 20
+  },
+  "mutation_count": 19,
+  "mutations": [
+    {
+      "error": "ValueError: native accounting mismatch hybrid",
+      "mutation": "reuse_forward_as_reverse",
+      "rejected": true,
+      "verdict": null
+    },
+    {
+      "error": "ValueError: native command does not certify exact AST/context/direction",
+      "mutation": "swap_directions",
+      "rejected": true,
+      "verdict": null
+    },
+    {
+      "error": "ValueError: native accounting mismatch hybrid",
+      "mutation": "missing_reverse",
+      "rejected": true,
+      "verdict": null
+    },
+    {
+      "error": "ValueError: native command does not certify exact AST/context/direction",
+      "mutation": "stale_equivalent_emitted_ast",
+      "rejected": true,
+      "verdict": null
+    },
+    {
+      "error": "ValueError: stored context mismatch",
+      "mutation": "stale_context",
+      "rejected": true,
+      "verdict": null
+    },
+    {
+      "error": "ValueError: receipt binary mismatch",
+      "mutation": "wrong_binary_receipt",
+      "rejected": true,
+      "verdict": null
+    },
+    {
+      "error": "ValueError: native command does not certify exact AST/context/direction",
+      "mutation": "wrong_native_command",
+      "rejected": true,
+      "verdict": null
+    },
+    {
+      "error": "ValueError: native command does not certify exact AST/context/direction",
+      "mutation": "wrong_free_closure",
+      "rejected": true,
+      "verdict": null
+    },
+    {
+      "error": "ValueError: native command does not certify exact AST/context/direction",
+      "mutation": "wrong_native_type",
+      "rejected": true,
+      "verdict": null
+    },
+    {
+      "error": "ValueError: receipt truth parser mismatch",
+      "mutation": "timeout_marked_true",
+      "rejected": true,
+      "verdict": null
+    },
+    {
+      "error": "ValueError: receipt truth parser mismatch",
+      "mutation": "nonzero_exit_marked_true",
+      "rejected": true,
+      "verdict": null
+    },
+    {
+      "error": "ValueError: profile key mismatch",
+      "mutation": "stale_profile_key",
+      "rejected": true,
+      "verdict": null
+    },
+    {
+      "error": "ValueError: support source/profile mismatch",
+      "mutation": "stale_support_source",
+      "rejected": true,
+      "verdict": null
+    },
+    {
+      "error": "ValueError: original metrics mismatch",
+      "mutation": "inflated_original_bytes",
+      "rejected": true,
+      "verdict": null
+    },
+    {
+      "error": "ValueError: candidate metrics mismatch",
+      "mutation": "wrong_candidate_metrics",
+      "rejected": true,
+      "verdict": null
+    },
+    {
+      "error": "ValueError: executed rows do not match ordered original corpus",
+      "mutation": "altered_frozen_rows_with_digest",
+      "rejected": true,
+      "verdict": null
+    },
+    {
+      "error": "ValueError: summary mismatch arms",
+      "mutation": "summary_only_cost_tamper",
+      "rejected": true,
+      "verdict": null
+    },
+    {
+      "error": "ValueError: native accounting mismatch hybrid",
+      "mutation": "zero_all_accounting_recompute_summary",
+      "rejected": true,
+      "verdict": null
+    },
+    {
+      "error": "ValueError: native summary mismatch processes",
+      "mutation": "zero_native_process_summary_recompute",
+      "rejected": true,
+      "verdict": null
+    }
+  ],
+  "mutations_rejected": 19,
+  "run_study_sha256": "4d34dc38780a50b4f2abd8213199ac740333c1472402f84dd4f370d9d89e0d59",
+  "scope": "Local copied development packets, zero native processes. Historical-source mode necessary because the development run predates validator hardening; final current-source replay remains required.",
+  "status": "PASS",
+  "validator_sha256": "7fbc9cdfb42d73d294229c55d74c60bcf66568a3ebb5ba5727d038f85f8e844d"
+}

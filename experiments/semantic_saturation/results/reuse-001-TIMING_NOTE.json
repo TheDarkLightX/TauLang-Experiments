@@ -1,0 +1,21 @@
+{
+  "status": "TIMING_LIMITATION_RETAINED",
+  "reported_activity": "Three Matplotlib SVG/PDF/PNG quality figures rendered concurrently by another study process",
+  "reported_window_start_utc": "2026-10-04T04:48:53.5Z",
+  "reported_window_end_utc": "2026-10-04T04:49:01.5Z",
+  "window_precision": "Approximate timestamps reported by the figure-rendering process; endpoints span 8.0 seconds while tool-reported duration is 8.9 seconds. Do not treat rounded endpoints as a more precise duration.",
+  "tool_reported_duration_s": 8.9,
+  "source": "Study execution record received during the authorized reuse run",
+  "affected_runs": [
+    {
+      "run": "rep-1/formula-25-25-50",
+      "first_native_receipt_mtime_utc": "2026-10-04T04:48:37.336516+00:00",
+      "run_index_mtime_utc": "2026-10-04T04:49:08.041491+00:00",
+      "request_receipt_files_written_during_reported_window": 60,
+      "scope_resolution": "Stream-level overlap is supported by filesystem mtimes. No finer affected-request or arm timing attribution is asserted; raw receipt persistence can lag measured request completion."
+    }
+  ],
+  "data_handling": "All three fixed repetitions and every request retained. No selective deletion, rerun, or source/protocol change.",
+  "interpretation": "Concurrent figure rendering may perturb repetition1 formula-25-25-50 timings. Native call counts and exact candidate/certificate behavior remain primary. Small signature-index versus semantic-decision lookup-time rankings are not causal evidence of a distinct semantic algorithm.",
+  "freeze_sha256": "080f547d64b7b7387fad4162140f8e07981fe0ec926d304d92a0c32755229456"
+}

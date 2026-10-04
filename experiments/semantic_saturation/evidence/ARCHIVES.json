@@ -1,0 +1,23 @@
+{
+  "schema": "tau-evidence-archives/v1",
+  "compression": "gzip level9,emptyfilename,mtime0; tar sortedfiles,uid/gid0,regularfilesonly",
+  "archives": [
+    {
+      "archive": "development-evidence.tar.gz",
+      "sha256": "579728e6b18dfcbe4df80a24a15d18e5c1e3953889fe3f83cc40e94fb3d8be46",
+      "bytes": 2101240
+    },
+    {
+      "archive": "heldout-001.tar.gz",
+      "sha256": "46f812cce3a59c80ede785092a5f65df3be237bd52f2047d058e9e8111155fb9",
+      "bytes": 7179812
+    },
+    {
+      "archive": "reuse-001.tar.gz",
+      "sha256": "ede9201dbbc4aa3d37c175c360a5514bdfe9d17c5f424d7465ae282799f8f581",
+      "bytes": 25305939
+    }
+  ],
+  "extraction_root": "experiments/semantic_saturation",
+  "contents": "Original generated Tau expressions, original Python benchmark evidence, process stdout/stderr receipts, profiles and metrics. No upstream Tau source or binaries."
+}

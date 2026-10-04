@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "checks": {
+    "first_unknown": true,
+    "first_not_cached": true,
+    "second_retries_both": true,
+    "third_exact_hit": true,
+    "exact_mock_call_count": true
+  },
+  "after_first": {
+    "inner_cache_entries": 0,
+    "wrapper_cache_entries": 0,
+    "mock_calls": 2
+  },
+  "total_mock_calls": 4,
+  "checked_registry_sha256": "3b4ec9988de437232186d88a9485505a2d4e474b51977b83622e80a2d67eb1e2",
+  "scope": "Mock control flow only; no native execution or native semantic evidence."
+}

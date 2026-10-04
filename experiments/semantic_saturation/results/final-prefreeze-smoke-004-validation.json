@@ -1,0 +1,12 @@
+{
+  "case_count": 2,
+  "checked_pairs_replayed": 13,
+  "fallbacks_verified": 0,
+  "final_gates": 20,
+  "manifest_sha256": "f7d8c50759f5aaebf0ff96be84d9234a2e5f3fc70a7ff933c8d4cd9456ccbd72",
+  "native_evidence": "strict replay of retained raw receipts, not new native invocation",
+  "native_processes_launched": 0,
+  "source_checked": true,
+  "status": "VALIDATION_PASS",
+  "transformed_outputs_rechecked": 20
+}

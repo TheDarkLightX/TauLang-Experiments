@@ -1,0 +1,10 @@
+{
+  "binary": "/workspace/scratch/b6becd93c24b/tau-study/private/tau-lang/build/release/tau",
+  "binary_sha256": "874511bf414d0bfbaca224d6fde1cc2514419ad15c912d24dd334f6792909726",
+  "timeout_s": 10,
+  "processes": 10,
+  "timeouts": 0,
+  "parse_or_unknown": 10,
+  "native_wall_s": 0.2373193959974742,
+  "cache_entries": 0
+}

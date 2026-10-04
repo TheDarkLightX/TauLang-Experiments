@@ -1,0 +1,25 @@
+{
+  "source_revision": "7625580db1a54e0b55beaf753566c137df42fe66",
+  "note": "Compiler, operating system, pack and Boost differ simultaneously; no isolated cause established.",
+  "mac_native_total_bytes": 507,
+  "linux_native_total_bytes": 445,
+  "hybrid_both_total_bytes": 442,
+  "changed_size_rows": [
+    {
+      "case": "factor_nonzero",
+      "arm": "native_normalizer",
+      "mac_bytes": 75,
+      "linux_bytes": 44,
+      "mac_expression": "((((b : tau) & (a : tau)) | ((((b : tau))' & (a : tau)) & (c : tau))) != 0)",
+      "linux_expression": "(((a : tau) & ((c : tau) | (b : tau))) != 0)"
+    },
+    {
+      "case": "factor_zero",
+      "arm": "native_normalizer",
+      "mac_bytes": 74,
+      "linux_bytes": 43,
+      "mac_expression": "((((b : tau) & (a : tau)) | ((((b : tau))' & (a : tau)) & (c : tau))) = 0)",
+      "linux_expression": "(((a : tau) & ((c : tau) | (b : tau))) = 0)"
+    }
+  ]
+}

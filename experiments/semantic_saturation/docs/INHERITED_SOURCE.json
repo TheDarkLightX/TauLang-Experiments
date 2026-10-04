@@ -1,0 +1,30 @@
+{
+  "checkpoint_zip_sha256": "ebbb7c43cc0066ed205ac32d7e304c1426e0aef36da623c77f1a33481bebeaff",
+  "files": [
+    {
+      "path": "src/engine.py",
+      "inherited_path": "executed-source/engine.py",
+      "sha256": "10541eb6502dca227b875f7f4355ec6a61cc4bdeb72ce6b9cc92aa00d45da9e1",
+      "unchanged": true
+    },
+    {
+      "path": "src/native_oracle.py",
+      "inherited_path": "executed-source/native_oracle.py",
+      "sha256": "98306306f8c1badd8967b83949e5687a66c27ba02ae0b8997697418ef5efdbaa",
+      "unchanged": true
+    },
+    {
+      "path": "src/normalized_parser.py",
+      "inherited_path": "executed-source/normalized_parser.py",
+      "sha256": "4edb582c9895b035175f72dc23a23f3779468b565f38709ca56667aaee0f4e09",
+      "unchanged": true
+    },
+    {
+      "path": "src/support_oracle.py",
+      "inherited_path": "executed-source/support_oracle.py",
+      "sha256": "432f5c05d41123a88fee2fab77ac5a15130c7aab59c78fb0efa3ebdec0ab8f79",
+      "unchanged": true
+    }
+  ],
+  "note": "Only original independent Python harnesses copied; no Tau source or binaries."
+}

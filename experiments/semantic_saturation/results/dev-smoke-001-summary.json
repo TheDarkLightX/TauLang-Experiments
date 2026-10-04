@@ -1,0 +1,183 @@
+{
+  "actual_wall_s": 8.332476104002126,
+  "arms": {
+    "hybrid": {
+      "dag_nodes": 11,
+      "expression_bytes": 45,
+      "fallbacks": 0,
+      "gate_statuses": {
+        "ACCEPTED": 6
+      },
+      "native_cold_charge_s": 6.063511842967273,
+      "search_wall_s": 0.14335016300174175,
+      "tree_nodes": 11
+    },
+    "hybrid_root_only": {
+      "dag_nodes": 11,
+      "expression_bytes": 45,
+      "fallbacks": 0,
+      "gate_statuses": {
+        "ACCEPTED": 6
+      },
+      "native_cold_charge_s": 6.063511842967273,
+      "search_wall_s": 0.12778693099244265,
+      "tree_nodes": 11
+    },
+    "native_guarded": {
+      "dag_nodes": 11,
+      "expression_bytes": 45,
+      "fallbacks": 0,
+      "gate_statuses": {
+        "ACCEPTED": 6
+      },
+      "native_cold_charge_s": 1.2972647289861925,
+      "search_wall_s": 0.0,
+      "tree_nodes": 11
+    },
+    "native_raw": {
+      "dag_nodes": 11,
+      "expression_bytes": 45,
+      "fallbacks": 0,
+      "gate_statuses": {
+        "ACCEPTED": 6
+      },
+      "native_cold_charge_s": 1.2972647289861925,
+      "search_wall_s": 0.0,
+      "tree_nodes": 11
+    },
+    "native_sympy_portfolio": {
+      "dag_nodes": 11,
+      "expression_bytes": 45,
+      "fallbacks": 0,
+      "gate_statuses": {
+        "ACCEPTED": 6
+      },
+      "native_cold_charge_s": 1.312365764988499,
+      "search_wall_s": 0.0,
+      "tree_nodes": 11
+    },
+    "recursive_congruence": {
+      "dag_nodes": 11,
+      "expression_bytes": 45,
+      "fallbacks": 0,
+      "gate_statuses": {
+        "ACCEPTED": 6
+      },
+      "native_cold_charge_s": 6.0484108069649665,
+      "search_wall_s": 0.009856679003860336,
+      "tree_nodes": 11
+    },
+    "rewrite_guarded": {
+      "dag_nodes": 25,
+      "expression_bytes": 202,
+      "fallbacks": 0,
+      "gate_statuses": {
+        "ACCEPTED": 6
+      },
+      "native_cold_charge_s": 0.6059816009947099,
+      "search_wall_s": 0.11378919299750123,
+      "tree_nodes": 34
+    },
+    "semantic_graph": {
+      "dag_nodes": 11,
+      "expression_bytes": 45,
+      "fallbacks": 0,
+      "gate_statuses": {
+        "ACCEPTED": 6
+      },
+      "native_cold_charge_s": 6.063511842967273,
+      "search_wall_s": 0.02053267300289008,
+      "tree_nodes": 11
+    },
+    "semantic_list": {
+      "dag_nodes": 11,
+      "expression_bytes": 45,
+      "fallbacks": 0,
+      "gate_statuses": {
+        "ACCEPTED": 6
+      },
+      "native_cold_charge_s": 6.0484108069649665,
+      "search_wall_s": 0.000239538996538613,
+      "tree_nodes": 11
+    },
+    "sympy": {
+      "dag_nodes": 15,
+      "expression_bytes": 95,
+      "fallbacks": 0,
+      "gate_statuses": {
+        "ACCEPTED": 6
+      },
+      "native_cold_charge_s": 0.5995157360011945,
+      "search_wall_s": 1.0438436509939493,
+      "tree_nodes": 17
+    }
+  },
+  "binary_unchanged": true,
+  "cases": 6,
+  "hybrid_vs": {
+    "hybrid": {
+      "byte_difference": 0,
+      "regressions": 0,
+      "ties": 6,
+      "wins": 0
+    },
+    "hybrid_root_only": {
+      "byte_difference": 0,
+      "regressions": 0,
+      "ties": 6,
+      "wins": 0
+    },
+    "native_guarded": {
+      "byte_difference": 0,
+      "regressions": 0,
+      "ties": 6,
+      "wins": 0
+    },
+    "native_raw": {
+      "byte_difference": 0,
+      "regressions": 0,
+      "ties": 6,
+      "wins": 0
+    },
+    "native_sympy_portfolio": {
+      "byte_difference": 0,
+      "regressions": 0,
+      "ties": 6,
+      "wins": 0
+    },
+    "recursive_congruence": {
+      "byte_difference": 0,
+      "regressions": 0,
+      "ties": 6,
+      "wins": 0
+    },
+    "rewrite_guarded": {
+      "byte_difference": -157,
+      "regressions": 0,
+      "ties": 3,
+      "wins": 3
+    },
+    "semantic_graph": {
+      "byte_difference": 0,
+      "regressions": 0,
+      "ties": 6,
+      "wins": 0
+    },
+    "semantic_list": {
+      "byte_difference": 0,
+      "regressions": 0,
+      "ties": 6,
+      "wins": 0
+    },
+    "sympy": {
+      "byte_difference": -50,
+      "regressions": 0,
+      "ties": 4,
+      "wins": 2
+    }
+  },
+  "native_processes": 220,
+  "original_expression_bytes": 1012,
+  "source_unchanged": true,
+  "status": "COMPLETE"
+}

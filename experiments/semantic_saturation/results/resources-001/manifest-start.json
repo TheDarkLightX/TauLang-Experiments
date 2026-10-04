@@ -1,0 +1,7 @@
+{
+  "cases": 324,
+  "matrix_sha256": "d79567fb34446f355d0c2c451a3225d850a89b278455c2f2a1d98f9ff958bfb0",
+  "native_processes": 0,
+  "runner_sha256": "353588df943bf5ebca4d5a92266abc93130018679d353207b8f7f00fe19b896a",
+  "support_source_sha256": "432f5c05d41123a88fee2fab77ac5a15130c7aab59c78fb0efa3ebdec0ab8f79"
+}

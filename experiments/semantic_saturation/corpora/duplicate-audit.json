@@ -1,0 +1,13 @@
+{
+  "within_split_duplicates": {
+    "train": 0,
+    "dev": 0,
+    "test": 0
+  },
+  "cross_split_exact_context_ast_duplicates": {
+    "train/dev": 0,
+    "train/test": 0,
+    "dev/test": 0
+  },
+  "semantic_equivalence_duplicates": "not inspected before freeze; syntactically distinct rows may share semantics by design"
+}

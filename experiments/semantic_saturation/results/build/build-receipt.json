@@ -1,0 +1,23 @@
+{
+  "status": "BUILT",
+  "raw_log_sha256": "5a42a3ea2ea9cdab155d363fb698ac70f4608e082e3a0ad2d162e294f0a7a35a",
+  "raw_cmake_cache_sha256": "f71bd5a92727da4ab4ac0defda936ed3a2d7b73cd4ceabae2b5d6f3c48a76756",
+  "raw_log_published": false,
+  "reason": "Compiler diagnostics include upstream source excerpts; retained privately only.",
+  "configured_fields": {
+    "CMAKE_BUILD_TYPE": "Release",
+    "CMAKE_CXX_COMPILER": "/usr/bin/g++",
+    "CMAKE_CXX_FLAGS": "",
+    "CMAKE_CXX_FLAGS_RELEASE": "-O3 -DNDEBUG",
+    "CMAKE_C_COMPILER": "/usr/bin/gcc",
+    "TAU_ARTIFACT_PREINST": "OFF",
+    "TAU_BAS": "sbf,tau",
+    "TAU_BUILD_EXECUTABLE": "ON",
+    "TAU_BUILD_JOBS": "",
+    "TAU_CACHE": "OFF",
+    "TAU_DONT_USE_FTXUI": "ON",
+    "TAU_LTO": "OFF",
+    "TAU_USE_CCACHE": "ON"
+  },
+  "warnings_summary": "GCC14 emitted strict-overflow warnings in Boost and Tau headers; no fatal diagnostics in successful attempt."
+}

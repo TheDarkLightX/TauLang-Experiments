@@ -1,0 +1,87 @@
+[
+  {
+    "id": "C01",
+    "status": "proved_in_set_model_with_tested_bridge",
+    "statement": "The Lean exhaustive support comparator is sound and complete over every nonempty atomless Boolean subalgebra of sets.",
+    "dependencies": [
+      "Lean support_cells_v001"
+    ],
+    "falsifier": "A legal support refinement has no set-algebra realization, or an actual quantified assignment has no legal refinement.",
+    "nonclaims": [
+      "No formal abstract-BA representation theorem",
+      "No formal Python/native Tau implementation refinement"
+    ],
+    "evidence": [
+      "../../proofs/lean/support_cells_v001/Proofs.lean",
+      "../../proofs/lean/support_cells_v001/receipts/correspondence.json"
+    ],
+    "artifact_base": "experiments/semantic_saturation (repository-relative)"
+  },
+  {
+    "id": "C02",
+    "status": "bounded_executed_evidence",
+    "statement": "The concrete serializer, parser and native receipt gate fail closed for the declared input/output grammar.",
+    "dependencies": [
+      "Pinned Tau build",
+      "AST/receipt mutation suite"
+    ],
+    "falsifier": "Malformed, one-direction-only, stale-context, timeout, unsupported, or inequivalent candidate is admitted.",
+    "evidence": [
+      "results/heldout-001-validation.json"
+    ],
+    "finding": "3360 final gates and3875 checked pairs replayed;3030 transformed outputs rechecked;81 unit tests and19 packet mutations pass before freeze. Native unsupported parser outputs are reported separately.",
+    "artifact_base": "experiments/semantic_saturation (repository-relative)"
+  },
+  {
+    "id": "C03",
+    "status": "mixed_result",
+    "statement": "On a frozen held-out workload, hybrid extraction offers incremental quality/resource value over simpler matched semantic controls.",
+    "dependencies": [
+      "Frozen protocol",
+      "Matched candidates and checked pairs",
+      "Independent result audit"
+    ],
+    "falsifier": "Matched list-min or recursive quotienting dominates quality and cost; all hybrid apparent gains are input adaptation or extra candidates.",
+    "finding": "No representation-byte-quality gain: semantic graph and full scoped recursive congruence tie every one of336rows. Hybrid adds rewrite search and reduces total typed bytes, with10losses to the native+SymPy portfolio. Parser-supported sensitivity333rows:24.10%aggregate reduction vs guarded native,17.12% vs portfolio. Costs are higher; no optimizer speedup established.",
+    "evidence": [
+      "results/heldout-001-analysis.json",
+      "paper/native-parser-sensitivity.json"
+    ],
+    "artifact_base": "experiments/semantic_saturation (repository-relative)"
+  },
+  {
+    "id": "C04",
+    "status": "incremental_native_savings_refuted_on_fixed_streams",
+    "statement": "At declared reuse ratios, a semantic registry amortizes its cold validation/construction cost beyond ordinary syntax memoization.",
+    "dependencies": [
+      "Frozen reuse stream",
+      "Per-method online accounting"
+    ],
+    "falsifier": "No measured cumulative break-even, or savings occur only on identical repeats captured by ordinary memoization.",
+    "artifact_base": "experiments/semantic_saturation (repository-relative)",
+    "finding": "All three cached controls used1812native processes and822exact certificate hits each across the complete scheduled campaign; no-cache used3456. Semantic decision caching yielded no native-call benefit beyond ordinary exact memoization; fixed-bank signature indexing accounts for the candidate-search savings. No special registry speedup established.",
+    "evidence": [
+      "results/reuse-001-summary.json",
+      "results/reuse-001-verification.json"
+    ]
+  },
+  {
+    "id": "C05",
+    "status": "design_invariant_with_executed_checks",
+    "statement": "Returning a candidate only when actual emitted bytes do not exceed original bytes ensures nonregression in that metric.",
+    "dependencies": [
+      "Faithful serializer cost measurement",
+      "Fallback retains original"
+    ],
+    "falsifier": "Concrete implementation returns a larger output despite the cost guard.",
+    "nonclaims": [
+      "Not an empirical optimization discovery",
+      "Not global minimality",
+      "Not runtime improvement"
+    ],
+    "evidence": [
+      "results/heldout-001-validation.json"
+    ],
+    "artifact_base": "experiments/semantic_saturation (repository-relative)"
+  }
+]

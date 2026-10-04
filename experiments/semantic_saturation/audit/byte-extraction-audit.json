@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "seed": 62570081,
+  "formula_count": 400,
+  "semantic_groups": 6,
+  "extraction_runs": 102,
+  "failures": [],
+  "source_sha256": {
+    "study_core.py": "5fe15e205943aacb8042f03c707f2486d6b83eb52d1be0738d68b5e7e799eed9",
+    "engine.py": "10541eb6502dca227b875f7f4355ec6a61cc4bdeb72ce6b9cc92aa00d45da9e1",
+    "native_oracle.py": "98306306f8c1badd8967b83949e5687a66c27ba02ae0b8997697418ef5efdbaa"
+  },
+  "limitations": [
+    "Finite one-free-variable tests, not extraction optimality proof.",
+    "Semantic pair evidence is independent reference evaluation for this local test, not native Tau.",
+    "No claim that egraph strictly improves upon recursive quotienting."
+  ]
+}

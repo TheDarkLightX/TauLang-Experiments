@@ -1,0 +1,19 @@
+{
+  "date_utc": "2026-10-04",
+  "evidence_sha256": {
+    "final-freeze-validation.json": "cb04d64111848d4e4604a1a7f1047c5dfc1d93b2daf6b26ac34187000de4359d",
+    "heldout-independent-validation.json": "8e101417f8ffe4eac26dafca8fd6a23731acb7dec89caf30bd077a7fc3392b38",
+    "lean-independent-correspondence.json": "3ec652c991aed9c819ecd4ce152f9b362b73ec2a78cc7b4aa54d5725070c0772",
+    "lean-optimized-python-rejection.json": "6057a53910a4e46f4ca181e0459180f7e29686344fa9feba7f89e177e59b3dfe",
+    "packet-mutations-run002/SUMMARY.json": "f85b2e86a2d8bee0bbf93dafd8994038b79492c1a34ee88726028ef0d8d4fd0d",
+    "resource-independent-validation.json": "6632f366314a93facc0aa4e51127f41216e9e3443f77a9070178e3d4f21d6a30",
+    "reuse-independent-tests.json": "009667a8e34775a31db1236b3c1531f659fe6f88465e0a3897086f9d358727d8",
+    "reuse-independent-validation.json": "2494cacb656d48de935304e891d33c552df6759f0a53d88a5f2a2947aaeff7d0"
+  },
+  "freeze_sha256": "f98ef54d269d43e79561010bfa3faff327d97981159a0aa1c5224128d14f67f2",
+  "repository_base": "65ef69bdc5e6f1e479236d9dfb4d9b6d2e5302d1",
+  "schema": "tau-public-validation-status/v1",
+  "scope": "Restricted mathematical theorem, bounded implementation tests, matched comparator review, retained raw-evidence consistency and descriptive outcomes. No peer review, global novelty, production, code-verification or raw-clock authenticity claim.",
+  "status": "SCIENTIFIC_EVIDENCE_CLEAR_FOR_SCOPED_RESEARCH_DRAFT",
+  "unresolved_scientific_blockers": []
+}

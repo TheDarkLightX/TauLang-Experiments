@@ -1,0 +1,30 @@
+{
+  "status": "PASS",
+  "checks": {
+    "matrix_matches_frozen": true,
+    "runner_source_identity": true,
+    "support_source_identity": true,
+    "all_deterministic_outputs_equal": true
+  },
+  "support_rows": 324,
+  "graph_rows": 216,
+  "differences": [],
+  "original_summary": {
+    "native_processes": 0,
+    "nonclaims": [
+      "No native proof or optimizer quality gain is established by this resource screen.",
+      "Graph outputs require the separate acceptance gate before deployment."
+    ],
+    "search_cases": 216,
+    "search_wall_s": 7.4137216239687405,
+    "status": "COMPLETE",
+    "support_cases": 324,
+    "support_statuses": {
+      "COMPLETE": 237,
+      "REJECTED": 36,
+      "UNKNOWN": 51
+    },
+    "support_wall_s": 8.05663765799909
+  },
+  "scope": "Full deterministic resource replay. Timing values intentionally not compared and replay times are not confirmatory measurements. Zero native processes."
+}

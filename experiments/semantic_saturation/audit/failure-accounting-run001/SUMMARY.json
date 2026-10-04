@@ -1,0 +1,242 @@
+{
+  "status": "PASS",
+  "checks": {
+    "native_parsed_metrics_retained": true,
+    "native_proposal_unknown_visible": true,
+    "summary_unknown_visible": true,
+    "native_retention_reason": true,
+    "unknown_not_cached": true,
+    "unknown_no_native_gate": true,
+    "identity_distinguished": true
+  },
+  "runtime_mutation": "FORM_LIMITS=max_states0, restored after audit",
+  "summary": {
+    "status": "COMPLETE",
+    "cases": 1,
+    "arms": {
+      "hybrid": {
+        "expression_bytes": 28,
+        "tree_nodes": 3,
+        "dag_nodes": 3,
+        "gate_statuses": {
+          "ACCEPTED_IDENTITY": 1
+        },
+        "fallbacks": 0,
+        "search_wall_s": 0.00010893400030909106,
+        "native_cold_charge_s": 0.08925155000542873,
+        "component_accounted_wall_s": 0.09063944000081392,
+        "normalization_admission_statuses": {},
+        "normalization_retained_original": 0
+      },
+      "hybrid_root_only": {
+        "expression_bytes": 28,
+        "tree_nodes": 3,
+        "dag_nodes": 3,
+        "gate_statuses": {
+          "ACCEPTED_IDENTITY": 1
+        },
+        "fallbacks": 0,
+        "search_wall_s": 0.00038836499879835173,
+        "native_cold_charge_s": 0.08925155000542873,
+        "component_accounted_wall_s": 0.09091887099930318,
+        "normalization_admission_statuses": {},
+        "normalization_retained_original": 0
+      },
+      "native_guarded": {
+        "expression_bytes": 28,
+        "tree_nodes": 3,
+        "dag_nodes": 3,
+        "gate_statuses": {
+          "ACCEPTED_IDENTITY": 1
+        },
+        "fallbacks": 0,
+        "search_wall_s": 0.0,
+        "native_cold_charge_s": 0.08925155000542873,
+        "component_accounted_wall_s": 0.09008697799799847,
+        "normalization_admission_statuses": {
+          "REJECTED_SUPPORT_UNKNOWN": 1
+        },
+        "normalization_retained_original": 1
+      },
+      "native_reserialized": {
+        "expression_bytes": 28,
+        "tree_nodes": 3,
+        "dag_nodes": 3,
+        "gate_statuses": {
+          "ACCEPTED_IDENTITY": 1
+        },
+        "fallbacks": 0,
+        "search_wall_s": 0.0,
+        "native_cold_charge_s": 0.08925155000542873,
+        "component_accounted_wall_s": 0.09008697799799847,
+        "normalization_admission_statuses": {
+          "REJECTED_SUPPORT_UNKNOWN": 1
+        },
+        "normalization_retained_original": 1
+      },
+      "native_sympy_portfolio": {
+        "expression_bytes": 28,
+        "tree_nodes": 3,
+        "dag_nodes": 3,
+        "gate_statuses": {
+          "ACCEPTED_IDENTITY": 1
+        },
+        "fallbacks": 0,
+        "search_wall_s": 0.18880642800286296,
+        "native_cold_charge_s": 0.08925155000542873,
+        "component_accounted_wall_s": 0.34874427799877594,
+        "normalization_admission_statuses": {},
+        "normalization_retained_original": 0
+      },
+      "recursive_congruence": {
+        "expression_bytes": 28,
+        "tree_nodes": 3,
+        "dag_nodes": 3,
+        "gate_statuses": {
+          "ACCEPTED_IDENTITY": 1
+        },
+        "fallbacks": 0,
+        "search_wall_s": 0.00014249399828258902,
+        "native_cold_charge_s": 0.08925155000542873,
+        "component_accounted_wall_s": 0.09067299999878742,
+        "normalization_admission_statuses": {},
+        "normalization_retained_original": 0
+      },
+      "rewrite_guarded": {
+        "expression_bytes": 28,
+        "tree_nodes": 3,
+        "dag_nodes": 3,
+        "gate_statuses": {
+          "ACCEPTED_IDENTITY": 1
+        },
+        "fallbacks": 0,
+        "search_wall_s": 8.036099825403653e-05,
+        "native_cold_charge_s": 0.06916235500466428,
+        "component_accounted_wall_s": 0.06993123299616855,
+        "normalization_admission_statuses": {},
+        "normalization_retained_original": 0
+      },
+      "semantic_graph": {
+        "expression_bytes": 28,
+        "tree_nodes": 3,
+        "dag_nodes": 3,
+        "gate_statuses": {
+          "ACCEPTED_IDENTITY": 1
+        },
+        "fallbacks": 0,
+        "search_wall_s": 5.810799848404713e-05,
+        "native_cold_charge_s": 0.08925155000542873,
+        "component_accounted_wall_s": 0.09058861399898888,
+        "normalization_admission_statuses": {},
+        "normalization_retained_original": 0
+      },
+      "semantic_list": {
+        "expression_bytes": 28,
+        "tree_nodes": 3,
+        "dag_nodes": 3,
+        "gate_statuses": {
+          "ACCEPTED_IDENTITY": 1
+        },
+        "fallbacks": 0,
+        "search_wall_s": 5.097997927805409e-06,
+        "native_cold_charge_s": 0.08925155000542873,
+        "component_accounted_wall_s": 0.09053560399843263,
+        "normalization_admission_statuses": {},
+        "normalization_retained_original": 0
+      },
+      "sympy": {
+        "expression_bytes": 28,
+        "tree_nodes": 3,
+        "dag_nodes": 3,
+        "gate_statuses": {
+          "ACCEPTED_IDENTITY": 1
+        },
+        "fallbacks": 0,
+        "search_wall_s": 0.18880642800286296,
+        "native_cold_charge_s": 0.06916235500466428,
+        "component_accounted_wall_s": 0.25865730000077747,
+        "normalization_admission_statuses": {},
+        "normalization_retained_original": 0
+      }
+    },
+    "hybrid_vs": {
+      "hybrid": {
+        "wins": 0,
+        "ties": 1,
+        "regressions": 0,
+        "byte_difference": 0
+      },
+      "hybrid_root_only": {
+        "wins": 0,
+        "ties": 1,
+        "regressions": 0,
+        "byte_difference": 0
+      },
+      "native_guarded": {
+        "wins": 0,
+        "ties": 1,
+        "regressions": 0,
+        "byte_difference": 0
+      },
+      "native_reserialized": {
+        "wins": 0,
+        "ties": 1,
+        "regressions": 0,
+        "byte_difference": 0
+      },
+      "native_sympy_portfolio": {
+        "wins": 0,
+        "ties": 1,
+        "regressions": 0,
+        "byte_difference": 0
+      },
+      "recursive_congruence": {
+        "wins": 0,
+        "ties": 1,
+        "regressions": 0,
+        "byte_difference": 0
+      },
+      "rewrite_guarded": {
+        "wins": 0,
+        "ties": 1,
+        "regressions": 0,
+        "byte_difference": 0
+      },
+      "semantic_graph": {
+        "wins": 0,
+        "ties": 1,
+        "regressions": 0,
+        "byte_difference": 0
+      },
+      "semantic_list": {
+        "wins": 0,
+        "ties": 1,
+        "regressions": 0,
+        "byte_difference": 0
+      },
+      "sympy": {
+        "wins": 0,
+        "ties": 1,
+        "regressions": 0,
+        "byte_difference": 0
+      }
+    },
+    "original_expression_bytes": 28,
+    "native_processes": 3,
+    "actual_wall_s": 0.30112568699769326,
+    "normalization_admission_statuses": {
+      "REJECTED_SUPPORT_UNKNOWN": 1
+    },
+    "signature_statuses": {
+      "UNKNOWN": 1
+    },
+    "proposal_gate_statuses": {
+      "REJECTED_SUPPORT_UNKNOWN": 1
+    }
+  },
+  "source_sha256": {
+    "run_study.py": "55bec9ab4fe29e8f02ea2b73ee43f368162a284a9a4abd300e62b5394e90766e",
+    "checked_registry.py": "7f5f1aaef7635c2eea90962b5d516ea4d91920f4e937cae7b51850faebe6e968"
+  },
+  "scope": "Forced development resource failure; not benchmark performance."
+}

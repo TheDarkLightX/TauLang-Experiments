@@ -1,0 +1,29 @@
+{
+  "ordinal": 10,
+  "label": "factor_zero:repeat4:normalize",
+  "argv": [
+    "/workspace/scratch/b6becd93c24b/tau-study/private/tau-lang/build/release/tau",
+    "--charvar",
+    "false",
+    "--severity",
+    "error",
+    "--color",
+    "false",
+    "--status",
+    "false",
+    "--benchmarks",
+    "false",
+    "-e",
+    "normalize ((((a : tau) & (b : tau)) | ((a : tau) & (c : tau))) = 0)"
+  ],
+  "command": "normalize ((((a : tau) & (b : tau)) | ((a : tau) & (c : tau))) = 0)",
+  "binary_sha256": "874511bf414d0bfbaca224d6fde1cc2514419ad15c912d24dd334f6792909726",
+  "timeout_s": 10,
+  "timed_out": false,
+  "returncode": 0,
+  "stdout": "%1: a&(c|b) = 0\n\n",
+  "stderr": "",
+  "elapsed_s": 0.02287349499965785,
+  "TAU_environment_removed": true,
+  "truth": "UNKNOWN"
+}

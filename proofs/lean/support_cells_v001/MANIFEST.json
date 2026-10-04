@@ -1,0 +1,93 @@
+{
+  "artifact_revision": null,
+  "base_revision": "65ef69bdc5e6f1e479236d9dfb4d9b6d2e5302d1",
+  "files": [
+    {
+      "path": "proofs/lean/support_cells_v001/.gitignore",
+      "sha256": "94f4851486816c2a3edeb3b62955b61d94bfdd62da75894b012f32ac7511bb7d",
+      "size": 28
+    },
+    {
+      "path": "proofs/lean/support_cells_v001/Bridge.lean",
+      "sha256": "512c203da91ab331c3633eb9e1ad7882c275d7156adcea5f6ce7b1075acec528",
+      "size": 129060
+    },
+    {
+      "path": "proofs/lean/support_cells_v001/OBLIGATIONS.md",
+      "sha256": "5074704104d70b8773daef5a6ad63aed9ca6c7949f7f95e75a721979447d103e",
+      "size": 5851
+    },
+    {
+      "path": "proofs/lean/support_cells_v001/Proofs.lean",
+      "sha256": "deeccac5285fa2e1a38c3ebe964df3dbf0fab9ccedbb7b15d19c3bc182aa7491",
+      "size": 23921
+    },
+    {
+      "path": "proofs/lean/support_cells_v001/README.md",
+      "sha256": "4eece7042bd5a87e763846f361459bce91836499fafe74de09a89e54c7ac47e2",
+      "size": 7967
+    },
+    {
+      "path": "proofs/lean/support_cells_v001/fixtures.json",
+      "sha256": "5a1ecbf7f168ad4c33d06c1e131d8a2879b24f0fcd35bb63f7c49db9bb8fc100",
+      "size": 514038
+    },
+    {
+      "path": "proofs/lean/support_cells_v001/lake-manifest.json",
+      "sha256": "e709854fa3e54e6ae3c7381df5908958fc2dd268caccd9035e41aa16461fcdeb",
+      "size": 124
+    },
+    {
+      "path": "proofs/lean/support_cells_v001/lakefile.lean",
+      "sha256": "f1208e36a55f9018432156a4105f80bb89190df97be7e943b4fc69b819ff60a3",
+      "size": 131
+    },
+    {
+      "path": "proofs/lean/support_cells_v001/lean-toolchain",
+      "sha256": "7dc000621e0046d1aada809e2b7177e64454645cf4c741e9daaf79c99ec2e7a2",
+      "size": 25
+    },
+    {
+      "path": "proofs/lean/support_cells_v001/prepare_fixtures.py",
+      "sha256": "20897f4fe99f78310466bd165d64adbb8386c9590f516c9d35753e3a4c0f0789",
+      "size": 4183
+    },
+    {
+      "path": "proofs/lean/support_cells_v001/proof-contract.json",
+      "sha256": "f7cc4aec2dd5e980681fbe49e34e25f223fbdbf55d87a778ed1f2dabc51648e3",
+      "size": 2381
+    },
+    {
+      "path": "proofs/lean/support_cells_v001/receipts/correspondence.json",
+      "sha256": "b60d89c93c23b778a7781a0efb3f2060fb0205a561278f99199077c4664ad126",
+      "size": 4751
+    },
+    {
+      "path": "proofs/lean/support_cells_v001/receipts/lake-build.txt",
+      "sha256": "a8595cfdcc11bda55afbe4ef6cf44084caf4a7e7636bfb431dd3559e3429fbf2",
+      "size": 1762
+    },
+    {
+      "path": "proofs/lean/support_cells_v001/receipts/lean-build.txt",
+      "sha256": "318aa4f083f855d84936f7b5a138bd9ba128476f89b1923f511cde359458270e",
+      "size": 1318
+    },
+    {
+      "path": "proofs/lean/support_cells_v001/receipts/lean-correspondence.txt",
+      "sha256": "90e95116394af6d0a47da2346ce8baa1f50de679646ac743824b0fc488b520cf",
+      "size": 20649
+    },
+    {
+      "path": "proofs/lean/support_cells_v001/receipts/toolchain.json",
+      "sha256": "1971482c18f3a5d1dc11b6c3c67ff5764abf2c94d188a2cfae8498800094fc7b",
+      "size": 598
+    },
+    {
+      "path": "proofs/lean/support_cells_v001/replay.py",
+      "sha256": "c57bb0819c7bc76aecc77c835c678743fa21b0ce6bc4beb5aaa3acd0ad76d906",
+      "size": 13128
+    }
+  ],
+  "revision_binding": "Leader must commit these regular files and bind the resulting Git revision before revision-bound promotion.",
+  "schema": "tau-support-proof-manifest/v1"
+}

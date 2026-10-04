@@ -1,0 +1,50 @@
+{
+  "status": "COMPLETE",
+  "case_count": 24,
+  "controls_passed": 10,
+  "all_final_gates_accepted": true,
+  "original_source_bytes_total": 1229,
+  "protected_source_bytes_total": 442,
+  "arms": {
+    "native_normalizer": {
+      "source_bytes_total": 445,
+      "tree_nodes_total": 68,
+      "accepted_gates": 24,
+      "native_normalized_parsed": 24
+    },
+    "rewrite_egraph": {
+      "source_bytes_total": 935,
+      "tree_nodes_total": 130,
+      "accepted_gates": 24,
+      "native_normalized_parsed": 0
+    },
+    "semantic_only": {
+      "source_bytes_total": 475,
+      "tree_nodes_total": 72,
+      "accepted_gates": 24,
+      "native_normalized_parsed": 0
+    },
+    "registry_hybrid": {
+      "source_bytes_total": 442,
+      "tree_nodes_total": 67,
+      "accepted_gates": 24,
+      "native_normalized_parsed": 0
+    }
+  },
+  "hybrid_wins": {
+    "native_normalizer": 1,
+    "rewrite_egraph": 8,
+    "semantic_only": 3
+  },
+  "native": {
+    "binary": "/workspace/scratch/b6becd93c24b/tau-study/private/tau-lang/build/release/tau",
+    "binary_sha256": "874511bf414d0bfbaca224d6fde1cc2514419ad15c912d24dd334f6792909726",
+    "timeout_s": 10,
+    "processes": 127,
+    "timeouts": 2,
+    "parse_or_unknown": 20,
+    "native_wall_s": 3.5022070610248193,
+    "cache_entries": 51
+  },
+  "shared_registry_pairs_total": 38
+}

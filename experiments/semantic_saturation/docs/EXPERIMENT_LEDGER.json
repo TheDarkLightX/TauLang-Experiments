@@ -1,0 +1,69 @@
+[
+  {
+    "id": "EXP-PILOT-MAC",
+    "status": "historical_exploratory",
+    "cases": 24,
+    "source": "private checkpoint hash recorded in docs/INHERITED_SOURCE.json",
+    "binary_bytes_available": false,
+    "finding": "native507/hybrid442bytes; no fresh native execution in historical adapter"
+  },
+  {
+    "id": "EXP-PILOT-LINUX",
+    "status": "executed",
+    "cases": 24,
+    "evidence": "results/linux-pilot-summary.json",
+    "finding": "10controls96gates; native445/hybrid442bytes; two factoring forms differ fromMac"
+  },
+  {
+    "id": "EXP-DEV-001",
+    "status": "development_only",
+    "cases": 84,
+    "evidence": "results/development-001/SUMMARY.json",
+    "limitations": [
+      "Superseded accounting fields must not be used for runtime claims."
+    ]
+  },
+  {
+    "id": "EXP-HELDOUT-001",
+    "status": "executed_validated",
+    "cases": 336,
+    "freeze_sha256": "f98ef54d269d43e79561010bfa3faff327d97981159a0aa1c5224128d14f67f2",
+    "evidence": [
+      "results/heldout-001-validation.json",
+      "results/heldout-001-analysis.json"
+    ],
+    "deviations": []
+  },
+  {
+    "id": "EXP-PARSER-SENSITIVITY",
+    "status": "posthoc_attribution_diagnostic",
+    "cases": 333,
+    "excluded_cases": 3,
+    "evidence": "paper/native-parser-sensitivity.json",
+    "finding": "746primary bytes saved arise on unsupported-native-parser rows; not attributed to beating Tau normalization."
+  },
+  {
+    "id": "EXP-RESOURCES-001",
+    "status": "executed",
+    "support_rows": 324,
+    "search_rows": 216,
+    "evidence": "results/resources-001/SUMMARY.json",
+    "native_claims": false
+  },
+  {
+    "id": "EXP-REUSE-001",
+    "status": "executed_verified",
+    "streams": 10,
+    "requests_per_stream": 64,
+    "arms": 4,
+    "repetitions": 3,
+    "evidence": [
+      "results/reuse-001-summary.json",
+      "results/reuse-001-verification.json"
+    ],
+    "native_processes": 8892,
+    "arm_requests": 7680,
+    "unknowns": 0,
+    "candidate_status_mismatches": 0
+  }
+]

@@ -1,0 +1,296 @@
+{
+  "status": "PASS",
+  "rows": [
+    {
+      "case": "factor_nonzero",
+      "runs": [
+        {
+          "ordinal": 1,
+          "stdout": "%1: a&(c|b) != 0\n\n",
+          "parsed": [
+            "ne0",
+            [
+              "and",
+              [
+                "var",
+                "a"
+              ],
+              [
+                "or",
+                [
+                  "var",
+                  "c"
+                ],
+                [
+                  "var",
+                  "b"
+                ]
+              ]
+            ]
+          ],
+          "typed_bytes": 44
+        },
+        {
+          "ordinal": 2,
+          "stdout": "%1: a&(c|b) != 0\n\n",
+          "parsed": [
+            "ne0",
+            [
+              "and",
+              [
+                "var",
+                "a"
+              ],
+              [
+                "or",
+                [
+                  "var",
+                  "c"
+                ],
+                [
+                  "var",
+                  "b"
+                ]
+              ]
+            ]
+          ],
+          "typed_bytes": 44
+        },
+        {
+          "ordinal": 3,
+          "stdout": "%1: a&(c|b) != 0\n\n",
+          "parsed": [
+            "ne0",
+            [
+              "and",
+              [
+                "var",
+                "a"
+              ],
+              [
+                "or",
+                [
+                  "var",
+                  "c"
+                ],
+                [
+                  "var",
+                  "b"
+                ]
+              ]
+            ]
+          ],
+          "typed_bytes": 44
+        },
+        {
+          "ordinal": 4,
+          "stdout": "%1: a&(c|b) != 0\n\n",
+          "parsed": [
+            "ne0",
+            [
+              "and",
+              [
+                "var",
+                "a"
+              ],
+              [
+                "or",
+                [
+                  "var",
+                  "c"
+                ],
+                [
+                  "var",
+                  "b"
+                ]
+              ]
+            ]
+          ],
+          "typed_bytes": 44
+        },
+        {
+          "ordinal": 5,
+          "stdout": "%1: a&(c|b) != 0\n\n",
+          "parsed": [
+            "ne0",
+            [
+              "and",
+              [
+                "var",
+                "a"
+              ],
+              [
+                "or",
+                [
+                  "var",
+                  "c"
+                ],
+                [
+                  "var",
+                  "b"
+                ]
+              ]
+            ]
+          ],
+          "typed_bytes": 44
+        }
+      ],
+      "distinct_native_outputs": 1,
+      "typed_byte_values": [
+        44
+      ]
+    },
+    {
+      "case": "factor_zero",
+      "runs": [
+        {
+          "ordinal": 6,
+          "stdout": "%1: a&(c|b) = 0\n\n",
+          "parsed": [
+            "eq0",
+            [
+              "and",
+              [
+                "var",
+                "a"
+              ],
+              [
+                "or",
+                [
+                  "var",
+                  "c"
+                ],
+                [
+                  "var",
+                  "b"
+                ]
+              ]
+            ]
+          ],
+          "typed_bytes": 43
+        },
+        {
+          "ordinal": 7,
+          "stdout": "%1: a&(c|b) = 0\n\n",
+          "parsed": [
+            "eq0",
+            [
+              "and",
+              [
+                "var",
+                "a"
+              ],
+              [
+                "or",
+                [
+                  "var",
+                  "c"
+                ],
+                [
+                  "var",
+                  "b"
+                ]
+              ]
+            ]
+          ],
+          "typed_bytes": 43
+        },
+        {
+          "ordinal": 8,
+          "stdout": "%1: a&(c|b) = 0\n\n",
+          "parsed": [
+            "eq0",
+            [
+              "and",
+              [
+                "var",
+                "a"
+              ],
+              [
+                "or",
+                [
+                  "var",
+                  "c"
+                ],
+                [
+                  "var",
+                  "b"
+                ]
+              ]
+            ]
+          ],
+          "typed_bytes": 43
+        },
+        {
+          "ordinal": 9,
+          "stdout": "%1: a&(c|b) = 0\n\n",
+          "parsed": [
+            "eq0",
+            [
+              "and",
+              [
+                "var",
+                "a"
+              ],
+              [
+                "or",
+                [
+                  "var",
+                  "c"
+                ],
+                [
+                  "var",
+                  "b"
+                ]
+              ]
+            ]
+          ],
+          "typed_bytes": 43
+        },
+        {
+          "ordinal": 10,
+          "stdout": "%1: a&(c|b) = 0\n\n",
+          "parsed": [
+            "eq0",
+            [
+              "and",
+              [
+                "var",
+                "a"
+              ],
+              [
+                "or",
+                [
+                  "var",
+                  "c"
+                ],
+                [
+                  "var",
+                  "b"
+                ]
+              ]
+            ]
+          ],
+          "typed_bytes": 43
+        }
+      ],
+      "distinct_native_outputs": 1,
+      "typed_byte_values": [
+        43
+      ]
+    }
+  ],
+  "native_summary": {
+    "binary": "/workspace/scratch/b6becd93c24b/tau-study/private/tau-lang/build/release/tau",
+    "binary_sha256": "874511bf414d0bfbaca224d6fde1cc2514419ad15c912d24dd334f6792909726",
+    "timeout_s": 10,
+    "processes": 10,
+    "timeouts": 0,
+    "parse_or_unknown": 10,
+    "native_wall_s": 0.2373193959974742,
+    "cache_entries": 0
+  },
+  "corpus_sha256": "df35b8806b3bb6545a775b8a7a8e1e01d01a8c4b57dfe2869fc42a5ca772c97f",
+  "repetitions": 5,
+  "scope": "Repeatability on two inherited development cases only; no cross-build cause attribution."
+}

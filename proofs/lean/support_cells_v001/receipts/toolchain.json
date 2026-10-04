@@ -1,0 +1,12 @@
+{
+  "version": "Lean 4.29.1",
+  "platform": "x86_64-unknown-linux-gnu",
+  "compiler_commit": "f72c35b3f637c8c6571d353742168ab66cc22c00",
+  "release_mode": "Release",
+  "official_archive_url": "https://github.com/leanprover/lean4/releases/download/v4.29.1/lean-4.29.1-linux.tar.zst",
+  "archive_sha256": "bf062d29556d655685fb287563c249ad6a8fde34352c18b5e32568a595c1aec1",
+  "archive_in_repository": false,
+  "external_libraries": [],
+  "bundled_library": "Std",
+  "initial_connectivity_diagnostic": "An initial HEAD-only request used known release 4.19.0; that binary was not downloaded or used."
+}

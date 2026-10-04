@@ -1,0 +1,140 @@
+{
+  "audited_declarations": {
+    "SupportCells.all_nonempty_supports_realizable": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "SupportCells.cell_member": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "SupportCells.compare_exact": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "SupportCells.endpoint_full_support_false": [
+      "propext",
+      "Quot.sound"
+    ],
+    "SupportCells.endpoint_not_equivalent_true": [
+      "propext",
+      "Quot.sound"
+    ],
+    "SupportCells.executable_support_exact": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "SupportCells.finite_two_element_boundary": [
+      "propext"
+    ],
+    "SupportCells.formula_evaluator_exact": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "SupportCells.formula_support_exact": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "SupportCells.one_way_not_equivalence": [
+      "propext",
+      "Quot.sound"
+    ],
+    "SupportCells.proper_closed_true": [
+      "propext",
+      "Quot.sound"
+    ],
+    "SupportCells.proper_element_exists": [],
+    "SupportCells.realize_refinement": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "SupportCells.term_eq_support": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "SupportCells.term_signature_transfer": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ]
+  },
+  "bridge_replay": [
+    "lean",
+    "--run",
+    "Bridge.lean"
+  ],
+  "cwd": "proofs/lean/support_cells_v001",
+  "duration_seconds": 29.632,
+  "executed_lean_translation_mutants": {
+    "m_order_correct": "100110000000000",
+    "m_order_mutant": "111000000000000",
+    "m_shadow_correct": "111",
+    "m_shadow_mutant": "011"
+  },
+  "executed_python_refinement_mutant": {
+    "correct": [
+      true
+    ],
+    "mutated": [
+      false
+    ],
+    "mutation": "forbid both occupied children"
+  },
+  "fixture_count": 1073,
+  "formula_support_observations": 11979,
+  "inherited_native_parser_receipts": 24,
+  "lake_build_checked_separately": true,
+  "lean_version": "Lean (version 4.29.1, x86_64-unknown-linux-gnu, commit f72c35b3f637c8c6571d353742168ab66cc22c00, Release)",
+  "mismatches": [],
+  "nonclaims": [
+    "No machine proof of the Python-to-Lean adapter or Python implementation.",
+    "No general abstract Boolean-algebra representation theorem.",
+    "No current native Tau checker equivalence claim; parser receipts are inherited Mac execution.",
+    "No performance result; the executable Lean algorithm deliberately enumerates all child supports."
+  ],
+  "proof_replay": [
+    "lean",
+    "-o",
+    ".build/Proofs.olean",
+    "Proofs.lean"
+  ],
+  "quantified_fixture_count": 753,
+  "refinement_cases": 19,
+  "refinement_children_checked": 273,
+  "rejected_typed_controls": {
+    "out_of_scope_index": {
+      "diagnostic": "/workspace/scratch/b6becd93c24b/tau-study/repo/proofs/lean/support_cells_v001/.build/out_of_scope_index.lean:3:34: error: Tactic `decide` proved that the proposition\n  1 < 1\nis false\n",
+      "exit_code": 1,
+      "source": "import Proofs\nopen SupportCells\ndef wrong : Term 1 := .var \u27e81, by decide\u27e9\n"
+    },
+    "sort_mismatch": {
+      "diagnostic": "/workspace/scratch/b6becd93c24b/tau-study/repo/proofs/lean/support_cells_v001/.build/sort_mismatch.lean:3:22: error: Type mismatch\n  Formula.eq (Term.var 0) Term.zero\nhas type\n  Formula ?m.7\nbut is expected to have type\n  Term 1\n",
+      "exit_code": 1,
+      "source": "import Proofs\nopen SupportCells\ndef wrong : Term 1 := Formula.eq (.var 0) .zero\n"
+    }
+  },
+  "replay_exit_code": 0,
+  "schema": "tau-support-proof-receipt/v1",
+  "semantic_negative_controls": [
+    "finite-two-element-vs-two-cell-support",
+    "ordered-free-interface",
+    "lexical-shadowing"
+  ],
+  "source_sha256": {
+    "experiments/semantic_saturation/src/normalized_parser.py": "4edb582c9895b035175f72dc23a23f3779468b565f38709ca56667aaee0f4e09",
+    "experiments/semantic_saturation/src/support_oracle.py": "432f5c05d41123a88fee2fab77ac5a15130c7aab59c78fb0efa3ebdec0ab8f79",
+    "proofs/lean/support_cells_v001/Bridge.lean": "512c203da91ab331c3633eb9e1ad7882c275d7156adcea5f6ce7b1075acec528",
+    "proofs/lean/support_cells_v001/Proofs.lean": "deeccac5285fa2e1a38c3ebe964df3dbf0fab9ccedbb7b15d19c3bc182aa7491",
+    "proofs/lean/support_cells_v001/fixtures.json": "5a1ecbf7f168ad4c33d06c1e131d8a2879b24f0fcd35bb63f7c49db9bb8fc100",
+    "proofs/lean/support_cells_v001/replay.py": "130f7841f0dc5a285dbc2b05ad9de8e36a32fafe6043ed05b26687658e04a378"
+  },
+  "status": "PASS"
+}

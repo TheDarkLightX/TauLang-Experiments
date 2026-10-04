@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "seed": 99843072,
+  "term_pool_size": 414,
+  "graph_runs": 121,
+  "failure_count": 0,
+  "failures": [],
+  "source_sha256": {
+    "checked_registry.py": "6ad2f2be4f5021d766a80fd436fe15328f15c0ee30bcdeb1fc6ee9903a1ba083",
+    "study_core.py": "5fe15e205943aacb8042f03c707f2486d6b83eb52d1be0738d68b5e7e799eed9",
+    "engine.py": "10541eb6502dca227b875f7f4355ec6a61cc4bdeb72ce6b9cc92aa00d45da9e1"
+  },
+  "limitations": [
+    "Finite sampled pair graphs and one targeted binder graph; not an equivalence proof of mechanisms.",
+    "Exact fixture equations independently interpreted, no native Tau called."
+  ]
+}

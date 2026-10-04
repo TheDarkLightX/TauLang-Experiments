@@ -1,0 +1,1 @@
+{"checks": "exact stream/profile/source identity; both emitted commands and argv; strict native verdicts; cache provenance; raw hashes; timing bounds; recomputed fixed-bank selection and cumulative summaries", "freeze_sha256": "080f547d64b7b7387fad4162140f8e07981fe0ec926d304d92a0c32755229456", "native_processes": 8892, "requests": 7680, "runs": 30, "status": "VERIFIED"}

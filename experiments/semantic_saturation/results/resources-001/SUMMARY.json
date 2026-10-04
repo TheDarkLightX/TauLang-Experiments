@@ -1,0 +1,17 @@
+{
+  "native_processes": 0,
+  "nonclaims": [
+    "No native proof or optimizer quality gain is established by this resource screen.",
+    "Graph outputs require the separate acceptance gate before deployment."
+  ],
+  "search_cases": 216,
+  "search_wall_s": 7.4137216239687405,
+  "status": "COMPLETE",
+  "support_cases": 324,
+  "support_statuses": {
+    "COMPLETE": 237,
+    "REJECTED": 36,
+    "UNKNOWN": 51
+  },
+  "support_wall_s": 8.05663765799909
+}

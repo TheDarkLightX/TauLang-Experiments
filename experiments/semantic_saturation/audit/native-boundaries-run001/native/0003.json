@@ -1,0 +1,29 @@
+{
+  "ordinal": 3,
+  "label": "audit:free_shadow:emitted-forward",
+  "argv": [
+    "/workspace/scratch/b6becd93c24b/tau-study/private/tau-lang/build/release/tau",
+    "--charvar",
+    "false",
+    "--severity",
+    "error",
+    "--color",
+    "false",
+    "--status",
+    "false",
+    "--benchmarks",
+    "false",
+    "-e",
+    "normalize all a : tau (((((a : tau) = 0) && ex a : tau (((a : tau) != 0)))) -> (((a : tau) = 0)))"
+  ],
+  "command": "normalize all a : tau (((((a : tau) = 0) && ex a : tau (((a : tau) != 0)))) -> (((a : tau) = 0)))",
+  "binary_sha256": "874511bf414d0bfbaca224d6fde1cc2514419ad15c912d24dd334f6792909726",
+  "timeout_s": 10,
+  "timed_out": false,
+  "returncode": 0,
+  "stdout": "%1: T\n\n",
+  "stderr": "",
+  "elapsed_s": 0.0367202770030417,
+  "TAU_environment_removed": true,
+  "truth": "T"
+}

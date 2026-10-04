@@ -1,0 +1,251 @@
+{
+  "schema": "tau-literature-ledger/v1",
+  "scope": "bounded nearest-precedent review; not exhaustive systematic survey",
+  "sources": [
+    {
+      "id": "egg2021",
+      "title": "egg: Fast and Extensible Equality Saturation",
+      "year": 2021,
+      "doi": "10.1145/3434304",
+      "url": "https://homes.cs.washington.edu/~cnandi/docs/popl21-cr.pdf",
+      "sections": [
+        "4.1 E-Class Analyses",
+        "4.2 Conditional and Dynamic Rewrites",
+        "4.3 Extraction"
+      ],
+      "finding": "Reusable analyses, semantic facts, dynamic/conditional rewrites, and local-cost extraction are established baseline capabilities.",
+      "limitation": "General framework; does not supply a Tau atomless-BA checker. Original 2021 DOI, not the later CACM republication.",
+      "retrieved_utc_date": "2026-10-04",
+      "source_type": "primary_paper_or_official_docs",
+      "access": "selected_sections_read_via_web"
+    },
+    {
+      "id": "nextmap2026",
+      "title": "Improving Equality Saturation for EDA via Semantic E-Graphs",
+      "year": 2026,
+      "doi": "10.1145/3808299",
+      "url": "https://zsisco.net/papers/nextmap-pldi26.pdf",
+      "sections": [
+        "3.2 Semantic domains and Definition 3.3",
+        "3.3 Semantic E-Graph Operations",
+        "6.4 Efficiency of the Semantic E-Graph",
+        "7 Related Work"
+      ],
+      "finding": "Semantic identifiers directly drive merging; composite identifiers propagate equalities. Matched egglog variants isolate representation costs.",
+      "limitation": "Hardware-focused construction and evaluation; neither a Tau implementation nor evidence of Tau performance.",
+      "artifact": "https://github.com/UCSBarchlab/nextmap",
+      "artifact_doi": "10.5281/zenodo.19080665",
+      "retrieved_utc_date": "2026-10-04",
+      "source_type": "primary_paper_or_official_docs",
+      "access": "selected_sections_read_via_web"
+    },
+    {
+      "id": "zucker2025",
+      "title": "Omelets Need Onions: E-graphs Modulo Theories via Bottom-up E-Matching",
+      "year": 2025,
+      "doi": "10.48550/arXiv.2504.14340",
+      "url": "https://arxiv.org/html/2504.14340v1",
+      "sections": [
+        "3 Generalized Union Finds and Semantic E-ids",
+        "3.2 Example Theories",
+        "4 Alternative Approaches to EMT"
+      ],
+      "finding": "Semantic e-ids, theory canonizers, black-box SMT canonization, and extract/simplify/reinsert or sidecar-solver approaches are explicit conceptual precedents.",
+      "limitation": "Preprint design discussion, not a matched Tau benchmark or proof of the proposed Tau bridge.",
+      "retrieved_utc_date": "2026-10-04",
+      "source_type": "primary_paper_or_official_docs",
+      "access": "selected_sections_read_via_web"
+    },
+    {
+      "id": "ruler2021",
+      "title": "Rewrite Rule Inference Using Equality Saturation",
+      "year": 2021,
+      "doi": "10.48550/arXiv.2108.10436",
+      "url": "https://arxiv.org/pdf/2108.10436",
+      "sections": [
+        "3.3 Candidate Rules: canonical representation, characteristic vectors, validation",
+        "3.4 Choosing Rules",
+        "4.1 Evaluation",
+        "6 Validation Analysis",
+        "7 Limitations"
+      ],
+      "finding": "E-graphs compact candidate terms; evaluated fingerprints filter candidate equalities before a supplied validator. Boolean model checking and larger-domain SMT are evaluated.",
+      "limitation": "Fingerprints can be sampled; matching is not a validity proof. Exact support semantics would be a domain-specific validator, not a new generic architecture.",
+      "retrieved_utc_date": "2026-10-04",
+      "source_type": "primary_paper_or_official_docs",
+      "access": "selected_sections_read_via_web"
+    },
+    {
+      "id": "souper2017",
+      "title": "Souper: A Synthesizing Superoptimizer",
+      "year": 2017,
+      "doi": "10.48550/arXiv.1711.04422",
+      "url": "https://arxiv.org/pdf/1711.04422",
+      "sections": [
+        "2 Synthesis architecture",
+        "2.10 Three Real Threats to Soundness",
+        "2.12 Caching"
+      ],
+      "finding": "Solver-checked superoptimization and caching successful/failed optimization mappings in memory and persistent storage precede the Tau registry.",
+      "limitation": "LLVM IR semantics and deployment differ. The retrieved PDF is a revised 2018 manuscript under the 2017 arXiv identifier.",
+      "artifact": "https://github.com/google/souper",
+      "retrieved_utc_date": "2026-10-04",
+      "source_type": "primary_paper_or_official_docs",
+      "access": "selected_sections_read_via_web"
+    },
+    {
+      "id": "bryant1986",
+      "title": "Graph-Based Algorithms for Boolean Function Manipulation",
+      "year": 1986,
+      "doi": "10.1109/TC.1986.1676819",
+      "url": "https://www.cs.cmu.edu/~bryant/pubdir/ieeetc86.pdf",
+      "sections": [
+        "2 Representation, Theorem 1",
+        "3 examples and representation efficiency",
+        "Conclusion: shared graphs and computation caching"
+      ],
+      "finding": "Fixed-variable-order reduced BDDs are canonical Boolean-function representations; sharing and cached operations are established.",
+      "limitation": "Propositional functions, not direct quantification over arbitrary BA elements. Fixed order matters; BDD compactness need not imply a compact emitted Tau tree.",
+      "retrieved_utc_date": "2026-10-04",
+      "source_type": "primary_paper_or_official_docs",
+      "access": "selected_sections_read_via_web"
+    },
+    {
+      "id": "asor2024v1",
+      "title": "Guarded Successor: A Novel Temporal Logic",
+      "year": 2024,
+      "doi": "10.48550/arXiv.2407.06214",
+      "url": "https://arxiv.org/html/2407.06214v1",
+      "sections": [
+        "2.1 Remark 13 and Corollary 14",
+        "2.2 Theorem 16 and Corollary 19",
+        "2.3 Number of Formulas",
+        "4.5 Complexity"
+      ],
+      "finding": "Distinguishes BA term/formula normal forms; gives atomless-BA QE and fixed-variable/fixed-constant finite quotient bounds.",
+      "limitation": "Reading the theorem is not independently verifying Tau implementation correctness. The reviewed experiment does not cover temporal GS or arbitrary interpreted constants.",
+      "retrieved_utc_date": "2026-10-04",
+      "source_type": "primary_paper_or_official_docs",
+      "access": "selected_sections_read_via_web"
+    },
+    {
+      "id": "smallproofs2022",
+      "title": "Small Proofs from Congruence Closure",
+      "year": 2022,
+      "doi": "10.48550/arXiv.2209.03398",
+      "url": "https://arxiv.org/pdf/2209.03398",
+      "sections": [
+        "I Introduction",
+        "IV Optimal Tree Size",
+        "V Greedy Optimization of Proof Tree Size",
+        "VI Evaluation"
+      ],
+      "finding": "Proof-generating equality saturation in egg and proof-size optimization have established implementations and empirical evaluation.",
+      "limitation": "Certificates justify congruence/equality from admitted equations; they do not automatically prove the validity of a domain-specific semantic oracle.",
+      "retrieved_utc_date": "2026-10-04",
+      "source_type": "primary_paper_or_official_docs",
+      "access": "selected_sections_read_via_web"
+    },
+    {
+      "id": "sympy_logic",
+      "title": "SymPy Logic documentation",
+      "version": "1.14.0",
+      "url": "https://docs.sympy.org/latest/modules/logic.html#sympy.logic.boolalg.simplify_logic",
+      "sections": [
+        "Simplification and equivalence-testing: simplify_logic",
+        "to_cnf and to_dnf",
+        "gateinputcount"
+      ],
+      "finding": "Established CNF/DNF simplification baseline with an explicit exponential-time warning and default 8-variable simplification limit.",
+      "limitation": "Only use compatible Boolean terms or opaque-predicate propositional skeletons; not full atomless-BA QE. Translate back and compare with one common cost model.",
+      "retrieved_utc_date": "2026-10-04",
+      "source_type": "primary_paper_or_official_docs",
+      "access": "selected_sections_read_via_web"
+    },
+    {
+      "id": "dd_docs",
+      "title": "dd maintainer documentation",
+      "url": "https://github.com/tulip-control/dd/blob/main/doc.md",
+      "sections": [
+        "Design principles",
+        "Using a BDD manager",
+        "CUDD interface",
+        "Lower level and reordering"
+      ],
+      "finding": "Pure-Python dd.autoref and compatible dd.cudd interfaces offer a practical shared-ROBDD baseline.",
+      "limitation": "Documentation checked, package not installed or benchmarked by this lane. Boolean quantification must not be relabeled atomless-BA QE.",
+      "retrieved_utc_date": "2026-10-04",
+      "source_type": "primary_paper_or_official_docs",
+      "access": "selected_sections_read_via_web"
+    },
+    {
+      "id": "ccx2008",
+      "title": "CC(X): Semantic Combination of Congruence Closure with Solvable Theories",
+      "year": 2008,
+      "doi": "10.1016/j.entcs.2008.04.080",
+      "url": "https://doi.org/10.1016/j.entcs.2008.04.080",
+      "indexed_primary_pdf": "https://citeseerx.ist.psu.edu/document?doi=fd5cf31b6a347968e2da99f05f0e12de658749bb&repid=rep1&type=pdf",
+      "sections": [
+        "Abstract",
+        "2.1 Solvable Theories",
+        "2.2 Algorithm CC(X)"
+      ],
+      "finding": "Congruence closure using semantic values rather than canonized terms is an older direct precedent.",
+      "limitation": "Publisher/PDF open failed. Primary paper text was readable in indexed retrieval, corroborated by Nextmap reference 8; no artifact replay. Ground solvable-theory combination is not atomless quantified Tau.",
+      "retrieved_utc_date": "2026-10-04",
+      "source_type": "primary_paper_or_official_docs",
+      "access": "selected_sections_read_via_web"
+    },
+    {
+      "id": "afp_checker2026dev",
+      "title": "Checking Equality-Saturation Merge and Extraction Certificates",
+      "year": 2026,
+      "url": "https://devel.isa-afp.org/entries/Equality_Saturation_Checker.html",
+      "sections": [
+        "Entry abstract",
+        "Theory listing: Egg_Flat_Explanation, EGraph_Explanations, Extraction_Certificates, Acyclic_EGraph_Extraction, Certified_Acyclic_EGraph"
+      ],
+      "finding": "The development entry describes verified executable checking of egg flat explanations and minimum additive-cost extraction over acyclic e-class DAGs.",
+      "limitation": "Mutable development entry, dated 2026-07-14; release-page open failed. Only entry inspected, no Isabelle replay. Visible status listed AFP/5c0d018c7389 and Isabelle/a414adcf84d0, checked 2026-10-03. Do not cite as stable release or claim independently audited proof.",
+      "retrieved_utc_date": "2026-10-04",
+      "source_type": "primary_paper_or_official_docs",
+      "access": "selected_sections_read_via_web"
+    },
+    {
+      "id": "boole2025v1",
+      "title": "BoolE: Exact Symbolic Reasoning via Boolean Equality Saturation",
+      "year": 2025,
+      "doi": "10.48550/arXiv.2504.05577",
+      "url": "https://arxiv.org/html/2504.05577v1",
+      "sections": [
+        "IV-A E-Graph Construction and Rewriting",
+        "IV-B Exact Extraction",
+        "V Experimental Results"
+      ],
+      "finding": "Boolean equality saturation and domain-specific extraction have already been applied to reconstruct arithmetic components from optimized gate-level netlists.",
+      "limitation": "Adjacent application, not a general Boolean-expression minimizer or atomless-BA QE baseline. Reported performance was not reproduced here.",
+      "retrieved_utc_date": "2026-10-04",
+      "source_type": "primary_paper_or_official_docs",
+      "access": "selected_sections_read_via_web"
+    },
+    {
+      "id": "slotted2025",
+      "title": "Slotted E-Graphs: First-Class Support for (Bound) Variables in E-Graphs",
+      "year": 2025,
+      "doi": "10.1145/3729326",
+      "url": "https://goens.org/publications/pldi25.pdf",
+      "sections": [
+        "1 Introduction",
+        "2.1 Bindings",
+        "2.2 Different numbers of free variables",
+        "3.1 Congruence Modulo Renaming"
+      ],
+      "finding": "Efficient sharing modulo variable renaming and binder-aware e-graph semantics already have a dedicated construction.",
+      "limitation": "Conditional precedent if the Tau work claims binding/alpha-sharing novelty; not needed for a deliberately fixed-context root-only pilot.",
+      "artifact": "https://crates.io/crates/slotted-egraphs",
+      "retrieved_utc_date": "2026-10-04",
+      "source_type": "primary_paper_or_official_docs",
+      "access": "selected_sections_read_via_web"
+    }
+  ]
+}

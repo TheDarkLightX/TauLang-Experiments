@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "seed": 31470702,
+  "checks": 517,
+  "roundtrips": 500,
+  "negative_cases": 17,
+  "failures": [],
+  "source_sha256": {
+    "typed_parser.py": "7972b8343189865e92e7e0a264a6fd8459e9e59d245ed5db7128ebfa89577f07",
+    "native_oracle.py": "98306306f8c1badd8967b83949e5687a66c27ba02ae0b8997697418ef5efdbaa"
+  },
+  "limitations": [
+    "This parser implements the study grammar, not the native Tau parser.",
+    "No native execution or universal parser-refinement proof."
+  ]
+}

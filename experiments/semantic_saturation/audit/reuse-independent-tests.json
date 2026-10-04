@@ -1,0 +1,26 @@
+{
+  "status": "PASS",
+  "argv": [
+    "python3",
+    "-B",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tests",
+    "-p",
+    "test_reuse.py",
+    "-v"
+  ],
+  "cwd": "repo/experiments/semantic_saturation",
+  "environment": {
+    "PYTHONPATH": "src"
+  },
+  "exit_code": 0,
+  "elapsed_s": 0.6359268189989962,
+  "run_reuse_sha256": "84c62b3582bec04ff220e8fe66221be7945a1d824c855457f880c99d713e3e44",
+  "source_unchanged": true,
+  "test_log_sha256": "51dc39cc803a308a0e8328024c7d45b8c3903cd045d9ccceefb65c95c3416693",
+  "test_count": 19,
+  "scope": "Independently replayed mock/control-flow and mathematical unit suite; no native reuse benchmark evidence."
+}

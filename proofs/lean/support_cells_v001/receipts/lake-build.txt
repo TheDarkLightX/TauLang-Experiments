@@ -1,0 +1,17 @@
+ℹ [2/3] Built Proofs (1.4s)
+info: Proofs.lean:574:0: 'SupportCells.realize_refinement' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: Proofs.lean:575:0: 'SupportCells.term_eq_support' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: Proofs.lean:576:0: 'SupportCells.cell_member' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: Proofs.lean:577:0: 'SupportCells.formula_support_exact' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: Proofs.lean:578:0: 'SupportCells.executable_support_exact' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: Proofs.lean:579:0: 'SupportCells.formula_evaluator_exact' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: Proofs.lean:580:0: 'SupportCells.term_signature_transfer' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: Proofs.lean:581:0: 'SupportCells.all_nonempty_supports_realizable' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: Proofs.lean:582:0: 'SupportCells.compare_exact' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: Proofs.lean:583:0: 'SupportCells.proper_element_exists' does not depend on any axioms
+info: Proofs.lean:584:0: 'SupportCells.endpoint_full_support_false' depends on axioms: [propext, Quot.sound]
+info: Proofs.lean:585:0: 'SupportCells.proper_closed_true' depends on axioms: [propext, Quot.sound]
+info: Proofs.lean:586:0: 'SupportCells.finite_two_element_boundary' depends on axioms: [propext]
+info: Proofs.lean:587:0: 'SupportCells.endpoint_not_equivalent_true' depends on axioms: [propext, Quot.sound]
+info: Proofs.lean:588:0: 'SupportCells.one_way_not_equivalence' depends on axioms: [propext, Quot.sound]
+Build completed successfully (3 jobs).

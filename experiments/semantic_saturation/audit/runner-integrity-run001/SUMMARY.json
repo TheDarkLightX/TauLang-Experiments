@@ -1,0 +1,55 @@
+{
+  "status": "PASS",
+  "cold_accounting_cases": [
+    {
+      "case": "dev-random_term-n2-s16-r0",
+      "expected_unique_gates": 2,
+      "expected_s": 0.1443709859995579,
+      "actual_s": 0.1443709859995579,
+      "pass": true
+    },
+    {
+      "case": "dev-random_term-n2-s16-r1",
+      "expected_unique_gates": 2,
+      "expected_s": 0.16774660900046,
+      "actual_s": 0.16774660900046,
+      "pass": true
+    },
+    {
+      "case": "dev-random_term-n2-s32-r0",
+      "expected_unique_gates": 2,
+      "expected_s": 0.1910565990037867,
+      "actual_s": 0.1910565990037867,
+      "pass": true
+    },
+    {
+      "case": "dev-random_term-n2-s32-r1",
+      "expected_unique_gates": 1,
+      "expected_s": 0.08946072899925639,
+      "actual_s": 0.08946072899925639,
+      "pass": true
+    },
+    {
+      "case": "dev-random_term-n2-s64-r0",
+      "expected_unique_gates": 1,
+      "expected_s": 0.11570647699772962,
+      "actual_s": 0.11570647699772962,
+      "pass": true
+    },
+    {
+      "case": "dev-random_term-n2-s64-r1",
+      "expected_unique_gates": 1,
+      "expected_s": 0.11714464599936036,
+      "actual_s": 0.11714464599936036,
+      "pass": true
+    }
+  ],
+  "forced_provenance_failure": {
+    "exit_code": 2,
+    "summary_status": "PROVENANCE_FAILED",
+    "binary_unchanged": false,
+    "pass": true
+  },
+  "run_study_sha256": "1903868041784f68b031da4a3405edc9d360fb53052d340aaeaf1153b116b789",
+  "scope": "Local unit-level digest mutation and existing-receipt accounting; zero native subprocesses."
+}

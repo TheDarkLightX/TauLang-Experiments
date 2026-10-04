@@ -1,0 +1,29 @@
+{
+  "ordinal": 2,
+  "label": "audit:closed_proper_split:emitted-reverse",
+  "argv": [
+    "/workspace/scratch/b6becd93c24b/tau-study/private/tau-lang/build/release/tau",
+    "--charvar",
+    "false",
+    "--severity",
+    "error",
+    "--color",
+    "false",
+    "--status",
+    "false",
+    "--benchmarks",
+    "false",
+    "-e",
+    "normalize ((T) -> (ex x : tau ((((x : tau) != 0) && (((x : tau))' != 0)))))"
+  ],
+  "command": "normalize ((T) -> (ex x : tau ((((x : tau) != 0) && (((x : tau))' != 0)))))",
+  "binary_sha256": "874511bf414d0bfbaca224d6fde1cc2514419ad15c912d24dd334f6792909726",
+  "timeout_s": 10,
+  "timed_out": false,
+  "returncode": 0,
+  "stdout": "%1: T\n\n",
+  "stderr": "",
+  "elapsed_s": 0.025984252002672292,
+  "TAU_environment_removed": true,
+  "truth": "T"
+}

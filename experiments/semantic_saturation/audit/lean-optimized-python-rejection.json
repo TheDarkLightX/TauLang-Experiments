@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "argv": [
+    "python3",
+    "-B",
+    "-O",
+    "replay.py"
+  ],
+  "exit_code": 1,
+  "stderr": "Traceback (most recent call last):\n  File \"/workspace/scratch/b6becd93c24b/tau-study/repo/proofs/lean/support_cells_v001/replay.py\", line 215, in <module>\n    if __name__=='__main__':main()\n                            ^^^^^^\n  File \"/workspace/scratch/b6becd93c24b/tau-study/repo/proofs/lean/support_cells_v001/replay.py\", line 93, in main\n    raise RuntimeError('Optimized Python disables control assertions; rerun without -O or PYTHONOPTIMIZE')\nRuntimeError: Optimized Python disables control assertions; rerun without -O or PYTHONOPTIMIZE\n",
+  "receipt_unchanged": true,
+  "replay_sha256": "c57bb0819c7bc76aecc77c835c678743fa21b0ce6bc4beb5aaa3acd0ad76d906",
+  "proof_sha256": "deeccac5285fa2e1a38c3ebe964df3dbf0fab9ccedbb7b15d19c3bc182aa7491",
+  "bridge_sha256": "512c203da91ab331c3633eb9e1ad7882c275d7156adcea5f6ce7b1075acec528"
+}

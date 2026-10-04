@@ -1,0 +1,46 @@
+{
+  "schema": "tau-study-proof-obligations/v1",
+  "validation_status": "project-local schema; external zrm/proof-obligation/v3 references and validators were unavailable, so no external schema pass is claimed",
+  "base_revision": "65ef69bdc5e6f1e479236d9dfb4d9b6d2e5302d1",
+  "obligations": [
+    {
+      "id": "PO-SUPPORT",
+      "boundary": "Well-scoped Lean first-order formulas over a nonempty atomless Boolean subalgebra of sets",
+      "quantifiers": "Every nonempty carrier set, every admitted atomless field, every finite variable count, every pair of well-scoped formulas, every field-valued assignment",
+      "assumptions": "Closure under Boolean set operations; each nonempty element has a proper nonempty split; Nonempty carrier",
+      "conclusion": "Executable exhaustive support comparison is true iff formula meanings agree on every assignment",
+      "oracle": "Lean4.29.1 kernel build plus printed dependency audit",
+      "replay_argv": ["python3", "replay.py"],
+      "working_directory": "proofs/lean/support_cells_v001",
+      "nonclaims": ["No formal abstract-BA representation theorem", "No theorem about Python, native Tau, egraph or serialized receipts"],
+      "evidence": "proofs/lean/support_cells_v001/MANIFEST.json"
+    },
+    {
+      "id": "PO-BRIDGE",
+      "boundary": "Python named tuple AST/integer support masks versus Lean Fin-indexed executable AST",
+      "quantifiers": "1073 fixed development fixtures,11979 support observations,19 one-binder parent supports and273 children,24 historical normalizer parser receipts",
+      "assumptions": "Pinned toolchain and exact source hashes; no Python optimization that disables checks",
+      "conclusion": "Recorded outputs agree on the complete listed fixture set; actual ordering/shadowing/refinement mutants are rejected",
+      "oracle": "Separate exhaustive Lean support enumeration and Python ternary refinement algorithm",
+      "refinement_relation": "Reverse free-variable order, prepend binders, resolve newest binding, desugar XOR, translate zero predicates into typed equality",
+      "nonclaims": ["Bounded differential evidence is not a theorem about the Python implementation", "Historical receipts are not fresh Linux native runs"]
+    },
+    {
+      "id": "PO-EMISSION",
+      "boundary": "Fully typed emitted restricted Tau grammar, exact context and current binary profile",
+      "quantifiers": "Every changed final output in each executed frozen run",
+      "assumptions": "Trusted pinned native decision procedure; complete independent support evaluation; parser faithful on checked grammar",
+      "conclusion": "Actual emitted text reparses to the claimed AST, both native implication receipts are exactlyT, and independent evaluator says equivalent; otherwise original retained",
+      "falsifiers": ["Malformed output accepted", "Only one implication accepted", "Stale context accepted", "Unknown promoted", "Emitter mutation accepted", "Changed result lacks a complete support receipt"],
+      "nonclaims": ["Native Tau implementation not formally verified", "Unchanged original fallback is structural identity, not an oracle proof discovery"]
+    },
+    {
+      "id": "PO-MECHANISM",
+      "boundary": "Matched checked pairs and scoped congruence before rewrite generation",
+      "quantifiers": "Every matched comparison in frozen corpus, with node-limit truncations separately identified",
+      "conclusion": "Any reported egraph representation advantage must survive full-alternative scoped recursive congruence and the exact same typed-byte objective",
+      "falsifiers": ["Comparator drops a tied alternative before child folding", "Comparator hides congruence under binders", "Candidate/check access differs", "A graph cap is credited as a representation theorem"],
+      "nonclaims": ["Hybrid rewrite generation is additional search, not isolated data-structure novelty"]
+    }
+  ]
+}

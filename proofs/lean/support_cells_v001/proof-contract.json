@@ -1,0 +1,19 @@
+{
+  "schema": "tau-support-proof-contract/v1",
+  "base_revision": "65ef69bdc5e6f1e479236d9dfb4d9b6d2e5302d1",
+  "status": "checked_mathematics_and_bounded_correspondence",
+  "revision_binding": "Pending leader integration commit; worktree hashes are recorded, not misrepresented as Git-blob evidence.",
+  "claim": "For every nonempty X, atomless Boolean subalgebra A of predicates on X, n, and well-scoped f,g: compare f g = true iff every A-valued n-parameter assignment gives f and g the same truth value.",
+  "claim_class": "mathematical_model",
+  "quantifiers": ["all nonempty base types X", "all set subalgebras A with explicit closure and proper nonempty splitting", "all natural parameter counts n", "all finite typed first-order formulas f,g", "all A-valued environments"],
+  "assumptions": ["Lean 4.29.1 kernel and Std", "propext", "Classical.choice", "Quot.sound", "Nonempty X", "finite Boolean closure and genuine single-cell atomlessness as explicit structure assumptions"],
+  "main_theorem": "SupportCells.compare_exact",
+  "dependencies": ["term_eq_support", "cell_member", "realize_refinement", "formula_support_exact", "executable_support_exact", "all_nonempty_supports_realizable"],
+  "replay": {"cwd": "proofs/lean/support_cells_v001", "argv": ["python3", "replay.py"]},
+  "proof_source": "Proofs.lean",
+  "bounded_correspondence": {"fixture_source": "fixtures.json", "generated_lean": "Bridge.lean", "receipt": "receipts/correspondence.json", "maximum_total_slots": 3},
+  "refinement_gaps": ["No formal abstract Boolean-algebra representation transfer", "No proof of named-AST adapter, Python code, parser, or integer bit masks", "No proof of native Tau semantics or checker implementation", "No proof of egraph extraction/cache/cost machinery"],
+  "negative_controls": ["two-element versus atomless proper-element boundary", "executed wrong-free-order Lean adapter mutant", "executed old-binder-slot Lean adapter mutant", "executed Python no-both-refinement mutant"],
+  "novelty_boundary": "Minterms and atomless quantifier elimination are established mathematics; the claimed artifact contribution is explicit checked reduction plus bounded implementation correspondence.",
+  "promotion": "No publication, merge, checker authority, or Research Kernel admission is conferred. This is a local contract, not a claimed validated zrm/proof-obligation/v3 packet."
+}

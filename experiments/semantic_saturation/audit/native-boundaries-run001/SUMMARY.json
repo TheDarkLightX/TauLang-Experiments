@@ -1,0 +1,1051 @@
+{
+  "status": "PASS",
+  "failures": [],
+  "development_cases": 7,
+  "native_boundary_controls": 2,
+  "native_summary": {
+    "binary": "/workspace/scratch/b6becd93c24b/tau-study/private/tau-lang/build/release/tau",
+    "binary_sha256": "874511bf414d0bfbaca224d6fde1cc2514419ad15c912d24dd334f6792909726",
+    "timeout_s": 10,
+    "processes": 17,
+    "timeouts": 0,
+    "parse_or_unknown": 1,
+    "native_wall_s": 0.4905976899972302,
+    "cache_entries": 1
+  },
+  "rows": [
+    {
+      "name": "closed_proper_split",
+      "left": [
+        "exists",
+        "x",
+        [
+          "andF",
+          [
+            "ne0",
+            [
+              "var",
+              "x"
+            ]
+          ],
+          [
+            "ne0",
+            [
+              "not",
+              [
+                "var",
+                "x"
+              ]
+            ]
+          ]
+        ]
+      ],
+      "right": [
+        "T"
+      ],
+      "context": [],
+      "receipt": {
+        "status": "ACCEPTED",
+        "structural_identity": false,
+        "support": {
+          "status": "EQUIVALENT",
+          "free_variables": [],
+          "observations": [
+            {
+              "support_mask": 1,
+              "left": true,
+              "right": true
+            }
+          ],
+          "stats": {
+            "support_patterns_total": 1,
+            "support_patterns_evaluated": 1,
+            "states_evaluated": 4,
+            "existential_refinements": 3,
+            "term_evaluations": 5,
+            "formula_evaluations": 10
+          },
+          "complete": true,
+          "counterexample": null,
+          "reason": null
+        },
+        "native": {
+          "forward": {
+            "ordinal": 1,
+            "label": "audit:closed_proper_split:emitted-forward",
+            "argv": [
+              "/workspace/scratch/b6becd93c24b/tau-study/private/tau-lang/build/release/tau",
+              "--charvar",
+              "false",
+              "--severity",
+              "error",
+              "--color",
+              "false",
+              "--status",
+              "false",
+              "--benchmarks",
+              "false",
+              "-e",
+              "normalize ((ex x : tau ((((x : tau) != 0) && (((x : tau))' != 0)))) -> (T))"
+            ],
+            "command": "normalize ((ex x : tau ((((x : tau) != 0) && (((x : tau))' != 0)))) -> (T))",
+            "binary_sha256": "874511bf414d0bfbaca224d6fde1cc2514419ad15c912d24dd334f6792909726",
+            "timeout_s": 10,
+            "timed_out": false,
+            "returncode": 0,
+            "stdout": "%1: T\n\n",
+            "stderr": "",
+            "elapsed_s": 0.029844074000720866,
+            "TAU_environment_removed": true,
+            "truth": "T"
+          },
+          "reverse": {
+            "ordinal": 2,
+            "label": "audit:closed_proper_split:emitted-reverse",
+            "argv": [
+              "/workspace/scratch/b6becd93c24b/tau-study/private/tau-lang/build/release/tau",
+              "--charvar",
+              "false",
+              "--severity",
+              "error",
+              "--color",
+              "false",
+              "--status",
+              "false",
+              "--benchmarks",
+              "false",
+              "-e",
+              "normalize ((T) -> (ex x : tau ((((x : tau) != 0) && (((x : tau))' != 0)))))"
+            ],
+            "command": "normalize ((T) -> (ex x : tau ((((x : tau) != 0) && (((x : tau))' != 0)))))",
+            "binary_sha256": "874511bf414d0bfbaca224d6fde1cc2514419ad15c912d24dd334f6792909726",
+            "timeout_s": 10,
+            "timed_out": false,
+            "returncode": 0,
+            "stdout": "%1: T\n\n",
+            "stderr": "",
+            "elapsed_s": 0.025984252002672292,
+            "TAU_environment_removed": true,
+            "truth": "T"
+          }
+        },
+        "roundtrip_ast_equal": true,
+        "cache_hit": false,
+        "elapsed_s": 0.056756363999738824,
+        "native_processes": 2
+      }
+    },
+    {
+      "name": "free_shadow",
+      "left": [
+        "andF",
+        [
+          "eq0",
+          [
+            "var",
+            "a"
+          ]
+        ],
+        [
+          "exists",
+          "a",
+          [
+            "ne0",
+            [
+              "var",
+              "a"
+            ]
+          ]
+        ]
+      ],
+      "right": [
+        "eq0",
+        [
+          "var",
+          "a"
+        ]
+      ],
+      "context": [
+        "a"
+      ],
+      "receipt": {
+        "status": "ACCEPTED",
+        "structural_identity": false,
+        "support": {
+          "status": "EQUIVALENT",
+          "free_variables": [
+            "a"
+          ],
+          "observations": [
+            {
+              "support_mask": 1,
+              "left": true,
+              "right": true
+            },
+            {
+              "support_mask": 2,
+              "left": false,
+              "right": false
+            },
+            {
+              "support_mask": 3,
+              "left": false,
+              "right": false
+            }
+          ],
+          "stats": {
+            "support_patterns_total": 3,
+            "support_patterns_evaluated": 3,
+            "states_evaluated": 5,
+            "existential_refinements": 2,
+            "term_evaluations": 5,
+            "formula_evaluations": 9
+          },
+          "complete": true,
+          "counterexample": null,
+          "reason": null
+        },
+        "native": {
+          "forward": {
+            "ordinal": 3,
+            "label": "audit:free_shadow:emitted-forward",
+            "argv": [
+              "/workspace/scratch/b6becd93c24b/tau-study/private/tau-lang/build/release/tau",
+              "--charvar",
+              "false",
+              "--severity",
+              "error",
+              "--color",
+              "false",
+              "--status",
+              "false",
+              "--benchmarks",
+              "false",
+              "-e",
+              "normalize all a : tau (((((a : tau) = 0) && ex a : tau (((a : tau) != 0)))) -> (((a : tau) = 0)))"
+            ],
+            "command": "normalize all a : tau (((((a : tau) = 0) && ex a : tau (((a : tau) != 0)))) -> (((a : tau) = 0)))",
+            "binary_sha256": "874511bf414d0bfbaca224d6fde1cc2514419ad15c912d24dd334f6792909726",
+            "timeout_s": 10,
+            "timed_out": false,
+            "returncode": 0,
+            "stdout": "%1: T\n\n",
+            "stderr": "",
+            "elapsed_s": 0.0367202770030417,
+            "TAU_environment_removed": true,
+            "truth": "T"
+          },
+          "reverse": {
+            "ordinal": 4,
+            "label": "audit:free_shadow:emitted-reverse",
+            "argv": [
+              "/workspace/scratch/b6becd93c24b/tau-study/private/tau-lang/build/release/tau",
+              "--charvar",
+              "false",
+              "--severity",
+              "error",
+              "--color",
+              "false",
+              "--status",
+              "false",
+              "--benchmarks",
+              "false",
+              "-e",
+              "normalize all a : tau ((((a : tau) = 0)) -> ((((a : tau) = 0) && ex a : tau (((a : tau) != 0)))))"
+            ],
+            "command": "normalize all a : tau ((((a : tau) = 0)) -> ((((a : tau) = 0) && ex a : tau (((a : tau) != 0)))))",
+            "binary_sha256": "874511bf414d0bfbaca224d6fde1cc2514419ad15c912d24dd334f6792909726",
+            "timeout_s": 10,
+            "timed_out": false,
+            "returncode": 0,
+            "stdout": "%1: T\n\n",
+            "stderr": "",
+            "elapsed_s": 0.031924596998578636,
+            "TAU_environment_removed": true,
+            "truth": "T"
+          }
+        },
+        "roundtrip_ast_equal": true,
+        "cache_hit": false,
+        "elapsed_s": 0.06946284500008915,
+        "native_processes": 2
+      }
+    },
+    {
+      "name": "nested_shadow",
+      "left": [
+        "exists",
+        "x",
+        [
+          "andF",
+          [
+            "eq0",
+            [
+              "var",
+              "x"
+            ]
+          ],
+          [
+            "exists",
+            "x",
+            [
+              "ne0",
+              [
+                "var",
+                "x"
+              ]
+            ]
+          ]
+        ]
+      ],
+      "right": [
+        "T"
+      ],
+      "context": [],
+      "receipt": {
+        "status": "ACCEPTED",
+        "structural_identity": false,
+        "support": {
+          "status": "EQUIVALENT",
+          "free_variables": [],
+          "observations": [
+            {
+              "support_mask": 1,
+              "left": true,
+              "right": true
+            }
+          ],
+          "stats": {
+            "support_patterns_total": 1,
+            "support_patterns_evaluated": 1,
+            "states_evaluated": 4,
+            "existential_refinements": 3,
+            "term_evaluations": 3,
+            "formula_evaluations": 7
+          },
+          "complete": true,
+          "counterexample": null,
+          "reason": null
+        },
+        "native": {
+          "forward": {
+            "ordinal": 5,
+            "label": "audit:nested_shadow:emitted-forward",
+            "argv": [
+              "/workspace/scratch/b6becd93c24b/tau-study/private/tau-lang/build/release/tau",
+              "--charvar",
+              "false",
+              "--severity",
+              "error",
+              "--color",
+              "false",
+              "--status",
+              "false",
+              "--benchmarks",
+              "false",
+              "-e",
+              "normalize ((ex x : tau ((((x : tau) = 0) && ex x : tau (((x : tau) != 0))))) -> (T))"
+            ],
+            "command": "normalize ((ex x : tau ((((x : tau) = 0) && ex x : tau (((x : tau) != 0))))) -> (T))",
+            "binary_sha256": "874511bf414d0bfbaca224d6fde1cc2514419ad15c912d24dd334f6792909726",
+            "timeout_s": 10,
+            "timed_out": false,
+            "returncode": 0,
+            "stdout": "%1: T\n\n",
+            "stderr": "",
+            "elapsed_s": 0.02712682799756294,
+            "TAU_environment_removed": true,
+            "truth": "T"
+          },
+          "reverse": {
+            "ordinal": 6,
+            "label": "audit:nested_shadow:emitted-reverse",
+            "argv": [
+              "/workspace/scratch/b6becd93c24b/tau-study/private/tau-lang/build/release/tau",
+              "--charvar",
+              "false",
+              "--severity",
+              "error",
+              "--color",
+              "false",
+              "--status",
+              "false",
+              "--benchmarks",
+              "false",
+              "-e",
+              "normalize ((T) -> (ex x : tau ((((x : tau) = 0) && ex x : tau (((x : tau) != 0))))))"
+            ],
+            "command": "normalize ((T) -> (ex x : tau ((((x : tau) = 0) && ex x : tau (((x : tau) != 0))))))",
+            "binary_sha256": "874511bf414d0bfbaca224d6fde1cc2514419ad15c912d24dd334f6792909726",
+            "timeout_s": 10,
+            "timed_out": false,
+            "returncode": 0,
+            "stdout": "%1: T\n\n",
+            "stderr": "",
+            "elapsed_s": 0.029657994000444887,
+            "TAU_environment_removed": true,
+            "truth": "T"
+          }
+        },
+        "roundtrip_ast_equal": true,
+        "cache_hit": false,
+        "elapsed_s": 0.057467959999485174,
+        "native_processes": 2
+      }
+    },
+    {
+      "name": "forall_exists_same",
+      "left": [
+        "notF",
+        [
+          "exists",
+          "x",
+          [
+            "notF",
+            [
+              "exists",
+              "y",
+              [
+                "eq0",
+                [
+                  "xor",
+                  [
+                    "var",
+                    "x"
+                  ],
+                  [
+                    "var",
+                    "y"
+                  ]
+                ]
+              ]
+            ]
+          ]
+        ]
+      ],
+      "right": [
+        "T"
+      ],
+      "context": [],
+      "receipt": {
+        "status": "ACCEPTED",
+        "structural_identity": false,
+        "support": {
+          "status": "EQUIVALENT",
+          "free_variables": [],
+          "observations": [
+            {
+              "support_mask": 1,
+              "left": true,
+              "right": true
+            }
+          ],
+          "stats": {
+            "support_patterns_total": 1,
+            "support_patterns_evaluated": 1,
+            "states_evaluated": 9,
+            "existential_refinements": 8,
+            "term_evaluations": 15,
+            "formula_evaluations": 14
+          },
+          "complete": true,
+          "counterexample": null,
+          "reason": null
+        },
+        "native": {
+          "forward": {
+            "ordinal": 7,
+            "label": "audit:forall_exists_same:emitted-forward",
+            "argv": [
+              "/workspace/scratch/b6becd93c24b/tau-study/private/tau-lang/build/release/tau",
+              "--charvar",
+              "false",
+              "--severity",
+              "error",
+              "--color",
+              "false",
+              "--status",
+              "false",
+              "--benchmarks",
+              "false",
+              "-e",
+              "normalize ((!(ex x : tau (!(ex y : tau ((((x : tau) ^ (y : tau)) = 0)))))) -> (T))"
+            ],
+            "command": "normalize ((!(ex x : tau (!(ex y : tau ((((x : tau) ^ (y : tau)) = 0)))))) -> (T))",
+            "binary_sha256": "874511bf414d0bfbaca224d6fde1cc2514419ad15c912d24dd334f6792909726",
+            "timeout_s": 10,
+            "timed_out": false,
+            "returncode": 0,
+            "stdout": "%1: T\n\n",
+            "stderr": "",
+            "elapsed_s": 0.026790787000209093,
+            "TAU_environment_removed": true,
+            "truth": "T"
+          },
+          "reverse": {
+            "ordinal": 8,
+            "label": "audit:forall_exists_same:emitted-reverse",
+            "argv": [
+              "/workspace/scratch/b6becd93c24b/tau-study/private/tau-lang/build/release/tau",
+              "--charvar",
+              "false",
+              "--severity",
+              "error",
+              "--color",
+              "false",
+              "--status",
+              "false",
+              "--benchmarks",
+              "false",
+              "-e",
+              "normalize ((T) -> (!(ex x : tau (!(ex y : tau ((((x : tau) ^ (y : tau)) = 0)))))))"
+            ],
+            "command": "normalize ((T) -> (!(ex x : tau (!(ex y : tau ((((x : tau) ^ (y : tau)) = 0)))))))",
+            "binary_sha256": "874511bf414d0bfbaca224d6fde1cc2514419ad15c912d24dd334f6792909726",
+            "timeout_s": 10,
+            "timed_out": false,
+            "returncode": 0,
+            "stdout": "%1: T\n\n",
+            "stderr": "",
+            "elapsed_s": 0.028019116001814837,
+            "TAU_environment_removed": true,
+            "truth": "T"
+          }
+        },
+        "roundtrip_ast_equal": true,
+        "cache_hit": false,
+        "elapsed_s": 0.05552981599976192,
+        "native_processes": 2
+      }
+    },
+    {
+      "name": "universal_endpoint_false",
+      "left": [
+        "notF",
+        [
+          "exists",
+          "x",
+          [
+            "notF",
+            [
+              "orF",
+              [
+                "eq0",
+                [
+                  "var",
+                  "x"
+                ]
+              ],
+              [
+                "eq0",
+                [
+                  "not",
+                  [
+                    "var",
+                    "x"
+                  ]
+                ]
+              ]
+            ]
+          ]
+        ]
+      ],
+      "right": [
+        "F"
+      ],
+      "context": [],
+      "receipt": {
+        "status": "ACCEPTED",
+        "structural_identity": false,
+        "support": {
+          "status": "EQUIVALENT",
+          "free_variables": [],
+          "observations": [
+            {
+              "support_mask": 1,
+              "left": false,
+              "right": false
+            }
+          ],
+          "stats": {
+            "support_patterns_total": 1,
+            "support_patterns_evaluated": 1,
+            "states_evaluated": 4,
+            "existential_refinements": 3,
+            "term_evaluations": 5,
+            "formula_evaluations": 14
+          },
+          "complete": true,
+          "counterexample": null,
+          "reason": null
+        },
+        "native": {
+          "forward": {
+            "ordinal": 9,
+            "label": "audit:universal_endpoint_false:emitted-forward",
+            "argv": [
+              "/workspace/scratch/b6becd93c24b/tau-study/private/tau-lang/build/release/tau",
+              "--charvar",
+              "false",
+              "--severity",
+              "error",
+              "--color",
+              "false",
+              "--status",
+              "false",
+              "--benchmarks",
+              "false",
+              "-e",
+              "normalize ((!(ex x : tau (!((((x : tau) = 0) || (((x : tau))' = 0)))))) -> (F))"
+            ],
+            "command": "normalize ((!(ex x : tau (!((((x : tau) = 0) || (((x : tau))' = 0)))))) -> (F))",
+            "binary_sha256": "874511bf414d0bfbaca224d6fde1cc2514419ad15c912d24dd334f6792909726",
+            "timeout_s": 10,
+            "timed_out": false,
+            "returncode": 0,
+            "stdout": "%1: T\n\n",
+            "stderr": "",
+            "elapsed_s": 0.02694934499959345,
+            "TAU_environment_removed": true,
+            "truth": "T"
+          },
+          "reverse": {
+            "ordinal": 10,
+            "label": "audit:universal_endpoint_false:emitted-reverse",
+            "argv": [
+              "/workspace/scratch/b6becd93c24b/tau-study/private/tau-lang/build/release/tau",
+              "--charvar",
+              "false",
+              "--severity",
+              "error",
+              "--color",
+              "false",
+              "--status",
+              "false",
+              "--benchmarks",
+              "false",
+              "-e",
+              "normalize ((F) -> (!(ex x : tau (!((((x : tau) = 0) || (((x : tau))' = 0)))))))"
+            ],
+            "command": "normalize ((F) -> (!(ex x : tau (!((((x : tau) = 0) || (((x : tau))' = 0)))))))",
+            "binary_sha256": "874511bf414d0bfbaca224d6fde1cc2514419ad15c912d24dd334f6792909726",
+            "timeout_s": 10,
+            "timed_out": false,
+            "returncode": 0,
+            "stdout": "%1: T\n\n",
+            "stderr": "",
+            "elapsed_s": 0.026723576000222238,
+            "TAU_environment_removed": true,
+            "truth": "T"
+          }
+        },
+        "roundtrip_ast_equal": true,
+        "cache_hit": false,
+        "elapsed_s": 0.054318923997925594,
+        "native_processes": 2
+      }
+    },
+    {
+      "name": "alpha_rename_binder",
+      "left": [
+        "exists",
+        "x",
+        [
+          "andF",
+          [
+            "ne0",
+            [
+              "var",
+              "x"
+            ]
+          ],
+          [
+            "eq0",
+            [
+              "and",
+              [
+                "var",
+                "x"
+              ],
+              [
+                "not",
+                [
+                  "var",
+                  "a"
+                ]
+              ]
+            ]
+          ]
+        ]
+      ],
+      "right": [
+        "exists",
+        "y",
+        [
+          "andF",
+          [
+            "ne0",
+            [
+              "var",
+              "y"
+            ]
+          ],
+          [
+            "eq0",
+            [
+              "and",
+              [
+                "var",
+                "y"
+              ],
+              [
+                "not",
+                [
+                  "var",
+                  "a"
+                ]
+              ]
+            ]
+          ]
+        ]
+      ],
+      "context": [
+        "a"
+      ],
+      "receipt": {
+        "status": "ACCEPTED",
+        "structural_identity": false,
+        "support": {
+          "status": "EQUIVALENT",
+          "free_variables": [
+            "a"
+          ],
+          "observations": [
+            {
+              "support_mask": 1,
+              "left": false,
+              "right": false
+            },
+            {
+              "support_mask": 2,
+              "left": true,
+              "right": true
+            },
+            {
+              "support_mask": 3,
+              "left": true,
+              "right": true
+            }
+          ],
+          "stats": {
+            "support_patterns_total": 3,
+            "support_patterns_evaluated": 3,
+            "states_evaluated": 17,
+            "existential_refinements": 14,
+            "term_evaluations": 38,
+            "formula_evaluations": 42
+          },
+          "complete": true,
+          "counterexample": null,
+          "reason": null
+        },
+        "native": {
+          "forward": {
+            "ordinal": 11,
+            "label": "audit:alpha_rename_binder:emitted-forward",
+            "argv": [
+              "/workspace/scratch/b6becd93c24b/tau-study/private/tau-lang/build/release/tau",
+              "--charvar",
+              "false",
+              "--severity",
+              "error",
+              "--color",
+              "false",
+              "--status",
+              "false",
+              "--benchmarks",
+              "false",
+              "-e",
+              "normalize all a : tau ((ex x : tau ((((x : tau) != 0) && (((x : tau) & ((a : tau))') = 0)))) -> (ex y : tau ((((y : tau) != 0) && (((y : tau) & ((a : tau))') = 0)))))"
+            ],
+            "command": "normalize all a : tau ((ex x : tau ((((x : tau) != 0) && (((x : tau) & ((a : tau))') = 0)))) -> (ex y : tau ((((y : tau) != 0) && (((y : tau) & ((a : tau))') = 0)))))",
+            "binary_sha256": "874511bf414d0bfbaca224d6fde1cc2514419ad15c912d24dd334f6792909726",
+            "timeout_s": 10,
+            "timed_out": false,
+            "returncode": 0,
+            "stdout": "%1: T\n\n",
+            "stderr": "",
+            "elapsed_s": 0.04102584399879561,
+            "TAU_environment_removed": true,
+            "truth": "T"
+          },
+          "reverse": {
+            "ordinal": 12,
+            "label": "audit:alpha_rename_binder:emitted-reverse",
+            "argv": [
+              "/workspace/scratch/b6becd93c24b/tau-study/private/tau-lang/build/release/tau",
+              "--charvar",
+              "false",
+              "--severity",
+              "error",
+              "--color",
+              "false",
+              "--status",
+              "false",
+              "--benchmarks",
+              "false",
+              "-e",
+              "normalize all a : tau ((ex y : tau ((((y : tau) != 0) && (((y : tau) & ((a : tau))') = 0)))) -> (ex x : tau ((((x : tau) != 0) && (((x : tau) & ((a : tau))') = 0)))))"
+            ],
+            "command": "normalize all a : tau ((ex y : tau ((((y : tau) != 0) && (((y : tau) & ((a : tau))') = 0)))) -> (ex x : tau ((((x : tau) != 0) && (((x : tau) & ((a : tau))') = 0)))))",
+            "binary_sha256": "874511bf414d0bfbaca224d6fde1cc2514419ad15c912d24dd334f6792909726",
+            "timeout_s": 10,
+            "timed_out": false,
+            "returncode": 0,
+            "stdout": "%1: T\n\n",
+            "stderr": "",
+            "elapsed_s": 0.04311345699898084,
+            "TAU_environment_removed": true,
+            "truth": "T"
+          }
+        },
+        "roundtrip_ast_equal": true,
+        "cache_hit": false,
+        "elapsed_s": 0.08501839599921368,
+        "native_processes": 2
+      }
+    },
+    {
+      "name": "term_xor_cancellation",
+      "left": [
+        "xor",
+        [
+          "xor",
+          [
+            "var",
+            "a"
+          ],
+          [
+            "var",
+            "b"
+          ]
+        ],
+        [
+          "var",
+          "b"
+        ]
+      ],
+      "right": [
+        "var",
+        "a"
+      ],
+      "context": [
+        "a",
+        "b"
+      ],
+      "receipt": {
+        "status": "ACCEPTED",
+        "structural_identity": false,
+        "support": {
+          "status": "EQUIVALENT",
+          "free_variables": [
+            "a",
+            "b"
+          ],
+          "observations": [
+            {
+              "assignment": 0,
+              "left": false,
+              "right": false
+            },
+            {
+              "assignment": 1,
+              "left": true,
+              "right": true
+            },
+            {
+              "assignment": 2,
+              "left": false,
+              "right": false
+            },
+            {
+              "assignment": 3,
+              "left": true,
+              "right": true
+            }
+          ],
+          "complete": true,
+          "counterexample": null,
+          "reason": null
+        },
+        "native": {
+          "forward": {
+            "ordinal": 13,
+            "label": "audit:term_xor_cancellation:emitted-forward",
+            "argv": [
+              "/workspace/scratch/b6becd93c24b/tau-study/private/tau-lang/build/release/tau",
+              "--charvar",
+              "false",
+              "--severity",
+              "error",
+              "--color",
+              "false",
+              "--status",
+              "false",
+              "--benchmarks",
+              "false",
+              "-e",
+              "normalize all a : tau, b : tau (((((((a : tau) ^ (b : tau)) ^ (b : tau))) ^ ((a : tau))) = 0) -> (T))"
+            ],
+            "command": "normalize all a : tau, b : tau (((((((a : tau) ^ (b : tau)) ^ (b : tau))) ^ ((a : tau))) = 0) -> (T))",
+            "binary_sha256": "874511bf414d0bfbaca224d6fde1cc2514419ad15c912d24dd334f6792909726",
+            "timeout_s": 10,
+            "timed_out": false,
+            "returncode": 0,
+            "stdout": "%1: T\n\n",
+            "stderr": "",
+            "elapsed_s": 0.028672234999248758,
+            "TAU_environment_removed": true,
+            "truth": "T"
+          },
+          "reverse": {
+            "ordinal": 14,
+            "label": "audit:term_xor_cancellation:emitted-reverse",
+            "argv": [
+              "/workspace/scratch/b6becd93c24b/tau-study/private/tau-lang/build/release/tau",
+              "--charvar",
+              "false",
+              "--severity",
+              "error",
+              "--color",
+              "false",
+              "--status",
+              "false",
+              "--benchmarks",
+              "false",
+              "-e",
+              "normalize all a : tau, b : tau ((T) -> ((((((a : tau) ^ (b : tau)) ^ (b : tau))) ^ ((a : tau))) = 0))"
+            ],
+            "command": "normalize all a : tau, b : tau ((T) -> ((((((a : tau) ^ (b : tau)) ^ (b : tau))) ^ ((a : tau))) = 0))",
+            "binary_sha256": "874511bf414d0bfbaca224d6fde1cc2514419ad15c912d24dd334f6792909726",
+            "timeout_s": 10,
+            "timed_out": false,
+            "returncode": 0,
+            "stdout": "%1: T\n\n",
+            "stderr": "",
+            "elapsed_s": 0.029865725999115966,
+            "TAU_environment_removed": true,
+            "truth": "T"
+          }
+        },
+        "roundtrip_ast_equal": true,
+        "cache_hit": false,
+        "elapsed_s": 0.05920152099861298,
+        "native_processes": 2
+      }
+    },
+    {
+      "name": "one_way_native",
+      "receipt": {
+        "status": "DIFFERENT",
+        "forward": {
+          "ordinal": 15,
+          "label": "audit:one-way:forward",
+          "argv": [
+            "/workspace/scratch/b6becd93c24b/tau-study/private/tau-lang/build/release/tau",
+            "--charvar",
+            "false",
+            "--severity",
+            "error",
+            "--color",
+            "false",
+            "--status",
+            "false",
+            "--benchmarks",
+            "false",
+            "-e",
+            "normalize all a : tau (((a = 0)) -> (T))"
+          ],
+          "command": "normalize all a : tau (((a = 0)) -> (T))",
+          "binary_sha256": "874511bf414d0bfbaca224d6fde1cc2514419ad15c912d24dd334f6792909726",
+          "timeout_s": 10,
+          "timed_out": false,
+          "returncode": 0,
+          "stdout": "%1: T\n\n",
+          "stderr": "",
+          "elapsed_s": 0.018738041999313282,
+          "TAU_environment_removed": true,
+          "truth": "T"
+        },
+        "reverse": {
+          "ordinal": 16,
+          "label": "audit:one-way:reverse",
+          "argv": [
+            "/workspace/scratch/b6becd93c24b/tau-study/private/tau-lang/build/release/tau",
+            "--charvar",
+            "false",
+            "--severity",
+            "error",
+            "--color",
+            "false",
+            "--status",
+            "false",
+            "--benchmarks",
+            "false",
+            "-e",
+            "normalize all a : tau ((T) -> ((a = 0)))"
+          ],
+          "command": "normalize all a : tau ((T) -> ((a = 0)))",
+          "binary_sha256": "874511bf414d0bfbaca224d6fde1cc2514419ad15c912d24dd334f6792909726",
+          "timeout_s": 10,
+          "timed_out": false,
+          "returncode": 0,
+          "stdout": "%1: F\n\n",
+          "stderr": "",
+          "elapsed_s": 0.019300529998872662,
+          "TAU_environment_removed": true,
+          "truth": "F"
+        }
+      }
+    },
+    {
+      "name": "malformed_native",
+      "receipt": {
+        "ordinal": 17,
+        "label": "audit:malformed-math",
+        "argv": [
+          "/workspace/scratch/b6becd93c24b/tau-study/private/tau-lang/build/release/tau",
+          "--charvar",
+          "false",
+          "--severity",
+          "error",
+          "--color",
+          "false",
+          "--status",
+          "false",
+          "--benchmarks",
+          "false",
+          "-e",
+          "normalize all a : tau ((a & a) = )"
+        ],
+        "command": "normalize all a : tau ((a & a) = )",
+        "binary_sha256": "874511bf414d0bfbaca224d6fde1cc2514419ad15c912d24dd334f6792909726",
+        "timeout_s": 10,
+        "timed_out": false,
+        "returncode": 0,
+        "stdout": "\n",
+        "stderr": "(\u001b[31;1mError\u001b[0m) [repl] Syntax Error: Unexpected ')' at 1:34 (34): normalize all a : tau ((a & a) = )\nhint: missing spec terminator '.' at end of formula\n",
+        "elapsed_s": 0.020141009998042136,
+        "TAU_environment_removed": true,
+        "truth": "UNKNOWN"
+      }
+    }
+  ],
+  "source_sha256": {
+    "checked_registry.py": "2e18407501c0fbb68f89a17392911e97b08577e3c37f1e4922dc548e484f942a",
+    "native_oracle.py": "98306306f8c1badd8967b83949e5687a66c27ba02ae0b8997697418ef5efdbaa",
+    "typed_parser.py": "7972b8343189865e92e7e0a264a6fd8459e9e59d245ed5db7128ebfa89577f07",
+    "support_oracle.py": "432f5c05d41123a88fee2fab77ac5a15130c7aab59c78fb0efa3ebdec0ab8f79"
+  },
+  "scope": "Independent development-only native validation; not experiment holdout, speedup evidence or native implementation proof."
+}
