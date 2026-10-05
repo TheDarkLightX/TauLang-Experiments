@@ -1,0 +1,437 @@
+diff --git a/README.md b/README.md
+index c49c5f41..3e52c15c 100644
+--- a/README.md
++++ b/README.md
+@@ -2960,7 +2960,10 @@ blast-block re-entry nesting in anti-prenexing, 0 = unlimited),
+ `--bv-case-split` (bitvector case split of quantified variables tested
+ against constants, enabled by default), `--bv-case-split-max-tests` (cap
+ the constants a quantified bitvector variable may be tested against for the
+-case split, 0 = unlimited), `--bv-definitional-elimination` (eliminate
++case split, 0 = unlimited), `--bv-case-split-max-growth` (budget cumulative
++instance expansion as a multiple of the input node count; on excess the pass
++returns its input; this is not a memory limit; default 8, 0 = unlimited),
++`--bv-definitional-elimination` (eliminate
+ existentially quantified bitvector variables that a total definition in
+ their scope determines, before the case split; on by default) with its
+ caps `--bv-defelim-max-clauses`, `--bv-defelim-max-atoms`,
+@@ -2984,6 +2987,7 @@ the width widening may compute at; `0` leaves the current cap unchanged,
+ 1024 unless already set); bv blasts only when both `--preprocessing`/`-B`
+ and `--bv-blasting` are on. In a build without bv, `--bv-blasting`,
+ `--bv-blastdepth`, `--bv-case-split`, `--bv-case-split-max-tests`,
++`--bv-case-split-max-growth`,
+ `--bv-definitional-elimination`, the four `--bv-defelim-max-*` caps,
+ `--bv-quantifier-free-decision`, `--bv-bitblast-max-nodes`,
+ `--bv-solve-timeout`, `--bv-widening` and `--bv-max-width` are not
+@@ -3328,6 +3332,14 @@ cut the domain into, before any quantifier block forms; mirroring
+ `--bv-case-split`, on by default), `bv-case-split-max-tests` (cap on the
+ constants a quantified bitvector variable may be tested against for the case
+ split to apply, mirroring `--bv-case-split-max-tests`; unlimited by default),
++`bv-case-split-max-growth` (budget for cumulative instance expansion, as a
++multiple of the input formula's distinct node count. Each substituted body
++is built before checking the budget. Within one case analysis, shared nodes
++count once and the original body's size is subtracted; positive excesses
++are accumulated without refund for later simplification. Joining nodes are
++not charged, so this is not a bound on memory, work or final result size.
++On excess, the pass returns its original input for the remaining pipeline;
++mirroring `--bv-case-split-max-growth`, 8 by default, 0 means unlimited),
+ `bv-definitional-elimination` (substitute an existentially quantified
+ bitvector variable that a total definition in its scope determines -- a bare
+ equation, or clauses `D_i || x = c_i` whose guards cover every case -- where
+diff --git a/src/boolean_algebras/bv/bv_descriptor.tmpl.h b/src/boolean_algebras/bv/bv_descriptor.tmpl.h
+index 25d0d879..55be2994 100644
+--- a/src/boolean_algebras/bv/bv_descriptor.tmpl.h
++++ b/src/boolean_algebras/bv/bv_descriptor.tmpl.h
+@@ -279,6 +279,12 @@ struct ba_descriptor<bv, node<PackBAs...>> {
+ 	static void set_case_split_max_tests_option(size_t n) {
+ 		bv_case_split_max_tests = n ? n : std::numeric_limits<size_t>::max();
+ 	}
++	static size_t get_case_split_max_growth_option() {
++		return bv_case_split_max_growth;
++	}
++	static void set_case_split_max_growth_option(size_t n) {
++		bv_case_split_max_growth = n ? n : std::numeric_limits<size_t>::max();
++	}
+ 	static bool get_defelim_option() { return bv_definitional_elimination; }
+ 	static void set_defelim_option(bool enabled) {
+ 		bv_definitional_elimination = enabled;
+@@ -334,6 +340,7 @@ struct ba_descriptor<bv, node<PackBAs...>> {
+ 	/**
+ 	 * @brief bv's own CLI/REPL options, addressed as `bv-blasting`,
+ 	 * `bv-blastdepth`, `bv-case-split`, `bv-case-split-max-tests`,
++	 * `bv-case-split-max-growth`,
+ 	 * `bv-definitional-elimination`, `bv-defelim-max-clauses`,
+ 	 * `bv-defelim-max-atoms`, `bv-defelim-max-subset`,
+ 	 * `bv-defelim-max-rounds`, `bv-quantifier-free-decision`,
+@@ -345,9 +352,10 @@ struct ba_descriptor<bv, node<PackBAs...>> {
+ 	 * `blastdepth` mirrors core's `max_blast_reentry_depth`, whose storage
+ 	 * stays in core (see the comment at its definition in
+ 	 * antiprenexing/antiprenexing.h) but which only bv's own blasting pass
+-	 * can ever make progress against. `case-split` and
+-	 * `case-split-max-tests` mirror bv's own `bv_case_split` and
+-	 * `bv_case_split_max_tests` switches
++	 * can ever make progress against. `case-split`,
++	 * `case-split-max-tests` and `case-split-max-growth` mirror bv's own
++	 * `bv_case_split`, `bv_case_split_max_tests` and
++	 * `bv_case_split_max_growth` switches
+ 	 * (heuristics/bv_case_split.h), which only bv's own case-split pass
+ 	 * (@ref case_split_quantifiers) reads. `definitional-elimination` and
+ 	 * the four `defelim-max-*` caps mirror `bv_definitional_elimination`
+@@ -359,7 +367,7 @@ struct ba_descriptor<bv, node<PackBAs...>> {
+ 	 * `widening` and `max-width` mirror `bv_widening` and `bv_max_width`
+ 	 * (heuristics/bv_widening.h), read by @ref widen_arithmetic.
+ 	 */
+-	static std::array<ba_option, 14> options() {
++	static std::array<ba_option, 15> options() {
+ 		return {{
+ 			{ "blasting", ba_option_kind::flag,
+ 				get_blasting_option, set_blasting_option,
+@@ -383,6 +391,13 @@ struct ba_descriptor<bv, node<PackBAs...>> {
+ 				set_case_split_max_tests_option,
+ 				"cap the constants a quantified bitvector variable may "
+ 				"be tested against for the case split (0 = unlimited)" },
++			{ "case-split-max-growth", ba_option_kind::count,
++				nullptr, nullptr,
++				get_case_split_max_growth_option,
++				set_case_split_max_growth_option,
++				"budget cumulative instance expansion as a multiple of "
++				"the input node count; on excess return the input "
++				"(not a memory limit; default 8, 0 = unlimited)" },
+ 			{ "definitional-elimination", ba_option_kind::flag,
+ 				get_defelim_option, set_defelim_option,
+ 				nullptr, nullptr,
+diff --git a/src/boolean_algebras/bv/heuristics/bv_case_split.h b/src/boolean_algebras/bv/heuristics/bv_case_split.h
+index 4223bf72..2f2f23d9 100644
+--- a/src/boolean_algebras/bv/heuristics/bv_case_split.h
++++ b/src/boolean_algebras/bv/heuristics/bv_case_split.h
+@@ -18,6 +18,7 @@
+ #include <limits>
+ #include <optional>
+ #include <unordered_set>
++#include <vector>
+ 
+ #include "nso_rr.h"
+ 
+@@ -51,6 +52,21 @@ inline bool bv_case_split_enabled() {
+ /// bv-case-split-max-tests.
+ inline size_t bv_case_split_max_tests = std::numeric_limits<size_t>::max();
+ 
++/// Budget for the instances the case split builds in one formula, as a
++/// multiple of the formula's node count: a binder is charged the nodes its
++/// instances hold beyond the part of the scope they replace. An instance is
++/// cheap where the substituted tests fold. Where they do not, a binder copies
++/// its scope once per cell and nested binders multiply the copies: a rule
++/// that tests k inputs against one key each doubles per input (GitHub #203).
++/// A formula whose binders ask for more than the budget is returned as it
++/// came and left to the pipeline. SIZE_MAX = unlimited (0 through the option
++/// setter); set via --bv-case-split-max-growth or the REPL option
++/// bv-case-split-max-growth.
++/// This is a heuristic charge, not a bound on peak memory or result size:
++/// each instance is built before it is counted, joining nodes are not counted,
++/// and later simplification does not refund an earlier charge.
++inline size_t bv_case_split_max_growth = 8;
++
+ // Test-point elimination of a quantified bitvector variable v that occurs
+ // only in comparisons (`=`, `!=`, `<`, `<=`, `>`, `>=`, possibly negated)
+ // against constants c_1 < ... < c_k of its own type.
+diff --git a/src/boolean_algebras/bv/heuristics/bv_case_split.tmpl.h b/src/boolean_algebras/bv/heuristics/bv_case_split.tmpl.h
+index d13683db..944aaf4a 100644
+--- a/src/boolean_algebras/bv/heuristics/bv_case_split.tmpl.h
++++ b/src/boolean_algebras/bv/heuristics/bv_case_split.tmpl.h
+@@ -23,6 +23,24 @@ inline std::optional<std::string> succ(std::string s) {
+ 	return std::nullopt;
+ }
+ 
++// The nodes below `root` that are not in `seen` yet, which takes them. Walked
++// as a DAG; BA constants are opaque, as in the occurrence scan.
++template <NodeType node>
++size_t count_nodes(tref root, std::unordered_set<tref>& seen) {
++	using tau = tree<node>;
++	size_t count = 0;
++	std::vector<tref> st{root};
++	while (!st.empty()) {
++		tref x = st.back(); st.pop_back();
++		if (!x || !seen.insert(x).second) continue;
++		++count;
++		const tau& tx = tau::get(x);
++		if (tx.is_ba_constant()) continue;
++		for (tref c : tx.children()) st.push_back(c);
++	}
++	return count;
++}
++
+ } // namespace bv_case_split_detail
+ 
+ template <NodeType node>
+@@ -43,8 +61,15 @@ tref bv_case_split_quantifiers(tref formula) {
+ 	auto is_order = [](const tau& atom) {
+ 		return atom.value.nt != tau::bf_eq && atom.value.nt != tau::bf_neq;
+ 	};
++	// What the instances may still add to `formula`, in nodes; set when the
++	// first binder is split. Once a binder needs more, every split of this
++	// call is dropped.
++	const bool capped = bv_case_split_max_growth
++		!= std::numeric_limits<size_t>::max();
++	std::optional<size_t> allowance;
++	bool over_budget = false;
+ 	auto step = [&](tref n) -> tref {
+-		if (!is_child_quantifier<node>(n)) return n;
++		if (over_budget || !is_child_quantifier<node>(n)) return n;
+ 		const tau& t = tau::get(n);
+ 		const tref var = t[0].first();
+ 		const tref scope = t[0].second();
+@@ -147,11 +172,35 @@ tref bv_case_split_quantifiers(tref formula) {
+ 		};
+ 		auto cases = [&](tref body) -> tref {
+ 			tref res = nullptr;
++			std::unordered_set<tref> seen;
++			size_t body_size = 0, built = 0;
++			if (capped) {
++				if (!allowance) {
++					const size_t size = count_nodes<node>(formula, seen);
++					const size_t top = std::numeric_limits<size_t>::max();
++					allowance = bv_case_split_max_growth != 0
++						&& size > top / bv_case_split_max_growth
++						? top : bv_case_split_max_growth * size;
++					seen.clear();
++				}
++				body_size = count_nodes<node>(body, seen);
++				seen.clear();
++			}
+ 			for (tref w : witnesses) {
+ 				tref inst = instance(body, w);
++				if (capped) {
++					// The instances share what the substitution left alone,
++					// so a node counts once for all of them.
++					built += count_nodes<node>(inst, seen);
++					if (built > body_size && built - body_size > *allowance) {
++						over_budget = true;
++						return body;
++					}
++				}
+ 				res = !res ? inst : is_ex ? tau::build_wff_or(res, inst)
+ 					: tau::build_wff_and(res, inst);
+ 			}
++			if (built > body_size) *allowance -= built - body_size;
+ 			return res;
+ 		};
+ 		auto eliminate = [&](auto& self, tref body) -> tref {
+@@ -189,7 +238,10 @@ tref bv_case_split_quantifiers(tref formula) {
+ 		return eliminate(eliminate, scope);
+ 	};
+ 	auto visit = [](tref x) { return while_is_formula<node>(x); };
+-	return post_order<node>(formula).apply_unique(step, visit);
++	tref split = post_order<node>(formula).apply_unique(step, visit);
++	// The input, not what was split so far: a formula split in part costs
++	// the pipeline more than either end.
++	return over_budget ? formula : split;
+ }
+ 
+ } // namespace idni::tau_lang
+diff --git a/tests/api/test_api-limits.cpp b/tests/api/test_api-limits.cpp
+index bfe7f2fb..65d534e9 100644
+--- a/tests/api/test_api-limits.cpp
++++ b/tests/api/test_api-limits.cpp
+@@ -452,6 +452,17 @@ TEST_SUITE("Tau API - runtime limits") {
+ 			== std::numeric_limits<size_t>::max() );
+ 		bv_case_split_max_tests = saved;
+ 	}
++
++	TEST_CASE("bv case split growth cap maps 0 to SIZE_MAX") {
++		using bv_descriptor = ba_descriptor<bv, node_t>;
++		const size_t saved = bv_case_split_max_growth;
++		bv_descriptor::set_case_split_max_growth_option(3);
++		CHECK( bv_case_split_max_growth == 3 );
++		bv_descriptor::set_case_split_max_growth_option(0);
++		CHECK( bv_case_split_max_growth
++			== std::numeric_limits<size_t>::max() );
++		bv_case_split_max_growth = saved;
++	}
+ #endif // TAU_PACK_HAS_BA_BV
+ 
+ 	TEST_CASE("interpreter statics") {
+diff --git a/tests/integration/test_integration-bv_case_split.cpp b/tests/integration/test_integration-bv_case_split.cpp
+index 5943eaa0..665b5978 100644
+--- a/tests/integration/test_integration-bv_case_split.cpp
++++ b/tests/integration/test_integration-bv_case_split.cpp
+@@ -15,6 +15,12 @@ struct split_config {
+ 	~split_config() { bv_case_split = false; }
+ };
+ 
++struct growth_config {
++	const size_t saved = bv_case_split_max_growth;
++	explicit growth_config(size_t value) { bv_case_split_max_growth = value; }
++	~growth_config() { bv_case_split_max_growth = saved; }
++};
++
+ tref parse_wff(const std::string& sample) {
+ 	static tree<node_t>::get_options opts{ .parse = { .start = tree<node_t>::wff }};
+ 	auto src = tree<node_t>::get(sample, opts);
+@@ -208,6 +214,69 @@ TEST_SUITE("bv case split") {
+ 		CHECK( tau::get(split).find_top(is<node_t, tau::wff_ex>) == nullptr );
+ 	}
+ 
++	// A rule that tests n inputs against one key each, closed as a run
++	// closes it: the inputs universally, the output existentially. The
++	// output is compared with the zero of its type, so its binder is not
++	// split and every input instantiates the whole existential scope; a key's
++	// instances do not fold, so the copies double per key (GitHub #203).
++	TEST_CASE("a split that multiplies the formula is abandoned") {
++		split_config on(true);
++		growth_config growth(8);
++		auto rule = [](size_t n) {
++			std::string keys, terms;
++			for (size_t j = 1; j <= n; ++j) {
++				const std::string k = "k" + std::to_string(j);
++				const std::string c = "{ " + std::to_string(j) + " }:bv[8]";
++				keys += "all " + k + " ";
++				terms += (j > 1 ? " || " : "") + ("(a:bv[8] > " + c
++					+ " && !(" + k + ":bv[8] = " + c + "))");
++			}
++			return "all a all g " + keys + "ex o ((g:bv[8] = { 1 }:bv[8]) ? (("
++				+ terms + ") ? o:bv[8] = { 0 }:bv[8] : o:bv[8] = { 1 }:bv[8])"
++				" : o:bv[8] = { 1 }:bv[8])";
++		};
++		// At the default cap the formula comes back as it went in.
++		tref wide = parse_wff(rule(12));
++		REQUIRE( wide != nullptr );
++		CHECK( bv_case_split_quantifiers<node_t>(wide) == wide );
++		// The cap decides: the same formula is split when the cap is lifted
++		// and left alone when the split may add no more than its size.
++		tref narrow = parse_wff(rule(6));
++		REQUIRE( narrow != nullptr );
++		bv_case_split_max_growth = std::numeric_limits<size_t>::max();
++		tref split = bv_case_split_quantifiers<node_t>(narrow);
++		bv_case_split_max_growth = 1;
++		tref kept = bv_case_split_quantifiers<node_t>(narrow);
++		// A split whose instances fold adds nothing and is applied under
++		// any cap.
++		tref folded = bv_case_split_quantifiers<node_t>(
++			parse_wff("all x (x:bv[8] = { 1 }:bv[8] || a = 0)"));
++		bv_case_split_max_growth = 8;
++		REQUIRE( split != nullptr );
++		REQUIRE( folded != nullptr );
++		CHECK( tau::get(split).find_top(is<node_t, tau::wff_all>) == nullptr );
++		CHECK( kept == narrow );
++		CHECK( tau::get(folded).find_top(is<node_t, tau::wff_all>) == nullptr );
++		// Abandoned or not, the verdict is the pipeline's.
++		CHECK( agree(rule(6)) );
++		CHECK( norm(rule(12), true) == "T" );
++		// Totality holds because either branch assigns one output. Its
++		// negation is therefore false, independently of the stock solver.
++		// Check both verdicts after an active rollback, including both
++		// quantifier polarities introduced by negation.
++		bv_case_split_max_growth = 1;
++		const std::string total = rule(6);
++		const std::string not_total = "!(" + total + ")";
++		tref negated = parse_wff(not_total);
++		REQUIRE( negated != nullptr );
++		CHECK( bv_case_split_quantifiers<node_t>(negated) == negated );
++		CHECK( norm(total, true) == "T" );
++		CHECK( norm(not_total, true) == "F" );
++		bv_case_split_max_growth = std::numeric_limits<size_t>::max();
++		CHECK( norm(total, true) == "T" );
++		CHECK( norm(not_total, true) == "F" );
++	}
++
+ 	TEST_CASE("run outputs are unchanged with the split enabled") {
+ 		auto off = run_command_spec(false);
+ 		auto on = run_command_spec(true);
+diff --git a/tests/repl/commands/test_repl-cli.cmake b/tests/repl/commands/test_repl-cli.cmake
+index 75f458dc..777b57c5 100644
+--- a/tests/repl/commands/test_repl-cli.cmake
++++ b/tests/repl/commands/test_repl-cli.cmake
+@@ -189,6 +189,9 @@ add_repl_test(cli-bv_blastdepth_flag
+ add_repl_test(cli-bv_case_split_max_tests_flag
+ 	"get bv-case-split-max-tests" "bv-case-split-max-tests: *5" NO_TRACE
+ 	FLAGS --bv-case-split-max-tests 5)
++add_repl_test(cli-bv_case_split_max_growth_flag
++	"get bv-case-split-max-growth" "bv-case-split-max-growth: *3" NO_TRACE
++	FLAGS --bv-case-split-max-growth 3)
+ 
+ # --- bv-solve-timeout CLI flag (BA-declared option) --------------------------
+ add_repl_test(cli-bv_solve_timeout_flag
+diff --git a/tests/repl/commands/test_repl-get_cmd.cmake b/tests/repl/commands/test_repl-get_cmd.cmake
+index fb7c4a27..79960106 100644
+--- a/tests/repl/commands/test_repl-get_cmd.cmake
++++ b/tests/repl/commands/test_repl-get_cmd.cmake
+@@ -37,6 +37,8 @@ add_repl_test(get_cmd-all_lists_bv-blastdepth "get" "bv-blastdepth: " REQUIRES b
+ # bv-blastdepth above.
+ add_repl_test(get_cmd-all_lists_bv-case-split-max-tests "get"
+ 	"bv-case-split-max-tests: " REQUIRES bv)
++add_repl_test(get_cmd-all_lists_bv-case-split-max-growth "get"
++	"bv-case-split-max-growth: *8" REQUIRES bv)
+ 
+ # LT-17 / LG-27: the two Batch-O3 caps ship FINITE (4096); 0 opts back into
+ # unlimited/unbounded, same shape as the SO-1 temporal caps above.
+diff --git a/tests/repl/commands/test_repl-option_aliases.cmake b/tests/repl/commands/test_repl-option_aliases.cmake
+index bf8893ac..33dbd54a 100644
+--- a/tests/repl/commands/test_repl-option_aliases.cmake
++++ b/tests/repl/commands/test_repl-option_aliases.cmake
+@@ -109,6 +109,8 @@ add_repl_test(option_alias-bv_case_split
+ 	"get bv-case-split" "bv-case-split:")
+ add_repl_test(option_alias-bv_case_split_max_tests
+ 	"get bv-case-split-max-tests" "bv-case-split-max-tests:")
++add_repl_test(option_alias-bv_case_split_max_growth
++	"get bv-case-split-max-growth" "bv-case-split-max-growth:")
+ add_repl_test(option_alias-maxrewriterounds
+ 	"get maxrewriterounds"    "rewriterounds:")
+ add_repl_test(option_alias-gcgrowthfactor
+diff --git a/tests/repl/commands/test_repl-run_cmd.cmake b/tests/repl/commands/test_repl-run_cmd.cmake
+index 67f4f912..a073433c 100644
+--- a/tests/repl/commands/test_repl-run_cmd.cmake
++++ b/tests/repl/commands/test_repl-run_cmd.cmake
+@@ -608,6 +608,37 @@ add_raw_repl_test(run_cmd-issue107_bv_command_controller
+ 	"o3\\[0\\] := 0.*o3\\[1\\] := 9"
+ 	FAIL_REGEX "unsat|Error" REQUIRES bv TIMEOUT 120)
+ 
++# --- GitHub #203: a rule whose condition tests twenty keyed inputs -----------
++# The reporter's flat disjunction at k = 20: each term compares the amount
++# with a threshold and one input with its key. The run closes the rule over
++# its inputs (universally) and the output (existentially); no key's instances
++# fold, so the bitvector case split copied the existential scope twice per
++# key, 2^20 times in all: the reporter's load passed 8 GB and was killed. The
++# split now gives the formula back when its instances would grow it past
++# bv-case-split-max-growth, and the solver decides it.
++# Generate the repeated terms so the thresholds, keys and input count are
++# visible without reading one long literal. The amount exceeds every threshold
++# and every key is absent, so the expected output is zero.
++set(_issue203_terms "")
++set(_issue203_inputs "20001\\n1")
++foreach(_issue203_j RANGE 20 1 -1)
++	math(EXPR _issue203_threshold "1000 * ${_issue203_j}")
++	math(EXPR _issue203_stream "17 + ${_issue203_j}")
++	math(EXPR _issue203_key "1 + ${_issue203_j}")
++	if(NOT _issue203_terms STREQUAL "")
++		string(APPEND _issue203_terms " || ")
++	endif()
++	string(APPEND _issue203_terms
++		"(i1[t]:bv[24] > { ${_issue203_threshold} }:bv[24] && !(i${_issue203_stream}[t]:bv[8] = { ${_issue203_key} }:bv[8]))")
++	string(APPEND _issue203_inputs "\\n0")
++endforeach()
++set(_issue203_rule
++	"run 1 steps always ((o1[t]:bv[24] = i1[t]:bv[24]) && ((i12[t]:bv[8] = { 1 }:bv[8]) ? ((${_issue203_terms}) ? o5[t]:bv[24] = { 0 }:bv[24] : o5[t]:bv[24] = { 1 }:bv[24]) : o5[t]:bv[24] = { 1 }:bv[24]))")
++add_raw_repl_test(run_cmd-issue203_keyed_terms_rule
++	"printf 'set charvar off\\n%s\\n${_issue203_inputs}\\n' '${_issue203_rule}' | ${TAU_RUN} -X"
++	"o5\\[0\\] := 0"
++	FAIL_REGEX "unsat|Error" REQUIRES bv TIMEOUT 60)
++
+ # --- sbf multiline value continuation ---------------------------------------
+ # An incomplete sbf value ("x |") keeps the prompt open (the sbf-parser
+ # unexpected-end check in awaiting_more_input); the next line completes it.
+diff --git a/tests/repl/commands/test_repl-set_cmd.cmake b/tests/repl/commands/test_repl-set_cmd.cmake
+index 5e5087ed..5275b34b 100644
+--- a/tests/repl/commands/test_repl-set_cmd.cmake
++++ b/tests/repl/commands/test_repl-set_cmd.cmake
+@@ -87,6 +87,12 @@ add_repl_test(set_cmd-bv_case_split_max_tests_roundtrip
+ add_repl_test(set_cmd-bv_case_split_max_tests_zero_unlimited
+ 	"set bv-case-split-max-tests 7. set bv-case-split-max-tests 0. get bv-case-split-max-tests"
+ 	"bv-case-split-max-tests: *unlimited" REQUIRES bv)
++add_repl_test(set_cmd-bv_case_split_max_growth_roundtrip
++	"set bv-case-split-max-growth 3. get bv-case-split-max-growth"
++	"bv-case-split-max-growth: *3" REQUIRES bv)
++add_repl_test(set_cmd-bv_case_split_max_growth_zero_unlimited
++	"set bv-case-split-max-growth 0. get bv-case-split-max-growth"
++	"bv-case-split-max-growth: *unlimited" REQUIRES bv)
+ # Numeric options reject flag values and non-numbers.
+ add_repl_test(set_cmd-fixpointsteps_flag_value_rejected
+ 	"set fixpointsteps on" "Invalid value" NO_FAIL_REGEX)

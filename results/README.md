@@ -15,3 +15,4 @@ Prefer compact, reproducible summaries with commands and commit hashes.
 - [Typed argument correction and finite-limit test correction (2026-09-28)](typed-arguments-2026-09-28/README.md)
 
 - [Retained VM memory extension and cross-platform validation (2026-10-01)](retained-evaluator-memory-2026-10-01/README.md)
+- [Exploratory case-split growth budget for Tau issue 203 (2026-10-05)](case-split-growth-2026-10-05/README.md)
