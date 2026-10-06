@@ -1,0 +1,152 @@
+diff --git a/scripts/dep/common/cvc5.sh b/scripts/dep/common/cvc5.sh
+index 85eb6b2d..e16010fc 100644
+--- a/scripts/dep/common/cvc5.sh
++++ b/scripts/dep/common/cvc5.sh
+@@ -14,7 +14,8 @@
+ # or nothing, and _dep_cvc5_target_setup, which sets the target arguments. It
+ # may define _dep_cvc5_target_fields, which prints extra id fields,
+ # _dep_cvc5_target_prebuild <work> <build>, which runs before the configure,
+-# _dep_cvc5_target_postinstall <prefix> <work>, which runs after the install, and
++# _dep_cvc5_target_postinstall <prefix> <work>, which runs after the install,
++# _dep_cvc5_target_finalize <prefix>, which runs after all byte rewriting, and
+ # _dep_cvc5_target_gmp_licenses <dir> <work>, which copies the license of a GMP
+ # that cvc5 did not download.
+ 
+@@ -43,6 +44,7 @@ CVC5_EXPECTED_CLOSURE=(
+ declare -F _dep_cvc5_target_fields > /dev/null || _dep_cvc5_target_fields() { :; }
+ declare -F _dep_cvc5_target_prebuild > /dev/null || _dep_cvc5_target_prebuild() { :; }
+ declare -F _dep_cvc5_target_postinstall > /dev/null || _dep_cvc5_target_postinstall() { :; }
++declare -F _dep_cvc5_target_finalize > /dev/null || _dep_cvc5_target_finalize() { :; }
+ 
+ # A system GMP is not in the package. Its license comes from the distro package
+ # when the distro keeps one, else from the copy of the GMP 6.3.0 source in tau.
+@@ -384,6 +386,8 @@ PY
+ 		rm -rf "$work"
+ 		return 1
+ 	fi
++	_dep_cvc5_target_finalize "$staging_prefix" \
++		|| { echo "dep-cvc5: finalization failed" >&2; rm -rf "$work"; return 1; }
+ 	_dep_cvc5_licenses "$staging_prefix" "$work" "$build" \
+ 		|| { echo "dep-cvc5: cannot copy the license files" >&2; rm -rf "$work"; return 1; }
+ 	rm -rf "$work"
+diff --git a/scripts/dep/darwin-arm64/cvc5.sh b/scripts/dep/darwin-arm64/cvc5.sh
+index 9db38385..907ffcba 100755
+--- a/scripts/dep/darwin-arm64/cvc5.sh
++++ b/scripts/dep/darwin-arm64/cvc5.sh
+@@ -27,35 +27,38 @@ _dep_cvc5_target_setup() {
+ }
+ 
+ # GMP installs with its build path as install name, and cvc5 records that path.
+-# @rpath makes the package relocatable. The edit breaks the ad-hoc signature,
+-# which arm64 requires, so each changed library is signed again.
++# @rpath makes the package relocatable. Signing happens after path rewriting.
+ _dep_cvc5_target_postinstall() {
+-	local prefix="$1" work="$2" lib dep changed
++	local prefix="$1" work="$2" lib dep
+ 	for lib in "$prefix"/lib/*.dylib; do
+ 		[ -f "$lib" ] && [ ! -L "$lib" ] || continue
+-		changed=0
+ 		case "$(otool -D "$lib" | sed -n 2p)" in
+ 			"$work"/*)
+ 				install_name_tool -id "@rpath/$(basename "$lib")" "$lib" || return 1
+-				changed=1
+ 				;;
+ 		esac
+ 		while IFS= read -r dep; do
+ 			install_name_tool -change "$dep" "@rpath/$(basename "$dep")" "$lib" \
+ 				|| return 1
+-			changed=1
+ 		done < <(otool -L "$lib" | awk 'NR > 1 { print $1 }' | grep -F "${work}/")
+ 		case "$(basename "$lib")" in
+ 			libgmp*)
+ 				if ! otool -l "$lib" | grep -A2 LC_RPATH | grep -qF '@loader_path'; then
+ 					install_name_tool -add_rpath @loader_path "$lib" || return 1
+-					changed=1
+-				fi
++					fi
+ 				;;
+ 		esac
+-		if [ "$changed" = 1 ]; then
+-			codesign --force --sign - "$lib" || return 1
+-		fi
++	done
++}
++
++# Embedded build paths are rewritten after postinstall. Sign the final bytes
++# and verify them before the dependency store records its output hashes.
++_dep_cvc5_target_finalize() {
++	local prefix="$1" lib
++	for lib in "$prefix"/lib/*.dylib; do
++		[ -f "$lib" ] && [ ! -L "$lib" ] || continue
++		codesign --force --sign - "$lib" || return 1
++		codesign --verify --strict "$lib" || return 1
+ 	done
+ }
+ 
+diff --git a/scripts/dep/darwin-x86_64/cvc5.sh b/scripts/dep/darwin-x86_64/cvc5.sh
+index 859ed6d4..2733ac0e 100755
+--- a/scripts/dep/darwin-x86_64/cvc5.sh
++++ b/scripts/dep/darwin-x86_64/cvc5.sh
+@@ -27,35 +27,38 @@ _dep_cvc5_target_setup() {
+ }
+ 
+ # GMP installs with its build path as install name, and cvc5 records that path.
+-# @rpath makes the package relocatable. The edit breaks the ad-hoc signature,
+-# which arm64 requires, so each changed library is signed again.
++# @rpath makes the package relocatable. Signing happens after path rewriting.
+ _dep_cvc5_target_postinstall() {
+-	local prefix="$1" work="$2" lib dep changed
++	local prefix="$1" work="$2" lib dep
+ 	for lib in "$prefix"/lib/*.dylib; do
+ 		[ -f "$lib" ] && [ ! -L "$lib" ] || continue
+-		changed=0
+ 		case "$(otool -D "$lib" | sed -n 2p)" in
+ 			"$work"/*)
+ 				install_name_tool -id "@rpath/$(basename "$lib")" "$lib" || return 1
+-				changed=1
+ 				;;
+ 		esac
+ 		while IFS= read -r dep; do
+ 			install_name_tool -change "$dep" "@rpath/$(basename "$dep")" "$lib" \
+ 				|| return 1
+-			changed=1
+ 		done < <(otool -L "$lib" | awk 'NR > 1 { print $1 }' | grep -F "${work}/")
+ 		case "$(basename "$lib")" in
+ 			libgmp*)
+ 				if ! otool -l "$lib" | grep -A2 LC_RPATH | grep -qF '@loader_path'; then
+ 					install_name_tool -add_rpath @loader_path "$lib" || return 1
+-					changed=1
+-				fi
++					fi
+ 				;;
+ 		esac
+-		if [ "$changed" = 1 ]; then
+-			codesign --force --sign - "$lib" || return 1
+-		fi
++	done
++}
++
++# Embedded build paths are rewritten after postinstall. Sign the final bytes
++# and verify them before the dependency store records its output hashes.
++_dep_cvc5_target_finalize() {
++	local prefix="$1" lib
++	for lib in "$prefix"/lib/*.dylib; do
++		[ -f "$lib" ] && [ ! -L "$lib" ] || continue
++		codesign --force --sign - "$lib" || return 1
++		codesign --verify --strict "$lib" || return 1
+ 	done
+ }
+ 
+diff --git a/tests/unit/test_ltl_aba_open_points.cpp b/tests/unit/test_ltl_aba_open_points.cpp
+index 415dcbbb..97e76929 100644
+--- a/tests/unit/test_ltl_aba_open_points.cpp
++++ b/tests/unit/test_ltl_aba_open_points.cpp
+@@ -407,7 +407,7 @@ TEST_SUITE("LTL(ABA) open points: Spot processes") {
+ 			[](int) { return true; });
+ 		REQUIRE_FALSE(r.has_value());
+ 		INFO(report_text(r.report()));
+-		CHECK_FALSE(report_has_attr(r.report(), label::timeout));
++		CHECK_FALSE(report_has_attr(r.report(), tau_lang::label::timeout));
+ 	}
+ }
+ 

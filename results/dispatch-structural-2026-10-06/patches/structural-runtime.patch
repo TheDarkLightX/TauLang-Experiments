@@ -1,0 +1,302 @@
+diff --git a/src/boolean_algebras/bv/bv_descriptor.tmpl.h b/src/boolean_algebras/bv/bv_descriptor.tmpl.h
+index 55be299..14b5b6c 100644
+--- a/src/boolean_algebras/bv/bv_descriptor.tmpl.h
++++ b/src/boolean_algebras/bv/bv_descriptor.tmpl.h
+@@ -395,9 +395,9 @@ struct ba_descriptor<bv, node<PackBAs...>> {
+ 				nullptr, nullptr,
+ 				get_case_split_max_growth_option,
+ 				set_case_split_max_growth_option,
+-				"budget cumulative instance expansion as a multiple of "
+-				"the input node count; on excess return the input "
+-				"(not a memory limit; default 8, 0 = unlimited)" },
++				"cap the nodes the case split may add to a formula, as a "
++				"multiple of its size; past it the formula is left "
++				"unsplit (default 8, 0 = unlimited)" },
+ 			{ "definitional-elimination", ba_option_kind::flag,
+ 				get_defelim_option, set_defelim_option,
+ 				nullptr, nullptr,
+@@ -408,8 +408,9 @@ struct ba_descriptor<bv, node<PackBAs...>> {
+ 				nullptr, nullptr,
+ 				get_defelim_max_clauses_option,
+ 				set_defelim_max_clauses_option,
+-				"cap the clauses a conjunct is flattened into for the "
+-				"definitional elimination (default 16, 0 = unlimited)" },
++				"ceiling on the clauses a conjunct is flattened into for "
++				"the definitional elimination, within 16 or one per atom "
++				"(default 256, 0 = no ceiling)" },
+ 			{ "defelim-max-atoms", ba_option_kind::count,
+ 				nullptr, nullptr,
+ 				get_defelim_max_atoms_option, set_defelim_max_atoms_option,
+diff --git a/src/boolean_algebras/bv/heuristics/bv_definitional_elimination.h b/src/boolean_algebras/bv/heuristics/bv_definitional_elimination.h
+index db55f85..72eb3be 100644
+--- a/src/boolean_algebras/bv/heuristics/bv_definitional_elimination.h
++++ b/src/boolean_algebras/bv/heuristics/bv_definitional_elimination.h
+@@ -36,12 +36,15 @@ namespace idni::tau_lang {
+ /// `bv-definitional-elimination`.
+ inline bool bv_definitional_elimination = true;
+ 
+-/// Cap on the clauses a conjunct mentioning the variable may be flattened
+-/// into (`D || (A && B)` distributes to `(D || A), (D || B)`, exponential in
+-/// the nesting); a conjunct beyond it stays a reader. SIZE_MAX = unlimited
+-/// (0 through the option setter); the REPL/CLI option
++/// Ceiling on the clauses a conjunct mentioning the variable may be
++/// flattened into (`D || (A && B)` distributes to `(D || A), (D || B)`).
++/// Within it a conjunct yields 16 clauses, or one per atom when it has
++/// more atoms than that: a conditional tree of any depth is admitted, a
++/// disjunction of conjunctions is declined once it multiplies past its
++/// atoms, and a conjunct beyond either bound stays a reader. SIZE_MAX = no
++/// ceiling (0 through the option setter); the REPL/CLI option
+ /// `bv-defelim-max-clauses`.
+-inline size_t bv_defelim_max_clauses = 16;
++inline size_t bv_defelim_max_clauses = 256;
+ 
+ /// Cap on the distinct atoms the propositional check of a guard set may
+ /// brute-force over (2^atoms assignments); above it the set is not refuted
+diff --git a/src/boolean_algebras/bv/heuristics/bv_definitional_elimination.tmpl.h b/src/boolean_algebras/bv/heuristics/bv_definitional_elimination.tmpl.h
+index 13f0ec9..130b638 100644
+--- a/src/boolean_algebras/bv/heuristics/bv_definitional_elimination.tmpl.h
++++ b/src/boolean_algebras/bv/heuristics/bv_definitional_elimination.tmpl.h
+@@ -1,5 +1,6 @@
+ // To view the license please visit https://github.com/IDNI/tau-lang/blob/main/LICENSE.md
+ 
++#include <limits>
+ #undef LOG_CHANNEL_NAME
+ #define LOG_CHANNEL_NAME "bv_definitional_elimination"
+ 
+@@ -17,6 +18,8 @@ namespace bv_defelim_detail {
+ inline constexpr size_t hard_atom_cap = 30;
+ 
+ inline size_t clause_cap() { return bv_defelim_max_clauses; }
++// The clauses every conjunct may flatten into whatever its size.
++inline constexpr size_t clause_floor = 16;
+ inline size_t atom_cap() {
+ 	return std::min<size_t>(bv_defelim_max_atoms, hard_atom_cap);
+ }
+@@ -106,10 +109,14 @@ tref bv_definitional_block_elimination(tref root, subtree_set<node>* settled) {
+ 		return canon_cache[g] = to_nnf<node>(h);
+ 	};
+ 	// Flatten a clause mentioning x: D || (A && B) -> (D || A), (D || B),
+-	// recursively on the x side only, up to the clause cap.
+-	std::function<bool(tref, tref, std::vector<std::vector<tref>>&)> flatten =
+-		[&](tref var, tref c, std::vector<std::vector<tref>>& out) -> bool {
+-			if (out.size() > clause_cap()) return false;
++	// recursively on the x side only. A conjunct may flatten into
++	// clause_floor clauses, or one per atom when it has more atoms than
++	// that: a conditional tree gives one clause per leaf, while a
++	// disjunction of conjunctions multiplies and is declined once its
++	// clauses outnumber its atoms. The option is the ceiling over both.
++	std::function<bool(tref, tref, std::vector<std::vector<tref>>&, size_t)> flatten_to =
++		[&](tref var, tref c, std::vector<std::vector<tref>>& out, size_t cap) -> bool {
++			if (out.size() > cap) return false;
+ 			std::vector<tref> ds; disjuncts(c, ds);
+ 			for (size_t i = 0; i < ds.size(); ++i) {
+ 				if (is_wff_of(ds[i], tau::wff_and) && contains<node>(ds[i], var)) {
+@@ -117,14 +124,19 @@ tref bv_definitional_block_elimination(tref root, subtree_set<node>* settled) {
+ 					for (tref p : parts) {
+ 						std::vector<tref> rebuilt(ds.begin(), ds.end());
+ 						rebuilt[i] = p;
+-						if (!flatten(var, or_of(rebuilt), out)) return false;
++						if (!flatten_to(var, or_of(rebuilt), out, cap)) return false;
+ 					}
+ 					return true;
+ 				}
+ 			}
+ 			out.push_back(ds);
+-			return out.size() <= clause_cap();
++			return out.size() <= cap;
+ 		};
++	auto flatten = [&](tref var, tref c, std::vector<std::vector<tref>>& out) -> bool {
++		const size_t atoms = tau::get(c).select_all(is_atomic_fm<node>).size();
++		return flatten_to(var, c, out,
++			std::min(clause_cap(), std::max(clause_floor, atoms)));
++	};
+ 	// D || x = c; D == nullptr is a bare equation; cbf is c as a bf; orig
+ 	// is the flat clause.
+ 	struct dclause { tref D; tref c; tref cbf; tref orig; };
+@@ -245,10 +257,22 @@ tref bv_definitional_block_elimination(tref root, subtree_set<node>* settled) {
+ 		}
+ 		return true;
+ 	};
++	// The solver decides the conjunction of the guards as a bitvector
++	// formula (its free variables existential): unsatisfiable means no
++	// input escapes every cell. Where the solver declines the formula or
++	// gives no answer, the propositional brute force decides.
++	auto solver_unsat = [&](const std::vector<tref>& Ds) -> std::optional<bool> {
++		tref f = and_of(Ds);
++		if (!is_bv_solvable_formula<node>(f)) return std::nullopt;
++		auto st = bv_formula_sat_status<node>(f);
++		if (!st || *st == bv_sat_status::unknown) return std::nullopt;
++		return *st == bv_sat_status::unsat;
++	};
+ 	auto prop_unsat = [&](const std::vector<tref>& Ds) -> bool {
+ 		for (tref D : Ds) if (!D) return true;   // a bare equation always forces
+ 		tref key = and_of(Ds);
+ 		if (auto it = unsat_memo.find(key); it != unsat_memo.end()) return it->second;
++		if (auto s = solver_unsat(Ds)) return unsat_memo[key] = *s;
+ 		return unsat_memo[key] = prop_unsat_raw(Ds);
+ 	};
+ 	struct def {
+@@ -305,6 +329,23 @@ tref bv_definitional_block_elimination(tref root, subtree_set<node>* settled) {
+ 		for (size_t i = 0; i < ms.size() && chosen.empty(); ++i)
+ 			if (ms[i].dfalse) chosen = { i };
+ 		const size_t n = ms.size();
++		// The whole set first: a definition read off a conditional tree
++		// has one clause per leaf, and the tree is total. A clause whose
++		// removal keeps the rest unsatisfiable is a reader, not a cell.
++		if (chosen.empty() && n >= 2) {
++			std::vector<tref> Ds;
++			for (const merged& m : ms) Ds.push_back(m.D);
++			if (prop_unsat(Ds)) {
++				std::vector<size_t> keep(n);
++				for (size_t i = 0; i < n; ++i) keep[i] = i;
++				for (size_t i = n; i-- > 0 && keep.size() > 2; ) {
++					std::vector<tref> rest;
++					for (size_t j : keep) if (j != keep[i]) rest.push_back(ms[j].D);
++					if (prop_unsat(rest)) keep.erase(keep.begin() + static_cast<long>(i));
++				}
++				chosen = keep;
++			}
++		}
+ 		for (size_t s = 2; s <= std::min<size_t>(subset_cap(), n) && chosen.empty(); ++s) {
+ 			std::vector<size_t> idx(s);
+ 			for (size_t i = 0; i < s; ++i) idx[i] = i;
+@@ -532,6 +573,94 @@ tref bv_definitional_block_elimination(tref root) {
+ 	return bv_definitional_block_elimination<node>(root, nullptr);
+ }
+ 
++// `ex x phi` where every occurrence of x is a disequality against a
++// closed term, reached only through connectives in which phi grows with
++// its tests: with fewer distinct terms than the type has values some value
++// of x differs from all of them, so `ex x phi` is phi with every test of x
++// true. The complement of a defined output has this shape
++// (`o != 0 && D || o != 1 && N`), and it reaches the case split as an
++// existential with nothing to define it, which the split then copies once
++// per case of every tested input (GitHub #203). An identity on the
++// formula; a binder it does not apply to is returned as it came.
++template <NodeType node>
++tref bv_eliminate_disequality_existential(tref binder) {
++	using tau = tree<node>;
++	const tau& b = tau::get(binder);
++	if (!(b.is(tau::wff) && b.child_is(tau::wff_ex))) return binder;
++	tref var = b[0].first(), scope = b[0].second();
++	const size_t type = tau::get(var).get_ba_type();
++	if (type == 0 || !is_bv_type_family<node>(type)) return binder;
++	auto width = get_bv_width<node>(type);
++	if (!width.has_value()) return binder;
++	// every atom holding x is `x = c` under a negation, or `x != c`
++	subtree_set<node> consts;
++	std::vector<tref> tests;
++	bool ok = true;
++	auto decline = [&](const char*, tref) { ok = false; };
++	// walk the wff connectives; a test of x is recorded, anything else
++	// that mentions x declines the binder
++	std::function<void(tref)> visit = [&](tref n) {
++		if (!ok || !contains<node>(n, var)) return;
++		const tau& t = tau::get(n);
++		if (!t.is(tau::wff)) { decline("not a wff", n); return; }
++		const bool neg = t.child_is(tau::wff_neg);
++		tref atom = neg ? t[0].first() : n;
++		const tau& a = tau::get(atom);
++		if (a.is(tau::wff) && (a.child_is(tau::bf_eq) || a.child_is(tau::bf_neq))) {
++			if (neg == a.child_is(tau::bf_neq)) { decline("equality", n); return; }
++			tref l = a[0][0][0].get(), r = a[0][1][0].get();
++			const bool lv = tau::get(l) == tau::get(var);
++			const bool rv = tau::get(r) == tau::get(var);
++			if (lv == rv) { decline("both or neither side", n); return; }
++			// the other side is a closed term
++			tref c = lv ? a[0][1].get() : a[0][0].get();
++			if (!tau::get(c).get_free_vars().empty()
++				|| tau::get(c).find_top(is<node, tau::uconst_name>)) {
++				decline("open other side", n); return;
++			}
++			consts.insert(c);
++			tests.push_back(n);
++			return;
++		}
++		// only where the formula grows with its tests: both sides of a
++		// conjunction or disjunction, the consequent of an implication and
++		// the branches of a conditional, with x absent from the rest
++		const tau& c = t[0];
++		if (t.child_is(tau::wff_and) || t.child_is(tau::wff_or)) {
++			for (size_t i = 0; i < c.children_size() && ok; ++i)
++				visit(c.child(i));
++		} else if (t.child_is(tau::wff_imply)) {
++			if (contains<node>(c.first(), var)) { ok = false; return; }
++			visit(c.second());
++		} else if (t.child_is(tau::wff_rimply)) {
++			if (contains<node>(c.second(), var)) { ok = false; return; }
++			visit(c.first());
++		} else if (t.child_is(tau::wff_conditional)) {
++			if (contains<node>(c.child(0), var)) { ok = false; return; }
++			visit(c.child(1)); visit(c.child(2));
++		} else if (t.child_is(tau::wff_ex) || t.child_is(tau::wff_all)) {
++			// The forbidden terms are closed, so one fixed witness works
++			// for every value of this other variable. A shadowing binder
++			// is deliberately left to the normal scope-aware pipeline.
++			if (tau::get(c.first()) == tau::get(var)) {
++				decline("shadowing binder", n); return;
++			}
++			visit(c.second());
++		} else decline("connective", n);
++	};
++	visit(scope);
++	if (!ok || tests.empty()) return binder;
++	// Avoid a shift by the width of size_t. A wider domain exceeds the
++	// number of distinct terms representable by this container.
++	if (width.value() < std::numeric_limits<size_t>::digits
++		&& consts.size() >= (size_t(1) << width.value()))
++		return binder;
++	subtree_set<node> test_set(tests.begin(), tests.end());
++	auto drop_test = [&](tref n) -> tref {
++		return test_set.contains(n) ? tau::_T() : n; };
++	return pre_order<node>(scope).apply_unique(drop_test);
++}
++
+ template <NodeType node>
+ tref bv_eliminate_definitional_existentials(tref fm) {
+ 	using tau = tree<node>;
+@@ -540,8 +669,19 @@ tref bv_eliminate_definitional_existentials(tref fm) {
+ 	// level of a deep chain.
+ 	subtree_set<node> settled;
+ 	auto block = [&settled](tref n) -> tref {
+-		if (!is_child<node>(n, tau::wff_ex) || settled.contains(n))
++		if (!is_child<node>(n, tau::wff_ex))
+ 			return n;
++		// the binder inside an eliminated one is this node's replacement,
++		// which the traversal does not visit again
++		tref d = bv_eliminate_disequality_existential<node>(n);
++		while (d != n) {
++			n = d;
++			if (!is_child<node>(n, tau::wff_ex)) return n;
++			d = bv_eliminate_disequality_existential<node>(n);
++		}
++		// A failed definition search says nothing about the disequality
++		// identity, so consult its cache only after the separate rule.
++		if (settled.contains(n)) return n;
+ 		return bv_definitional_block_elimination<node>(n, &settled);
+ 	};
+ 	return pre_order<node>(fm).apply_unique(block);
+diff --git a/src/normalizer.tmpl.h b/src/normalizer.tmpl.h
+index ffbe815..942e2bc 100644
+--- a/src/normalizer.tmpl.h
++++ b/src/normalizer.tmpl.h
+@@ -163,6 +163,19 @@ template <NodeType node>
+ result<tref> eliminate_arithmetic_and_quantifiers(tref form) {
+ 	using tau = tree<node>;
+ 	result<tref> r;
++	// A closed formula whose binders are all of one kind has no alternation
++	// for the case split to resolve: splitting a tested variable can only
++	// copy the scope once per case, while the solver decides the formula as
++	// it is (and, with bv-quantifier-free-decision, as a quantifier-free
++	// problem). Asked first, with a definite answer only.
++	if constexpr (pack_has_arithmetic_theory_v<node>) {
++		const bool has_ex = tau::get(form).find_top(is<node, tau::wff_ex>) != nullptr;
++		const bool has_all = tau::get(form).find_top(is<node, tau::wff_all>) != nullptr;
++		if (has_ex != has_all && get_free_vars<node>(form).empty()
++			&& pack_can_solve<node>(form))
++			if (auto sat = pack_sat_status<node>(form))
++				return r.with_value(*sat ? tau::_T() : tau::_F());
++	}
+ 	// Case-split quantifier elimination is an identity on the formula, so
+ 	// running it unconditionally is always safe. Which BA, if any, can make
+ 	// progress is for the pack fold to decide, and the owning BA gates it.

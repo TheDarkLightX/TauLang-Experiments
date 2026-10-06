@@ -1,0 +1,13 @@
+#!/usr/bin/env python3
+"""Regenerate the native finite bank from independently enumerated answers."""
+import argparse,json,re
+from pathlib import Path
+from check_single_step_semantics import make_bank
+HEAD='#include "test_integration-satisfiability_helper.h"\nstruct finite_case { const char* spec; bool sat; bool valid; };\nstatic const finite_case samples[] = {\n'
+TAIL='\n};\nTEST_CASE("finite memoryless decisions with independent expected answers") {\n    bdd_init<Bool>();\n    size_t index=0, active=0, declined=0;\n    for (const auto& c : samples) {\n        INFO(index);\n        tref fm=create_spec(c.spec);\n        REQUIRE(fm != nullptr);\n#ifdef HAS_SINGLE_STEP\n        for (bool validity : {false,true}) {\n            int decision=single_step_tau_decide<node_t>(fm,validity);\n            if (decision < 0) ++declined;\n            else { ++active; CHECK(bool(decision)==(validity ? c.valid : c.sat)); }\n        }\n#endif\n        auto sat=is_tau_formula_sat<node_t>(fm);\n        REQUIRE(sat.has_value()); CHECK(sat.value()==c.sat);\n        auto implication=is_tau_impl<node_t>(tau::_T(),fm);\n        REQUIRE(implication.has_value());\n        auto trace=is_tau_impl<node_t>(tau::_T(),inputs_as_outputs<node_t>(fm));\n        REQUIRE(trace.has_value()); CHECK(trace.value()==c.valid);\n        std::cout << "ROW " << index++ << " SAT " << sat.value()\n                  << " IMPLICATION " << implication.value() << " TRACE " << trace.value() << \'\\n\';\n    }\n    std::cout << "ROUTE_COUNTS ACTIVE " << active << " DECLINED " << declined << \'\\n\';\n}\n#ifdef HAS_SINGLE_STEP\nTEST_CASE("memoryless helper declines unsupported temporal and algebra inputs") {\n    bdd_init<Bool>();\n    const char* samples[]={\n        "always o81[t]:bv[8] = o81[t-1]:bv[8].",\n        "always o82[t]:bv[8] = o82[0]:bv[8].",\n        "sometimes o83[t]:bv[8] = {0}:bv[8].",\n        "always (sometimes o84[t]:bv[8] = {0}:bv[8]).",\n        "always ([t > 2] -> o85[t]:bv[8] = {0}:bv[8]).",\n        "always o86[t]:tau = {always o87[t]:bv[8] = {0}:bv[8]}:tau.",\n        "always o88[t]:qlt = i88[t]:qlt."\n    };\n    for(const char* s:samples) {\n        INFO(s);\n        tref fm=create_spec(s);REQUIRE(fm!=nullptr);\n        CHECK(single_step_tau_decide<node_t>(fm,false)==-1);\n        CHECK(single_step_tau_decide<node_t>(fm,true)==-1);\n    }\n}\n#endif\n'
+ap=argparse.ArgumentParser();ap.add_argument('out',type=Path);args=ap.parse_args()
+rows=[]
+for case in make_bank():
+    body=re.sub(r'\b([io])([12])\[t\]',lambda x:x[1]+str(case['width']*10+int(x[2]))+'[t]',case['body'])
+    rows.append('    {'+json.dumps('always '+body+'.')+', '+str(case['satisfiable']).lower()+', '+str(case['valid']).lower()+'},')
+args.out.write_text(HEAD+'\n'.join(rows)+TAIL)

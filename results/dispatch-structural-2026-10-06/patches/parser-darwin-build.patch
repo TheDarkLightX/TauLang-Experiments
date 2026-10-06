@@ -1,0 +1,17 @@
+diff --git a/scripts/dep/common/parser-sdk.sh b/scripts/dep/common/parser-sdk.sh
+index e1d92f8..1680e78 100644
+--- a/scripts/dep/common/parser-sdk.sh
++++ b/scripts/dep/common/parser-sdk.sh
+@@ -374,9 +374,10 @@ PARSER_LTO_IPO="$PARSER_LTO"
+ PARSER_LTO_FAT_FLAGS=""
+ if [ "$PARSER_LTO_FAT_EFFECTIVE" = "ON" ]; then
+ 	PARSER_LTO_IPO=OFF
+-	# AppleClang rejects -ffat-lto-objects; the package it produces is
++	# Darwin Clang rejects -ffat-lto-objects, including Homebrew Clang.
++	# The package it produces is
+ 	# thin, so the recorded lto_fat must say so or the id would lie.
+-	if [ "$(_dep_parser_compiler_id)" = "AppleClang" ]; then
++	if [ "$(_dep_parser_compiler_id)" = "AppleClang" ] || [[ "$DEP_PARSER_TARGET" == darwin-* ]]; then
+ 		PARSER_LTO_FAT_EFFECTIVE=OFF
+ 	else
+ 		PARSER_LTO_FAT_FLAGS="-ffat-lto-objects"

@@ -16,3 +16,4 @@ Prefer compact, reproducible summaries with commands and commit hashes.
 
 - [Retained VM memory extension and cross-platform validation (2026-10-01)](retained-evaluator-memory-2026-10-01/README.md)
 - [Exploratory case-split growth budget for Tau issue 203 (2026-10-05)](case-split-growth-2026-10-05/README.md)
+- [Revision-cost reduction, component measurements and rule-condition map (2026-10-06)](dispatch-structural-2026-10-06/README.md)

@@ -1,0 +1,2 @@
+#!/bin/sh
+exec /opt/homebrew/opt/llvm/bin/clang -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk "$@"

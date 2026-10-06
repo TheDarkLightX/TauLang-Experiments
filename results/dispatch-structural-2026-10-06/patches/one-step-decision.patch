@@ -1,0 +1,81 @@
+diff --git a/src/satisfiability.tmpl.h b/src/satisfiability.tmpl.h
+index 2538b7407..aae168c74 100644
+--- a/src/satisfiability.tmpl.h
++++ b/src/satisfiability.tmpl.h
+@@ -2613,6 +2613,54 @@ trefs simplify_dnf_clauses(const trefs& clauses) {
+ 	return out;
+ }
+ 
++// A formula `always body` whose body reads every stream at the current
++// step and holds no temporal operator,
++// constraint, uninterpreted constant, embedded tau constant or reference
++// says the same from every step, so its decisions are those of one step:
++// valid as `all inputs all outputs body`, satisfiable as
++// `all inputs ex outputs body`. Both are closed, and taken only where the
++// pack's solver owns them. The step-wise decision below leaves
++// such a formula open in the previous step's variables, and the Boole
++// decomposition that then eliminates them produces one clause per case of
++// every stream (GitHub #203: a rule testing k keyed inputs cost about 5x
++// more per two keys when asked about as a `:tau` constant). -1 = not that
++// shape or not decided, 0 = no, 1 = yes.
++template <NodeType node>
++int single_step_tau_decide(tref fm, bool validity) {
++	using tau = tree<node>;
++	if (!tau::get(fm).child_is(tau::wff_always)) return -1;
++	tref body = tau::trim2(fm);
++	if (tau::get(body).find_top([](tref t) {
++		const auto& n = tree<node>::get(t);
++		return n.is(tau::constraint)
++			|| (n.is_ba_constant() && n.get_ba_type() == tau_type_id<node>())
++			|| n.is(tau::ref) || n.child_is(tau::uconst_name)
++			|| is_temporal_quantifier<node>(t)
++			|| (n.child_is(tau::io_var)
++				&& (is_io_initial<node>(t)
++					|| get_io_var_shift<node>(t) != 0)); }))
++		return -1;
++	trefs inputs, outputs;
++	for (tref v : tau::get(body).get_free_vars()) {
++		if (!tau::get(v).child_is(tau::io_var)) return -1;
++		(tau::get(v)[0].is_input_variable() ? inputs : outputs)
++			.push_back(v);
++	}
++	tref closed = body;
++	for (tref v : outputs) closed = validity
++		? tau::build_wff_all(v, closed, false)
++		: tau::build_wff_ex(v, closed, false);
++	for (tref v : inputs) closed = tau::build_wff_all(v, closed, false);
++	// Only where the solver owns the closed formula: that is the shape the
++	// one-step decision is cheap and verified for.
++	if (!pack_can_solve<node>(closed)) return -1;
++	auto decided = normalize_non_temp<node>(closed);
++	if (!decided.has_value()) return -1;
++	if (tau::get(decided.value()).equals_T()) return 1;
++	if (tau::get(decided.value()).equals_F()) return 0;
++	return -1;
++}
++
+ template <NodeType node>
+ result<bool> is_tau_formula_sat(tref fm, const int_t start_time,
+ 	const bool output)
+@@ -2671,6 +2719,11 @@ result<bool> is_tau_formula_sat(tref fm, const int_t start_time,
+ 	};
+ 
+ 	LOG_DEBUG << "Start is_tau_formula_sat: " << LOG_FM(fm);
++	if (!output)
++		if (int d = single_step_tau_decide<node>(fm, false); d >= 0) {
++			memoize(d == 1);
++			return r;
++		}
+ 	// Merge top-level (G A) && (G B) → G(A && B) up-front.  Direct
+ 	// callers (the PWR-output → is_realizable path in test_pwr_*,
+ 	// for example) reach is_tau_formula_sat without going through
+@@ -2838,6 +2891,9 @@ result<bool> is_tau_impl(tref f1, tref f2) {
+ 	} else {
+ 		TAU_TRY(tref f1n, normalize<node>(f1));
+ 		TAU_TRY(tref f2n, normalize<node>(f2));
++		if (tau::get(f1n).equals_T())
++			if (int d = single_step_tau_decide<node>(f2n, true); d >= 0)
++				return r.with_assert_check_value(d == 1);
+ 		TAU_TRY(imp_check, normalize_with_temp_simp<node>(
+ 			tau::build_wff_neg(tau::build_wff_imply(f1n, f2n))));
+ 	}
