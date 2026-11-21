@@ -24,7 +24,9 @@ The same patch passes `git apply --check` on `42a6e977cf1dd9d452ad30384e69e37714
 
 The focused build uses the pinned Tau source and parser, Clang 19.1.7, and Tau's published Linux v0.8.5 SDK for libraries and generated pack headers. Full-project CI on a clean build remains open.
 
-On the pinned source, 81 fresh processes parsed Tau formulas and called the patched native BV decision function. All 81 verdicts matched the expected answers. The rule fired on the 64 mixed-mask cases and six SAT/UNSAT cascades at widths 3, 8 and 16. The other eleven used the fallback, including eight cases wider than the default cap and queries with a universal binder, a complemented variable or a free coefficient. The input, expected verdict, observed verdict and route are included in the replay. The C++ reference separately checked 17,472 formulas by exhaustive enumeration. Rechecking the Lean source reproduced all five declarations' recorded axiom reports.
+All 11 cases in the affected upstream test file passed (2,203 assertions). This includes the four new cases (2,107 assertions), the actual public `api::sat(string)` calls, and both solver-option controls. The replay includes the SDK build recipe and test receipt.
+
+On the pinned source, 81 fresh processes parsed Tau formulas and called the patched native BV decision function. All 81 verdicts matched the expected answers on both the clean and patched builds. The rule fired on the 64 mixed-mask cases and six SAT/UNSAT cascades at widths 3, 8 and 16. The other eleven used the fallback, including eight cases wider than the default cap and queries with a universal binder, a complemented variable or a free coefficient. The input, expected verdict, observed verdict and route are included in the replay. The C++ reference separately checked 17,472 formulas by exhaustive enumeration. Rechecking the Lean source reproduced all five declarations' recorded axiom reports.
 
 ## What the proof covers
 
