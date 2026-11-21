@@ -1,0 +1,350 @@
+diff --git a/src/boolean_algebras/bv/bv_ba_solver.tmpl.h b/src/boolean_algebras/bv/bv_ba_solver.tmpl.h
+index 3f099ea1eac2afb43765ebdda26d016c53940073..c73448d3de2affda679b09d64c6a93f8be6bcae4 100644
+--- a/src/boolean_algebras/bv/bv_ba_solver.tmpl.h
++++ b/src/boolean_algebras/bv/bv_ba_solver.tmpl.h
+@@ -2,6 +2,7 @@
+ 
+ #include "boolean_algebras/bv/bv_ba.h" // Only for IDE resolution, not really needed.
+ #include "boolean_algebras/bv/parser/bitvector_parser.generated.h"
++#include "boolean_algebras/bv/heuristics/bv_guarded_witness.h"
+ #include "backends/cvc5/cvc5_term_text.h"
+ #include "bounded_child.h"
+ 
+@@ -815,6 +816,7 @@ result<std::optional<bv_sat_status>> bv_formula_sat_status(tref form) {
+ 			// the quantified path. The existential identity has no such
+ 			// condition: the free variables simply stay free.
+ 			bool eligible = has_ex || get_free_vars<node>(form).empty();
++			bool has_disjunction = false;
+ 			subtree_map<node, int> bound;
+ 			std::vector<std::pair<tref, bool>> stack{{form, false}};
+ 			while (!stack.empty() && eligible) {
+@@ -822,6 +824,7 @@ result<std::optional<bv_sat_status>> bv_formula_sat_status(tref form) {
+ 				if (!n) continue;
+ 				const tau& t = tau::get(n);
+ 				if (t.is(tau::wff_neg)) under_neg = true;
++				if (t.is(tau::wff_or)) has_disjunction = true;
+ 				if (t.is(kind)) {
+ 					if (under_neg || !is<node>(t.first(), tau::variable)
+ 						|| ++bound[t.first()] > 1) eligible = false;
+@@ -860,6 +863,28 @@ result<std::optional<bv_sat_status>> bv_formula_sat_status(tref form) {
+ 				// wide one goes to the solver before its bits cost more
+ 				// than the solver does.
+ 				const auto qf_deadline = bv_question_deadline();
++				// Only the sole outer existential may serve as the mask variable.
++				if (has_ex && has_disjunction && bv_bitblast_qf_max_nodes
++					&& tau::get(form).child_is(tau::wff_ex)
++					&& bound.size() == 1 && free_vars.size() == 1
++					&& bound.contains(free_vars.begin()->first)
++					&& free_vars.begin()->second.getSort().getBitVectorSize()
++						<= bv_bitblast_max_width)
++				{
++					const auto decision = bv_guarded_witness_sat(qf_expr.value(),
++						free_vars.begin()->second, qf_deadline);
++					if (qf_deadline != std::chrono::steady_clock::time_point::max()
++						&& std::chrono::steady_clock::now() >= qf_deadline)
++					{
++						ran_out = true;
++						note_time_budget_exhausted(bv_solve_timeout_message());
++						return memo(bv_sat_status::unknown);
++					}
++					if (decision) {
++						++bv_guarded_witness_decisions;
++						return memo(*decision ? bv_sat_status::sat : bv_sat_status::unsat);
++					}
++				}
+ 				if (bv_bitblast_qf_max_nodes) {
+ 					bool late = false;
+ 					if (auto v = cvc5_bitblast_sat(qf_expr.value(),
+diff --git a/src/boolean_algebras/bv/heuristics/bv_guarded_witness.h b/src/boolean_algebras/bv/heuristics/bv_guarded_witness.h
+new file mode 100644
+index 0000000000000000000000000000000000000000..5791e9d511061e49a9e806193782ee972d21b8ae
+--- /dev/null
++++ b/src/boolean_algebras/bv/heuristics/bv_guarded_witness.h
+@@ -0,0 +1,124 @@
++// To view the license please visit https://github.com/IDNI/tau-lang/blob/main/LICENSE.md
++
++#ifndef __IDNI__TAU__BOOLEAN_ALGEBRAS__BV__GUARDED_WITNESS_H__
++#define __IDNI__TAU__BOOLEAN_ALGEBRAS__BV__GUARDED_WITNESS_H__
++
++#include <cvc5/cvc5.h>
++#include <algorithm>
++#include <atomic>
++#include <chrono>
++#include <cstdint>
++#include <limits>
++#include <optional>
++#include <unordered_set>
++#include <utility>
++#include <vector>
++
++namespace idni::tau_lang {
++
++/// Number of cache misses decided by the guarded-witness rule.
++inline std::atomic_size_t bv_guarded_witness_decisions = 0;
++
++namespace bv_guarded_witness_detail {
++
++struct literal {
++	std::uint64_t mask;
++	bool nonzero;
++};
++
++/// Read exactly a same-width zero test on x or x & constant. Both operand
++/// orders are legal, and the translator can produce DISTINCT or NOT(EQUAL).
++inline std::optional<literal> read_literal(cvc5::Term atom,
++	const cvc5::Term& x, std::uint64_t top)
++{
++	using cvc5::Kind;
++	const bool negated = atom.getKind() == Kind::NOT;
++	if (negated) atom = atom[0];
++	const auto kind = atom.getKind();
++	if ((kind != Kind::EQUAL && kind != Kind::DISTINCT)
++		|| atom.getNumChildren() != 2) return std::nullopt;
++	auto expr = atom[0], zero = atom[1];
++	if (expr.isBitVectorValue()) std::swap(expr, zero);
++	if (!zero.isBitVectorValue() || zero.getSort() != x.getSort()
++		|| zero.getBitVectorValue(10) != "0") return std::nullopt;
++
++	const bool nonzero = (kind == Kind::DISTINCT) != negated;
++	if (expr == x) return literal{top, nonzero};
++	if (expr.getKind() != Kind::BITVECTOR_AND || expr.getNumChildren() != 2)
++		return std::nullopt;
++	auto variable = expr[0], mask = expr[1];
++	if (mask == x) std::swap(variable, mask);
++	if (variable != x || !mask.isBitVectorValue() || mask.getSort() != x.getSort())
++		return std::nullopt;
++	std::uint64_t value = 0;
++	for (char bit : mask.getBitVectorValue(2))
++		value = (value << 1) | static_cast<unsigned>(bit == '1');
++	return literal{value, nonzero};
++}
++
++} // namespace bv_guarded_witness_detail
++
++/// Decide conjunctive zero/nonzero tests and guarded implications of the form
++/// (x & u = 0 or x & v != 0) for concrete 1..64-bit masks. The caller
++/// establishes that x is the matrix's sole variable and is existential.
++/// A declined shape or elapsed deadline returns nullopt for the caller.
++inline std::optional<bool> bv_guarded_witness_sat(const cvc5::Term& matrix,
++	const cvc5::Term& x, std::chrono::steady_clock::time_point deadline)
++{
++	using cvc5::Kind;
++	using bv_guarded_witness_detail::read_literal;
++	using clock = std::chrono::steady_clock;
++	const auto late = [&] { return deadline != clock::time_point::max()
++		&& clock::now() >= deadline; };
++	if ((matrix.getKind() != Kind::AND && matrix.getKind() != Kind::OR)
++		|| x.getKind() != Kind::CONSTANT || !x.getSort().isBitVector())
++		return std::nullopt;
++	const auto width = x.getSort().getBitVectorSize();
++	if (!width || width > 64) return std::nullopt;
++	const auto top = width == 64 ? std::numeric_limits<std::uint64_t>::max()
++		: (std::uint64_t{1} << width) - 1;
++
++	std::uint64_t bound = top;
++	std::vector<std::uint64_t> required;
++	std::vector<std::pair<std::uint64_t, std::uint64_t>> guards;
++	std::vector<cvc5::Term> pending{matrix};
++	std::unordered_set<cvc5::Term> seen;
++	while (!pending.empty()) {
++		if (late()) return std::nullopt;
++		auto term = pending.back(); pending.pop_back();
++		if (!seen.insert(term).second) continue;
++		if (term.getKind() == Kind::AND) {
++			for (const auto& child : term) pending.push_back(child);
++		} else if (term.getKind() == Kind::OR && term.getNumChildren() == 2) {
++			auto a = read_literal(term[0], x, top);
++			auto b = read_literal(term[1], x, top);
++			if (!a || !b || a->nonzero == b->nonzero) return std::nullopt;
++			if (a->nonzero) std::swap(a, b);
++			guards.emplace_back(a->mask, b->mask);
++		} else if (auto a = read_literal(term, x, top)) {
++			if (a->nonzero) required.push_back(a->mask);
++			else bound &= ~a->mask;
++		} else return std::nullopt;
++	}
++	if (guards.empty()) return std::nullopt;
++	// Every witness is below bound. When bound avoids v, every witness
++	// must avoid u. Each strict pass clears at least one of at most 64 bits.
++	std::uint64_t before;
++	do {
++		before = bound;
++		for (auto [u, v] : guards) {
++			if (late()) return std::nullopt;
++			if ((bound & v) == 0) bound &= ~u;
++		}
++	} while (before != bound);
++	// At the fixed point bound satisfies every guard and zero test.
++	// A separate nonzero test holds somewhere iff it holds at bound.
++	for (auto mask : required) {
++		if (late()) return std::nullopt;
++		if ((bound & mask) == 0) return false;
++	}
++	return true;
++}
++
++} // namespace idni::tau_lang
++#endif
+diff --git a/tests/integration/test_integration-bv_quantifier_free_decision.cpp b/tests/integration/test_integration-bv_quantifier_free_decision.cpp
+index eea17f4b878b4e563018328e1c5b17831b5e5800..df77af4baa77a74b58a152b2ebb53928b3c76272 100644
+--- a/tests/integration/test_integration-bv_quantifier_free_decision.cpp
++++ b/tests/integration/test_integration-bv_quantifier_free_decision.cpp
+@@ -179,3 +179,158 @@ TEST_SUITE("quantifier-free bitvector decision") {
+ 		CHECK(norm("!(ex x:bv[4] (x:bv[4] > { 15 }:bv[4]))", false) == "T");
+ 	}
+ }
++
++TEST_SUITE("closed bitvector mask implications") {
++	TEST_CASE("a greatest witness decides every pair of two-bit mask implications") {
++		using K = cvc5::Kind;
++		auto& tm = cvc5_term_manager;
++		const auto x = tm.mkConst(tm.mkBitVectorSort(2), "x");
++		const auto zero = tm.mkBitVector(2, 0);
++		const auto deadline = std::chrono::steady_clock::time_point::max();
++		const auto nonzero = tm.mkTerm(K::DISTINCT, { x, zero });
++
++		auto masked = [&](unsigned m) {
++			return tm.mkTerm(K::BITVECTOR_AND, { tm.mkBitVector(2, m), x });
++		};
++		auto no_bits = [&](unsigned m) {
++			return tm.mkTerm(K::EQUAL, { zero, masked(m) });
++		};
++		auto rule = [&](unsigned u, unsigned v) {
++			// Reversed arms, commuted mask, and NOT(EQUAL) for nonzero.
++			return tm.mkTerm(K::OR, {
++				tm.mkTerm(K::NOT, { no_bits(v) }), no_bits(u) });
++		};
++
++		for (unsigned code = 0; code < 1024; ++code) {
++			const unsigned y = code & 3, u = (code >> 2) & 3,
++				v = (code >> 4) & 3, p = (code >> 6) & 3, q = code >> 8;
++			const auto matrix = tm.mkTerm(K::AND, {
++				nonzero, no_bits(y), rule(u, v), rule(p, q) });
++			bool expected = false;
++			for (unsigned b = 1; b < 4; ++b)
++				if (!(b & y) && (!(b & u) || (b & v))
++					&& (!(b & p) || (b & q))) expected = true;
++			CAPTURE(code);
++			const auto verdict = bv_guarded_witness_sat(matrix, x, deadline);
++			REQUIRE(verdict.has_value());
++			CHECK(*verdict == expected);
++		}
++	}
++
++	TEST_CASE("unsupported literals and widths decline even beside a recognized rule") {
++		using K = cvc5::Kind;
++		auto& tm = cvc5_term_manager;
++		const auto deadline = std::chrono::steady_clock::time_point::max();
++		for (unsigned width : { 64u, 65u }) {
++			const auto x = tm.mkConst(tm.mkBitVectorSort(width), "b");
++			const auto z = tm.mkBitVector(width, 0);
++			const auto one = tm.mkBitVector(width, 1);
++			const auto high = tm.mkBitVector(width, uint64_t{1} << 63);
++			const auto lo_bits = tm.mkBitVector(width, (uint64_t{1} << 63) - 1);
++			auto test = [&](const cvc5::Term& subject, const cvc5::Term& m, K relation) {
++				return tm.mkTerm(relation, { tm.mkTerm(K::BITVECTOR_AND, { subject, m }), z });
++			};
++			const auto nonzero = tm.mkTerm(K::DISTINCT, { x, z });
++			const auto upper = test(x, lo_bits, K::EQUAL);
++			const auto rule = tm.mkTerm(K::OR, {
++				test(x, high, K::EQUAL), test(x, one, K::DISTINCT) });
++			const auto matrix = tm.mkTerm(K::AND, { nonzero, upper, rule });
++			const auto answer = bv_guarded_witness_sat(matrix, x, deadline);
++			if (width == 65) {
++				CHECK_FALSE(answer.has_value());
++				continue;
++			}
++			// The highest bit is the only available bit and requires bit 0.
++			REQUIRE(answer.has_value());
++			CHECK_FALSE(*answer);
++			const auto negated = tm.mkTerm(K::BITVECTOR_NOT, { x });
++			const auto other = tm.mkConst(tm.mkBitVectorSort(width), "y");
++			const auto sum = tm.mkTerm(K::BITVECTOR_ADD, { x, one });
++			for (const auto& extra : { test(negated, one, K::DISTINCT),
++					test(other, one, K::DISTINCT), test(sum, one, K::DISTINCT) }) {
++				// Even though matrix is already inconsistent, admission must
++				// inspect the entire input before this path supplies a verdict.
++				const auto extended = tm.mkTerm(K::AND, { matrix, extra });
++				CHECK_FALSE(bv_guarded_witness_sat(extended, x, deadline).has_value());
++			}
++			const auto past = std::chrono::steady_clock::time_point::min();
++			CHECK_FALSE(bv_guarded_witness_sat(matrix, x, past).has_value());
++		}
++	}
++
++	TEST_CASE("the closed verdict path reaches the guard and the public SAT call agrees") {
++		// Banning bit 4 forces bit 2 out; the first implication then
++		// forces bit 1 out. Requiring bit 1 instead of bit 4 in the
++		// second consequent admits 3. All masks here are numeric masks.
++		auto sample = [](char name, unsigned consequent, unsigned forbidden = 4) {
++			const std::string x = std::string(1, name) + ":bv[3]";
++			const std::string zero = "{0}:bv[3]";
++			return "ex " + x + " (" + x + " != " + zero + " && (" + x + " & {"
++				+ std::to_string(forbidden) + "}:bv[3]) = " + zero
++				+ " && ((" + x + " & {1}:bv[3]) = " + zero + " || (" + x + " & {2}:bv[3]) != " + zero
++				+ ") && ((" + x + " & {2}:bv[3]) = " + zero + " || (" + x + " & {"
++				+ std::to_string(consequent) + "}:bv[3]) != " + zero + "))";
++		};
++		qf_config on(true);
++		for (unsigned consequent : { 4u, 1u }) {
++			const bool expected = consequent == 1;
++			auto fm = parse_wff_or_fail(sample('k', consequent));
++			const size_t before = bv_guarded_witness_decisions.load();
++			auto verdict = bv_formula_sat_status<node_t>(fm);
++			REQUIRE(verdict.has_value());
++			REQUIRE(verdict.value().has_value());
++			CHECK(*verdict.value() == (expected ? bv_sat_status::sat : bv_sat_status::unsat));
++			CHECK(bv_guarded_witness_decisions.load() == before + 1);
++
++			auto api_verdict = api<node_t>::sat(sample('j', consequent));
++			REQUIRE(api_verdict.has_value());
++			CHECK(api_verdict.value() == expected);
++		}
++
++		// Change the forbidden mask for each toggle: alpha-renaming a
++		// binder alone can yield the same canonical verdict-cache key.
++		auto expect_other_route = [&](char binder, unsigned forbidden, bv_sat_status expected) {
++			auto fm = parse_wff_or_fail(sample(binder, 4, forbidden));
++			const size_t before = bv_guarded_witness_decisions.load();
++			auto verdict = bv_formula_sat_status<node_t>(fm);
++			REQUIRE(verdict.has_value());
++			REQUIRE(verdict.value().has_value());
++			CHECK(*verdict.value() == expected);
++			CHECK(bv_guarded_witness_decisions.load() == before);
++		};
++		{
++			option_text_guard no_qf_bdd("bv-bitblast-qf-max-nodes", "0");
++			expect_other_route('u', 3, bv_sat_status::sat); // b=4 works
++		}
++		{
++			option_text_guard narrow("bv-bitblast-max-width", "2");
++			expect_other_route('v', 6, bv_sat_status::unsat); // b=1 would require bit 2
++		}
++	}
++
++	TEST_CASE("complemented input, a free coefficient and universal queries use the fallback") {
++		qf_config on(true);
++		const std::pair<const char*, bool> cases[] = {
++			// b=2 works: the complemented input supplies the required low bit.
++			{"ex b:bv[2] (b:bv[2] != {0}:bv[2] && (b:bv[2] & {1}:bv[2]) = {0}:bv[2] && "
++				"((b:bv[2] & {2}:bv[2]) = {0}:bv[2] || ((b:bv[2])' & {1}:bv[2]) != {0}:bv[2]))", true},
++			// The coefficient c is free; b=c=2 witnesses satisfiability.
++			{"ex b:bv[2] (b:bv[2] != {0}:bv[2] && (b:bv[2] & {1}:bv[2]) = {0}:bv[2] && "
++				"((b:bv[2] & {2}:bv[2]) = {0}:bv[2] || (b:bv[2] & c:bv[2]) != {0}:bv[2]))", true},
++			// b=0 violates the unconditional nonzero test.
++			{"all b:bv[2] (b:bv[2] != {0}:bv[2] && ((b:bv[2] & {1}:bv[2]) = {0}:bv[2] || "
++				"(b:bv[2] & {2}:bv[2]) != {0}:bv[2]))", false},
++		};
++		for (const auto& [sample, expected] : cases) {
++			CAPTURE(sample);
++			auto fm = parse_wff_or_fail(sample);
++			const size_t before = bv_guarded_witness_decisions.load();
++			auto verdict = bv_formula_sat_status<node_t>(fm);
++			REQUIRE(verdict.has_value());
++			REQUIRE(verdict.value().has_value());
++			CHECK(*verdict.value() == (expected ? bv_sat_status::sat : bv_sat_status::unsat));
++			CHECK(bv_guarded_witness_decisions.load() == before);
++		}
++	}
++
++}
