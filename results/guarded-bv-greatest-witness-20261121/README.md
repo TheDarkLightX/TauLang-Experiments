@@ -25,7 +25,7 @@ The oracle checks all 17,472 two-bit formulas with one through three ordered cla
 
 A Lean proof derives the greatest witness and the existential elimination rule for an arbitrary Boolean algebra with decidable equality. It also covers any additional upward-closed predicate on x. The source uses no project-specific axioms or proof placeholders. [Lean source](GuardedWitness.lean)
 
-The replay archive contains the C++ and Lean projects, native inputs, an exact-source Tau wheel identifier, JSON verdicts, Python frontend and all paired raw timing samples. The code and measurements were prepared with assistance from OpenAI ChatGPT. The stock Tau source and binaries are distributed by IDNI. The original code in this directory is supplied under the repository's MIT license. [Download the replay archive](replay.zip)
+The replay archive contains the C++ and Lean projects, native inputs, an exact-source Tau wheel identifier, JSON verdicts, Python frontend and all paired raw timing samples. The stock Tau source and binaries are distributed by IDNI. The original code in this directory is supplied under the repository's MIT license. [Download the replay archive](replay.zip)
 
 ```sh
 unzip replay.zip
