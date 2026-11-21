@@ -1,6 +1,6 @@
 # Decide closed bit-vector mask implications by propagating a greatest witness
 
-A closed existential bit-vector formula can be decided by clearing bits from one candidate when its clauses have the shape below. On a 16-bit cascade, an external recognizer reduced the median `tau.sat` string call from **79.26 to 1.97 ms**. A separate stored-expression control puts most of the saving in input processing. I’m sharing the C++ implementation and proof so the team can evaluate where this belongs.
+A closed existential bit-vector formula can be decided by clearing bits from one candidate when its clauses have the shape below. On a 16-bit cascade, an external recognizer reduced the median `tau.sat` string call from **79.26 to 1.97 ms**. A separate stored-expression control puts most of the saving in input processing. The attached native patch places this rule after Tau translates the quantified matrix and before it tries the bounded BDD.
 
 ### Recognized formula
 
@@ -36,8 +36,16 @@ Both arms received identical source text on `devel` at `ab7a13ed`, with the defa
 
 All 60 verdicts matched. Another four-guard fallback sample was slower, 22.91 → 24.64 ms. On the stock 0.8.5 CLI (`a584081`), `whatis FORMULA` on the 16-bit cascade took 70.44 → 2.66 ms for inspection, printing and storage. The first `sat %1` then took **3.02 → 1.20 ms**, including dispatch and printing. A C++ change downstream of parsing cannot claim the string-API gain.
 
-### Code and reproduction
+### Typed backend measurements
 
-The C++17 implementation checks against exhaustive enumeration on 17,472 two-bit formulas (69,888 witness assignments). The packet also includes a Lean proof, 202 expected native decisions, exact inputs, paired observations and commands. [C++ reference](https://github.com/TheDarkLightX/TauLang-Experiments/blob/ac5f476f983706219514afc31a7a8719a38318ac/results/guarded-bv-greatest-witness-20261121/guarded_bv.hpp) · [Lean proof](https://github.com/TheDarkLightX/TauLang-Experiments/blob/ac5f476f983706219514afc31a7a8719a38318ac/results/guarded-bv-greatest-witness-20261121/GuardedWitness.lean) · [Reproduction packet](https://github.com/TheDarkLightX/TauLang-Experiments/blob/ac5f476f983706219514afc31a7a8719a38318ac/results/guarded-bv-greatest-witness-20261121/README.md)
+On already-built cvc5 expressions, the native rule with BDD fallback was 3.23–4.02× faster than bounded BDD alone across four matching corpora, by median paired ratio. The fourteen-guard case took 81.08 µs per query with BDD and 26.24 µs with the rule. A late mismatch cost 32% more time (78.07 to 103.30 µs). Each corpus had 12 paired blocks of 512 queries per method. Every verdict matched exhaustive enumeration. These timings isolate the decision kernels. A whole-application result still depends on how often matching and late-rejected formulas reach this stage.
 
-This extends the single-witness observation in #152 to mixed guards that require repeated reductions. It complements the clause pruning in #151 and bounded BDD decision in #184. Would an early typed recognizer be useful here? The alternative placement after the existing BV cache and budget checks can be assessed by timing recognition on the original typed tree. [Pinned BV decision path](https://github.com/IDNI/tau-lang/blob/ab7a13ed610ff6cfb8364dd2e509df74c9bdac6c/src/boolean_algebras/bv/bv_ba_solver.tmpl.h#L769-L815)
+### Patch and replay
+
+The patch adds a decision rule and regression tests to Tau's bit-vector backend. It runs for a single outer existential, one matching bit-vector variable, and concrete masks up to the configured width cap (16 by default, up to 64 supported by the rule). Other shapes continue through the existing decision path. The replay includes the patch, the standalone C++ oracle, the Lean project, and the inputs and samples behind the frontend timing table.
+
+[Download the patch](https://github.com/TheDarkLightX/TauLang-Experiments/raw/ce76ffd8921cdd69aa4ffd56f609074487418531/results/guarded-bv-greatest-witness-20261121/tau-guarded-bv.patch) · [Download the replay ZIP](https://github.com/TheDarkLightX/TauLang-Experiments/raw/ce76ffd8921cdd69aa4ffd56f609074487418531/results/guarded-bv-greatest-witness-20261121/replay.zip) · [Read the Lean proof](https://github.com/TheDarkLightX/TauLang-Experiments/blob/ce76ffd8921cdd69aa4ffd56f609074487418531/results/guarded-bv-greatest-witness-20261121/GuardedWitness.lean) · [Build and validation notes](https://github.com/TheDarkLightX/TauLang-Experiments/blob/ce76ffd8921cdd69aa4ffd56f609074487418531/results/guarded-bv-greatest-witness-20261121/NATIVE-PATCH.md)
+
+The standalone oracle checked 17,472 two-bit formulas and 69,888 witness assignments. The Lean proof covers the algebraic elimination rule. The tests in the patch exercise its translation and dispatch boundaries. The complete affected upstream test file passed 2,203 assertions in 11 cases. All 81 parsed native replay cases gave the expected decision, with 70 hits and 11 fallbacks.
+
+This extends the single-witness observation in [#152](https://github.com/IDNI/tau-lang/issues/152) to mixed guards that require repeated reductions. It complements clause pruning in [#151](https://github.com/IDNI/tau-lang/issues/151) and bounded BDD decision in [#184](https://github.com/IDNI/tau-lang/issues/184).
